@@ -1,5 +1,13 @@
 # Navia / 伴航 V1 架构设计文档
 
+> 2026-09-15 T04.1/PX-6 实现状态：`raw -> ArtifactReader -> DerivedFacts -> shared validation -> pending Human -> Report -> Package -> raw Invocation -> resolved Invocation` 已在 detached acceptance snapshot 完成 R4-P/R4-E；T04.1 独立审计为 Fatal 0 / Major 0 / Minor 0。P7 已新增 `CandidateBinding -> raw-byte/facts/AST revalidation -> MachineExitAudit -> ReviewRequest/EvidenceIndex -> machine-only archive`，候选 `px6-machine-exit-20260914t164500z` 已获 PX6-0..5 机器阶段 `LIMITED PASS`（独立审计 Fatal 0 / Major 0 / Minor 0）。PX6-6 真人 H01..H07 仍 pending；PX6-7 production finalizer 在独立终审 ArtifactRef 尚未冻结前 fail-closed，Human/G7/final 不得自动签署。
+
+> 2026-09-10 RKM文档补强：目标认证矩阵、三类独立同意、RKM内部中止及共享支持关系见 [RKM架构](design/v2-real-knowledge-maintenance-architecture.md) 和合同3.3/3.4。新图04给出三类同意横向比较，验收7提供S->E反向映射；这些新增目标尚未实现。
+
+> 2026-09-09 当前状态纠正：Workspace及入口已经实现、待本轮复验；R1后端限定修复通过，不代表R1整体/PX-5通过。新增真实知识与维护目标权威见21.3，旧PX及V1架构边界不变。
+
+> 2026-09-09 PX-5目标增量（历史设计基线，当前实体状态见 21.2）：P2 PermissionRootManager -> P3 runtimeClient -> P4 app权限路由 -> P5 memory/PermissionService（workspace授权、受控POSIX文件读取、撤销epoch/提交锁）-> Knowledge Adapter。P2不得直接读文件。该调用链已完成 T01..T04 的限定实现、重算和隔离复验；G4从隔离验收 commit 读取 Git blob 并与实际构建绑定。新增合同与R0-R4顺序见 [修复执行合同](design/v2-px-5-repair-execution-contract.md)。PX-5/PX-6仍未通过。
+
 版本：V1.0 Architecture Baseline
 日期：2026-05-31
 
@@ -1876,7 +1884,7 @@ Go for V2 Memory / Personal Knowledge Base documentation and implementation-base
 V2-0 P0 contract / spike / lifecycle inputs are present as baseline artifacts.
 V2-1..V2-6 mock-first / controlled-boundary implementation baseline is present.
 V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance.
-Go for V2 planning-aligned local knowledge acceptance claim after V2-7 evidence passes; No-Go for V2 ready / RAG ready claims.
+V2-7 evidence passed; the active allowed claim is V2 planning-aligned local knowledge acceptance only. No-Go for V2 ready / RAG ready claims.
 ```
 
 V2 分层目标：
@@ -1905,7 +1913,7 @@ Host page / explicit local consent
 | 已实现保持 | C Mindmap | 生成当前页 tree / nodeSourceMap | 可提供候选主题和 source binding；C 不写 Knowledge Graph |
 | 已实现保持 | D Agent Loop / Adapter | ToolResult / Artifact / Event / Trace 边界 | V2 Adapter 必须挂在 D / governance 边界后；CoreProvider 不直接写 UI 或 data_service |
 | 已实现需验收 | V2 Adapter / Governance | `services/local-runtime/navia_runtime/modules/memory/` mock-first / controlled boundary 基线 | 将 PageContext / SourceRef / Artifact 映射为 MemoryCandidate / KnowledgeSource；执行权限、删除、trace 和错误语义 |
-| 已实现需验收 | Memory Plane contracts | V2 schema、OpenAPI、错误码和 Runtime contracts 草案已落盘 | `MemoryCandidate`、`KnowledgeSource`、`KnowledgeItem`、`EvidenceRef`、`Workspace`、`PermissionRoot`、`ForgetRequest` 需继续由 V2-7 真实数据验收验证 |
+| 已实现且已验收 | Memory Plane contracts | V2 schema、OpenAPI、错误码和 Runtime contracts 草案已落盘 | `MemoryCandidate`、`KnowledgeSource`、`KnowledgeItem`、`EvidenceRef`、`Workspace`、`PermissionRoot`、`ForgetRequest` 已由 V2-7 planning-aligned 真实数据验收验证；PX 不得把该结果扩大为真实 data_service 产品化完成 |
 | 已实现需验收 | Knowledge Workspace | `apps/chrome-extension/src/modules/knowledge_workspace/` 已形成组件基线 | 展示 workspace、source library、source detail、ask with sources、trace、graph、permission、forget 和服务状态条 |
 | 外部候选 | `/mnt/c/workspace/data_service` | 独立 Local Knowledge Governance Service | 候选后端基线；只能通过 HTTP / MCP / CLI 接入，不能直接读写内部 workspace |
 | 已完成验收 | `v2_memory_personal_knowledge_base` evidence | V2-1..V2-6 子阶段计划、PRD review、false-green audit 已落盘；V2-7 独立证据包已通过 | `sample-manifest.json`、`report.json`、`acceptance-report.html`、screenshots、schema / semantic validation 均已生成并通过 |
@@ -1916,12 +1924,12 @@ V2 Gap 闭环矩阵：
 |---|---|---|---|---|---|---|
 | Chrome 入口 | `entrypoints/background/index.ts`、`contentBridge.ts` | 已能打开 sidepanel / in-page sidebar，并执行 source marker / fallback / blocked | V2 不新增自动保存；trace marker 仍需真实数据验收 | `SaveToKnowledgeCard`、`KnowledgeTraceEntryPoint` | 只由用户点击触发；不得自动保存当前页 | launcher / sidebar 截图、保存入口截图、交互日志 |
 | 当前页输入 | `pageContext.ts`、A Page Reading `SourceRef` | 已能生成当前页上下文、Digest、SourceRef、QualityReport | 没有长期知识候选合同；无法表达 workspace、permission、forget | `MemoryCandidate`、`KnowledgeSourceDraft` | A 只产出候选输入，不写长期知识库 | candidate fixture、SourceRef mapping report |
-| Runtime 客户端 | `runtimeClient.ts` | 已包含 V2 knowledge section 和 V1 API | 需 V2-7 用真实数据验证状态、trace/query/forget 调用 | `runtimeClient.ts` V2 knowledge section | B 不直连 data_service；所有调用经 V2 Adapter / Governance | typecheck、contract tests、network trace |
-| B 渲染层 | `chat_renderer`、`mindmap_renderer`、`debug_renderer`、`knowledge_workspace/` | 已渲染聊天、Artifact、Mindmap、Debug，并有 Knowledge Workspace 组件基线 | 需 V2-7 真实截图验证 Workspace、Source Library、Ask、Graph、Permission、Forget 和状态组件 | Knowledge Workspace 组件组、`ServiceStatusBanner`、`DataServiceStatusCard`、`KnowledgeBuildStatus` | B 只展示 view model，不生成知识事实，不直连 data_service 做健康检查 | 组件截图、交互录屏或 HTML report |
+| Runtime 客户端 | `runtimeClient.ts` | 已包含 V2 knowledge section 和 V1 API | V2-7 已验证 planning-aligned 状态、trace/query/forget 调用；PX 需新增双容器一致性与恢复证据 | `runtimeClient.ts` V2 knowledge section | B 不直连 data_service；所有调用经 V2 Adapter / Governance | typecheck、contract tests、network trace |
+| B 渲染层 | `chat_renderer`、`mindmap_renderer`、`debug_renderer`、`knowledge_workspace/` | 已渲染聊天、Artifact、Mindmap、Debug，并有 Knowledge Workspace 组件基线 | V2-7 已验证 Side Panel 组件基线；PX 需验证独立 Workspace Page、真实入口、路由和宽屏可用性 | Knowledge Workspace 组件组、`ServiceStatusBanner`、`DataServiceStatusCard`、`KnowledgeBuildStatus` | B 只展示 view model，不生成知识事实，不直连 data_service 做健康检查 | 组件截图、交互录屏或 HTML report |
 | Runtime A/C/D | A Page Reading、C Mindmap、D Agent Loop / Adapter、`modules/memory/` | 已按 V1 分层生成当前页摘要、Mindmap、ToolResult / Artifact / Trace；V2 mock-first adapter 基线已存在 | 真实 data_service 产品化前仍需能力 diff 和删除语义复验 | V2 Adapter / Governance、Memory Plane contracts | A/C 不读写 Memory Plane；D / Governance 负责权限、错误、trace | adapter contract tests、PRD review |
 | 外部候选服务 | `/mnt/c/workspace/data_service` HTTP / MCP / CLI | 已作为候选基线完成 spike 文档；默认禁用 | 真实集成需再次锁定 commit/version/auth/API 和删除语义 | Local Knowledge Governance Service adapter | 只走 HTTP / MCP / CLI；不得直接读写内部 workspace；不复用 console 作为 Navia UI | adapter spike report、API mapping matrix |
-| 权限治理 | Navia Settings / Debug；`knowledge_workspace/` PermissionRoot；data_service allowed roots env | V2 mock governance UX 已形成基线 | 需 V2-7 用显式授权样本和截图证明撤销后不继续扫描 | `PermissionRoot`、`PermissionGrant`、`PermissionRevoke` | 默认关闭；显式授权；撤销后不得继续扫描 | permission screenshots、before/after scan report |
-| 删除 / 遗忘 | data_service `/sources/remove` 候选接口；`knowledge_workspace/` ForgetSource | V2 mock forget UX 已形成基线 | 需 V2-7 证明 query / graph / trace 不再命中 | `ForgetRequest`、`ForgetVerification` | 删除必须影响 Source Library、Ask、Graph、Trace | before/after query、graph、trace evidence |
+| 权限治理 | Navia Settings / Debug；`knowledge_workspace/` PermissionRoot；data_service allowed roots env | V2 mock governance UX 已形成基线 | V2-7 已用显式授权样本证明撤销后不继续扫描；PX 需验证双容器一致性 | `PermissionRoot`、`PermissionGrant`、`PermissionRevoke` | 默认关闭；显式授权；撤销后不得继续扫描 | permission screenshots、before/after scan report |
+| 删除 / 遗忘 | data_service `/sources/remove` 候选接口；`knowledge_workspace/` ForgetSource | V2 mock forget UX 已形成基线 | V2-7 已证明 Library / Ask / Graph / Trace 四面不再命中；PX 需验证独立 Workspace 的 before/after 可视状态 | `ForgetRequest`、`ForgetVerification` | 删除必须影响 Source Library、Ask、Graph、Trace | before/after query、graph、trace evidence |
 | Evidence | V1 evidence packages；V2-1..V2-6 子阶段 evidence；V2-7 独立证据包 | V2 子阶段实现证据和 V2-7 evidence 均已存在 | 后续产品化 data_service 仍需独立证据，不复用本阶段 claim | `docs/active/project/evidence/v2_memory_personal_knowledge_base/` | V2 证据独立，不复用 V1/V3 作为通过声明 | report.json、HTML、screenshots、false-green audit |
 
 V2 架构平面与未来修改位置：
@@ -1986,14 +1994,15 @@ V2 状态模型规划：
 
 | 状态域 | 值 | 用户可见含义 | 允许的下一步 |
 |---|---|---|---|
-| `runtimeStatus` | `checking` / `online` / `offline` | Navia Runtime 是否可用 | 重试、打开 Debug、启动 Runtime |
-| `adapterStatus` | `ready` / `degraded` / `blocked` / `not_configured` | V2 Adapter / Governance 是否可处理知识请求 | 查看配置、降级为当前页伴读、打开 Settings |
-| `dataServiceStatus` | `unchecked` / `connected` / `auth_required` / `unreachable` / `version_mismatch` / `blocked_by_policy` | 候选 data_service 是否可作为本地知识服务 | 配置凭据、重连、升级服务、查看策略原因 |
+| `frontendInferredRuntimeStatus` | `checking` / `online` / `offline` | 前端根据 transport 判断 Navia Runtime 是否可用 | 重试、打开 Debug、启动 Runtime |
+| `runtimeStatus` | `checking` / `online` / `null` | 仅 Runtime 可达时由 Runtime 返回；transport offline 时必须为 `null` | 不得在离线场景伪造 Runtime 响应 |
+| `adapterStatus` | `ready` / `degraded` / `blocked` / `unchecked` | V2 Adapter / Governance 是否可处理知识请求 | 查看配置、降级为当前页伴读、打开 Settings |
+| `dataServiceStatus` | `unchecked` / `connected` / `degraded` / `auth_required` / `unreachable` / `version_mismatch` | 候选 data_service 是否可作为本地知识服务 | 配置凭据、重连、升级服务、查看策略原因 |
 | `sourceBuildStatus` | `not_saved` / `queued` / `ingesting` / `building` / `trace_ready` / `degraded` / `failed` / `forgotten` | 单个 source 是否已进入可查询、可 trace、可删除状态 | 保存、等待、查看 trace、重试、删除验证 |
 
 Runtime offline 语义修正：
 
-- `runtimeStatus=offline` 不能由 `/v1/knowledge/status` 返回，因为 Runtime 离线时该接口不可达。
+- `runtimeStatus=offline` 不能由 `/v1/knowledge/status` 返回，因为 Runtime 离线时该接口不可达；前端聚合状态中的 `runtimeStatus` 必须为 `null`。
 - 前端必须在 `runtimeClient.ts` V2 knowledge section 中通过 transport failure / timeout 本地推导 `frontendInferredRuntimeStatus=offline`。
 - Runtime 在线后，`/v1/knowledge/status` 只能返回 Runtime 可达条件下的 Adapter、data_service、source build 和 capability 状态。
 
@@ -2020,15 +2029,15 @@ docs/active/project/design/v2-memory-personal-knowledge-lifecycle-adr.md
 docs/active/project/design/v2-data-service-adapter-spike-plan.md
 ```
 
-这些文件当前作为 V2-0 / V2-6 实现基线输入。真实 data_service 产品化或 V2-7 出门前仍必须复核字段、枚举、API envelope、pagination / cursor、idempotency key、operation_id、trace_id、error code、capability negotiation 和 semantic validator。
+这些文件当前作为已完成 V2-0..V2-7 的 planning-aligned 基线输入。真实 data_service 产品化或 PX 扩展公共合同前，仍必须复核字段、枚举、API envelope、pagination / cursor、idempotency key、operation_id、trace_id、error code、capability negotiation 和 semantic validator。
 
 V2 Workspace 承载形态规划：
 
 | 容器 | 职责 | 目标路径 | 验收重点 |
 |---|---|---|---|
 | Side Panel | 快速保存当前页、显示服务状态摘要、当前 source build / trace 状态、Ask current workspace 快捷入口、Trace 快捷入口 | `entrypoints/sidepanel/main.tsx`、`knowledge_workspace/SaveToKnowledgeCard.tsx`、`ServiceStatusBanner.tsx` | 不破坏 V1 Chat / Debug / Settings；窄侧栏不承载完整长期管理 |
-| Extension Workspace Page | 长期 source 管理、workspace switcher、source library/detail、Ask with Sources、Knowledge Graph、PermissionRoot、ForgetSource、DataServiceStatusCard | 未来 extension page 或等价 Navia Workspace route，V2-0 冻结具体入口 | 能承载宽布局、表格、图谱、权限和删除审计 |
-| Localhost Web Workspace | 备选路线，不是默认承诺 | 仅在 V2-0 决策后进入文档 | 需要额外启动、权限和验收路径 |
+| Extension Workspace Page | 长期 source 管理、workspace switcher、source library/detail、Ask with Sources、Knowledge Graph、PermissionRoot、ForgetSource、DataServiceStatusCard | V2-PX 路线 A，新增 WXT `workspace` entrypoint 与 hash router | 能承载宽布局、表格、图谱、权限和删除审计；PX-1 先通过 entrypoint spike |
+| Localhost Web Workspace | 备选路线，不是默认承诺 | 仅当路线 A 被 WXT / Manifest V3 / CSP 技术事实阻塞，打回 PX-0 后启用 | 需要额外启动、CORS、鉴权、会话和版本协商，不得静默切换 |
 
 V2-7 出门证据已满足：
 
@@ -2056,6 +2065,191 @@ V2 架构出门条件：
 - drawio 必须标注实体状态：已实现保持、已实现需验收、待补齐、外部候选、No-Go。
 - V2-7 证据通过后允许声明 `V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance`；仍不得声明 V2 implemented、V2 ready、默认本地文件读取或 RAG ready。
 - 不得声明 V2 implemented、V2 ready、默认本地文件读取、完整 RAG 产品、Web Research / PPT / Deep Research ready。
+
+### 21.1 V2-PX External Brain Productization 目标架构
+
+V2-PX 不新增第二套知识后端。它把当前 Side Panel 内的 Knowledge Workspace 组件基线产品化为两个前端容器，并继续复用 P3-P6 的 `runtimeClient -> Local Runtime -> V2 Adapter / Governance -> data_service candidate` 单一权威链路。
+
+Workspace 宿主决策已冻结为路线 A：扩展同源的 `Extension Workspace Page`。路线 B `localhost Web Workspace` 只是受控回退，不属于当前目标架构；切换条件、架构冲击和回退门禁由 `design/v2-external-brain-workspace-hosting-adr.md` 约束。
+
+Route A 的公开构建产物名固定为 `workspace.html`。`entrypoints/workspace/index.html` 是源 entrypoint，WXT 配置必须将其映射为 `chrome.runtime.getURL("workspace.html")`；PX-1 只能验证该映射，不能自行改名。无法满足时返回 PX-0 评审路线 B。
+
+目标容器与调用关系：
+
+```text
+P0 Host Page
+  -> P1 contentBridge.ts / background OpenWorkspaceAction
+  -> P2a Side Panel Quick Surface
+       SaveToKnowledgeCard / ServiceStatusBanner / KnowledgeBuildStatus
+       查看来源 / 打开工作台 / Ask current workspace / Trace
+  -> P2b Extension Workspace Page
+       WorkspaceRouter
+       SourceLibraryPanel / SourceDetailReader / AskWithSourcesPanel
+       EvidenceTraceDrawer / KnowledgeGraphCanvas
+       PermissionRootManager / ForgetSourceDialog / DataServiceStatusCard
+
+P2a + P2b
+  -> P3 shared runtimeClient.ts V2 knowledge section
+  -> P4 app.py /v1/knowledge/*
+  -> P5 modules/memory/ Adapter / Governance
+  -> P6 data_service candidate
+  -> P7 V2-PX evidence
+```
+
+代码实体状态：
+
+| 状态 | 平面 | 具体实体 | V2-PX 动作 |
+|---|---|---|---|
+| 已实现保持 | P0/P1 | `src/contentBridge.ts`、`entrypoints/content/index.ts` | 保持 Launcher / Side Panel / source marker；不自动保存或读取本地文件 |
+| 已实现并经 T04 R4-E 复验 | P1 | `entrypoints/background/index.ts`、`workspaceOpen.ts` | `OpenWorkspaceAction` 使用 extension URL 打开/聚焦 Workspace，只传稳定 ID 和 route intent |
+| 已实现并经 T04 R4-E 复验 | P2a | `entrypoints/sidepanel/main.tsx`、`KnowledgeQuickSurface.tsx`、`SaveToKnowledgeCard.tsx` | 窄侧栏作为快捷面，三个入口可发现，不承载完整管理工作台 |
+| 已实现并经 T04 R4-E 复验 | P2b | `entrypoints/workspace/index.html`、`main.tsx`、`style.css`、`WorkspaceRouter.tsx` | 独立 extension page、五路由、刷新/重开/Back/无效 ID 恢复 |
+| 已实现并经 T04 R4-E 复验 | P2b | `SourceLibraryPanel.tsx`、`SourceDetailReader.tsx`、`AskWithSourcesPanel.tsx`、`EvidenceTraceDrawer.tsx`、`KnowledgeGraphCanvas.tsx`、`PermissionRootManager.tsx`、`ForgetSourceDialog.tsx` | 宽屏管理组件只消费 Runtime 权威，不生成知识事实；待 PX-6 人类体验核查 |
+| 已实现并经 T04 R4-E 复验 | P3 | `src/runtimeClient.ts` V2 knowledge section | 两个容器共享 API client、transport offline 推导、poll/reconnect 与稳定 ID 恢复 |
+| 已实现保持 | P4/P5 | `app.py /v1/knowledge/*`、`modules/memory/` | 保持 envelope、权限、trace、forget 和 status 语义；V2-PX 不借 UI 产品化扩大 Runtime public contract |
+| 外部候选保持 | P6 | `/mnt/c/workspace/data_service` | 继续只经 P5 HTTP / MCP / CLI 调用；Console 不是 Navia Workspace |
+| T04.1 与 PX6-0..5 已限定通过 | P7 | T02.5 sealed raw、T03 ArtifactReader / DerivedFacts / shared validator / pure reporter / package、T04.1 SnapshotRevalidation/raw+resolved Invocation/ExitManifest、PX-6 CandidateBinding/MachineExitAudit/ReviewRequest/EvidenceIndex/machine-only archive 已实现并经独立审计；ReviewSubmission 等待人类，FinalDisposition 因终审握手未冻结而 fail-closed | 从原始事件、冻结文档字节与不可变快照证明入口、路由、双容器身份、服务状态、Permission/Forget 和 UX；先机器重算后人类可见 Chrome 审查，不得信任报告自报或自动代签 |
+
+PX-0.1 / PX-0.1b 文档合同实体：
+
+| 状态 | 实体 | 职责 |
+|---|---|---|
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_workspace_contracts.schema.json` | 约束 origin -> route intent、route -> canonical path、extension-origin URL 和 canonical errorCode |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_acceptance_manifest.schema.json` v5 | 冻结 evidenceClass、真实 source 的 originRef / raw-byte fingerprint、操作场景、expected open/recovery outcome 和预期错误 |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_report.schema.json` v12 | 记录 contract/production 证据边界、scenario-aware layer observation、完整 Knowledge Status、成功 Back/reopen、Permission / durable Forget、结构化 G4 检查、完整规则/夹具/实例覆盖和原始审计产物 hash |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_screenshot_metadata.schema.json` v6 | 将 screenshot 与 evidenceClass、scenarioId、Manifest viewport、真实解码尺寸、capture variant/mode/surface/phase、route、scenario-aware IDs、完整 Knowledge Status 和 image hash 绑定 |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_execution_observation.schema.json` v6 | 冻结 evidenceClass、prior route、多次 attempt、入口/background/route 事件、成功 Back/reopen、参与层 ID、Runtime transport、ingest counter 和同源 Forget 重开链；跨对象 identity/时序由 semantic rule 校验 |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_human_review.schema.json` v3 | 冻结 evidenceClass、G1-G7 人工签署、reviewer、时间、path+SHA-256 证据、阻塞项和 fixture/production 分级声明 |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_validation_contracts.schema.json` v4 | 封闭 63 个 RuleId（41 semantic / 22 schema）、63 个规则失败码 + `SCHEMA_VALIDATION_FAILED`、109 个带 key/描述/规则/层/失败码的 mandatory requirement 和 v10 FixtureSuite，禁止 validator 自造规则、要求或失败码 |
+| 已冻结并通过 PX-0.2 回归 | `v2_external_brain_architecture_scan_manifest.schema.json` v2 | 冻结 G4 tracked path/mode/blob、contract fixture 原始源码字节、排序与行格式、source tree/path index、封闭排除项、ruleset/allowlist artifact，使扫描范围、输入和 hash 可独立重算 |
+| 已实现并经 T03/T04 限定复验 | `v2-external-brain-productization-semantic-validator.md` 对应共享 core | 重算 summary / G1-G7，验证文件存在性并拒绝 false-green 负向夹具；T04.1/PX-6 复用同一结果，不复制规则实现 |
+
+T03/T04/T04.1 与 PX6-0..5 已实现的 P7 证据链严格限制在证据平面，不改变 P0-P6 产品调用链：
+
+```text
+T02.5 sealed raw + immutable artifacts + snapshot Git blobs
+  -> ProductionArtifactReader（已实现，T03 LIMITED PASS）
+  -> DerivedFacts v1（已实现）
+  -> Shared Schema/Semantic/TypeScript-AST Core（已实现并复用 PX-0.2）
+  -> ProductionValidation v1 -> pending Human Review v3
+  -> Pure Report v12 -> ProductionPackage v1 -> InvocationRecord
+  -> T04 SnapshotInputManifest -> R4-P replay + R4-E fresh -> SnapshotRevalidation -> unsigned ExitManifest（LIMITED PASS）
+  -> T04.1 new full rerun: raw InvocationRecord(validation_run) + resolved InvocationRecord(replay_validation-only)（LIMITED PASS）
+  -> PX-6 CandidateBinding -> MachineExitAudit -> EvidenceIndex/ReviewRequest -> deterministic machine-only archive（PX6-0..5 LIMITED PASS）
+  -> human-authored Human Review v3 + ReviewSubmission（等待真实人类）
+  -> FinalizationCandidate -> independent final audit -> FinalDisposition（两步握手待合同冻结，production fail-closed）
+```
+
+事实权威只允许来自单一绑定候选的 sealed raw、逐路径 artifact bytes、`snapshotCommit` Git blob 和独立审计原始字节。Report、HTML、输入中的 `passed` 或旧 generator 输出都不是验证输入；缺观察必须只生成 Diagnostic 并退出 2。PX-6 不得目录扫描选择 newest，也不得调用旧 `audit-v2-external-brain-exit.mjs`。该单向依赖消除 report/package 自引用；MachineExitAudit 最多进入 `waiting_for_human_review`，只有人类提交有效 ReviewSubmission 后 Finalizer 才可重算 G7/final。
+
+架构门禁固定顺序为 `PX-0 -> PX-0.1 -> PX-0.1b -> PX-0.2 -> PX-1..PX-6`。PX-0.1b 负责合同和完整审计包，不实现代码；只有其独立复审无 fatal / major，才允许 PX-0.2 实现验收工具。PX-0.2 validator 与全部负向测试通过前，P2b Workspace entrypoint 和其他 PX-1+ 产品实体均为 No-Go。
+
+跨容器稳定 ID 规则：
+
+- `OpenWorkspaceAction` 只包含 `routeIntent`、`workspaceId`、可选 `sourceId / operationId` 和幂等 `requestId`。
+- `source_detail` route 必须带 `workspaceId + sourceId`；其他 route 至少带 `workspaceId`。
+- `open_workspace` 只能映射 Source Library；`view_source` 只能映射 Source Detail；`open_in_workspace` 保留当前合法 Knowledge route。
+- Workspace Page 不信任 URL 中的事实 payload；必须重新通过 Runtime 读取 source、answer、graph、trace 和状态。
+- 同一 `workspaceId + routeIntent + sourceId` 的重复打开请求优先聚焦既有标签页；创建新页也不得重复 ingest。
+- 无效或无权限 ID 必须进入 `recoverable_error`，提供返回来源库、切换 Workspace 或重试，不得回退到虚构 fixture。
+
+Evidence Plane 不得假设所有代码平面都参与每个场景。`direct_route` 的 Side Panel / Background observation 是 `not_applicable`；Runtime transport failure 时 Runtime observation 是 `unavailable`，必须记录 transport error 与 artifact，且禁止 response fingerprint。`open_in_workspace` 使用 `entryContext` 证明上下文保持；tab reuse 使用两次有序 attempt 和同一 tabId 证明，不接受最终状态自报。
+
+Screenshot evidence 使用单一真实捕获面：`captureMode=product_surface` 时 `captureSurface` 只能是 host page、Side Panel、Workspace Page 或 route error；Side Panel 与 Workspace 并排只允许标记为 `composite_review_only`，不得计入 G6。`viewport_sidepanel_360/420` 必须绑定 Side Panel 单面，`viewport_workspace_768/1280` 必须绑定 Workspace 单面；Manifest viewport、Screenshot Metadata 和图片真实解码尺寸必须三方一致。`sourceSampleId` 与 Runtime `sourceId` 分属样本和产品实体命名空间，必须显式映射而不能复用同一字符串。
+
+PX-0.1b 合同夹具使用 `evidenceClass=contract_fixture` 与 `acceptanceMode/executionMode=contract_fixture`，只证明 Schema 和 semantic algorithm 的可执行性。PX-5 产品证据必须使用 `production_acceptance + real_chrome_dual_container`，不得引用 `virtual/*`、原型或合同夹具。12 个 contract fixture source 使用不同原始字节；canonical `originRef + fingerprint` 组合不得重复。
+
+合同夹具中的虚拟证据不得依靠路径名或字符串二次转义推断字节。`virtualArtifactContract.artifactsByPath` 必须将每个 Execution Observation、Screenshot Metadata、Human Review、日志和审计 artifact 绑定到一次解析的 UTF-8 或 `navia_canonical_json_v1` 字节及 SHA-256；Report 与 Human Review 的 evidenceClass 和签署声明等级必须一致。
+
+G4 的 `ArchitectureResult` 必须引用 Architecture Scan Manifest v2，并绑定验收 `repositoryCommit`、source tree SHA-256、三项固定 `scanRoots`、tracked path index SHA-256、ruleset ID/hash、allowlist hash、封闭排除路径、扫描文件数和违规数。Manifest 固定 `/`、UTF-8、Unicode code point 升序、`<path>\n` 与 `<mode> <blobSha256> <path>\n` 行格式；仅记录 `scannedFiles=N / violations=0` 不能证明扫描了目标代码，也不得计为 G4 通过。
+
+G4 的 ruleset 和 allowlist 不能只是版本标签或自由文本。Production acceptance 必须从验收 commit 读取 Git blob 原始字节且禁止 `inlineSource`；PX-0.1b contract fixture 则通过 Architecture Scan Manifest v2 的 `trackedPaths[].inlineSource` 提供逐路径原始 UTF-8 源码字节。`architecture_dependency_boundary` 使用 `typescript_ast_import_specifier_literal_v2` 提取静态、export-from 与可静态折叠的 dynamic import specifier；`architecture_forbidden_call_scan` 使用 `typescript_ast_call_new_expression_and_endpoint_normalization_v2` 解析 Call/New Expression、折叠静态字符串并规范化 loopback host、空白、括号和 `window/globalThis` 前缀。Validator 必须自行扫描源码，不能信任 Report 自报 `violations=0`；PX-N-104..109 会在同步更新 blob/source-tree hash 后插入违规 import、fetch 或知识事实创建。Allowlist 只声明 shared `runtimeClient` 和纯 ViewModel type import，不能覆盖 `nonOverridableRules`。缺失源码字节、规则算法、ruleset/allowlist 原始字节、扫描结果或 hash 不一致时，G4 必须失败。
+
+Forget evidence 由 `statusBefore=trace_ready -> statusAfter=forgotten`、四面 before/after 和同一 `workspaceId + sourceId` 的 direct-open / reload / Back / reopen 四类 `SOURCE_NOT_FOUND` observation 共同组成。缺少任一重开路径或重开成功均返回 `PX_FORGET_DURABLE_RECOVERY_INVALID`，不得只凭当前 DOM 消失声明 durable Forget。
+
+Report 与 Screenshot Metadata 的 `statusObservation` 不复制一套弱化状态枚举，而是直接引用完整 `v2_knowledge_status.schema.json`。因此 Runtime offline 只能表达为前端推导 `offline + runtimeStatus=null + adapter/data_service=unchecked + sourceBuildStatus=unknown`，不能为了让报告通过而伪造 Runtime 返回 `offline`。
+
+PX-0.1b 权威合同版本表（2026-07-16 修订包）：
+
+| 合同 | `schemaVersion const` | `$id` | Source SHA-256 |
+|---|---|---|---|
+| Knowledge Status | `v2-knowledge-status-draft-2026-07-10` | `https://navia.local/contracts/v2_knowledge_status.schema.json` | `e89fa060aa3313aa0b719469a3f3b2df876ecfb54d2f34c518566c75a93cffff` |
+| Workspace Contracts | `$defs` only | `https://navia.local/contracts/v2_external_brain_workspace_contracts.schema.json` | `cdad804dda3fee5425ac1a23d16b5c1ed1477ee9f73fa660795da833179fcc03` |
+| Acceptance Manifest | `v2-external-brain-acceptance-manifest/v5` | `https://navia.local/contracts/v2_external_brain_acceptance_manifest.schema.json` | `1b49c4871aeb9147e5c7327b54be3669472dc6ffa4b29481cfc17dd060aa920c` |
+| Acceptance Report | `v2-external-brain-report/v12` | `https://navia.local/contracts/v2_external_brain_report.schema.json` | `1a3b6cf2f33bd06c422df8ab6351c4998832c4b74ee5dc726c35e3097ec022b2` |
+| Screenshot Metadata | `v2-external-brain-screenshot-metadata/v6` | `https://navia.local/contracts/v2_external_brain_screenshot_metadata.schema.json` | `c14192fb8c08100aa808e37ffd7dcc049b97795facbfb9b28f39b8b11663bc40` |
+| Execution Observation | `v2-external-brain-execution-observation/v6` | `https://navia.local/contracts/v2_external_brain_execution_observation.schema.json` | `40640f87168d8e55a4cc259f8bea081825ae43ae2de08cf7372e7664b9e0333d` |
+| Human Review | `v2-external-brain-human-review/v3` | `https://navia.local/contracts/v2_external_brain_human_review.schema.json` | `4aaf1bcfeb6f031b25c126816a1f7112187c79bd100a470cde6ed5b1dd66c250` |
+| Validation Contracts | `x-navia-contract-version=v4` | `https://navia.local/contracts/v2_external_brain_validation_contracts.schema.json` | `0ea5aa4c368f4c7edc4169f68c4cdce885b64cd2a8f3f94a4fba978f8a5a5cc5` |
+| Architecture Scan Manifest | `v2-external-brain-architecture-scan-manifest/v2` | `https://navia.local/contracts/v2_external_brain_architecture_scan_manifest.schema.json` | `e612cc140e78c9bc080dd651a9a5b01b20ef1d52f08fa14c6e5a1c7cdcc03a32` |
+
+平铺外部审计包中的 `19-v2-px-contract-bundle.json` v4 必须为上述九份 Schema 分别携带 `encoding=utf8`、原始 `rawText`、按文件原始字节计算的 `sourceSha256`、按 `navia_canonical_json_v1` 计算的 `canonicalJsonSha256` 和解析后的 `document`。`sourceSha256` 不能从解析后对象或重新格式化文本推断；审计者必须只依赖 bundle 内字节即可重算两类 hash。
+
+任何合同内容变化必须同步更新版本号（破坏性变化必须升级主版本后缀）、本表 SHA、bundle、夹具和外部审计清单；不得在同一 `schemaVersion` 下静默改写字段语义。
+
+审查原型可用浏览器本地 source registry 演示保存来源在 reload/reopen/Back 后维持稳定 ID，并用 tombstone 演示 Forget 后不复活；二者都只属于原型状态。生产 `KnowledgeWorkspaceShell` 必须以 Runtime / Adapter 返回的 source 生命周期为权威，前端缓存不得创造保存或 `forgotten` 事实。
+
+Route intent 与目标路径一一对应：
+
+| Route intent | 目标路径 | 必需 ID | 默认恢复动作 |
+|---|---|---|---|
+| `source_library` | `#/knowledge/sources?workspaceId=...` | `workspaceId` | 切换 Workspace 或重试 |
+| `source_detail` | `#/knowledge/sources/:sourceId?workspaceId=...` | `workspaceId + sourceId` | 返回来源库、切换 Workspace 或重试 |
+| `ask` | `#/knowledge/ask?workspaceId=...` | `workspaceId` | 切换 Workspace 或重试 |
+| `graph` | `#/knowledge/graph?workspaceId=...` | `workspaceId` | 切换 Workspace 或降级到来源列表 |
+| `permissions` | `#/knowledge/settings/permissions?workspaceId=...` | `workspaceId` | 返回来源库或重试 |
+
+PX-1 entrypoint spike 必须验证构建产物、`chrome.runtime.getURL`、生产入口、直接打开 / 刷新 / Back / 重开、CSP / permissions 和 Runtime offline shell。只有这些事实通过，才能继续完成路线 A；失败时不得在 PX-1 内引入 localhost host，而应回到 PX-0 做完整架构 diff。
+
+运行状态与生命周期：
+
+- Side Panel 和 Workspace 必须显示同一 `operationId / sourceId / sourceBuildStatus`。
+- 页面刷新或 Runtime reconnect 后，以稳定 ID 重新轮询；前端不得凭本地缓存直接恢复为 `trace_ready`。
+- Runtime offline 由各容器的 `runtimeClient.ts` transport failure 推导；此时 `frontendInferredRuntimeStatus=offline`、`runtimeStatus=null`，Adapter / data_service 必须显示 `unchecked`，source build 必须显示 `unknown`，不得伪造下游权威状态。
+- Forget 仍由用户在 Source Detail 主动发起、二次确认，并完成 Library / Ask / Graph / Trace 四面验证；V2-PX 不实现自动遗忘。
+- PermissionRoot 撤销后停止未来扫描和新导入，已导入 source 保留，直至用户另行 Forget；撤销不得冒充删除。
+- 当前 mock adapter 只保证相同 idempotencyKey 精确重放；不同 key 保存同一 URL 会创建新 immutable source，revision 从 1 开始。PX 不声明内容哈希去重或自动 revision 更新。
+- 当前 mock adapter 内存态不保证 Runtime restart 后恢复。重连找不到 source/operation 时必须显示 recoverable error，不得从前端缓存恢复 `trace_ready`。
+
+V2-PX 不允许新增平行数据源、前端直连 data_service、在 route 中携带网页正文、从 Workspace 自动控制宿主 DOM，或把旧 V2-7 截图当作独立页面证据。
+
+### 21.2 V2.x Knowledge Dream Cycle 架构研究边界
+
+自动整理、摘要刷新和遗忘候选属于 V2.x 后续研究，不属于 V2-PX。未来如启动，建议在 P5 Adapter / Governance 后新增独立 `Knowledge Maintenance Plane`，而不是让 B 前端或 data_service 定时任务直接决定删除：
+
+```text
+KnowledgeMaintenancePolicy
+  -> MaintenanceScheduler（idle / scheduled / user-triggered）
+  -> MaintenanceAnalyzer（duplicate / stale / conflict / weak evidence）
+  -> GroundingValidator（source revision + EvidenceRef）
+  -> MaintenanceProposalStore
+  -> Knowledge Maintenance Inbox
+  -> user approval / reversible policy apply
+  -> Quarantine / Restore / ForgetVerification
+  -> MaintenanceAuditRecord
+```
+
+该平面的架构不变量：
+
+- 默认 `suggest-only`；自动应用只能覆盖用户授权且可逆的 metadata、标签、虚拟目录或 workspace membership 变更。
+- 物理文件移动 / 重命名和永久遗忘是高风险独立能力，默认关闭；不得由低置信度模型输出直接触发。
+- 所有摘要修订必须引用原始 `sourceId + revision + EvidenceRef`，禁止 summary-of-summary 漂移。
+- Maintenance Plane 只能读取用户已保存 source 和显式授权 root；不自动联网、不浏览页面、不扫描未授权路径。
+- 任何实现必须先冻结新合同、状态机、并发 / 幂等 / 回滚、报告 schema、真实数据矩阵和安全审计。本节只是架构研究登记，不构成实现放行。
+
+### 21.3 V2-RKM 独立增量架构
+
+本轮独立审查补充：E12当前ConsentDecisionSlot支持同槽显式重授权，E14维护runExecution epoch经E17/E19 pauseAck形成独立暂停屏障；策略/授权变化的旧run对账终结后释放槽。不新增架构平面，不把拟增协议算当前实现；详见RKM合同3.7/3.9、验收IR-01..03。
+
+2026-09-10风险再核查：E07拟增同事务memory_turn_outbox，E13消费/E12去重；E14运行终态与待审建议分离，重启暂停；E07/E12已认证控制面在DS离线时仍可持久关闭/撤销；E12/E17恢复及备份以tombstone为先。具体决策见RKM合同3.5..3.8，不改变E01..20分层或当前NOT_IMPLEMENTED状态；原PX公开合同不自动扩展。
+
+本阶段仍只开发文档。具体代码实体E01..20、文件位置、调用/存储责任和状态以 [RKM目标架构](design/v2-real-knowledge-maintenance-architecture.md) 为权威。目标链路：E01宿主->E03 Side Panel/E04 Workspace->E05 runtimeClient->E07 Runtime->E08权限/E11真实Adapter/E12治理SQLite->E10 HTTP->E17..19 data_service及模型；E13会话记忆与E14维护由同一治理层授权，E15验证/记账，E16只渲染控制，E20提供原始证据。
+
+E09 Mock仍只用于测试；H01-RDS 已增加限定的真实 `DataServiceKnowledgeAdapter`，但 E11..16 的 RKM 完整能力仍未实现。DS拥有知识索引，Navia只拥有治理/ID映射，不形成两个知识权威。新持久来源不等于旧operation自动恢复；root fd/epoch重启失效。HTTP调用不持root IO锁，使用outbox及后端代际校验。
+
+对21.2的限定增量：仅在RKM可为明确授权scope/provider/purpose调用云模型，仍不搜索互联网、不自动扫描文件。费用不设硬限；统计和估算不等于计费保证；超时、限流、撤销与安全停止保留。默认suggest-only，reversible_auto只处理自有可逆记录，永久Forget人工确认。
+
+部署选择本机双服务；Docker是未纳入出门的备选。必要DS公共API修复在隔离分支，不改变旧候选边界为“已集成”。详情见 [风险ADR](design/v2-real-knowledge-maintenance-risk-adr.md) 和 [门禁](stage-gates/v2-real-knowledge-maintenance.md)。
 
 ## 22. V3 Media Companion 目标架构
 
@@ -2088,20 +2282,25 @@ Host video page
 | 待新增 | B Media Companion Renderer | 当前 B 展示 Chat、Mindmap、Source Evidence | 规划视频概览卡、章节时间轴、Media Mindmap、截图证据卡、字幕问答和 timestamp jumpback controls |
 | 待新增 | Video frame evidence capture | 当前只有网页截图 / source marker 证据 | 规划目标时间点视频截图证据；V3.0 只证明可见帧和时间点，不声明 VLM 已理解画面 |
 | 待新增 | Media Jumpback | 当前 source jumpback 面向 DOM / textQuote / fallback | 规划 seek 到 timestamp、打开章节、定位 transcript segment、fallback / blocked 状态 |
-| 未来候选 | ASR / VLM / OCR / Gemini Video Adapter | V1 明确禁止媒体流理解 | V3.x 规划真实多模态能力，必须冻结用户授权、采样、隐私、成本、延迟和 EventStore 回放 |
+| 需新增 / 未来候选 | `LocalAsrAdapter` / VLM / OCR / Gemini Video Adapter | V1 明确禁止媒体流理解 | V3.0 仅新增显式 `chrome.tabCapture` 当前标签页音频到本地 ASR；通用/云端 ASR、VLM、OCR 和视频帧理解仍留在 V3.x，并冻结授权、采样、隐私、成本、延迟和 EventStore 回放 |
 
-V3.0 Transcript-first 数据流：
+V3.0 B站字幕优先、本地 ASR 回退数据流：
 
 ```text
-YouTube / Bilibili video page
-  -> metadata / title / description / chapter / transcript / visible comments / danmaku summary / current time
+Bilibili video page
+  -> BilibiliMediaCollector: bvid / cid / part / metadata / player time / subtitle availability
   -> MediaPageContext
-  -> A: transcript segments + media digest + timeline source refs + quality report
+  -> subtitle resolver -> MediaTranscript
+  -> if subtitle unavailable: trusted user click -> MediaCaptureController -> LocalAsrAdapter -> MediaTranscript
+  -> A: VideoOutline + timeline source refs + quality report
   -> D: ToolResult / Artifact / Event / Trace mapping
-  -> C: Media Mindmap tree + timeline node source map
+  -> C: MediaMindmapProjection from the same VideoOutline
   -> B: video overview + timeline + evidence cards + ask-video chat
-  -> Content Script: timestamp seek or fallback / blocked
+  -> MediaJumpbackController: timestamp seek or fallback / blocked
+  -> explicit save -> runtimeClient -> real data_service adapter
 ```
+
+YouTube 不参与这条首批出门链路；`V3-Y1` 只能在 `V3-B6` 后把 YouTube collector 映射到同一 `MediaPageContext`、`MediaTranscript` 和 `VideoOutline`，不得另建平行事实模型。
 
 V3.x 多模态候选数据流：
 
@@ -2123,6 +2322,58 @@ User-authorized media sample
 
 V3 架构出门条件：
 
-- PRD、架构、开发计划、验收计划、stage gate 和 drawio 必须都区分 `V3.0 Transcript-first` 与 `V3.x Multimodal`。
+- PRD、架构、开发计划、验收计划、stage gate 和 drawio 必须都区分 `V3.0 B站字幕优先 + 显式本地 ASR fallback` 与 `V3.x 通用多模态`；旧的 transcript-only 定义不得覆盖 §22.1 起的当前设计。
 - drawio 架构页必须展示具体实体：Content Script Media Collector、MediaPageContext、A Media Page Perception、D Adapter/Governance、C Media Mindmap、B Media Companion Renderer、VideoFrameEvidenceRef、MediaJumpbackTarget 和 evidence package。
 - 任何声明 `ASR/VLM/Gemini Video ready` 的文档必须先定义用户授权、隐私、采样、延迟、成本、EventStore / Trace 和 false-green audit；否则 No-Go。
+
+### 22.1 B站优先的具体代码实体
+
+V3.0 首批实体和所有权冻结如下：
+
+| 实体 | 目标位置 | 所有者与职责 | 状态 |
+|---|---|---|---|
+| `BilibiliMediaCollector` | `apps/chrome-extension/src/modules/media_companion/` | B-local/content-script helper；读取当前页 bvid、cid、分P、时长、播放器时间、页内字幕可用性 | 未开发 |
+| `MediaPageContext` | V3 合同 + `apps/.../media_companion/` | 当前媒体页结构化输入；不能用普通 `PageContext` 冒充 | 未开发 |
+| `MediaCaptureController` | `apps/chrome-extension/entrypoints/background/` | 仅处理用户手势发起的 `chrome.tabCapture` 生命周期；不持久化音频 | 未开发 |
+| `MediaCaptureGrant` | V3 合同 | 固定 tabId、范围、授权时点、撤销和清理结果 | 未开发 |
+| `LocalAsrAdapter` | `services/local-runtime/navia_runtime/modules/media_companion/` | D Adapter 后的本地转写；输出分段、置信度、时间和 hash | 未开发 |
+| `MediaIngestRun` | Runtime/EventStore | 长任务状态、取消、失败、恢复与 artifact refs | 未开发 |
+| `VideoOutline` / `TimelineSegment` | V3 合同 + A | 图文大纲与导图的唯一语义权威 | 未开发 |
+| `MediaMindmapProjection` | C `modules/mindmap/` 的 V3 扩展 | 只从 `VideoOutline` 派生导图，不自行总结视频 | 未开发 |
+| `MediaCompanionRenderer` | B `src/modules/media_companion/` | 概览、时间轴、导图、证据与任务状态 | 未开发 |
+| `MediaJumpbackController` | Content Script | 用户点击后 seek；返回 located/fallback/blocked | 未开发 |
+
+具体调用关系：
+
+```text
+trusted user click
+-> Background MediaCaptureController
+-> chrome.tabCapture current tab audio
+-> Runtime LocalAsrAdapter
+-> MediaTranscript artifact + EventStore trace
+-> A MediaPagePerception -> VideoOutline
+-> C MediaMindmapProjection
+-> D maps ToolResult / Artifact / Event / Trace
+-> B MediaCompanionRenderer
+-> user click -> MediaJumpbackController -> HTMLVideoElement.currentTime
+```
+
+字幕路径不需要 capture grant，但仍必须记录字幕来源、语言、段落时间和原始字节 hash。ASR 路径必须有 grant；缺 grant、失去 tab、媒体停止、Runtime 离线或用户取消均为显式终态。
+
+### 22.2 BiliNote 技术迁移边界
+
+Navia 采纳 BiliNote 的“字幕优先、ASR fallback、后台任务、时间戳图文笔记”流程，但不采用 `*Content-*` / `*Screenshot-*` marker 作为权威合同，也不在 V3.0 自动下载媒体流。`VideoOutline` 同时派生 Markdown-like article 和 Media Mindmap，所有节点通过 `MediaEvidenceRef` 绑定到字幕/ASR/metadata/timestamp。
+
+### 22.3 H01-RDS 前置层
+
+V3 artifact 持久化路径必须是：
+
+```text
+B Renderer -> runtimeClient -> Navia Runtime -> real data_service adapter -> data_service
+```
+
+`MockKnowledgeServiceAdapter` 只能作为默认测试实现。H01-RDS 候选通过 `NAVIA_KNOWLEDGE_ADAPTER=data_service` 显式选择真实 adapter；已完成真实服务状态、source import/build/trace、跨 Runtime 重启读取和同一快照重复保存零 build。真实 Chrome 三入口的一致 `workspaceId/sourceId` 仍是 H01 人工出门项。未实现的 Ask/Graph/Forget 能力保持 capability=false 与 fail-closed，不能由 Mock 与真实来源混合返回。
+
+H01-RDS 的代码入口冻结为 `modules/memory/data_service_adapter.py::DataServiceKnowledgeAdapter` 和 `build_knowledge_adapter_from_env()`。浏览器只把用户已读取的 `cleaned_text` 作为带 UTF-8 长度与 SHA-256 的 `contentSnapshot` 发给 Local Runtime；只有 Runtime 的 `DataServiceHttpClient` 可调用 localhost data_service。前端不得读取 `NAVIA_DATA_SERVICE_API_KEY`，也不得直接调用 `/api/workspaces/*`。
+
+真实导入内容使用稳定 canonical envelope：`title + originUrl + pageId + sourceType + contentSnapshot.sha256 + snapshot text`。因此相同正文但不同 URL 不会折叠为同一来源；同 URL、同快照跨入口保持同一 content-addressed source。经合同约束的 `sourceRefs` 作为 `naviaSourceRefs` 写入下游 metadata，使 Runtime 重启后仍能恢复非空 trace，不依赖进程内存或直接读取 DS 私有目录。

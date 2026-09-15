@@ -15,7 +15,11 @@ from navia_runtime.modules.adapters.runtime import AdapterRegistry, default_adap
 from navia_runtime.modules.agent_loop.runtime import run_agentic_turn, run_core_provider_turn_async
 from navia_runtime.modules.agent_loop.runtime.pi_sidecar_client import PiSidecarClient, PiSidecarError
 from navia_runtime.modules.mindmap.runtime import generate_mindmap_payload
-from navia_runtime.modules.memory.runtime import MockKnowledgeServiceAdapter
+from navia_runtime.modules.memory.data_service_adapter import KnowledgeAdapterError, build_knowledge_adapter_from_env
+from navia_runtime.modules.memory.data_service_client import DataServiceClientError
+from navia_runtime.modules.memory.permissions import PermissionFailure, PermissionService
+from navia_runtime.modules.memory.guards import reject_local_candidate, validate_forget_input
+from starlette.concurrency import run_in_threadpool
 from navia_runtime.modules.page_reading.runtime import build_high_signal_page_perception
 from navia_runtime.provider_settings import (
     DeepSeekProvider,
@@ -61,7 +65,8 @@ settings_store = SettingsStore(default_db_path())
 provider_registry = ProviderRegistry(settings_store)
 pi_sidecar_client = PiSidecarClient()
 v2_artifact_store = V2ArtifactStore(default_db_path())
-knowledge_adapter = MockKnowledgeServiceAdapter()
+knowledge_adapter = build_knowledge_adapter_from_env()
+permission_service = PermissionService(knowledge_adapter)
 runtime_projection = {"state": "waiting_user"}
 
 
@@ -83,14 +88,62 @@ async def origin_allowlist(request: Request, call_next):
     if request.method == "OPTIONS":
         response = Response(status_code=204)
     else:
+        knowledge_path = request.url.path.startswith("/v1/knowledge/")
+        protected = request.url.path.startswith("/v1/knowledge/permissions") or (
+            knowledge_path and permission_service.enabled()
+            and request.url.path not in {"/v1/knowledge/status", "/v1/knowledge/workspaces"}
+        )
+        if protected:
+            try:
+                permission_service.authenticate(request.headers.get("authorization"), origin)
+            except PermissionFailure as error:
+                return permission_error_response(request, error)
         response = await call_next(request)
     if allowed_origin and origin:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type,X-Request-Id"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type,X-Request-Id,Authorization,Idempotency-Key"
         response.headers["Access-Control-Max-Age"] = "600"
         response.headers["Vary"] = "Origin"
     return response
+
+
+@app.exception_handler(PermissionFailure)
+async def permission_exception_handler(request: Request, error: PermissionFailure):
+    return permission_error_response(request, error)
+
+
+@app.exception_handler(DataServiceClientError)
+async def data_service_client_exception_handler(request: Request, error: DataServiceClientError):
+    return JSONResponse(
+        status_code=error.status_code if error.status_code and error.status_code >= 400 else 503,
+        content=failure(
+            ErrorCode.RUNTIME_NOT_READY,
+            "The configured data_service operation could not be completed.",
+            request_id=request.headers.get("x-request-id"),
+            details={"reason": error.code},
+        ),
+    )
+
+
+@app.exception_handler(KnowledgeAdapterError)
+async def knowledge_adapter_exception_handler(request: Request, error: KnowledgeAdapterError):
+    return JSONResponse(
+        status_code=error.status_code,
+        content=failure(
+            ErrorCode.RUNTIME_NOT_READY,
+            str(error),
+            request_id=request.headers.get("x-request-id"),
+            details={"reason": error.code},
+        ),
+    )
+
+
+def permission_error_response(request: Request, error: PermissionFailure):
+    return JSONResponse(status_code=error.status, content=failure(
+        error.code, "Local file access could not be completed.",
+        request_id=request.headers.get("x-request-id"), details={"reason": error.reason},
+    ))
 
 
 def is_allowed_origin(origin: str | None) -> bool:
@@ -647,6 +700,7 @@ async def knowledge_save_source(request: Request):
             ),
         )
     body = await request_json_or_empty(request)
+    reject_local_candidate(body, idempotency_key)
     missing = [field for field in ["candidateId", "workspaceId", "sourceType", "createdAt"] if not body.get(field)]
     if missing:
         return JSONResponse(
@@ -725,24 +779,42 @@ def knowledge_source_trace(sourceId: str, request: Request):
 async def knowledge_grant_permission(request: Request):
     return JSONResponse(
         status_code=202,
-        content=success(knowledge_adapter.grant_permission(await request_json_or_empty(request)), request_id=request.headers.get("x-request-id")),
+        content=success(permission_service.grant(await request_json_or_empty(request)), request_id=request.headers.get("x-request-id")),
     )
+
+
+@app.get("/v1/knowledge/permissions")
+def knowledge_list_permissions(request: Request, workspaceId: str):
+    return success(permission_service.list(workspaceId), request_id=request.headers.get("x-request-id"))
+
+
+@app.post("/v1/knowledge/permissions/{permissionRootId}/scan")
+async def knowledge_scan_permission(permissionRootId: str, request: Request):
+    body = await request_json_or_empty(request)
+    if set(body) != {"workspaceId"} or not isinstance(body["workspaceId"], str) or not body["workspaceId"]:
+        raise PermissionFailure("invalid_request", 400)
+    result = await run_in_threadpool(permission_service.scan, permissionRootId, body["workspaceId"])
+    return success(result, request_id=request.headers.get("x-request-id"))
+
+
+@app.post("/v1/knowledge/permissions/{permissionRootId}/imports")
+async def knowledge_import_permission(permissionRootId: str, request: Request):
+    result = await run_in_threadpool(permission_service.import_files, permissionRootId,
+                                    await request_json_or_empty(request), request.headers.get("idempotency-key", ""))
+    return JSONResponse(status_code=202, content=success(result, request_id=request.headers.get("x-request-id")))
 
 
 @app.delete("/v1/knowledge/permissions/{permissionRootId}")
 def knowledge_revoke_permission(permissionRootId: str, request: Request):
-    result = knowledge_adapter.revoke_permission(permissionRootId)
-    if result is None:
-        return JSONResponse(
-            status_code=404,
-            content=failure(ErrorCode.ARTIFACT_NOT_FOUND, "Permission root not found.", request_id=request.headers.get("x-request-id")),
-        )
+    result = permission_service.revoke(permissionRootId)
     return JSONResponse(status_code=202, content=success(result, request_id=request.headers.get("x-request-id")))
 
 
 @app.post("/v1/knowledge/sources/{sourceId}/forget")
 async def knowledge_forget_source(sourceId: str, request: Request):
-    result = knowledge_adapter.forget_source(sourceId, await request_json_or_empty(request))
+    body = await request_json_or_empty(request)
+    validate_forget_input(body)
+    result = knowledge_adapter.forget_source(sourceId, body)
     if result is None:
         return JSONResponse(
             status_code=404,

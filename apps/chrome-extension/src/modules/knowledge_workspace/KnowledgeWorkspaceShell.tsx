@@ -35,6 +35,7 @@ type KnowledgeWorkspaceShellProps = {
   forgetResult: ForgetSourceResult | null;
   onRefreshStatus: () => void;
   onRefreshWorkspace: () => void;
+  onOpenWorkspace?: () => void;
   onSelectWorkspace: (workspaceId: string) => void;
   onSelectSource: (sourceId: string) => void;
   onAskQuestionChange: (value: string) => void;
@@ -71,6 +72,7 @@ export function KnowledgeWorkspaceShell({
   forgetResult,
   onRefreshStatus,
   onRefreshWorkspace,
+  onOpenWorkspace,
   onSelectWorkspace,
   onSelectSource,
   onAskQuestionChange,
@@ -90,9 +92,14 @@ export function KnowledgeWorkspaceShell({
           <h2>Knowledge</h2>
           <p className="muted">V2 个人知识库工作台壳层：来源、状态、证据和后续问答入口。</p>
         </div>
-        <button className="ghost-button" disabled={loading} onClick={onRefreshWorkspace} type="button">
-          {loading ? "刷新中" : "刷新"}
-        </button>
+        <div className="knowledge-heading-actions">
+          {onOpenWorkspace ? (
+            <button className="primary-button" onClick={onOpenWorkspace} type="button">打开工作台</button>
+          ) : null}
+          <button className="ghost-button" disabled={loading} onClick={onRefreshWorkspace} type="button">
+            {loading ? "刷新中" : "刷新"}
+          </button>
+        </div>
       </div>
       <ServiceStatusBanner
         runtimeStatus={runtimeStatus}

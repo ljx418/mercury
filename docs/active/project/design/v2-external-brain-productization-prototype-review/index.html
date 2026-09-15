@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-density="standard">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Navia V2 产品化外脑交互原型审查</title>
+  <style>
+    :root {
+      --brand-950: #063c37;
+      --brand-900: #074d45;
+      --brand-800: #075f55;
+      --brand-700: #0b7466;
+      --brand-100: #dcece7;
+      --brand-50: #edf6f3;
+      --ink: #17211f;
+      --ink-soft: #35423f;
+      --muted: #66736f;
+      --canvas: #eef1ef;
+      --surface: #fbfcfb;
+      --surface-raised: #ffffff;
+      --surface-sunken: #f3f5f4;
+      --line: #d5dcd9;
+      --line-strong: #aebbb7;
+      --info: #2d5f9a;
+      --info-soft: #e8f0f8;
+      --warning: #906b17;
+      --warning-soft: #f9f0d9;
+      --danger: #a34646;
+      --danger-soft: #faeaea;
+      --success: #287555;
+      --success-soft: #e4f3ea;
+      --shadow-1: 0 1px 2px rgba(10, 38, 34, .06), 0 8px 24px rgba(10, 38, 34, .06);
+      --shadow-2: 0 16px 48px rgba(10, 38, 34, .12);
+      --radius-xs: 4px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-object: 24px;
+      --space: 4px;
+      --gap-1: calc(var(--space) * 2);
+      --gap-2: calc(var(--space) * 3);
+      --gap-3: calc(var(--space) * 4);
+      --gap-4: calc(var(--space) * 6);
+      --gap-5: calc(var(--space) * 8);
+      --font-ui: "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      --ease: cubic-bezier(.2, .8, .2, 1);
+      --duration: 180ms;
+      --page-pad: 24px;
+      --component-pad: 16px;
+    }
+
+    [data-theme="dark"] {
+      --ink: #edf3f1;
+      --ink-soft: #c6d1ce;
+      --muted: #96a6a1;
+      --canvas: #111916;
+      --surface: #17211e;
+      --surface-raised: #1d2925;
+      --surface-sunken: #101714;
+      --line: #34433e;
+      --line-strong: #52655e;
+      --brand-50: #17352f;
+      --brand-100: #1d473e;
+      --info-soft: #1b2c3e;
+      --warning-soft: #382f1a;
+      --danger-soft: #3b2222;
+      --success-soft: #193729;
+      --shadow-1: 0 1px 2px rgba(0,0,0,.22), 0 8px 24px rgba(0,0,0,.18);
+      --shadow-2: 0 18px 56px rgba(0,0,0,.34);
+    }
+
+    [data-density="compact"] { --component-pad: 12px; --page-pad: 18px; }
+    [data-density="relaxed"] { --component-pad: 20px; --page-pad: 32px; }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      line-height: 1.55;
+      letter-spacing: 0;
+    }
+    button, input, textarea, select { font: inherit; letter-spacing: 0; }
+    button { color: inherit; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    h1, h2, h3, h4, p { text-wrap: pretty; }
+    h1, h2, h3, h4 { margin: 0; line-height: 1.2; letter-spacing: 0; }
+    p { margin: 0; }
+    code, .mono { font-family: var(--font-mono); }
+
+    :focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--brand-700) 42%, transparent);
+      outline-offset: 2px;
+    }
+
+    .review-shell { min-height: 100vh; }
+    .review-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      height: 58px;
+      padding: 0 20px;
+      background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+    }
+    .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 850; color: var(--brand-800); }
+    .nav-brand-mark { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9px; color: white; background: var(--brand-800); }
+    .nav-links { display: flex; gap: 4px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+    .nav-links a { padding: 7px 10px; border-radius: 6px; text-decoration: none; color: var(--muted); white-space: nowrap; font-size: 13px; font-weight: 700; }
+    .nav-links a:hover { background: var(--surface-sunken); color: var(--ink); }
+    .nav-status { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .nav-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--warning); }
+
+    .review-main { width: min(1540px, calc(100% - 32px)); margin: 0 auto; padding: 20px 0 80px; }
+    .review-section { margin-top: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); box-shadow: var(--shadow-1); overflow: hidden; }
+    .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 24px; border-bottom: 1px solid var(--line); }
+    .section-heading h2 { font-size: 24px; margin-bottom: 7px; }
+    .section-heading p { max-width: 820px; color: var(--muted); }
+    .section-kicker { display: block; margin-bottom: 6px; color: var(--brand-700); font-size: 12px; font-weight: 850; text-transform: uppercase; }
+    .section-body { padding: 24px; }
+
+    .chip, .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface-raised);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .status-chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .status-chip.success { color: var(--success); background: var(--success-soft); border-color: color-mix(in srgb, var(--success) 25%, var(--line)); }
+    .status-chip.warning { color: var(--warning); background: var(--warning-soft); border-color: color-mix(in srgb, var(--warning) 25%, var(--line)); }
+    .status-chip.danger { color: var(--danger); background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 25%, var(--line)); }
+    .status-chip.info { color: var(--info); background: var(--info-soft); border-color: color-mix(in srgb, var(--info) 25%, var(--line)); }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 40px;
+      padding: 7px 13px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface-raised);
+      color: var(--ink);
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform var(--duration) var(--ease), background var(--duration) var(--ease), border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+    }
+    .btn:hover:not(:disabled) { border-color: var(--brand-700); background: var(--brand-50); box-shadow: 0 5px 16px rgba(7,95,85,.10); }
+    .btn:active:not(:disabled) { transform: translateY(1px) scale(.99); box-shadow: none; }
+    .btn:disabled { opacity: .52; cursor: not-allowed; }
+    .btn-primary { background: var(--brand-800); border-color: var(--brand-800); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--brand-700); color: #fff; }
+    .btn-danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 38%, var(--line)); background: var(--danger-soft); }
+    .btn-ghost { background: transparent; border-color: transparent; box-shadow: none; }
+    .btn-icon { width: 40px; padding: 0; }
+    .btn svg, .icon svg { width: 16px; height: 16px; stroke-width: 1.8; }
+
+    .field { display: grid; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 750; color: var(--muted); }
+    .input, .select, .textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--surface-raised);
+      color: var(--ink);
+      padding: 9px 11px;
+    }
+    .textarea { min-height: 92px; resize: vertical; }
+
+    .hero-product {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      min-height: 760px;
+      border: 1px solid var(--line);
+      background: var(--surface-raised);
+      box-shadow: var(--shadow-2);
+      overflow: hidden;
+    }
+    .hero-workspace { min-width: 0; border-right: 1px solid var(--line); }
+    .hero-panel { min-width: 0; background: var(--surface-sunken); }
+    .prototype-labelbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; padding: 9px 14px; border-bottom: 1px solid var(--line); background: var(--surface-sunken); }
+    .prototype-labelbar strong { font-size: 13px; }
+    .prototype-labelbar span { color: var(--muted); font-size: 12px; }
+
+    .workspace-app { min-height: 711px; display: grid; grid-template-columns: 220px minmax(0, 1fr); background: var(--surface); }
+    .workspace-rail { padding: 16px 12px; background: var(--brand-950); color: #dcebe7; display: flex; flex-direction: column; }
+    .workspace-logo { display: flex; align-items: center; gap: 10px; margin: 2px 6px 20px; font-size: 19px; font-weight: 850; color: white; }
+    .workspace-logo span:first-child { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; background: #e7f3ef; color: var(--brand-900); }
+    .workspace-nav { display: grid; gap: 4px; }
+    .workspace-nav button { display: flex; align-items: center; gap: 10px; min-height: 42px; border: 0; border-radius: 7px; padding: 8px 10px; background: transparent; color: #bbcfca; cursor: pointer; text-align: left; font-weight: 700; }
+    .workspace-nav button:hover { background: rgba(255,255,255,.07); color: white; }
+    .workspace-nav button.active { background: rgba(229,244,239,.14); color: white; box-shadow: inset 2px 0 #8ad3c4; }
+    .workspace-nav svg { width: 17px; height: 17px; }
+    .workspace-rail-footer { margin-top: auto; padding: 12px 7px 4px; border-top: 1px solid rgba(255,255,255,.13); display: grid; gap: 9px; }
+    .workspace-rail-footer small { color: #94aaa4; }
+    .workspace-main { min-width: 0; display: flex; flex-direction: column; }
+    .workspace-topbar { min-height: 62px; display: flex; align-items: center; gap: 14px; padding: 10px 18px; border-bottom: 1px solid var(--line); background: var(--surface-raised); }
+    .workspace-title { min-width: 0; flex: 1; }
+    .workspace-title strong { display: block; font-size: 16px; }
+    .workspace-title span { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .workspace-route { display: none; min-height: 648px; padding: var(--page-pad); }
+    .workspace-route.active { display: block; animation: route-in var(--duration) var(--ease); }
+    @keyframes route-in { from { opacity: .3; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+    .route-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .route-heading h3 { font-size: 21px; margin-bottom: 5px; }
+    .route-heading p { color: var(--muted); font-size: 13px; }
+    .metric-strip { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 16px; }
+    .metric { padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); }
+    .metric span { display: block; font-size: 11px; color: var(--muted); }
+    .metric strong { display: block; margin-top: 2px; font-size: 19px; }
+
+    .library-shell { display: grid; grid-template-columns: minmax(240px, .78fr) minmax(360px, 1.22fr); min-height: 490px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-raised); }
+    .library-shell.library-only { grid-template-columns: 1fr; }
+    .library-shell.library-only .source-pane { border-right: 0; }
+    .library-shell.library-only .source-detail { display: none; }
+    .source-pane { border-right: 1px solid var(--line); min-width: 0; }
+    .source-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
+    .filter-row { display: flex; gap: 6px; padding: 0 12px 10px; overflow-x: auto; }
+    .filter-row button { min-height: 30px; padding: 4px 9px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; }
+    .filter-row button.active { background: var(--brand-50); border-color: var(--brand-700); color: var(--brand-800); }
+    .source-list { max-height: 407px; overflow: auto; padding: 4px 8px 10px; }
+    .source-row { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: start; width: 100%; padding: 11px 9px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+    .source-row:hover { background: var(--surface-sunken); }
+    .source-row.active { background: var(--brand-50); border-color: color-mix(in srgb, var(--brand-700) 32%, var(--line)); }
+    .source-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 7px; background: var(--surface-sunken); color: var(--brand-700); }
+    .source-copy { min-width: 0; }
+    .source-copy strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+    .source-copy span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .source-state { font-size: 10px; color: var(--success); padding-top: 3px; }
+    .source-detail { min-width: 0; padding: 18px; overflow: auto; }
+    .detail-crumb { color: var(--muted); font-size: 11px; margin-bottom: 10px; }
+    .detail-header { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+    .detail-header h4 { font-size: 19px; margin: 6px 0 7px; }
+    .detail-header p { color: var(--muted); font-size: 12px; }
+    .detail-actions { display: flex; gap: 8px; align-items: flex-start; }
+    .build-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 17px 0; }
+    .build-stage { position: relative; padding: 10px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-sunken); }
+    .build-stage.done { color: var(--success); background: var(--success-soft); border-color: color-mix(in srgb, var(--success) 25%, var(--line)); }
+    .build-stage strong { display: block; font-size: 11px; }
+    .build-stage span { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .evidence-list { display: grid; gap: 8px; }
+    .evidence-row { display: grid; grid-template-columns: 26px 1fr auto; gap: 9px; align-items: start; padding: 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-sunken); }
+    .evidence-row p { color: var(--ink-soft); font-size: 12px; }
+    .evidence-row button { border: 0; padding: 2px; background: transparent; color: var(--brand-700); cursor: pointer; }
+
+    .ask-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr); min-height: 532px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-raised); }
+    .ask-thread { display: flex; flex-direction: column; min-width: 0; }
+    .ask-messages { flex: 1; padding: 18px; overflow: auto; background: var(--surface); }
+    .message { max-width: 86%; margin-bottom: 12px; padding: 11px 12px; border-radius: 8px; background: var(--surface-raised); border: 1px solid var(--line); font-size: 13px; }
+    .message.user { margin-left: auto; background: var(--brand-50); border-color: color-mix(in srgb, var(--brand-700) 22%, var(--line)); }
+    .message.answer strong { display: block; margin-bottom: 6px; }
+    .citation-inline { display: inline-flex; align-items: center; min-height: 21px; margin: 4px 2px 0; padding: 2px 6px; border-radius: 4px; background: var(--info-soft); color: var(--info); font-size: 10px; font-weight: 800; cursor: pointer; }
+    .composer { display: grid; grid-template-columns: 1fr auto; gap: 9px; padding: 12px; border-top: 1px solid var(--line); background: var(--surface-raised); }
+    .ask-evidence { border-left: 1px solid var(--line); padding: 16px; background: var(--surface-sunken); }
+    .ask-evidence h4 { margin-bottom: 5px; }
+    .ask-evidence > p { color: var(--muted); font-size: 11px; margin-bottom: 12px; }
+
+    .graph-shell { display: grid; grid-template-columns: minmax(0, 1fr) 280px; min-height: 520px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-raised); }
+    .graph-canvas { position: relative; overflow: hidden; background: radial-gradient(circle, color-mix(in srgb, var(--line) 78%, transparent) 1px, transparent 1px) 0 0/22px 22px, var(--surface); }
+    .graph-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .graph-node { position: absolute; display: flex; align-items: center; gap: 7px; min-height: 38px; max-width: 180px; padding: 7px 10px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-1); cursor: pointer; font-weight: 750; font-size: 12px; }
+    .graph-node:hover, .graph-node.active { border-color: var(--brand-700); background: var(--brand-50); color: var(--brand-800); }
+    .graph-node.source { left: 10%; top: 42%; }
+    .graph-node.source-current { left: 11%; top: 68%; }
+    .graph-node.claim { left: 39%; top: 18%; }
+    .graph-node.method { left: 42%; top: 62%; }
+    .graph-node.evidence { right: 10%; top: 39%; }
+    .graph-detail { border-left: 1px solid var(--line); padding: 16px; background: var(--surface-sunken); }
+    .graph-detail p { margin: 8px 0 12px; color: var(--muted); font-size: 12px; }
+
+    .settings-layout { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 16px; }
+    .permission-panel, .service-detail-card { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); }
+    .panel-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px; border-bottom: 1px solid var(--line); }
+    .panel-title p { color: var(--muted); font-size: 11px; margin-top: 3px; }
+    .permission-list { padding: 8px; }
+    .permission-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 9px; border-bottom: 1px solid var(--line); }
+    .permission-row:last-child { border-bottom: 0; }
+    .permission-row strong, .permission-row span { display: block; }
+    .permission-row span { color: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+    .service-grid { display: grid; gap: 8px; padding: 12px; }
+    .service-row { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 9px; border-radius: 7px; background: var(--surface-sunken); }
+    .service-row strong { display: block; font-size: 12px; }
+    .service-row span { display: block; color: var(--muted); font-size: 10px; }
+
+    .sidepanel-app { height: 711px; display: flex; flex-direction: column; background: var(--surface-raised); }
+    .sidepanel-header { padding: 14px; border-bottom: 1px solid var(--line); background: var(--surface-raised); }
+    .sidepanel-brand { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .sidepanel-brand strong { font-size: 19px; color: var(--brand-800); }
+    .sidepanel-service { display: flex; align-items: center; gap: 7px; margin-top: 10px; padding: 8px 9px; border-radius: 7px; background: var(--success-soft); color: var(--success); font-size: 11px; font-weight: 750; cursor: pointer; }
+    .sidepanel-service.warning { background: var(--warning-soft); color: var(--warning); }
+    .sidepanel-scroll { flex: 1; min-height: 0; overflow: auto; padding: 13px; }
+    .current-page { padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+    .current-page .kicker { color: var(--brand-700); font-size: 10px; font-weight: 850; text-transform: uppercase; }
+    .current-page strong { display: block; margin: 4px 0; font-size: 14px; }
+    .current-page p { color: var(--muted); font-size: 11px; }
+    .save-card { margin-top: 10px; padding: 13px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-raised); box-shadow: var(--shadow-1); }
+    .save-card-head { display: flex; justify-content: space-between; gap: 10px; }
+    .save-card h3 { font-size: 14px; margin-bottom: 4px; }
+    .save-card p { color: var(--muted); font-size: 11px; }
+    .save-progress { height: 6px; margin: 12px 0 8px; border-radius: 99px; overflow: hidden; background: var(--surface-sunken); }
+    .save-progress span { display: block; width: 0; height: 100%; background: var(--brand-700); transition: width 420ms var(--ease); }
+    .save-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 10px; }
+    .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+    .quick-actions .btn { min-height: 44px; font-size: 11px; }
+    .sidepanel-composer { padding: 11px; border-top: 1px solid var(--line); background: var(--surface-raised); }
+    .sidepanel-composer .input { min-height: 44px; }
+    .sidepanel-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
+    .sidepanel-tabs button { min-height: 30px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; font-size: 10px; font-weight: 750; }
+    .sidepanel-tabs button.active { background: var(--brand-50); color: var(--brand-800); }
+
+    .service-popover { display: none; margin-top: 8px; padding: 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-raised); color: var(--ink); box-shadow: var(--shadow-1); }
+    .service-popover.open { display: grid; gap: 6px; }
+    .service-popover div { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; }
+    .service-popover span { color: var(--muted); }
+    .route-error { display: none; margin: var(--page-pad); padding: 18px; border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line)); border-radius: var(--radius-sm); background: var(--danger-soft); }
+    .route-error.open { display: block; }
+    .route-error p { margin: 7px 0 14px; color: var(--ink-soft); }
+    .forget-verification { display: none; margin-top: 12px; padding: 12px; border: 1px solid color-mix(in srgb, var(--success) 30%, var(--line)); border-radius: var(--radius-sm); background: var(--success-soft); }
+    .forget-verification.open { display: block; }
+    .forget-verification-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-top: 8px; }
+    .forget-verification-grid span { padding: 7px; border-radius: 6px; background: var(--surface-raised); color: var(--success); font-size: 11px; font-weight: 750; }
+
+    .baseline-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .evidence-figure { margin: 0; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-raised); }
+    .evidence-figure img { width: 100%; aspect-ratio: 16/9; object-fit: cover; object-position: top; background: var(--surface-sunken); }
+    .evidence-figure figcaption { padding: 11px 12px; color: var(--muted); font-size: 12px; }
+    .evidence-figure figcaption strong { display: block; margin-bottom: 3px; color: var(--ink); }
+    .truth-note { margin-top: 14px; padding: 12px; border: 1px solid color-mix(in srgb, var(--warning) 28%, var(--line)); border-radius: var(--radius-sm); background: var(--warning-soft); color: var(--warning); font-size: 12px; }
+
+    .concept-canvas { position: relative; min-height: 520px; overflow: hidden; background: #dfe8e4; color: #142c28; }
+    [data-theme="dark"] .concept-canvas { background: #24342f; color: #ecf4f1; }
+    .concept-browser { position: absolute; z-index: 1; left: 6%; top: 11%; width: 56%; height: 67%; border: 1px solid rgba(7,95,85,.22); background: #f9fbfa; box-shadow: 0 22px 60px rgba(12,48,42,.18); }
+    .concept-browser::before { content: ""; display: block; height: 34px; border-bottom: 1px solid #d2dcda; background: #edf2f0; }
+    .concept-copy { width: 67%; padding: 42px 36px; }
+    .concept-copy .bar { height: 11px; margin: 10px 0; background: #c6d4d0; border-radius: 3px; }
+    .concept-copy .bar.title { width: 76%; height: 22px; background: #1c6156; }
+    .concept-copy .bar.short { width: 56%; }
+    .concept-panel { position: absolute; z-index: 2; right: 25%; top: 15%; width: 23%; height: 59%; border: 1px solid #b6c9c4; background: #fff; box-shadow: 0 18px 46px rgba(12,48,42,.2); padding: 14px; }
+    .concept-panel .mini { height: 54px; margin-bottom: 10px; border: 1px solid #d4dfdc; background: #f4f8f6; border-radius: 6px; }
+    .concept-panel .mini.active { height: 118px; border-color: #5b9c8e; background: #eaf5f1; }
+    .concept-workspace { position: absolute; z-index: 3; right: 4%; bottom: 7%; width: 46%; height: 50%; border: 1px solid #a9bdb8; background: #fbfcfb; box-shadow: 0 24px 62px rgba(12,48,42,.22); display: grid; grid-template-columns: 90px 1fr; }
+    .concept-workspace .rail { background: #073f39; }
+    .concept-workspace .content { padding: 18px; display: grid; grid-template-columns: .8fr 1.2fr; gap: 12px; }
+    .concept-workspace .column { border: 1px solid #d4dfdc; background: #f5f8f7; }
+    .concept-evidence { position: absolute; z-index: 4; left: 48%; top: 40%; width: 150px; padding: 10px; border: 1px solid #729f95; background: #fff; box-shadow: 0 10px 28px rgba(12,48,42,.18); font-size: 11px; color: #31534c; }
+    .concept-evidence::before, .concept-evidence::after { content: ""; position: absolute; height: 1px; background: #729f95; transform-origin: left center; }
+    .concept-evidence::before { width: 100px; left: -95px; top: 28px; transform: rotate(12deg); }
+    .concept-evidence::after { width: 112px; right: -109px; top: 44px; transform: rotate(20deg); }
+    .concept-legend { position: absolute; z-index: 5; left: 6%; bottom: 5%; display: flex; gap: 8px; }
+
+    .arch-stack { display: grid; gap: 10px; }
+    .arch-plane { display: grid; grid-template-columns: 130px minmax(0, 1fr) 120px; gap: 12px; align-items: stretch; }
+    .arch-index, .arch-content, .arch-state { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); padding: 11px; }
+    .arch-index { display: grid; align-content: center; background: var(--brand-950); color: white; font-weight: 800; }
+    .arch-index span { color: #a8c5be; font-size: 10px; }
+    .arch-content strong { display: block; margin-bottom: 3px; }
+    .arch-content p { color: var(--muted); font-size: 11px; }
+    .arch-state { display: grid; align-content: center; justify-items: center; text-align: center; font-size: 11px; font-weight: 800; }
+    .arch-state.done { color: var(--success); background: var(--success-soft); }
+    .arch-state.modify { color: var(--warning); background: var(--warning-soft); }
+    .arch-state.candidate { color: var(--info); background: var(--info-soft); }
+    .arch-arrow { height: 12px; width: 1px; margin: -10px 0 -10px 64px; background: var(--line-strong); }
+    .arch-rule { margin-top: 15px; padding: 12px; border: 1px solid var(--line); background: var(--surface-sunken); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 11px; overflow: auto; }
+
+    .component-lab { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 580px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+    .component-index { padding: 10px; background: var(--surface-sunken); border-right: 1px solid var(--line); max-height: 700px; overflow: auto; }
+    .component-index button { display: flex; width: 100%; min-height: 38px; align-items: center; gap: 8px; padding: 7px 9px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; text-align: left; font-size: 12px; }
+    .component-index button:hover { background: var(--surface-raised); color: var(--ink); }
+    .component-index button.active { background: var(--brand-50); color: var(--brand-800); font-weight: 800; }
+    .component-stage { min-width: 0; padding: 20px; overflow: auto; }
+    .component-stage-header { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .component-stage-header h3 { margin-bottom: 4px; }
+    .component-stage-header p { color: var(--muted); font-size: 12px; }
+    .component-demo { min-width: 0; min-height: 260px; margin: 16px 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-sunken); display: grid; place-items: center; }
+    .component-demo > * { max-width: 100%; }
+    .component-spec-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+    .spec-cell { padding: 11px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-raised); }
+    .spec-cell strong { display: block; margin-bottom: 5px; font-size: 11px; color: var(--brand-700); }
+    .spec-cell p { color: var(--muted); font-size: 11px; overflow-wrap: anywhere; }
+
+    .flow-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .flow-tabs button { min-height: 36px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface-raised); color: var(--muted); cursor: pointer; font-size: 12px; font-weight: 750; }
+    .flow-tabs button.active { color: white; background: var(--brand-800); border-color: var(--brand-800); }
+    .flow-board { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-raised); }
+    .flow-preview { min-height: 390px; padding: 22px; background: var(--surface-sunken); display: grid; place-items: center; }
+    .flow-preview-card { width: min(520px, 100%); border: 1px solid var(--line); border-radius: 8px; padding: 18px; background: var(--surface-raised); box-shadow: var(--shadow-1); }
+    .flow-preview-card h3 { margin: 8px 0; }
+    .flow-preview-card p { color: var(--muted); }
+    .flow-side { padding: 20px; }
+    .flow-step-list { display: grid; gap: 8px; margin: 14px 0; }
+    .flow-step { display: grid; grid-template-columns: 30px 1fr; gap: 9px; align-items: start; padding: 8px; border-radius: 7px; color: var(--muted); cursor: pointer; }
+    .flow-step.active { background: var(--brand-50); color: var(--ink); }
+    .flow-step span:first-child { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 7px; background: var(--surface-raised); border: 1px solid var(--line); font-size: 11px; font-weight: 850; }
+    .flow-step strong { display: block; font-size: 12px; }
+    .flow-step small { display: block; color: var(--muted); }
+    .flow-controls { display: flex; gap: 8px; }
+
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .gallery-grid img { width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); }
+
+    .acceptance-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .acceptance-table th, .acceptance-table td { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    .acceptance-table th { color: var(--muted); font-size: 11px; background: var(--surface-sunken); }
+    .acceptance-table tr:last-child td { border-bottom: 0; }
+    .acceptance-pass { color: var(--success); font-weight: 850; }
+    .acceptance-boundary { color: var(--warning); font-weight: 850; }
+
+    .drawer-backdrop, .dialog-backdrop { position: fixed; inset: 0; z-index: 90; display: none; background: rgba(4,18,16,.46); }
+    .drawer-backdrop.open, .dialog-backdrop.open { display: block; }
+    .evidence-drawer { position: absolute; top: 0; right: 0; width: min(430px, 92vw); height: 100%; background: var(--surface-raised); box-shadow: -18px 0 52px rgba(5,30,26,.20); padding: 20px; overflow: auto; }
+    .drawer-header { display: flex; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+    .trace-state-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 14px 0; }
+    .trace-state-tabs button { min-height: 34px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-sunken); color: var(--muted); cursor: pointer; font-size: 11px; }
+    .trace-state-tabs button.active { background: var(--brand-50); color: var(--brand-800); border-color: var(--brand-700); }
+    .trace-quote { padding: 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-sunken); color: var(--ink-soft); font-size: 13px; }
+    .trace-details { margin-top: 12px; display: grid; gap: 7px; }
+    .trace-details div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .trace-details span { color: var(--muted); }
+    .dialog-backdrop { place-items: center; padding: 20px; }
+    .dialog-backdrop.open { display: grid; }
+    .dialog { width: min(480px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised); box-shadow: var(--shadow-2); }
+    .dialog h3 { margin-bottom: 8px; }
+    .dialog p { color: var(--muted); margin-bottom: 14px; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+    .tweaks-toggle { position: fixed; right: 18px; bottom: 18px; z-index: 70; }
+    .tweaks-panel { position: fixed; right: 18px; bottom: 68px; z-index: 70; display: none; width: 260px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); box-shadow: var(--shadow-2); }
+    .tweaks-panel.open { display: grid; gap: 12px; }
+    .tweaks-panel h3 { font-size: 14px; }
+
+    .toast { position: fixed; left: 50%; bottom: 24px; z-index: 120; transform: translate(-50%, 12px); opacity: 0; pointer-events: none; max-width: min(520px, calc(100% - 32px)); padding: 10px 13px; border-radius: 7px; background: var(--brand-950); color: white; box-shadow: var(--shadow-2); transition: opacity 160ms var(--ease), transform 160ms var(--ease); font-size: 12px; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 1180px) {
+      .hero-product { grid-template-columns: 1fr; }
+      .hero-workspace { border-right: 0; border-bottom: 1px solid var(--line); }
+      .hero-panel { display: grid; place-items: center; padding: 18px; }
+      .sidepanel-app { width: min(440px, 100%); border: 1px solid var(--line); }
+      .baseline-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .review-main { width: min(100% - 18px, 1540px); }
+      .workspace-app { grid-template-columns: 64px minmax(0, 1fr); }
+      .workspace-logo span:last-child, .workspace-nav span, .workspace-rail-footer { display: none; }
+      .workspace-nav button { justify-content: center; padding: 8px; }
+      .library-shell, .ask-layout, .graph-shell, .settings-layout, .flow-board { grid-template-columns: 1fr; }
+      .source-pane, .ask-evidence, .graph-detail { border: 0; border-bottom: 1px solid var(--line); }
+      .component-lab { grid-template-columns: 1fr; }
+      .component-index { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      .component-index button { min-width: max-content; }
+      .component-spec-grid, .metric-strip { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .arch-plane { grid-template-columns: 100px 1fr; }
+      .arch-state { grid-column: 2; }
+      .arch-arrow { margin-left: 49px; }
+    }
+    @media (max-width: 620px) {
+      .review-nav { padding: 0 10px; }
+      .nav-links { display: none; }
+      .review-main { width: 100%; padding-top: 0; }
+      .review-section { margin-top: 10px; border-radius: 0; border-left: 0; border-right: 0; }
+      .section-heading, .section-body { padding: 16px; }
+      .workspace-app { grid-template-columns: 1fr; }
+      .workspace-rail { flex-direction: row; align-items: center; padding: 8px; overflow-x: auto; }
+      .workspace-logo { margin: 0 8px 0 0; }
+      .workspace-nav { display: flex; }
+      .workspace-nav button { min-width: 42px; }
+      .workspace-topbar { flex-wrap: wrap; }
+      .workspace-route { padding: 12px; }
+      .metric-strip, .component-spec-grid, .baseline-grid, .gallery-grid { grid-template-columns: 1fr; }
+      .route-heading, .detail-header, .section-heading { flex-direction: column; }
+      .library-shell { display: block; }
+      .source-pane { max-height: 330px; }
+      .build-timeline { grid-template-columns: repeat(2, 1fr); }
+      .arch-plane { grid-template-columns: 1fr; }
+      .arch-state { grid-column: 1; }
+      .arch-arrow { margin-left: 22px; }
+      .concept-canvas { min-height: 430px; }
+      .concept-browser { left: 3%; width: 70%; }
+      .concept-panel { right: 4%; width: 34%; }
+      .concept-workspace { left: 16%; right: auto; width: 80%; }
+      .concept-evidence { display: none; }
+      .component-stage, .component-demo { padding: 12px; overflow-x: hidden; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="review-shell">
+    <nav class="review-nav" aria-label="原型审查导航">
+      <div class="nav-brand"><span class="nav-brand-mark">N</span><span>Navia V2 外脑原型</span></div>
+      <div class="nav-links">
+        <a href="#prototype">主原型</a><a href="#baseline">当前基线</a><a href="#concept">概念图</a><a href="#architecture">目标架构</a><a href="#components">组件</a><a href="#flows">体验路线</a><a href="#gallery">目标组图</a><a href="#acceptance">验收</a>
+      </div>
+      <div class="nav-status">产品化候选，不代表 V2 ready</div>
+    </nav>
+
+    <main class="review-main">
+      <section class="review-section" id="prototype">
+        <div class="section-heading">
+          <div><span class="section-kicker">Target Experience / 可操作对照</span><h2>网页边缘捕获，独立工作台沉淀</h2><p>第一个视口用并排方式对照两个容器的职责；实际产品不会同时在宿主网页中显示两块界面。用户从 Side Panel 入口打开新标签页 Extension Workspace Page，两者共享同一 workspace、source、evidence 和服务状态语义。</p></div>
+          <div class="badge-row"><span class="status-chip success">V1 壳层已冻结</span><span class="status-chip info">V2 目标交互</span><span class="status-chip warning">真实 data_service 待产品化</span></div>
+        </div>
+        <div class="hero-product" id="target-product-canvas">
+          <div class="hero-workspace">
+            <div class="prototype-labelbar"><strong>Extension Workspace Page</strong><span id="routeLabel">#/knowledge/sources/source_web_bilibili?workspaceId=workspace_research</span></div>
+            <div class="workspace-app">
+              <aside class="workspace-rail">
+                <div class="workspace-logo"><span>N</span><span>Navia</span></div>
+                <div class="workspace-nav" role="tablist" aria-label="Knowledge Workspace 路由">
+                  <button class="active" data-route="source_library" role="tab" aria-selected="true"><i data-lucide="library"></i><span>来源库</span></button>
+                  <button data-route="ask" role="tab" aria-selected="false"><i data-lucide="message-square-text"></i><span>带来源问答</span></button>
+                  <button data-route="graph" role="tab" aria-selected="false"><i data-lucide="waypoints"></i><span>知识图谱</span></button>
+                  <button data-route="permissions" role="tab" aria-selected="false"><i data-lucide="shield-check"></i><span>权限与服务</span></button>
+                </div>
+                <div class="workspace-rail-footer"><small>Local-first workspace</small><span class="status-chip success">Trace 96%</span></div>
+              </aside>
+
+              <div class="workspace-main">
+                <header class="workspace-topbar">
+                  <button class="btn btn-icon btn-ghost" aria-label="切换侧栏"><i data-lucide="panel-left"></i></button>
+                  <div class="workspace-title"><strong>Research Inbox</strong><span>当前空间 · 28 个来源 · 3 个构建中 · 证据覆盖 96%</span></div>
+                  <select class="select" id="workspaceSelect" aria-label="选择 Workspace" style="width:180px"><option>Research Inbox</option><option>产品体验研究</option><option>技术文档</option></select>
+                  <button class="btn" id="workspaceServiceButton"><i data-lucide="activity"></i>服务状态</button>
+                </header>
+
+                <section class="route-error" id="routeError" role="alert"><span class="status-chip danger" id="routeErrorCode">INVALID_ROUTE</span><h3 style="margin-top:10px">无法打开目标知识页面</h3><p id="routeErrorCopy">route 或稳定 ID 无效。可返回当前 Workspace 来源库重试。</p><button class="btn" id="recoverToLibrary"><i data-lucide="library"></i>返回来源库</button></section>
+
+                <section class="workspace-route active" data-route-panel="sources" role="tabpanel">
+                  <div class="route-heading"><div><h3>来源库</h3><p>网页、显式授权文档和笔记进入统一 source lifecycle；不自动扫描本地目录。</p></div><button class="btn btn-primary" id="importSourceButton"><i data-lucide="plus"></i>添加来源</button></div>
+                  <div class="metric-strip"><div class="metric"><span>全部来源</span><strong>28</strong></div><div class="metric"><span>Trace ready</span><strong>24</strong></div><div class="metric"><span>构建中</span><strong>3</strong></div><div class="metric"><span>需要处理</span><strong>1</strong></div></div>
+                  <div class="library-shell">
+                    <div class="source-pane">
+                      <div class="source-toolbar"><input class="input" id="sourceSearch" placeholder="搜索标题、标签或域名" /><button class="btn btn-icon" aria-label="筛选来源"><i data-lucide="list-filter"></i></button></div>
+                      <div class="filter-row" role="group" aria-label="来源类型筛选"><button class="active" data-filter="all">全部 28</button><button data-filter="web">网页 16</button><button data-filter="document">文档 7</button><button data-filter="note">笔记 5</button><button data-filter="pending">待处理 4</button></div>
+                      <div class="source-list" id="sourceList">
+                        <button class="source-row active" data-source="bilibili" data-source-id="source_web_bilibili" data-type="web"><span class="source-icon"><i data-lucide="globe-2"></i></span><span class="source-copy"><strong>B站详情页内容理解复盘</strong><span>bilibili.com · 网页 · 8 条证据</span></span><span class="source-state">ready</span></button>
+                        <button class="source-row" data-source="architecture" data-source-id="source_doc_architecture" data-type="document"><span class="source-icon"><i data-lucide="file-text"></i></span><span class="source-copy"><strong>Navia V2 目标架构</strong><span>architecture.md · 授权文档</span></span><span class="source-state">ready</span></button>
+                        <button class="source-row" data-source="lifecycle" data-source-id="source_note_lifecycle" data-type="note"><span class="source-icon"><i data-lucide="notebook-pen"></i></span><span class="source-copy"><strong>Knowledge 生命周期决策</strong><span>手动笔记 · 5 条证据</span></span><span class="source-state">ready</span></button>
+                        <button class="source-row" data-source="service" data-source-id="source_note_data_service" data-type="pending"><span class="source-icon"><i data-lucide="server-cog"></i></span><span class="source-copy"><strong>data_service API 快照</strong><span>markdown · 正在构建</span></span><span class="source-state" style="color:var(--warning)">building</span></button>
+                      </div>
+                    </div>
+                    <article class="source-detail" id="sourceDetail">
+                      <div class="detail-crumb" id="detailCrumb">Research Inbox / 网页来源 / source_web_bilibili</div>
+                      <div class="detail-header"><div><span class="status-chip success" id="detailStatus">trace ready</span><h4 id="detailTitle">B站详情页内容理解复盘</h4><p id="detailMeta">bilibili.com · revision 1 · 保存于今天 14:32</p></div><div class="detail-actions"><button class="btn" data-open-trace><i data-lucide="locate-fixed"></i>Trace</button><button class="btn btn-danger" data-open-forget aria-label="删除并忘记当前来源"><i data-lucide="trash-2"></i></button></div></div>
+                      <div class="build-timeline" id="buildTimeline"><div class="build-stage done"><strong>Queued</strong><span>14:32:08</span></div><div class="build-stage done"><strong>Ingested</strong><span>14:32:10</span></div><div class="build-stage done"><strong>Built</strong><span>14:32:18</span></div><div class="build-stage done"><strong>Trace ready</strong><span>8 refs</span></div></div>
+                      <div class="evidence-list"><strong style="font-size:12px">Evidence refs</strong>
+                        <div class="evidence-row"><i data-lucide="quote"></i><p>“V2 Adapter / Governance 是 Navia 与候选知识服务之间唯一受控边界。”</p><button data-open-trace aria-label="打开证据"><i data-lucide="arrow-up-right"></i></button></div>
+                        <div class="evidence-row"><i data-lucide="quote"></i><p>“用户主动保存当前网页，系统才创建 KnowledgeSource 和 operation_id。”</p><button data-open-trace aria-label="打开证据"><i data-lucide="arrow-up-right"></i></button></div>
+                        <div class="evidence-row"><i data-lucide="quote"></i><p>“Forget 必须从 Library、Ask、Graph 和 Trace 四处验证删除结果。”</p><button data-open-trace aria-label="打开证据"><i data-lucide="arrow-up-right"></i></button></div>
+                      </div>
+                    </article>
+                  </div><div class="forget-verification" id="forgetVerification"><strong>Forget verification 已完成</strong><div class="forget-verification-grid"><span>Library absent</span><span>Ask absent</span><span>Graph absent</span><span>Trace absent</span></div><p style="margin-top:8px;color:var(--muted);font-size:11px">当前 mock path：sharedItemRecomputed=false，supportingSourceIds=[]。</p></div>
+                </section>
+
+                <section class="workspace-route" data-route-panel="ask" role="tabpanel">
+                  <div class="route-heading"><div><h3>带来源问答</h3><p>回答必须被当前 workspace 的 EvidenceRef 支撑；证据不足时显示 degraded，不伪装成功。</p></div><span class="chip">范围：Research Inbox · 28 sources</span></div>
+                  <div class="ask-layout">
+                    <div class="ask-thread"><div class="ask-messages" id="askMessages"><div class="message user">保存网页后，用户如何确认知识库里的回答仍然可追溯？</div><div class="message answer"><strong>Navia 通过三层证据链确认回答可追溯：</strong><p>每个回答引用 EvidenceRef；EvidenceRef 指向 source/unit；用户可从引用打开 Trace，并查看 located、fallback_shown 或 blocked 状态。</p><button class="citation-inline" data-open-trace>[1] V2 目标架构</button><button class="citation-inline" data-open-trace>[2] 生命周期 ADR</button></div></div><div class="composer"><textarea class="textarea" id="askInput" aria-label="向当前 Workspace 提问">删除一个来源后，系统如何证明它不再参与回答？</textarea><button class="btn btn-primary" id="askButton"><i data-lucide="send"></i>提问</button></div></div>
+                    <aside class="ask-evidence"><h4>本轮证据</h4><p id="askEvidenceSummary">2 个来源 · 3 条 EvidenceRef · 全部可追踪</p><div class="evidence-list"><div class="evidence-row"><i data-lucide="file-check-2"></i><p>生命周期 ADR：Forget cascade 影响四个读取面。</p><button data-open-trace aria-label="打开生命周期证据"><i data-lucide="arrow-up-right"></i></button></div><div class="evidence-row"><i data-lucide="file-check-2"></i><p>验收计划：删除后执行 before / after query。</p><button data-open-trace aria-label="打开验收计划证据"><i data-lucide="arrow-up-right"></i></button></div></div></aside>
+                  </div>
+                </section>
+
+                <section class="workspace-route" data-route-panel="graph" role="tabpanel">
+                  <div class="route-heading"><div><h3>知识图谱</h3><p>节点和关系均来自服务侧 source / unit / relation；前端只负责布局、筛选和证据入口。</p></div><button class="btn" aria-label="刷新知识图谱"><i data-lucide="refresh-cw"></i>刷新图谱</button></div>
+                  <div class="graph-shell"><div class="graph-canvas" id="graphCanvas"><svg class="graph-lines" viewBox="0 0 760 520" preserveAspectRatio="none" aria-hidden="true"><path d="M150 250 C260 250 250 120 370 120 M150 250 C270 250 270 350 390 350 M460 120 C570 150 560 240 650 240 M475 350 C565 330 570 260 650 240" fill="none" stroke="#8aaea6" stroke-width="1.5" /></svg><button class="graph-node source active" data-node="source" data-source-id="source_web_bilibili"><i data-lucide="globe-2"></i>网页来源</button><button class="graph-node claim" data-node="claim"><i data-lucide="lightbulb"></i>受控知识边界</button><button class="graph-node method" data-node="method"><i data-lucide="workflow"></i>Forget 验证</button><button class="graph-node evidence" data-node="evidence"><i data-lucide="quote"></i>EvidenceRef</button></div><aside class="graph-detail"><span class="status-chip info">service provenance</span><h4 id="graphNodeTitle" style="margin-top:10px">网页来源</h4><p id="graphNodeCopy">source_web_bilibili · 8 units · 8 evidence refs。节点来自服务端响应，不由前端推断。</p><button class="btn" data-open-trace><i data-lucide="route"></i>查看来源 Trace</button></aside></div>
+                </section>
+
+                <section class="workspace-route" data-route-panel="permissions" role="tabpanel">
+                  <div class="route-heading"><div><h3>权限与服务</h3><p>本地文件默认关闭；授权、服务诊断和 source 生命周期状态分别呈现。</p></div><button class="btn btn-primary" id="grantRootButton"><i data-lucide="folder-key"></i>授权目录</button></div>
+                  <div class="settings-layout"><section class="permission-panel"><div class="panel-title"><div><strong>Permission Roots</strong><p>仅记录用户明确授权的目录；路径在 UI 与报告中脱敏。</p></div><span class="status-chip success">2 active</span></div><div class="permission-list" id="permissionList"><div class="permission-row"><div><strong>研究资料</strong><span>~/Documents/research</span></div><button class="btn revoke-root">撤销</button></div><div class="permission-row"><div><strong>项目文档</strong><span>~/Workspace/navia/docs</span></div><button class="btn revoke-root">撤销</button></div></div></section><section class="service-detail-card"><div class="panel-title"><div><strong>Knowledge Service</strong><p>四个状态域独立诊断</p></div><button class="btn btn-icon" id="refreshServices" aria-label="刷新知识服务状态"><i data-lucide="refresh-cw"></i></button></div><div class="service-grid" id="serviceGrid"><div class="service-row"><i data-lucide="laptop"></i><div><strong>Navia Runtime</strong><span>transport health</span></div><span class="status-chip success">online</span></div><div class="service-row"><i data-lucide="workflow"></i><div><strong>V2 Adapter</strong><span>contract v2.1</span></div><span class="status-chip success">ready</span></div><div class="service-row"><i data-lucide="database"></i><div><strong>data_service</strong><span>candidate 1.5.0</span></div><span class="status-chip info">connected</span></div><div class="service-row"><i data-lucide="layers-3"></i><div><strong>Source Build</strong><span>3 pending</span></div><span class="status-chip warning">building</span></div></div></section></div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-panel">
+            <div class="prototype-labelbar"><strong>Chrome Side Panel</strong><span>420px 目标视口</span></div>
+            <div class="sidepanel-app" id="target-sidepanel">
+              <header class="sidepanel-header"><div class="sidepanel-brand"><strong>Navia</strong><span class="chip">V2 外脑</span></div><button class="sidepanel-service" id="sideServiceButton"><i data-lucide="circle-check"></i><span id="sideServiceLabel">知识服务可用 · 3 个构建中</span><i data-lucide="chevron-down"></i></button><div class="service-popover" id="sideServicePopover"><div><span>Runtime</span><strong>online</strong></div><div><span>Adapter</span><strong>ready</strong></div><div><span>data_service</span><strong>connected</strong></div><div><span>当前 source</span><strong id="popoverSourceState">not saved</strong></div></div></header>
+              <div class="sidepanel-scroll"><section class="current-page"><span class="kicker">当前页面</span><strong>个人知识库产品化设计审查</strong><p>已读取 · 12 个 SourceRef · 主内容质量 good</p></section><section class="save-card"><div class="save-card-head"><div><h3 id="saveTitle">保存当前页到知识库</h3><p id="saveDescription">由用户主动触发；保存一次后自动完成 ingest、build 和 trace。</p></div><span class="status-chip info" id="saveState">not saved</span></div><div class="save-progress"><span id="saveProgress"></span></div><div class="save-meta"><span id="saveMeta">Research Inbox</span><button class="btn btn-primary" id="saveButton">保存</button></div></section><div class="quick-actions"><button class="btn" data-side-action="ask"><i data-lucide="message-square-text"></i>问当前空间</button><button class="btn" data-open-trace><i data-lucide="locate-fixed"></i>查看 Trace</button><button class="btn" data-side-action="workspace"><i data-lucide="panel-top-open"></i>打开工作台</button><button class="btn" data-side-action="open-in-workspace"><i data-lucide="external-link"></i>在工作台中打开</button></div><div class="truth-note" style="margin-top:10px">Side Panel 只承担当前页保存、状态摘要和快捷入口；保存达到 trace_ready 后，主按钮变为“查看来源”。长期管理进入独立 Workspace Page。</div></div>
+              <footer class="sidepanel-composer"><input class="input" placeholder="基于当前页面或 workspace 提问…" /><div class="sidepanel-tabs"><button>Chat</button><button class="active">Knowledge</button><button>Debug</button></div></footer>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="review-section" id="baseline"><div class="section-heading"><div><span class="section-kicker">Current Baseline / 真实证据</span><h2>当前实际实现基线</h2><p>以下三张截图来自冻结的真实 Chrome launcher / sidebar evidence。V2 Knowledge 已有代码基线，但本机 headless 直接打开扩展页触发 Chrome content verification，因此不将验收场景卡片冒充产品截图。</p></div><span class="status-chip success">真实 Chrome evidence</span></div><div class="section-body"><div class="baseline-grid"><figure class="evidence-figure"><img src="assets/baseline-v1-launcher-docked.png" alt="当前真实 launcher 默认贴边状态" /><figcaption><strong>真实基线：默认贴边</strong>普通网页中 launcher 低打扰停靠，不默认展开面板。</figcaption></figure><figure class="evidence-figure"><img src="assets/baseline-v1-sidebar-expanded.png" alt="当前真实 Side Panel 展开状态" /><figcaption><strong>真实基线：Side Panel 展开</strong>当前 V1 壳层、Chat、状态卡和输入区的实际实现。</figcaption></figure><figure class="evidence-figure"><img src="assets/baseline-v1-sidebar-resized.png" alt="当前真实 Side Panel resize 状态" /><figcaption><strong>真实基线：Resize / Overlay</strong>宽面板时切换 overlay，保留 launcher 和页面主体关系。</figcaption></figure></div><div class="truth-note"><strong>证据口径：</strong>本页目标组件是未来产品化体验设计，不是当前实机完成声明；当前最多继承 “V2 planning-aligned local knowledge acceptance passed”，不得写成 V2 ready 或完整 RAG ready。</div></div></section>
+
+      <section class="review-section" id="concept"><div class="section-heading"><div><span class="section-kicker">Concept / 可核查生成</span><h2>概念图：从当前页到可治理的外脑</h2><p>图像生成服务本轮持续无输出，因此采用事实可核查的 HTML 场景并生成位图。它表达产品关系，不作为架构或实现证据。</p></div><div class="badge-row"><span class="chip">无云端默认上传</span><span class="chip">无自动浏览</span><span class="chip">无虚构 UI</span></div></div><div class="concept-canvas" id="concept-canvas"><div class="concept-browser"><div class="concept-copy"><div class="bar title"></div><div class="bar"></div><div class="bar"></div><div class="bar short"></div><div class="bar"></div><div class="bar short"></div></div></div><div class="concept-panel"><div class="mini"></div><div class="mini active"></div><div class="mini"></div></div><div class="concept-evidence"><strong>Evidence card</strong><br>source · unit · trace</div><div class="concept-workspace"><div class="rail"></div><div class="content"><div class="column"></div><div class="column"></div></div></div><div class="concept-legend"><span class="chip">网页当前页</span><span class="chip">Side Panel</span><span class="chip">Knowledge Workspace</span></div></div></section>
+
+      <section class="review-section" id="architecture"><div class="section-heading"><div><span class="section-kicker">Architecture / 事实基线</span><h2>P0-P7 目标架构与实现状态</h2><p>每一层都对应 active 架构文档和真实代码实体。黄色表示下一阶段需产品化，蓝色表示外部候选，不将候选能力写成 Navia 已实现。</p></div><span class="chip mono">Browser → Extension → Runtime → Adapter → data_service → Evidence</span></div><div class="section-body"><div class="arch-stack"><div class="arch-plane"><div class="arch-index">P0 Browser Host<span>网页 / 明确授权</span></div><div class="arch-content"><strong>Host Page DOM · PageContext · 用户点击保存</strong><p>只提供当前页和显式授权动作；不自动保存，不默认读取本地文件。</p></div><div class="arch-state done">已实现保持</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P1 Extension Shell<span>contentBridge.ts</span></div><div class="arch-content"><strong>Launcher · Sidebar · Source marker</strong><p>负责页面内交互壳和用户触发的来源定位，不承担知识事实生成。</p></div><div class="arch-state done">已实现保持</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P2 Product UI<span>sidepanel / workspace</span></div><div class="arch-content"><strong>SaveToKnowledgeCard · Knowledge Workspace · EvidenceTraceDrawer</strong><p>Side Panel 负责快捷动作；Extension Workspace Page 负责长期管理。</p></div><div class="arch-state modify">需产品化 UX</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P3 Runtime Client<span>runtimeClient.ts</span></div><div class="arch-content"><strong>V2 knowledge section · transport status</strong><p>Runtime offline 由 transport failure 推导；B 不直接探测 data_service。</p></div><div class="arch-state modify">需可靠性补强</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P4 Runtime API<span>app.py / OpenAPI</span></div><div class="arch-content"><strong>/v1/knowledge/* · status · operation · query · graph · forget</strong><p>保持 Navia 的稳定响应包络、错误码和 operation_id。</p></div><div class="arch-state done">合同基线已存在</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P5 Governance<span>modules/memory/</span></div><div class="arch-content"><strong>V2 Adapter · permissions · idempotency · forget cascade</strong><p>唯一跨项目防腐层；真实接入前复核版本、鉴权、重试和删除语义。</p></div><div class="arch-state modify">核心产品化点</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P6 Candidate Service<span>data_service 1.5.0</span></div><div class="arch-content"><strong>HTTP / MCP / CLI · workspace · build · query · graph · trace</strong><p>外部候选服务，不直接读写内部 workspace，不复用其 console 作为 Navia UI。</p></div><div class="arch-state candidate">外部候选</div></div><div class="arch-arrow"></div><div class="arch-plane"><div class="arch-index">P7 Evidence<span>report / screenshots</span></div><div class="arch-content"><strong>SourceRef · EvidenceRef · Trace · before/after verification</strong><p>UI、JSON、HTML 和截图必须对服务状态与 located/fallback/blocked 保持一致。</p></div><div class="arch-state done">验收基线已存在</div></div></div><div class="arch-rule">允许调用：B UI → runtimeClient.ts → Navia Runtime API → V2 Adapter / Governance → data_service HTTP/MCP/CLI<br>禁止调用：B UI ⇢ data_service workspace　A/C ⇢ Memory Plane　Content Script ⇢ 自动采集/浏览</div><div class="truth-note"><strong>本页审查基线：</strong><a href="../../01-prd.md">01-prd.md</a> · <a href="../../02-architecture.md">02-architecture.md</a> · <a href="../v2-memory-personal-knowledge-base-gap.drawio">V2 Gap Drawio</a> · <a href="../v2-memory-personal-knowledge-base-development-acceptance-plan.md">开发及验收计划</a> · <a href="../../04-acceptance-plan.md">总验收计划</a>。历史文档未参与设计判断。</div></div></section>
+
+      <section class="review-section" id="components"><div class="section-heading"><div><span class="section-kicker">Component Lab / 可操作</span><h2>组件实验室与开发映射</h2><p>每个组件均提供真实样式、交互状态、数据职责和未来实现位置。组件行为参考 Radix 可访问性模式，视觉结构参考 shadcn/ui open-code 组织方式。</p></div><span class="chip">Lucide 1.24.0 · 本地资源</span></div><div class="section-body"><div class="component-lab"><nav class="component-index" aria-label="组件列表" id="componentIndex"><button class="active" data-component="service"><i data-lucide="activity"></i>ServiceStatusBanner</button><button data-component="save"><i data-lucide="bookmark-plus"></i>SaveToKnowledgeCard</button><button data-component="build"><i data-lucide="list-checks"></i>KnowledgeBuildStatus</button><button data-component="workspace"><i data-lucide="boxes"></i>WorkspaceSwitcher</button><button data-component="library"><i data-lucide="library"></i>SourceLibraryPanel</button><button data-component="detail"><i data-lucide="file-search-2"></i>SourceDetailReader</button><button data-component="ask"><i data-lucide="message-square-text"></i>AskWithSourcesPanel</button><button data-component="trace"><i data-lucide="locate-fixed"></i>EvidenceTraceDrawer</button><button data-component="graph"><i data-lucide="waypoints"></i>KnowledgeGraphCanvas</button><button data-component="permission"><i data-lucide="folder-key"></i>PermissionRootManager</button><button data-component="forget"><i data-lucide="trash-2"></i>ForgetSourceDialog</button><button data-component="launcher"><i data-lucide="panel-right-open"></i>Launcher / SidePanelShell</button></nav><div class="component-stage"><div class="component-stage-header"><div><h3 id="componentTitle">ServiceStatusBanner</h3><p id="componentSubtitle">用一条摘要状态告诉用户问题属于哪个后端层，不把所有异常合并成“Runtime 离线”。</p></div><span class="status-chip info" id="componentStatus">interactive</span></div><div class="component-demo" id="componentDemo"></div><div class="component-spec-grid"><div class="spec-cell"><strong>交互与内容</strong><p id="componentInteraction"></p></div><div class="spec-cell"><strong>数据 / 事件</strong><p id="componentData"></p></div><div class="spec-cell"><strong>未来实现位置</strong><p id="componentPath" class="mono"></p></div></div></div></div></div></section>
+
+      <section class="review-section" id="flows"><div class="section-heading"><div><span class="section-kicker">User Journey / 逐步组图</span><h2>端到端用户操作路线</h2><p>每条路径严格落在 PRD 已承诺范围内。选择路径和步骤可查看当前动作、系统反馈、验收观察点与失败语义。</p></div><span class="status-chip success">7 条路径</span></div><div class="section-body"><div class="flow-tabs" id="flowTabs"><button class="active" data-flow="save">保存当前页</button><button data-flow="service">服务异常恢复</button><button data-flow="library">来源库</button><button data-flow="ask">跨来源问答</button><button data-flow="graph">Graph / Trace</button><button data-flow="permission">显式授权</button><button data-flow="forget">Forget 验证</button></div><div class="flow-board" id="flowBoard"><div class="flow-preview"><div class="flow-preview-card" id="flowPreview"><span class="status-chip info" id="flowState">步骤 1 / 5</span><h3 id="flowTitle">读取当前页面</h3><p id="flowDescription">Navia 已获得当前页 PageContext 和 SourceRef，但不会自动保存。</p><div class="truth-note" id="flowAcceptance">验收：界面必须明确“已读取”不等于“已保存”。</div></div></div><aside class="flow-side"><h3 id="flowName">保存当前页到知识库</h3><p style="color:var(--muted);font-size:12px" id="flowSummary">一次用户点击触发完整异步生命周期。</p><div class="flow-step-list" id="flowSteps"></div><div class="flow-controls"><button class="btn" id="flowPrev"><i data-lucide="arrow-left"></i>上一步</button><button class="btn btn-primary" id="flowNext">下一步<i data-lucide="arrow-right"></i></button></div></aside></div></div></section>
+
+      <section class="review-section" id="gallery"><div class="section-heading"><div><span class="section-kicker">Target Screens / 自动生成</span><h2>目标总体设计与模块组图</h2><p>以下位图由本页可交互原型通过 headless Chrome 自动截取，保证与组件状态、文案和路由一致，不使用 AI 伪造 UI。</p></div><span class="chip">HTML → Chrome screenshot</span></div><div class="section-body"><div class="gallery-grid"><figure class="evidence-figure"><img src="assets/target-workspace-sources.png" alt="目标来源库页面" /><figcaption><strong>目标总体设计：来源库</strong>Workspace、状态、来源列表、详情和 EvidenceRef 的主工作面。</figcaption></figure><figure class="evidence-figure"><img src="assets/target-sidepanel-save.png" alt="目标 Side Panel 保存流程" /><figcaption><strong>目标模块：Side Panel Save</strong>一次点击保存、四域状态和快捷入口。</figcaption></figure><figure class="evidence-figure"><img src="assets/target-workspace-ask.png" alt="目标跨来源问答页面" /><figcaption><strong>目标模块：Ask with Sources</strong>回答、引用和 Trace 抽屉形成证据闭环。</figcaption></figure><figure class="evidence-figure"><img src="assets/target-workspace-graph.png" alt="目标知识图谱页面" /><figcaption><strong>目标模块：Graph / Trace</strong>图谱节点来自服务端，并能回到 source evidence。</figcaption></figure><figure class="evidence-figure"><img src="assets/target-workspace-permissions.png" alt="目标权限和服务页面" /><figcaption><strong>目标模块：权限与服务</strong>显式授权和 Runtime / Adapter / data_service / source 状态分域呈现。</figcaption></figure><figure class="evidence-figure"><img src="assets/concept-external-brain.png" alt="Navia 外脑概念图" /><figcaption><strong>概念位图：网页到外脑</strong>由 HTML 概念场景生成，不承担技术事实证明。</figcaption></figure></div></div></section>
+
+      <section class="review-section" id="acceptance"><div class="section-heading"><div><span class="section-kicker">Design Acceptance / 出门条件</span><h2>这份原型如何指导开发和验收</h2><p>PX-0.1b 当前仅提供产品方向与本地静态候选行为，必须连同 assets、qa-summary 和 audit-package-manifest 作为完整包独立复审；真实扩展入口、Chrome Back/reload 和可访问性仍由 PX-1/PX-5 重新取证。本页不改变 V2 完成声明。</p></div><div class="badge-row"><span class="status-chip info">PX-0.1b 本地静态候选 · 待完整包独立复审</span><span class="status-chip warning">真实 Chrome 证据待 PX-1/PX-5</span></div></div><div class="section-body"><table class="acceptance-table"><thead><tr><th>审查项</th><th>通过标准</th><th>当前结论</th></tr></thead><tbody><tr><td>产品边界</td><td>仅包含保存、Workspace、来源库、问答、Trace、Graph、权限和 Forget</td><td class="acceptance-pass">PASS</td></tr><tr><td>当前 / 目标区分</td><td>真实截图、代码派生基线、目标原型与概念图分别标注</td><td class="acceptance-pass">PASS</td></tr><tr><td>架构一致性</td><td>P0-P7、调用方向、data_service 候选边界与 active 架构一致</td><td class="acceptance-pass">PASS</td></tr><tr><td>Canonical route</td><td>Library/Detail 独立；workspaceId/sourceId 入 route；direct-open/reload/Back/错误恢复可演示</td><td class="acceptance-pass">LOCAL STATIC · 待包复审</td></tr><tr><td>Forget 四面状态</td><td>Library、Ask、Graph、Trace 均发生可观察变化，不只显示 toast</td><td class="acceptance-pass">LOCAL STATIC · 待包复审</td></tr><tr><td>服务状态</td><td>Runtime、Adapter、data_service、source build 使用冻结枚举</td><td class="acceptance-pass">LOCAL STATIC · 待包复审</td></tr><tr><td>窄侧栏</td><td>420px / 360px 不截断、不遮挡输入区</td><td class="acceptance-boundary">旧截图仅作基线 · PX-5 重验</td></tr><tr><td>可访问交互</td><td>accessible name、焦点返回/约束、Escape、reduced-motion</td><td class="acceptance-boundary">静态修复完成 · 真实键盘复验待 PX-5</td></tr><tr><td>三入口</td><td>查看来源 -> 当前 Source Detail；打开工作台 -> Library；在工作台中打开 -> 保留上下文</td><td class="acceptance-pass">LOCAL STATIC · 待包复审</td></tr><tr><td>事实和 No-Go</td><td>不声明 V2 ready、完整 RAG、默认本地读取、自动采集或 V3 媒体理解</td><td class="acceptance-pass">PASS</td></tr></tbody></table><div class="truth-note"><strong>证据口径：</strong><a href="qa-summary.json">qa-summary.json</a> 中旧 54/54 只保留为修订前视觉基线，不参与 PX-0.1b PASS。当前原型通过 schema/语法/DOM 静态检查后只能支持完整包候选审查，不能单独支持门禁 PASS；真实 Chrome 入口、路由和可访问性证据必须由 PX-1/PX-5 重新生成。</div></div></section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="traceDrawer" role="dialog" aria-modal="true" aria-labelledby="traceDrawerTitle"><aside class="evidence-drawer"><div class="drawer-header"><div><span class="section-kicker">Evidence Trace</span><h3 id="traceDrawerTitle">来源证据</h3></div><button class="btn btn-icon btn-ghost" id="closeTrace" aria-label="关闭 Trace"><i data-lucide="x"></i></button></div><div class="trace-state-tabs" role="tablist"><button class="active" data-trace-state="located">located</button><button data-trace-state="fallback_shown">fallback</button><button data-trace-state="blocked">blocked</button></div><span class="status-chip success" id="traceStatus">located · semantic match</span><h4 id="traceHeading" style="margin:14px 0 7px">已定位到原始来源</h4><div class="trace-quote" id="traceQuote">“V2 Adapter / Governance 是 Navia 与候选知识服务之间唯一受控边界。”</div><div class="trace-details"><div><span>source_id</span><strong>source_web_bilibili</strong></div><div><span>locator</span><strong id="traceLocator">textQuote + domPath</strong></div><div><span>置信度</span><strong id="traceConfidence">0.94</strong></div><div><span>用户动作</span><strong id="traceAction">回到原网页并显示 marker</strong></div></div><button class="btn btn-primary" id="tracePrimaryAction" style="margin-top:14px"><i data-lucide="locate-fixed"></i>定位原文</button></aside></div>
+  <div class="dialog-backdrop" id="forgetDialog" role="dialog" aria-modal="true" aria-labelledby="forgetTitle"><div class="dialog"><span class="status-chip danger">不可撤销</span><h3 id="forgetTitle" style="margin-top:10px">删除并忘记当前 source？</h3><p>系统将执行 Library、Ask、Graph、Trace 四处删除验证。共享 KnowledgeItem 仅在仍有其他来源支撑时保留。</p><div class="field"><label for="forgetConfirm">输入 <span class="mono">FORGET</span> 以确认</label><input class="input" id="forgetConfirm" /></div><div class="dialog-actions" style="margin-top:16px"><button class="btn" id="cancelForget">取消</button><button class="btn btn-danger" id="confirmForget" disabled>确认删除</button></div></div></div>
+  <div class="dialog-backdrop" id="permissionDialog" role="dialog" aria-modal="true" aria-labelledby="permissionTitle"><div class="dialog"><span class="status-chip warning">显式授权</span><h3 id="permissionTitle" style="margin-top:10px">授权一个本地目录</h3><p>Navia 只允许导入用户明确授权的目录。不会读取其他路径，报告中仅保存脱敏路径。</p><div class="field"><label for="permissionName">授权名称</label><input class="input" id="permissionName" value="设计资料" /></div><div class="field" style="margin-top:10px"><label for="permissionPath">脱敏路径</label><input class="input mono" id="permissionPath" value="~/Documents/design" /></div><div class="dialog-actions" style="margin-top:16px"><button class="btn" id="cancelPermission">取消</button><button class="btn btn-primary" id="confirmPermission">确认授权</button></div></div></div>
+
+  <button class="btn btn-icon tweaks-toggle" id="tweaksToggle" aria-label="打开设计参数"><i data-lucide="sliders-horizontal"></i></button>
+  <aside class="tweaks-panel" id="tweaksPanel"><h3>Tweaks</h3><div class="field"><label for="themeSelect">主题</label><select class="select" id="themeSelect"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></div><div class="field"><label for="densitySelect">信息密度</label><select class="select" id="densitySelect"><option value="compact">Compact</option><option value="standard" selected>Standard</option><option value="relaxed">Relaxed</option></select></div><button class="btn" id="resetPrototype">重置交互状态</button></aside>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/lucide-1.24.0.min.js"></script>
+  <script>
+    const qs = (selector, root = document) => root.querySelector(selector);
+    const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const WORKSPACE_ID = "workspace_research";
+    const FORGOTTEN_STORAGE_KEY = "navia-v2-px-prototype-forgotten-source-ids";
+    const SAVED_SOURCE_STORAGE_KEY = "navia-v2-px-prototype-saved-source-registry";
+    function loadForgottenSourceIds() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(FORGOTTEN_STORAGE_KEY) || "[]");
+        return new Set(Array.isArray(stored) ? stored.filter((item) => typeof item === "string") : []);
+      } catch {
+        return new Set();
+      }
+    }
+    function persistForgottenSourceIds() {
+      localStorage.setItem(FORGOTTEN_STORAGE_KEY, JSON.stringify([...state.forgottenSourceIds]));
+    }
+    function loadSavedSourceRegistry() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(SAVED_SOURCE_STORAGE_KEY) || "{}");
+        return stored && typeof stored === "object" && !Array.isArray(stored) ? stored : {};
+      } catch {
+        return {};
+      }
+    }
+    function persistSavedSourceRegistry() {
+      localStorage.setItem(SAVED_SOURCE_STORAGE_KEY, JSON.stringify(state.savedSourceRegistry));
+    }
+    const initialForgottenSourceIds = loadForgottenSourceIds();
+    const initialSavedSourceRegistry = loadSavedSourceRegistry();
+    const restoredCurrentSource = initialSavedSourceRegistry.source_current_page_001;
+    const state = {
+      routeIntent: "source_detail", routeContextStatus: "valid", sourceId: "source_web_bilibili",
+      operationId: restoredCurrentSource?.operationId || null,
+      save: restoredCurrentSource?.saveStatus === "trace_ready" && !initialForgottenSourceIds.has("source_current_page_001") ? "trace_ready" : "not_saved",
+      trace: "located", flow: "save", flowStep: 0, serviceScenario: 0,
+      forgottenSourceIds: initialForgottenSourceIds, savedSourceRegistry: initialSavedSourceRegistry,
+      lastDialogTrigger: null, lastTraceTrigger: null
+    };
+
+    function icons() { window.lucide?.createIcons({ attrs: { "aria-hidden": "true" } }); }
+    function toast(message) { const node = qs("#toast"); node.textContent = message; node.classList.add("show"); clearTimeout(toast.timer); toast.timer = setTimeout(() => node.classList.remove("show"), 2300); }
+
+    function canonicalPath(routeIntent, sourceId = state.sourceId, workspaceId = WORKSPACE_ID) {
+      const workspace = encodeURIComponent(workspaceId);
+      if (routeIntent === "source_library") return `#/knowledge/sources?workspaceId=${workspace}`;
+      if (routeIntent === "source_detail") return `#/knowledge/sources/${encodeURIComponent(sourceId || "")}?workspaceId=${workspace}`;
+      if (routeIntent === "ask") return `#/knowledge/ask?workspaceId=${workspace}`;
+      if (routeIntent === "graph") return `#/knowledge/graph?workspaceId=${workspace}`;
+      if (routeIntent === "permissions") return `#/knowledge/settings/permissions?workspaceId=${workspace}`;
+      return "#/knowledge/invalid";
+    }
+    function showRouteError(code, copy) {
+      state.routeContextStatus = "invalid";
+      qsa("[data-route-panel]").forEach((panel) => panel.classList.remove("active"));
+      qs("#routeError").classList.add("open");
+      qs("#routeErrorCode").textContent = code;
+      qs("#routeErrorCopy").textContent = copy;
+      qs("#routeLabel").textContent = location.hash || "#/knowledge/invalid";
+    }
+    function renderRoute(routeIntent, sourceId = state.sourceId) {
+      state.routeContextStatus = "valid";
+      state.routeIntent = routeIntent;
+      if (sourceId) state.sourceId = sourceId;
+      qs("#routeError").classList.remove("open");
+      const panelRoute = routeIntent === "source_library" || routeIntent === "source_detail" ? "sources" : routeIntent;
+      qsa("[data-route]").forEach((button) => { const active = button.dataset.route === routeIntent || (button.dataset.route === "source_library" && panelRoute === "sources"); button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active)); });
+      qsa("[data-route-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.routePanel === panelRoute));
+      qs(".library-shell")?.classList.toggle("library-only", routeIntent === "source_library");
+      qs("#routeLabel").textContent = canonicalPath(routeIntent, sourceId);
+      icons();
+    }
+    function setRoute(routeIntent, options = {}) {
+      const sourceId = options.sourceId ?? state.sourceId;
+      const path = canonicalPath(routeIntent, sourceId, options.workspaceId || WORKSPACE_ID);
+      if (options.replace) history.replaceState({ routeIntent, sourceId }, "", path);
+      else history.pushState({ routeIntent, sourceId }, "", path);
+      if (routeIntent === "source_detail") {
+        if (sourceId === "source_forbidden") { showRouteError("FORBIDDEN", "当前来源不在已授权范围内。可返回来源库选择其他来源。"); return; }
+        if (state.forgottenSourceIds.has(sourceId) || !sourceContentById(sourceId)) { showRouteError("SOURCE_NOT_FOUND", "该来源不存在、已被遗忘或稳定 ID 已失效。"); return; }
+        selectSourceById(sourceId, false);
+      }
+      renderRoute(routeIntent, sourceId);
+    }
+    function restoreRouteFromLocation() {
+      if (location.hash && !location.hash.startsWith("#/knowledge/")) { showRouteError("INVALID_ROUTE", "该路由不属于冻结的 Knowledge Workspace 路由集合。"); return; }
+      const hash = location.hash || canonicalPath("source_library");
+      const queryIndex = hash.indexOf("?");
+      const path = queryIndex >= 0 ? hash.slice(0, queryIndex) : hash;
+      const params = new URLSearchParams(queryIndex >= 0 ? hash.slice(queryIndex + 1) : "");
+      const workspaceId = params.get("workspaceId");
+      if (workspaceId !== WORKSPACE_ID) { showRouteError("WORKSPACE_NOT_FOUND", "该 Workspace 不存在或当前用户无权访问。请返回来源库。"); return; }
+      let routeIntent; let sourceId = state.sourceId;
+      if (path === "#/knowledge/sources") routeIntent = "source_library";
+      else if (path.startsWith("#/knowledge/sources/")) { routeIntent = "source_detail"; sourceId = decodeURIComponent(path.split("/").pop() || ""); }
+      else if (path === "#/knowledge/ask") routeIntent = "ask";
+      else if (path === "#/knowledge/graph") routeIntent = "graph";
+      else if (path === "#/knowledge/settings/permissions") routeIntent = "permissions";
+      else { showRouteError("INVALID_ROUTE", "该路由不属于冻结的 Knowledge Workspace 路由集合。"); return; }
+      if (routeIntent === "source_detail" && sourceId === "source_forbidden") { showRouteError("FORBIDDEN", "当前来源不在已授权范围内。可返回来源库选择其他来源。"); return; }
+      if (routeIntent === "source_detail" && (state.forgottenSourceIds.has(sourceId) || !sourceContentById(sourceId))) { showRouteError("SOURCE_NOT_FOUND", "该来源不存在、已被遗忘或稳定 ID 已失效。"); return; }
+      renderRoute(routeIntent, sourceId);
+      if (routeIntent === "source_detail") selectSourceById(sourceId, false);
+    }
+    qsa("[data-route]").forEach((button) => button.addEventListener("click", () => setRoute(button.dataset.route)));
+    qs("#recoverToLibrary").addEventListener("click", () => setRoute("source_library"));
+    window.addEventListener("popstate", restoreRouteFromLocation);
+    window.addEventListener("hashchange", restoreRouteFromLocation);
+
+    const sourceContent = {
+      bilibili: ["B站详情页内容理解复盘", "bilibili.com · revision 1 · 保存于今天 14:32", "trace ready", "source_web_bilibili"],
+      architecture: ["Navia V2 目标架构", "architecture.md · revision 1 · 授权文档", "trace ready", "source_doc_architecture"],
+      lifecycle: ["Knowledge 生命周期决策", "手动笔记 · revision 1 · 5 条 EvidenceRef", "trace ready", "source_note_lifecycle"],
+      service: ["data_service API 快照", "markdown · operation op_1093 · 仍在构建", "building", "source_note_data_service"],
+      current: ["个人知识库产品化设计审查", "当前网页 · revision 1 · 8 条 EvidenceRef", "trace ready", "source_current_page_001"]
+    };
+    function sourceContentById(sourceId) {
+      if (state.forgottenSourceIds.has(sourceId)) return null;
+      if (sourceId === "source_current_page_001" && (state.save !== "trace_ready" || !state.savedSourceRegistry[sourceId])) return null;
+      return Object.values(sourceContent).find((item) => item[3] === sourceId) || null;
+    }
+    function updateBuildTimeline(status) {
+      const items = status === "building"
+        ? [["Queued", "已完成", true], ["Ingested", "已完成", true], ["Building", "进行中", false], ["Trace", "pending", false]]
+        : [["Queued", "已完成", true], ["Ingested", "已完成", true], ["Built", "已完成", true], ["Trace ready", "EvidenceRef 可用", true]];
+      qs("#buildTimeline").innerHTML = items.map(([name, copy, done]) => `<div class="build-stage ${done ? "done" : ""}"><strong>${name}</strong><span>${copy}</span></div>`).join("");
+    }
+    function selectSourceRow(row, navigate = true) {
+      qsa(".source-row").forEach((item) => item.classList.remove("active")); row.classList.add("active");
+      const [title, meta, status, sourceId] = sourceContent[row.dataset.source];
+      state.sourceId = sourceId;
+      qs("#detailTitle").textContent = title; qs("#detailMeta").textContent = meta; qs("#detailStatus").textContent = status;
+      qs("#detailStatus").className = `status-chip ${status === "building" ? "warning" : "success"}`;
+      qs("#detailCrumb").textContent = `Research Inbox / 来源 / ${sourceId}`;
+      updateBuildTimeline(status);
+      if (navigate) setRoute("source_detail", { sourceId });
+    }
+    function selectSourceById(sourceId, navigate = true) {
+      const row = qs(`.source-row[data-source-id="${CSS.escape(sourceId)}"]`);
+      if (row) selectSourceRow(row, navigate);
+    }
+    function bindSourceRows() { qsa(".source-row").forEach((row) => { row.onclick = () => selectSourceRow(row, true); }); }
+    function ensureSavedCurrentSourceRendered() {
+      const sourceId = "source_current_page_001";
+      const saved = state.savedSourceRegistry[sourceId];
+      if (!saved || saved.saveStatus !== "trace_ready" || state.forgottenSourceIds.has(sourceId)) return;
+      state.save = "trace_ready";
+      state.operationId = saved.operationId;
+      if (!qs(`.source-row[data-source-id="${sourceId}"]`)) {
+        qs("#sourceList").insertAdjacentHTML("afterbegin", `<button class="source-row" data-source="current" data-source-id="${sourceId}" data-type="web"><span class="source-icon"><i data-lucide="globe-2"></i></span><span class="source-copy"><strong>${saved.title}</strong><span>${saved.summary}</span></span><span class="source-state">ready</span></button>`);
+      }
+      if (!qs(`.graph-node[data-source-id="${sourceId}"]`)) {
+        qs("#graphCanvas").insertAdjacentHTML("beforeend", `<button class="graph-node source-current" data-node="source_current" data-source-id="${sourceId}"><i data-lucide="globe-2"></i>当前页来源</button>`);
+      }
+      qs("#saveState").textContent = "trace_ready";
+      qs("#saveState").className = "status-chip success";
+      qs("#saveTitle").textContent = "当前页已进入知识库";
+      qs("#saveDescription").textContent = "已从 review-only source registry 恢复 · 8 EvidenceRef";
+      qs("#saveProgress").style.width = "100%";
+      qs("#popoverSourceState").textContent = "trace_ready";
+      qs("#saveButton").textContent = "查看来源";
+      bindSourceRows(); bindGraphNodes(); icons();
+    }
+    bindSourceRows();
+    qs("#sourceSearch").addEventListener("input", (event) => { const query = event.target.value.trim().toLowerCase(); qsa(".source-row").forEach((row) => row.hidden = !row.textContent.toLowerCase().includes(query)); });
+    qsa("[data-filter]").forEach((button) => button.addEventListener("click", () => { qsa("[data-filter]").forEach((item) => item.classList.remove("active")); button.classList.add("active"); const type = button.dataset.filter; qsa(".source-row").forEach((row) => row.hidden = type !== "all" && row.dataset.type !== type); }));
+
+    async function saveCurrentPage() {
+      if (state.save === "trace_ready") { setRoute("source_detail", { sourceId: "source_current_page_001" }); toast("已在工作台打开刚保存的当前来源"); return; }
+      if (state.save !== "not_saved" && state.save !== "failed") { toast("当前 source 已进入保存流程"); return; }
+      const button = qs("#saveButton"); button.disabled = true;
+      const stages = [
+        ["queued", "已创建 operation_id op_current_001 · 等待 ingest", 18],
+        ["ingesting", "正在映射 PageContext / SourceRef", 42],
+        ["building", "正在生成 units、relations 和 trace", 72],
+        ["trace_ready", "已保存到 Research Inbox · 8 EvidenceRef", 100]
+      ];
+      for (const [name, copy, progress] of stages) {
+        state.save = name; state.operationId = "op_current_001"; qs("#saveState").textContent = name; qs("#saveState").className = `status-chip ${name === "trace_ready" ? "success" : "info"}`; qs("#saveTitle").textContent = name === "trace_ready" ? "当前页已进入知识库" : "正在保存当前页"; qs("#saveDescription").textContent = copy; qs("#saveProgress").style.width = `${progress}%`; qs("#popoverSourceState").textContent = name; await sleep(620);
+      }
+      state.savedSourceRegistry.source_current_page_001 = {
+        sourceId: "source_current_page_001", workspaceId: WORKSPACE_ID,
+        title: "个人知识库产品化设计审查", summary: "当前网页 · 8 条证据",
+        saveStatus: "trace_ready", operationId: "op_current_001", revision: 1
+      };
+      state.forgottenSourceIds.delete("source_current_page_001");
+      persistSavedSourceRegistry(); persistForgottenSourceIds();
+      ensureSavedCurrentSourceRendered();
+      button.disabled = false; button.textContent = "查看来源"; toast("Source 已构建，Trace ready；现在可以查看来源");
+    }
+    qs("#saveButton").addEventListener("click", saveCurrentPage);
+    qs("#sideServiceButton").addEventListener("click", () => qs("#sideServicePopover").classList.toggle("open"));
+    qsa("[data-side-action]").forEach((button) => button.addEventListener("click", () => {
+      const action = button.dataset.sideAction;
+      let openInWorkspacePreserved = false;
+      if (action === "ask") setRoute("ask");
+      else if (action === "workspace") setRoute("source_library");
+      else if (action === "open-in-workspace") {
+        openInWorkspacePreserved = state.routeContextStatus === "valid";
+        setRoute(openInWorkspacePreserved ? state.routeIntent : "source_library", openInWorkspacePreserved ? { sourceId: state.sourceId } : {});
+      }
+      toast(action === "ask" ? "已打开当前 Workspace 问答" : action === "open-in-workspace" ? openInWorkspacePreserved ? "已保留当前 Knowledge 上下文" : "无有效上下文，已回到来源库" : "已打开 Knowledge Workspace 来源库");
+    }));
+
+    qs("#askButton").addEventListener("click", async () => { const button = qs("#askButton"); button.disabled = true; button.innerHTML = "回答中"; await sleep(650); qs("#askMessages").insertAdjacentHTML("beforeend", `<div class="message user">${qs("#askInput").value.replace(/[<>]/g, "")}</div><div class="message answer"><strong>Forget verification 会执行四个读取面检查。</strong><p>删除完成后，Library、Ask、Graph、Trace 都不得继续返回该 source；若共享 KnowledgeItem 仍有其他来源支撑，必须显示重算说明。</p><button class="citation-inline" data-open-trace>[3] Forget verification</button></div>`); button.disabled = false; button.innerHTML = `<i data-lucide="send"></i>提问`; bindTraceButtons(); icons(); });
+
+    const graphContent = {
+      source: ["网页来源", "source_web_bilibili · 8 units · 8 evidence refs。节点来自服务端响应，不由前端推断。"],
+      source_current: ["当前页来源", "source_current_page_001 · 8 units · 8 evidence refs。只有保存完成后才进入来源注册表。"],
+      claim: ["受控知识边界", "由目标架构 source unit 提供，关联 3 个来源和 5 条 evidence refs。"],
+      method: ["Forget 验证", "生命周期 ADR 定义的四面删除验证，不等同于只隐藏 UI 卡片。"],
+      evidence: ["EvidenceRef", "定位当前页 DOM、授权文档行或 note block；支持 located、fallback、blocked。"]
+    };
+    function bindGraphNodes() {
+      qsa(".graph-node").forEach((node) => { node.onclick = () => { qsa(".graph-node").forEach((item) => item.classList.remove("active")); node.classList.add("active"); const [title, copy] = graphContent[node.dataset.node]; qs("#graphNodeTitle").textContent = title; qs("#graphNodeCopy").textContent = copy; }; });
+    }
+    bindGraphNodes();
+    function applyForgottenTombstones() {
+      state.forgottenSourceIds.forEach((sourceId) => {
+        qs(`.source-row[data-source-id="${CSS.escape(sourceId)}"]`)?.remove();
+        qs(`.graph-node[data-source-id="${CSS.escape(sourceId)}"]`)?.remove();
+      });
+      if (state.forgottenSourceIds.size > 0) {
+        qs("#askEvidenceSummary").textContent = "已遗忘来源不会在重载后重新参与回答 · 当前证据范围已重算";
+      }
+    }
+    ensureSavedCurrentSourceRendered();
+    applyForgottenTombstones();
+
+    const serviceScenarios = [
+      ["Knowledge service available", "知识服务可用 · 3 个构建中", "success", ["online", "ready", "connected", "building"]],
+      ["Runtime offline", "Runtime 离线 · 检查本地服务", "danger", ["offline", "unchecked", "unchecked", "unknown"]],
+      ["Adapter blocked", "Adapter blocked · 查看策略原因", "warning", ["online", "blocked", "unchecked", "degraded"]],
+      ["data_service unreachable", "知识服务不可达 · 可以稍后重试", "warning", ["online", "ready", "unreachable", "degraded"]]
+    ];
+    function cycleServices() {
+      state.serviceScenario = (state.serviceScenario + 1) % serviceScenarios.length;
+      const [title, sideCopy, tone, values] = serviceScenarios[state.serviceScenario];
+      qs("#sideServiceLabel").textContent = sideCopy; qs("#sideServiceButton").classList.toggle("warning", tone !== "success"); toast(title);
+      const chips = qsa("#serviceGrid .status-chip"); chips.forEach((chip, index) => { chip.textContent = values[index]; chip.className = `status-chip ${values[index] === "online" || values[index] === "ready" || values[index] === "connected" ? "success" : values[index] === "offline" ? "danger" : "warning"}`; });
+    }
+    qs("#workspaceServiceButton").addEventListener("click", () => { setRoute("permissions"); cycleServices(); });
+    qs("#refreshServices").addEventListener("click", cycleServices);
+
+    function openDialog(node, trigger) { state.lastDialogTrigger = trigger || document.activeElement; node.classList.add("open"); const focusable = qs("input,button", node); focusable?.focus(); }
+    function closeDialog(node) { if (!node.classList.contains("open")) return; node.classList.remove("open"); state.lastDialogTrigger?.focus?.(); state.lastDialogTrigger = null; }
+    qs("#grantRootButton").addEventListener("click", (event) => openDialog(qs("#permissionDialog"), event.currentTarget));
+    qs("#importSourceButton").addEventListener("click", (event) => openDialog(qs("#permissionDialog"), event.currentTarget));
+    qs("#cancelPermission").addEventListener("click", () => closeDialog(qs("#permissionDialog")));
+    qs("#confirmPermission").addEventListener("click", () => { qs("#permissionList").insertAdjacentHTML("beforeend", `<div class="permission-row"><div><strong>${qs("#permissionName").value.replace(/[<>]/g, "")}</strong><span>${qs("#permissionPath").value.replace(/[<>]/g, "")}</span></div><button class="btn revoke-root">撤销</button></div>`); bindRevokeButtons(); closeDialog(qs("#permissionDialog")); toast("授权已记录；不会扫描其他目录"); });
+    function bindRevokeButtons() { qsa(".revoke-root").forEach((button) => { button.onclick = () => { button.closest(".permission-row").remove(); toast("授权已撤销；该目录不会继续导入新 source"); }; }); }
+    bindRevokeButtons();
+
+    function openForget(event) { openDialog(qs("#forgetDialog"), event?.currentTarget); }
+    qsa("[data-open-forget]").forEach((button) => button.addEventListener("click", openForget));
+    qs("#cancelForget").addEventListener("click", () => closeDialog(qs("#forgetDialog")));
+    qs("#forgetConfirm").addEventListener("input", (event) => qs("#confirmForget").disabled = event.target.value !== "FORGET");
+    qs("#confirmForget").addEventListener("click", async () => {
+      const sourceId = state.sourceId;
+      qs("#confirmForget").disabled = true; qs("#confirmForget").textContent = "验证中"; await sleep(650);
+      state.forgottenSourceIds.add(sourceId);
+      persistForgottenSourceIds();
+      if (state.savedSourceRegistry[sourceId]) {
+        delete state.savedSourceRegistry[sourceId];
+        persistSavedSourceRegistry();
+      }
+      qs(`.source-row[data-source-id="${CSS.escape(sourceId)}"]`)?.remove();
+      qs("#askEvidenceSummary").textContent = "已遗忘来源不再参与回答 · 当前证据范围已重算";
+      qs("#askMessages").insertAdjacentHTML("beforeend", `<div class="message answer"><strong>来源 ${sourceId} 已被遗忘。</strong><p>after query 不再返回该 source；需要时请选择其他有效来源。</p></div>`);
+      qs(`.graph-node[data-source-id="${CSS.escape(sourceId)}"]`)?.remove();
+      qs("#graphNodeTitle").textContent = "来源已移除";
+      qs("#graphNodeCopy").textContent = `${sourceId} 不再出现在当前 Workspace graph。`;
+      qs("#forgetVerification").classList.add("open");
+      state.trace = "blocked";
+      closeDialog(qs("#forgetDialog")); qs("#confirmForget").textContent = "确认删除"; qs("#forgetConfirm").value = "";
+      setRoute("source_library");
+      toast("Forget verified：四个读取面均已更新");
+    });
+
+    function closeTrace() { if (!qs("#traceDrawer").classList.contains("open")) return; qs("#traceDrawer").classList.remove("open"); state.lastTraceTrigger?.focus?.(); state.lastTraceTrigger = null; }
+    function openTrace(event) {
+      state.lastTraceTrigger = event?.currentTarget || document.activeElement;
+      if (state.forgottenSourceIds.has(state.sourceId)) qs("[data-trace-state=blocked]").click();
+      qs("#traceDrawer").classList.add("open"); qs("#closeTrace").focus();
+    }
+    function bindTraceButtons() { qsa("[data-open-trace]").forEach((button) => { button.onclick = openTrace; if (!button.textContent.trim() && !button.getAttribute("aria-label")) button.setAttribute("aria-label", "打开来源证据"); }); }
+    bindTraceButtons();
+    qs("#closeTrace").addEventListener("click", closeTrace);
+    qsa("[data-trace-state]").forEach((button) => button.addEventListener("click", () => {
+      state.trace = button.dataset.traceState; qsa("[data-trace-state]").forEach((item) => item.classList.toggle("active", item === button));
+      const content = {
+        located: ["status-chip success", "located · semantic match", "已定位到原始来源", "textQuote + domPath", "0.94", "回到原网页并显示 marker", "定位原文"],
+        fallback_shown: ["status-chip warning", "fallback shown", "原页面结构已变化", "fallbackText + source URL", "0.71", "展示可核查引用和原始链接", "打开原始来源"],
+        blocked: ["status-chip danger", "blocked", "当前来源不可访问", "permission / login wall", "n/a", "解释阻塞原因并保留 source metadata", "查看解决建议"]
+      }[state.trace];
+      qs("#traceStatus").className = content[0]; qs("#traceStatus").textContent = content[1]; qs("#traceHeading").textContent = content[2]; qs("#traceLocator").textContent = content[3]; qs("#traceConfidence").textContent = content[4]; qs("#traceAction").textContent = content[5]; qs("#tracePrimaryAction").lastChild.textContent = content[6];
+    }));
+
+    const componentSpecs = {
+      service: { title:"ServiceStatusBanner", subtitle:"摘要显示四域服务状态，提供明确下一步动作。", demo:`<div style="width:min(560px,100%)"><button class="sidepanel-service" id="demoService"><i data-lucide="activity"></i><span>知识服务可用 · 3 个构建中</span><i data-lucide="chevron-down"></i></button><div class="service-popover open"><div><span>Runtime</span><strong>online</strong></div><div><span>Adapter</span><strong>ready</strong></div><div><span>data_service</span><strong>connected</strong></div><div><span>Source build</span><strong>building</strong></div></div></div>`, interaction:"点击展开分域详情；offline、blocked、auth_required、unreachable 不得共用文案。", data:"runtimeStatus / adapterStatus / dataServiceStatus / sourceBuildStatus；refresh、open diagnostics。", path:"knowledge_workspace/ServiceStatusBanner.tsx" },
+      save: { title:"SaveToKnowledgeCard", subtitle:"单次主动保存，后端生命周期自动推进。", demo:`<div class="save-card" style="width:min(520px,100%);margin:0"><div class="save-card-head"><div><h3>保存当前页到知识库</h3><p>Research Inbox · 当前页面已读取</p></div><span class="status-chip info">not saved</span></div><div class="save-progress"><span style="width:36%"></span></div><div class="save-meta"><span>12 SourceRef</span><button class="btn btn-primary">保存</button></div></div>`, interaction:"一次点击后进入 queued → ingesting → building → trace_ready；failed / degraded 只显示用户显式重试。", data:"PageContext + SourceRef → save operation；onSave / onRetry。cancel / resume 不受当前 public contract 支持。", path:"knowledge_workspace/SaveToKnowledgeCard.tsx" },
+      build: { title:"KnowledgeBuildStatus", subtitle:"把 operation 状态绑定到单个 source。", demo:`<div class="build-timeline" style="width:min(680px,100%)"><div class="build-stage done"><strong>Queued</strong><span>operation created</span></div><div class="build-stage done"><strong>Ingested</strong><span>source mapped</span></div><div class="build-stage"><strong>Building</strong><span>units / relations</span></div><div class="build-stage"><strong>Trace</strong><span>pending</span></div></div>`, interaction:"显示进度、耗时和 degradedReason；failed 可由用户显式重试。当前合同不支持 cancel/resume，UI 不展示伪命令。", data:"KnowledgeOperation + KnowledgeSource；仅对非终态 operation poll。", path:"knowledge_workspace/KnowledgeBuildStatus.tsx" },
+      workspace: { title:"WorkspaceSwitcher", subtitle:"切换知识范围，并同步来源、问答和图谱。", demo:`<div class="field" style="width:min(380px,100%)"><label>当前 Workspace</label><select class="select"><option>Research Inbox · 28 sources</option><option>产品体验研究 · 16 sources</option><option>技术文档 · 31 sources</option></select></div>`, interaction:"切换前保留未发送输入；切换后刷新 source list、query scope 和 graph。", data:"selectedWorkspaceId；onSelectWorkspace；sourceCount / pending / traceCoverage。", path:"knowledge_workspace/KnowledgeWorkspaceShell.tsx" },
+      library: { title:"SourceLibraryPanel", subtitle:"来源筛选、搜索和构建状态扫描。", demo:`<div style="width:min(560px,100%)"><div class="source-toolbar"><input class="input" placeholder="搜索来源"><button class="btn btn-icon" aria-label="筛选来源"><i data-lucide="list-filter"></i></button></div><button class="source-row active"><span class="source-icon"><i data-lucide="globe-2"></i></span><span class="source-copy"><strong>B站详情页内容理解复盘</strong><span>网页 · 8 refs</span></span><span class="source-state">ready</span></button><button class="source-row"><span class="source-icon"><i data-lucide="file-text"></i></span><span class="source-copy"><strong>V2 目标架构</strong><span>授权文档</span></span><span class="source-state">ready</span></button></div>`, interaction:"按 web/document/note/pending 筛选；键盘上下移动并打开详情。", data:"KnowledgeSource[]；filter / search / selectedSourceId。", path:"knowledge_workspace/KnowledgeWorkspaceShell.tsx → SourceLibraryPanel" },
+      detail: { title:"SourceDetailReader", subtitle:"来源、revision、构建状态和 EvidenceRef 的审计面。", demo:`<div style="width:min(600px,100%)"><div class="detail-header"><div><span class="status-chip success">trace ready</span><h4>Navia V2 目标架构</h4><p>revision 1 · 12 refs</p></div><button class="btn"><i data-lucide="locate-fixed"></i>Trace</button></div><div class="evidence-row" style="margin-top:12px"><i data-lucide="quote"></i><p>V2 Adapter / Governance 是唯一跨项目边界。</p><button aria-label="打开来源证据"><i data-lucide="arrow-up-right"></i></button></div></div>`, interaction:"打开 Trace、查看 revision、重试构建、发起 Forget。", data:"KnowledgeSource + EvidenceRef[] + KnowledgeOperation。", path:"knowledge_workspace/KnowledgeWorkspaceShell.tsx → SourceDetailReader" },
+      ask: { title:"AskWithSourcesPanel", subtitle:"回答与来源证据同时可见。", demo:`<div class="message answer" style="width:min(600px,100%);max-width:none"><strong>删除完成后需要四面验证。</strong><p>Library、Ask、Graph、Trace 均不得继续返回被删除 source。</p><button class="citation-inline">[1] Lifecycle ADR</button><button class="citation-inline">[2] Acceptance plan</button></div>`, interaction:"发送问题、切换 workspace 范围、点击引用打开 Trace；无证据时显示 degraded。", data:"KnowledgeQueryResult.answer / evidenceRefs / degradedReason。", path:"knowledge_workspace/KnowledgeWorkspaceShell.tsx → AskWithSourcesPanel" },
+      trace: { title:"EvidenceTraceDrawer", subtitle:"located、fallback_shown、blocked 三态严格区分。", demo:`<div style="width:min(560px,100%)"><div class="trace-state-tabs"><button class="active">located</button><button>fallback</button><button>blocked</button></div><div class="trace-quote">“用户主动保存当前网页后，才创建 KnowledgeSource。”</div></div>`, interaction:"从回答、source detail 或 graph 打开；Esc 关闭；焦点返回触发元素。", data:"EvidenceRef.locatorType / textQuote / fallbackText / traceStatus。", path:"knowledge_workspace/EvidenceTraceDrawer.tsx（目标拆分）" },
+      graph: { title:"KnowledgeGraphCanvas", subtitle:"服务侧事实图谱的可读交互层。", demo:`<div class="graph-canvas" style="width:min(620px,100%);height:250px;border:1px solid var(--line)"><button class="graph-node source active"><i data-lucide="globe-2"></i>网页来源</button><button class="graph-node claim"><i data-lucide="lightbulb"></i>受控边界</button><button class="graph-node evidence"><i data-lucide="quote"></i>EvidenceRef</button></div>`, interaction:"点击节点显示来源、relation 和 Trace；支持缩放与筛选但不在前端生成事实。", data:"KnowledgeGraph.nodes / edges / provenance。", path:"knowledge_workspace/KnowledgeGraphCanvas.tsx（目标拆分）" },
+      permission: { title:"PermissionRootManager", subtitle:"默认关闭，显式授权，路径脱敏。", demo:`<div class="permission-panel" style="width:min(620px,100%)"><div class="panel-title"><div><strong>Permission Roots</strong><p>2 active</p></div><button class="btn btn-primary">授权目录</button></div><div class="permission-row"><div><strong>研究资料</strong><span>~/Documents/research</span></div><button class="btn">撤销</button></div></div>`, interaction:"授权前解释范围；撤销后停止新扫描；已导入 source 按 lifecycle policy 处理。", data:"PermissionRoot / PermissionGrant / PermissionRevoke。", path:"knowledge_workspace/PermissionRootManager.tsx（目标拆分）" },
+      forget: { title:"ForgetSourceDialog", subtitle:"高风险操作必须二次确认和 after verification。", demo:`<div class="dialog" style="width:min(500px,100%)"><span class="status-chip danger">不可撤销</span><h3 style="margin-top:10px">删除并忘记当前 source？</h3><p>将验证 Library、Ask、Graph、Trace 四个读取面。</p><div class="dialog-actions"><button class="btn">取消</button><button class="btn btn-danger">确认删除</button></div></div>`, interaction:"输入确认词；执行中不可重复提交；完成后展示四面验证结果。", data:"ForgetRequest / ForgetVerification / sharedItemRecompute。", path:"knowledge_workspace/ForgetSourceDialog.tsx（目标拆分）" },
+      launcher: { title:"Launcher / SidePanelShell", subtitle:"保持 V1 已冻结的贴边、展开、折叠和 resize。", demo:`<div style="position:relative;width:min(680px,100%);height:260px;background:var(--surface-raised);border:1px solid var(--line)"><div style="position:absolute;right:0;top:0;width:230px;height:100%;border-left:1px solid var(--line);background:var(--surface-sunken);padding:14px"><strong>Navia Side Panel</strong><div class="save-card"><h3>保存到知识库</h3><p>当前页快捷入口</p></div></div><button class="btn" style="position:absolute;right:214px;bottom:28px;border-radius:20px;width:52px;height:52px"><strong>N</strong></button></div>`, interaction:"launcher hover/focus 弹出；点击展开；resize；再次点击收起。", data:"SidebarInteractionState + activeView=knowledge。", path:"contentBridge.ts + sidepanel/main.tsx" }
+    };
+    function showComponent(name) { const spec = componentSpecs[name]; qs("#componentTitle").textContent = spec.title; qs("#componentSubtitle").textContent = spec.subtitle; qs("#componentDemo").innerHTML = spec.demo; qs("#componentInteraction").textContent = spec.interaction; qs("#componentData").textContent = spec.data; qs("#componentPath").textContent = spec.path; qsa("[data-component]").forEach((button) => button.classList.toggle("active", button.dataset.component === name)); icons(); }
+    qsa("[data-component]").forEach((button) => button.addEventListener("click", () => showComponent(button.dataset.component)));
+
+    const flows = {
+      save: { name:"保存当前页到知识库", summary:"一次用户点击触发完整异步生命周期。", steps:[["读取当前页面","Navia 已获得 PageContext 和 SourceRef，但不会自动保存。","验收：界面必须明确“已读取”不等于“已保存”。"],["主动点击保存","用户选择当前 workspace 并点击一次保存。","验收：没有自动保存，也没有要求用户手动推进后端阶段。"],["异步构建","状态自动经历 queued、ingesting、building。","验收：显示 operation_id、进度和可恢复错误。"],["Trace ready","source 进入 Workspace，EvidenceRef 可见。","验收：source detail、Ask 和 Graph 使用同一 source_id。"],["继续使用","用户进入 Workspace 或直接问当前空间。","验收：Side Panel 与 Workspace 数据范围一致。"]]},
+      service: { name:"识别并恢复服务异常", summary:"四个状态域分别给出原因和下一步动作。", steps:[["发现异常","状态条指出具体异常域。","验收：不能只显示 generic error。"],["Runtime offline","前端通过 transport failure 推导。","验收：不伪造 Runtime 返回的 offline success。"],["Adapter blocked","显示策略原因和 Debug 入口。","验收：不继续调用 data_service。"],["data_service unreachable","保留当前数据并允许稍后重试。","验收：不得把不可达写成 source failed。"],["恢复后刷新","用户刷新状态并恢复 operation。","验收：状态和 operation 终态一致。"]]},
+      library: { name:"管理来源库", summary:"扫描来源状态并打开可审计详情。", steps:[["进入来源库","默认显示当前 Workspace。","验收：不混入 V1 临时会话。"],["筛选来源","按网页、文档、笔记、待处理筛选。","验收：source corpus 与 query scenario 分开。"],["打开详情","查看 revision、operation 和 EvidenceRef。","验收：每个主要事实可回到来源。"],["处理 degraded","查看原因并重试或保留降级。","验收：degraded 不计为正常 ready。"]]},
+      ask: { name:"跨来源问答", summary:"答案、引用和 Trace 同时可用。", steps:[["选择范围","选择 Workspace 或指定 source。","验收：范围在发送前可见。"],["提出问题","问题进入 Navia Runtime。","验收：B 前端不直连外部服务。"],["生成回答","答案附带语义支撑的 EvidenceRef。","验收：不能只检查 refs 非空。"],["打开引用","EvidenceTraceDrawer 显示定位状态。","验收：located/fallback/blocked 一致。"],["证据不足","显示 degradedReason。","验收：无证据回答不能显示成功。"]]},
+      graph: { name:"Graph 节点到 Source Trace", summary:"图谱只展示服务侧事实和 provenance。", steps:[["打开图谱","加载当前 Workspace graph。","验收：节点来自服务端响应。"],["选择节点","右侧显示 source/unit/relation。","验收：前端不生成关系事实。"],["查看证据","打开节点绑定的 EvidenceRef。","验收：图谱可回到 source trace。"],["来源受阻","显示 fallback 或 blocked。","验收：blocked 不得计为 located。"]]},
+      permission: { name:"显式授权本地目录", summary:"默认拒绝，用户明确授权后才允许导入。", steps:[["打开授权","解释访问范围和隐私规则。","验收：默认本地读取关闭。"],["选择目录","仅记录用户选择路径。","验收：UI 和日志使用脱敏路径。"],["确认授权","创建 PermissionRoot。","验收：授权动作可审计。"],["撤销授权","停止后续扫描和新导入。","验收：撤销后不得继续产生 source。"]]},
+      forget: { name:"Forget Source 与删除验证", summary:"删除不是隐藏卡片，而是跨读取面验证。", steps:[["发起 Forget","从 source detail 打开确认框。","验收：明确不可撤销影响。"],["二次确认","输入确认词并提交 operation。","验收：重复提交幂等。"],["级联处理","Library、Ask、Graph、Trace 失效或重算。","验收：共享 KnowledgeItem 有解释。"],["再次查询","执行 before / after query。","验收：被删 source 不再返回。"],["查看证明","展示四个读取面的验证结果。","验收：不能只删除 UI 卡片。"]]}
+    };
+    function renderFlow() { const flow = flows[state.flow]; const step = flow.steps[state.flowStep]; qs("#flowName").textContent = flow.name; qs("#flowSummary").textContent = flow.summary; qs("#flowState").textContent = `步骤 ${state.flowStep + 1} / ${flow.steps.length}`; qs("#flowTitle").textContent = step[0]; qs("#flowDescription").textContent = step[1]; qs("#flowAcceptance").textContent = step[2]; qs("#flowSteps").innerHTML = flow.steps.map((item,index)=>`<button class="flow-step ${index===state.flowStep?"active":""}" data-flow-step="${index}"><span>${index+1}</span><span><strong>${item[0]}</strong><small>${item[1]}</small></span></button>`).join(""); qsa("[data-flow-step]").forEach((button)=>button.addEventListener("click",()=>{state.flowStep=Number(button.dataset.flowStep);renderFlow();})); qs("#flowPrev").disabled = state.flowStep === 0; qs("#flowNext").disabled = state.flowStep === flow.steps.length - 1; }
+    qsa("[data-flow]").forEach((button)=>button.addEventListener("click",()=>{state.flow=button.dataset.flow;state.flowStep=0;qsa("[data-flow]").forEach((item)=>item.classList.toggle("active",item===button));renderFlow();}));
+    qs("#flowPrev").addEventListener("click",()=>{if(state.flowStep>0){state.flowStep-=1;renderFlow();}}); qs("#flowNext").addEventListener("click",()=>{if(state.flowStep<flows[state.flow].steps.length-1){state.flowStep+=1;renderFlow();}});
+
+    qs("#tweaksToggle").addEventListener("click", () => qs("#tweaksPanel").classList.toggle("open"));
+    qs("#themeSelect").addEventListener("change", (event) => { const value = event.target.value; document.documentElement.dataset.theme = value === "system" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : value; });
+    qs("#densitySelect").addEventListener("change", (event) => document.documentElement.dataset.density = event.target.value);
+    qs("#resetPrototype").addEventListener("click", () => {
+      localStorage.removeItem(FORGOTTEN_STORAGE_KEY);
+      localStorage.removeItem(SAVED_SOURCE_STORAGE_KEY);
+      history.replaceState({ routeIntent: "source_library" }, "", canonicalPath("source_library", null, WORKSPACE_ID));
+      location.reload();
+    });
+    function trapFocus(event, node) {
+      if (event.key !== "Tab" || !node.classList.contains("open")) return;
+      const items = qsa("button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex='-1'])", node);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
+    document.addEventListener("keydown", (event) => {
+      const activeModal = [qs("#forgetDialog"), qs("#permissionDialog"), qs("#traceDrawer")].find((node) => node.classList.contains("open"));
+      if (activeModal) trapFocus(event, activeModal);
+      if (event.key === "Escape") { closeTrace(); closeDialog(qs("#forgetDialog")); closeDialog(qs("#permissionDialog")); qs("#tweaksPanel").classList.remove("open"); }
+    });
+    qs("#traceDrawer").addEventListener("click", (event) => { if (event.target === qs("#traceDrawer")) closeTrace(); });
+    qs("#forgetDialog").addEventListener("click", (event) => { if (event.target === qs("#forgetDialog")) closeDialog(qs("#forgetDialog")); });
+    qs("#permissionDialog").addEventListener("click", (event) => { if (event.target === qs("#permissionDialog")) closeDialog(qs("#permissionDialog")); });
+
+    restoreRouteFromLocation(); showComponent("service"); renderFlow(); bindTraceButtons(); icons();
+    document.documentElement.dataset.prototypeReady = "true";
+  </script>
+</body>
+</html>

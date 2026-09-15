@@ -1,0 +1,2686 @@
+{
+  "schemaVersion": "v2-external-brain-px-0.1b-fixtures/v10",
+  "patchDialect": "RFC6902",
+  "baseFile": "px-0.1b-positive-instances.json",
+  "rules": [
+    "PX_RULE_REPORT_ISSUES_NOT_EMPTY",
+    "PX_RULE_CHILD_RESULT_FAILED",
+    "PX_RULE_CLAIM_STATUS_MISMATCH",
+    "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+    "PX_RULE_SOURCE_CORPUS_INVALID",
+    "PX_RULE_SCENARIO_ID_DUPLICATED",
+    "PX_RULE_SCENARIO_SET_MISMATCH",
+    "PX_RULE_SUMMARY_RECOMPUTE_MISMATCH",
+    "PX_RULE_SOURCE_DISTRIBUTION_FAILED",
+    "PX_RULE_SCENARIO_SOURCE_REFERENCE_INVALID",
+    "PX_RULE_SOURCE_KIND_RECOMPUTE_MISMATCH",
+    "PX_RULE_ENTRY_COVERAGE_FAILED",
+    "PX_RULE_ROUTE_COVERAGE_FAILED",
+    "PX_RULE_RECOVERY_COVERAGE_FAILED",
+    "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+    "PX_RULE_STATUS_COVERAGE_FAILED",
+    "PX_RULE_GOVERNANCE_COVERAGE_FAILED",
+    "PX_RULE_SCREENSHOT_EVIDENCE_INVALID",
+    "PX_RULE_SCREENSHOT_METADATA_MISMATCH",
+    "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+    "PX_RULE_V2_REGRESSION_FAILED",
+    "PX_RULE_SCOPE_OVERCLAIM",
+    "PX_RULE_FAULT_INJECTION_MISMATCH",
+    "PX_RULE_COVERAGE_TAG_SEMANTIC_MISMATCH",
+    "PX_RULE_ACTION_ROUTE_MISMATCH",
+    "PX_RULE_EXPECTED_RESULT_MAPPING_MISMATCH",
+    "PX_RULE_ROUTE_PATH_ID_MISMATCH",
+    "PX_RULE_HOST_STRATEGY_URL_MISMATCH",
+    "PX_RULE_ROUTE_ERROR_CODE_MISMATCH",
+    "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+    "PX_RULE_PERMISSION_VERIFICATION_INVALID",
+    "PX_RULE_FORGET_FOUR_SURFACE_INVALID",
+    "PX_RULE_SHARED_ITEM_RECOMPUTE_INVALID",
+    "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+    "PX_RULE_EXECUTION_OBSERVATION_INVALID",
+    "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+    "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+    "PX_RULE_TAB_REUSE_SEQUENCE_INVALID",
+    "PX_RULE_SCHEMA_CHECK_SET_MISMATCH",
+    "PX_RULE_SEMANTIC_POSITIVE_BASE_INVALID",
+    "PX_RULE_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+    "PX_RULE_UX_ACCESSIBILITY_FAILED",
+    "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+    "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+    "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+    "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+    "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+    "PX_RULE_REQUEST_ID_CORRELATION_INVALID",
+    "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+    "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID",
+    "PX_RULE_ATTEMPT_SEQUENCE_INVALID",
+    "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+    "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+    "PX_RULE_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+    "PX_RULE_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+    "PX_RULE_ARCHITECTURE_RESULT_SHAPE_INVALID",
+    "PX_RULE_ACTION_ROUTE_SHAPE_INVALID",
+    "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+    "PX_RULE_HUMAN_REVIEW_SHAPE_INVALID",
+    "PX_RULE_SCHEMA_RESULT_SHAPE_INVALID",
+    "PX_RULE_SEMANTIC_RESULT_SHAPE_INVALID",
+    "PX_RULE_ROUTE_ERROR_SHAPE_INVALID",
+    "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID"
+  ],
+  "cases": [
+    {
+      "name": "workspace-open-workspace-to-graph",
+      "base": "/workspaceCases/0/instance",
+      "targetSchema": "v2_external_brain_workspace_contracts.schema.json",
+      "targetDef": "OpenWorkspaceAction",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeIntent",
+          "value": "graph"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-001",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_ACTION_ROUTE_SHAPE_INVALID",
+      "requirementKey": "workspace_open_workspace_to_graph"
+    },
+    {
+      "name": "manifest-source-without-origin-ref",
+      "base": "/documents/acceptanceManifest/sourceCorpus/0",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "targetDef": "SourceSample",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/originRef"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-002",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "requirementKey": "manifest_source_without_origin_ref"
+    },
+    {
+      "name": "manifest-expected-open-outcome-mismatch",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarios/0/expected/openOutcome",
+          "value": "blocked"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-003",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_EXPECTED_RESULT_MAPPING_MISMATCH",
+      "requirementKey": "manifest_expected_open_outcome_mismatch"
+    },
+    {
+      "name": "report-passed-with-failed-scenario",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/passed",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/conclusion",
+          "value": "failed"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-004",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_CHILD_RESULT_FAILED",
+      "requirementKey": "report_passed_with_failed_scenario"
+    },
+    {
+      "name": "report-passed-with-failed-command",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/0/passed",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/testCommands/0/exitCode",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-005",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+      "requirementKey": "report_passed_with_failed_command"
+    },
+    {
+      "name": "report-passed-conclusion-failed",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/conclusion",
+          "value": "failed"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-006",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_CLAIM_STATUS_MISMATCH",
+      "requirementKey": "report_passed_conclusion_failed"
+    },
+    {
+      "name": "report-fake-summary-counts",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/summary/scenariosTotal",
+          "value": 999
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-007",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SUMMARY_RECOMPUTE_MISMATCH",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SUMMARY_RECOMPUTE_MISMATCH",
+      "requirementKey": "report_fake_summary_counts"
+    },
+    {
+      "name": "report-source-kinds-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/sourceKinds/0",
+          "value": "note_markdown"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-008",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_KIND_RECOMPUTE_MISMATCH",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SOURCE_KIND_RECOMPUTE_MISMATCH",
+      "requirementKey": "report_source_kinds_mismatch"
+    },
+    {
+      "name": "report-nonparticipant-carries-id",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/3/observedIds/sidePanel/status",
+          "value": "not_applicable"
+        },
+        {
+          "op": "add",
+          "path": "/scenarioResults/3/observedIds/sidePanel/workspaceId",
+          "value": "workspace_research"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-009",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_EXECUTION_OBSERVATION_INVALID",
+      "requirementKey": "report_nonparticipant_carries_id"
+    },
+    {
+      "name": "report-missing-g4-forbidden-scan",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/testCommands/4"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-010",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+      "allowedWarnings": [
+        "PX_ARCHITECTURE_BOUNDARY_FAILED",
+        "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+      "requirementKey": "report_missing_g4_forbidden_scan"
+    },
+    {
+      "name": "report-axe-serious-but-g6-true",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/5/result/serious",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-011",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "requirementKey": "report_axe_serious_but_g6_true"
+    },
+    {
+      "name": "report-keyboard-partial-but-g6-true",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/6/result/assertionsPassed",
+          "value": 11
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-012",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "requirementKey": "report_keyboard_partial_but_g6_true"
+    },
+    {
+      "name": "report-viewport-overlap-but-g6-true",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/7/result/overlapBlockers",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-013",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "requirementKey": "report_viewport_overlap_but_g6_true"
+    },
+    {
+      "name": "human-review-evidence-without-hash",
+      "base": "/documents/humanReview",
+      "targetSchema": "v2_external_brain_human_review.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/gateReviews/G1_entry/evidenceArtifacts/0/sha256"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-014",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_HUMAN_REVIEW_SHAPE_INVALID",
+      "requirementKey": "human_review_evidence_without_hash"
+    },
+    {
+      "name": "execution-timeout-with-response-fingerprint",
+      "base": "/documents/executionObservation",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/runtimeObservation/transportOutcome",
+          "value": "timeout"
+        },
+        {
+          "op": "replace",
+          "path": "/runtimeObservation/ids",
+          "value": {
+            "status": "unavailable"
+          }
+        },
+        {
+          "op": "add",
+          "path": "/runtimeObservation/transportErrorCode",
+          "value": "RUNTIME_TIMEOUT"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-015",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "requirementKey": "execution_timeout_with_response_fingerprint"
+    },
+    {
+      "name": "execution-timeout-without-transport-evidence",
+      "base": "/documents/offlineExecutionObservation",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/runtimeObservation/transportEvidence"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-016",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "requirementKey": "execution_timeout_without_transport_evidence"
+    },
+    {
+      "name": "execution-event-origin-mismatch",
+      "base": "/documents/executionObservation",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/0/entryAction/origin",
+          "value": "view_source"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-017",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+      "requirementKey": "execution_event_origin_mismatch"
+    },
+    {
+      "name": "execution-open-in-workspace-without-prior-context",
+      "base": "/documents/openInWorkspaceObservation",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/entryContext",
+          "value": {
+            "status": "not_applicable"
+          }
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-018",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "requirementKey": "execution_open_in_workspace_without_prior_context"
+    },
+    {
+      "name": "execution-tab-reuse-different-tab-id",
+      "base": "/documents/executionObservations/1",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/1/backgroundResult/tabId",
+          "value": 43
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-019",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_TAB_REUSE_SEQUENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_TAB_REUSE_SEQUENCE_INVALID",
+      "requirementKey": "execution_tab_reuse_different_tab_id"
+    },
+    {
+      "name": "execution-tab-reuse-ingest-increment",
+      "base": "/documents/executionObservations/1",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/ingestCounters/after",
+          "value": 4
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-020",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_TAB_REUSE_SEQUENCE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "requirementKey": "execution_tab_reuse_ingest_increment"
+    },
+    {
+      "name": "report-missing-human-review-artifact",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/humanReview/recordPath",
+          "value": "virtual/missing-human-review.json"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-021",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "requirementKey": "report_missing_human_review_artifact"
+    },
+    {
+      "name": "status-offline-with-online-downstream-authority",
+      "base": "/documents/knowledgeStatusOffline",
+      "targetSchema": "v2_knowledge_status.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/runtimeStatus",
+          "value": "online"
+        },
+        {
+          "op": "replace",
+          "path": "/adapterStatus",
+          "value": "ready"
+        },
+        {
+          "op": "replace",
+          "path": "/dataServiceStatus",
+          "value": "connected"
+        },
+        {
+          "op": "replace",
+          "path": "/sourceBuildStatus",
+          "value": "trace_ready"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-022",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "requirementKey": "status_offline_with_online_downstream_authority"
+    },
+    {
+      "name": "execution-invalid-prior-context-without-fallback-reason",
+      "base": "/documents/recoverableExecutionObservation",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/entryContext/fallbackReason"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-023",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "requirementKey": "execution_invalid_prior_context_without_fallback_reason"
+    },
+    {
+      "name": "report-schema-result-missing-schema-ids",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/testCommands/0/result/schemaIds"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-024",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SCHEMA_RESULT_SHAPE_INVALID",
+      "requirementKey": "report_schema_result_missing_schema_ids"
+    },
+    {
+      "name": "report-schema-result-count-does-not-match-ids",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/0/result/schemasChecked",
+          "value": 6
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-025",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCHEMA_CHECK_SET_MISMATCH",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_SCHEMA_CHECK_SET_MISMATCH",
+      "requirementKey": "report_schema_result_count_does_not_match_ids"
+    },
+    {
+      "name": "report-semantic-result-partial-execution-coverage",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/testCommands/2/result/checkedRuleIds/42"
+        },
+        {
+          "op": "remove",
+          "path": "/testCommands/2/result/positiveInstanceIdsChecked/63"
+        },
+        {
+          "op": "remove",
+          "path": "/testCommands/2/result/fixtureRequirementIdsChecked/43"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-026",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SEMANTIC_RESULT_SHAPE_INVALID",
+      "requirementKey": "report_semantic_result_partial_execution_coverage"
+    },
+    {
+      "name": "report-source-library-with-graph-path",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/resolvedPath",
+          "value": "#/knowledge/graph?workspaceId=workspace_research"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_PATH_ID_MISMATCH",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-027",
+      "ruleIdUnderTest": "PX_RULE_ROUTE_PATH_ID_MISMATCH",
+      "requirementKey": "report_source_library_with_graph_path"
+    },
+    {
+      "name": "execution-extension-host-with-localhost-url",
+      "base": "/documents/executionObservations/0",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/0/backgroundResult/workspaceUrl",
+          "value": "http://127.0.0.1:17861/workspace"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-028",
+      "ruleIdUnderTest": "PX_RULE_HOST_STRATEGY_URL_MISMATCH",
+      "requirementKey": "execution_extension_host_with_localhost_url"
+    },
+    {
+      "name": "report-missing-screenshot-artifact",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/screenshotPaths/0",
+          "value": "fixtures/missing/screen.png"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_EVIDENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-029",
+      "ruleIdUnderTest": "PX_RULE_SCREENSHOT_EVIDENCE_INVALID",
+      "requirementKey": "report_missing_screenshot_artifact"
+    },
+    {
+      "name": "report-missing-scenario-log-artifact",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/logArtifacts/0/path",
+          "value": "fixtures/missing/scenario.log"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-030",
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "requirementKey": "report_missing_scenario_log_artifact"
+    },
+    {
+      "name": "report-missing-audit-artifact",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/auditArtifacts/prdReview/path",
+          "value": "fixtures/missing/prd-review.json"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-031",
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "requirementKey": "report_missing_audit_artifact"
+    },
+    {
+      "name": "report-coverage-tag-entry-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/coverageTags/0",
+          "value": "entry_view_source"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-032",
+      "ruleIdUnderTest": "PX_RULE_COVERAGE_TAG_SEMANTIC_MISMATCH",
+      "requirementKey": "report_coverage_tag_entry_mismatch"
+    },
+    {
+      "name": "report-forget-missing-after",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/26/forgetVerification/after"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-033",
+      "ruleIdUnderTest": "PX_RULE_FORGET_FOUR_SURFACE_INVALID",
+      "requirementKey": "report_forget_missing_after"
+    },
+    {
+      "name": "report-shared-recompute-without-supporting-source",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/26/forgetVerification/sharedItemRecomputed",
+          "value": true
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-034",
+      "ruleIdUnderTest": "PX_RULE_SHARED_ITEM_RECOMPUTE_INVALID",
+      "requirementKey": "report_shared_recompute_without_supporting_source"
+    },
+    {
+      "name": "manifest-legacy-string-fingerprint",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/0/contentFingerprint",
+          "value": "legacy-sha256-string"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-035",
+      "ruleIdUnderTest": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "requirementKey": "manifest_legacy_string_fingerprint"
+    },
+    {
+      "name": "manifest-absolute-fingerprint-artifact-path",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/0/contentFingerprint/artifactPath",
+          "value": "/tmp/source.html"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-036",
+      "ruleIdUnderTest": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "requirementKey": "manifest_absolute_fingerprint_artifact_path"
+    },
+    {
+      "name": "manifest-recoverable-missing-expected-error-code",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarios/6/expected/expectedErrorCode"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-037",
+      "ruleIdUnderTest": "PX_RULE_ROUTE_ERROR_SHAPE_INVALID",
+      "requirementKey": "manifest_recoverable_missing_expected_error_code"
+    },
+    {
+      "name": "report-missing-route-recovery-result",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/0/routeRecoveryResult"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-038",
+      "ruleIdUnderTest": "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID",
+      "requirementKey": "report_missing_route_recovery_result"
+    },
+    {
+      "name": "report-missing-open-outcome",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/0/openOutcome"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-039",
+      "ruleIdUnderTest": "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID",
+      "requirementKey": "report_missing_open_outcome"
+    },
+    {
+      "name": "report-passed-command-nonzero-exit",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/0/exitCode",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-040",
+      "ruleIdUnderTest": "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+      "requirementKey": "report_passed_command_nonzero_exit"
+    },
+    {
+      "name": "report-test-log-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/0/logArtifact/sha256",
+          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-041",
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "requirementKey": "report_test_log_hash_mismatch"
+    },
+    {
+      "name": "execution-user-entry-without-trusted-gesture",
+      "base": "/documents/executionObservations/0",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/0/entryAction/trustedUserGesture",
+          "value": false
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-042",
+      "ruleIdUnderTest": "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+      "requirementKey": "execution_user_entry_without_trusted_gesture"
+    },
+    {
+      "name": "execution-cross-container-id-mismatch",
+      "base": "/documents/executionObservations/0",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/containerObservations/2/ids/workspaceId",
+          "value": "workspace_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementId": "PX-N-043",
+      "ruleIdUnderTest": "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "requirementKey": "execution_cross_container_id_mismatch"
+    },
+    {
+      "name": "report-human-review-pending-success",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/humanReview/status",
+          "value": "pending"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementId": "PX-N-044",
+      "ruleIdUnderTest": "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+      "requirementKey": "report_human_review_pending_success"
+    },
+    {
+      "name": "report-blocking-warning-not-empty",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/warnings/0",
+          "value": "major: unresolved semantic blocker"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-045",
+      "ruleIdUnderTest": "PX_RULE_REPORT_ISSUES_NOT_EMPTY",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_REPORT_ISSUES_NOT_EMPTY",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_blocking_warning_not_empty"
+    },
+    {
+      "name": "manifest-duplicate-source-sample-id",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/11/sourceSampleId",
+          "value": "sample_01"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-046",
+      "ruleIdUnderTest": "PX_RULE_SOURCE_CORPUS_INVALID",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_CORPUS_INVALID",
+      "allowedWarnings": [
+        "PX_SCENARIO_SOURCE_REFERENCE_INVALID",
+        "PX_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+        "PX_SOURCE_KIND_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "manifest_duplicate_source_sample_id"
+    },
+    {
+      "name": "report-duplicate-scenario-id",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/28/scenarioId",
+          "value": "scenario_28"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-047",
+      "ruleIdUnderTest": "PX_RULE_SCENARIO_ID_DUPLICATED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_ID_DUPLICATED",
+      "allowedWarnings": [
+        "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+        "PX_ROUTE_EVENT_IDENTITY_INVALID",
+        "PX_SCENARIO_SET_MISMATCH",
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_duplicate_scenario_id"
+    },
+    {
+      "name": "report-scenario-set-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/28/scenarioId",
+          "value": "scenario_99"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-048",
+      "ruleIdUnderTest": "PX_RULE_SCENARIO_SET_MISMATCH",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_SET_MISMATCH",
+      "allowedWarnings": [
+        "PX_ACTION_ROUTE_MISMATCH",
+        "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+        "PX_FAULT_INJECTION_MISMATCH",
+        "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+        "PX_ROUTE_EVENT_IDENTITY_INVALID",
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_scenario_set_mismatch"
+    },
+    {
+      "name": "manifest-source-distribution-regression",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/11/sourceKind",
+          "value": "real_web"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-049",
+      "ruleIdUnderTest": "PX_RULE_SOURCE_DISTRIBUTION_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_DISTRIBUTION_FAILED",
+      "allowedWarnings": [
+        "PX_SOURCE_KIND_RECOMPUTE_MISMATCH",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "manifest_source_distribution_regression"
+    },
+    {
+      "name": "report-scenario-references-missing-sample",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/sourceSampleIds/0",
+          "value": "sample_missing"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-050",
+      "ruleIdUnderTest": "PX_RULE_SCENARIO_SOURCE_REFERENCE_INVALID",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_SOURCE_REFERENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SOURCE_KIND_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_scenario_references_missing_sample"
+    },
+    {
+      "name": "report-entry-coverage-below-threshold",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/entryPoint",
+          "value": "direct_route"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/1/entryPoint",
+          "value": "direct_route"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-051",
+      "ruleIdUnderTest": "PX_RULE_ENTRY_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ENTRY_COVERAGE_FAILED",
+      "allowedWarnings": [
+        "PX_ACTION_ROUTE_MISMATCH",
+        "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_entry_coverage_below_threshold"
+    },
+    {
+      "name": "report-route-direct-reload-pair-missing",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/15/routeIntent",
+          "value": "graph"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/15/resolvedPath",
+          "value": "#/knowledge/graph?workspaceId=workspace_research"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/16/routeIntent",
+          "value": "graph"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/16/resolvedPath",
+          "value": "#/knowledge/graph?workspaceId=workspace_research"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-052",
+      "ruleIdUnderTest": "PX_RULE_ROUTE_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_COVERAGE_FAILED",
+      "allowedWarnings": [
+        "PX_RECOVERY_COVERAGE_FAILED",
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_route_direct_reload_pair_missing"
+    },
+    {
+      "name": "report-recovery-coverage-below-threshold",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/17/routeRecoveryResult",
+          "value": "not_applicable"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/17/openOutcome",
+          "value": "not_applicable"
+        },
+        {
+          "op": "remove",
+          "path": "/scenarioResults/17/errorCode"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/18/routeRecoveryResult",
+          "value": "not_applicable"
+        },
+        {
+          "op": "replace",
+          "path": "/scenarioResults/18/openOutcome",
+          "value": "not_applicable"
+        },
+        {
+          "op": "remove",
+          "path": "/scenarioResults/18/errorCode"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-053",
+      "ruleIdUnderTest": "PX_RULE_RECOVERY_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED",
+      "allowedWarnings": [
+        "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+        "PX_ROUTE_ERROR_CODE_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_recovery_coverage_below_threshold"
+    },
+    {
+      "name": "report-status-fault-coverage-below-threshold",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/19/faultInjection",
+          "value": "none"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-054",
+      "ruleIdUnderTest": "PX_RULE_STATUS_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_STATUS_COVERAGE_FAILED",
+      "allowedWarnings": [
+        "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_FAULT_INJECTION_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_status_fault_coverage_below_threshold"
+    },
+    {
+      "name": "report-governance-coverage-below-threshold",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/23/entryPoint",
+          "value": "direct_route"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-055",
+      "ruleIdUnderTest": "PX_RULE_GOVERNANCE_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_GOVERNANCE_COVERAGE_FAILED",
+      "allowedWarnings": [
+        "PX_ACTION_ROUTE_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_governance_coverage_below_threshold"
+    },
+    {
+      "name": "screenshot-viewport-does-not-match-manifest",
+      "base": "/documents/screenshotMetadatas/0",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "screenshot_viewport_does_not_match_manifest"
+        },
+        {
+          "op": "replace",
+          "path": "/viewport/width",
+          "value": 420
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-056",
+      "ruleIdUnderTest": "PX_RULE_SCREENSHOT_METADATA_MISMATCH",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_METADATA_MISMATCH",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+      ],
+      "requirementKey": "screenshot_viewport_does_not_match_manifest"
+    },
+    {
+      "name": "report-v2-regression-assertion-failed",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/12/result/assertionsPassed",
+          "value": 11
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-057",
+      "ruleIdUnderTest": "PX_RULE_V2_REGRESSION_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_V2_REGRESSION_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_v2_regression_assertion_failed"
+    },
+    {
+      "name": "report-fault-injection-status-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/20/faultInjection",
+          "value": "none"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-058",
+      "ruleIdUnderTest": "PX_RULE_FAULT_INJECTION_MISMATCH",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FAULT_INJECTION_MISMATCH",
+      "allowedWarnings": [
+        "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_STATUS_COVERAGE_FAILED",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH"
+      ],
+      "requirementKey": "report_fault_injection_status_mismatch"
+    },
+    {
+      "name": "report-action-route-cross-document-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/0/entryPoint",
+          "value": "open_in_workspace"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-059",
+      "ruleIdUnderTest": "PX_RULE_ACTION_ROUTE_MISMATCH",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ACTION_ROUTE_MISMATCH",
+      "allowedWarnings": [
+        "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_ENTRY_COVERAGE_FAILED",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_action_route_cross_document_mismatch"
+    },
+    {
+      "name": "report-route-error-code-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/17/errorCode",
+          "value": "FORBIDDEN"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-060",
+      "ruleIdUnderTest": "PX_RULE_ROUTE_ERROR_CODE_MISMATCH",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_ERROR_CODE_MISMATCH",
+      "allowedWarnings": [
+        "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_route_error_code_mismatch"
+    },
+    {
+      "name": "human-review-evidence-hash-does-not-match",
+      "base": "/documents/humanReview",
+      "targetSchema": "v2_external_brain_human_review.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/gateReviews/G1_entry/evidenceArtifacts/0/sha256",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-061",
+      "ruleIdUnderTest": "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "human_review_evidence_hash_does_not_match"
+    },
+    {
+      "name": "report-architecture-boundary-has-violations",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/violations",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-062",
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "requirementKey": "report_architecture_boundary_has_violations"
+    },
+    {
+      "name": "positive-base-observation-set-mismatch",
+      "base": "/documents/executionObservations/0",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioId",
+          "value": "scenario_99"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-063",
+      "ruleIdUnderTest": "PX_RULE_SEMANTIC_POSITIVE_BASE_INVALID",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+      "allowedWarnings": [
+        "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+        "PX_ROUTE_EVENT_IDENTITY_INVALID"
+      ],
+      "requirementKey": "positive_base_observation_set_mismatch"
+    },
+    {
+      "name": "forget-direct-open-succeeds",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/26/forgetVerification/reopenChecks/0/outcome",
+          "value": "focused_existing"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-064",
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementKey": "forget_direct_open_succeeds"
+    },
+    {
+      "name": "forget-reload-missing-error-code",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/26/forgetVerification/reopenChecks/1/errorCode"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-065",
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementKey": "forget_reload_missing_error_code"
+    },
+    {
+      "name": "forget-back-mode-not-covered",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/26/forgetVerification/reopenChecks/2/mode",
+          "value": "direct_open"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-066",
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementKey": "forget_back_mode_not_covered"
+    },
+    {
+      "name": "forget-reopen-check-omitted",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/26/forgetVerification/reopenChecks/3"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-067",
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "requirementKey": "forget_reopen_check_omitted"
+    },
+    {
+      "name": "screenshot-decoded-size-1x1",
+      "base": "/documents/screenshotMetadatas/0",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/imagePath",
+          "value": "virtual/screenshots/1x1-negative.png"
+        },
+        {
+          "op": "replace",
+          "path": "/imageSha256",
+          "value": "1280e8de649805526731cc11672b0479f5ca25d9bd7ebf7a3375f8a9c966205e"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-068",
+      "requirementKey": "screenshot_decoded_size_1x1",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "name": "screenshot-ihdr-size-does-not-match-metadata",
+      "base": "/documents/screenshotMetadatas/0",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/imagePath",
+          "value": "virtual/screenshots/420x900.png"
+        },
+        {
+          "op": "replace",
+          "path": "/imageSha256",
+          "value": "567c967609f8b21a15c705ac6fa28228c66a4ecbafd3bfe4d096c7bb281a2018"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-069",
+      "requirementKey": "screenshot_ihdr_size_does_not_match_metadata",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "name": "screenshot-hash-valid-metadata-size-false",
+      "base": "/documents/screenshotMetadatas/0",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "screenshot_hash_valid_metadata_size_false"
+        },
+        {
+          "op": "replace",
+          "path": "/viewport/width",
+          "value": 361
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-070",
+      "requirementKey": "screenshot_hash_valid_metadata_size_false",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "name": "viewport-360-uses-workspace-surface",
+      "base": "/documents/screenshotMetadatas/0",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "scenario_01-wrong-surface"
+        },
+        {
+          "op": "replace",
+          "path": "/captureSurface",
+          "value": "workspace_page"
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/hostPageVisible",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/sidePanelVisible",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/workspaceVisible",
+          "value": true
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-071",
+      "requirementKey": "viewport_360_uses_workspace_surface",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "name": "viewport-420-uses-workspace-surface",
+      "base": "/documents/screenshotMetadatas/1",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "scenario_02-wrong-surface"
+        },
+        {
+          "op": "replace",
+          "path": "/captureSurface",
+          "value": "workspace_page"
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/hostPageVisible",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/sidePanelVisible",
+          "value": false
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/workspaceVisible",
+          "value": true
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-072",
+      "requirementKey": "viewport_420_uses_workspace_surface",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "name": "viewport-768-uses-side-panel-surface",
+      "base": "/documents/screenshotMetadatas/7",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "scenario_08-wrong-surface"
+        },
+        {
+          "op": "replace",
+          "path": "/captureSurface",
+          "value": "side_panel"
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/sidePanelVisible",
+          "value": true
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/workspaceVisible",
+          "value": false
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-073",
+      "requirementKey": "viewport_768_uses_side_panel_surface",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "name": "viewport-1280-uses-side-panel-surface",
+      "base": "/documents/screenshotMetadatas/2",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "scenario_03-wrong-surface"
+        },
+        {
+          "op": "replace",
+          "path": "/captureSurface",
+          "value": "side_panel"
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/sidePanelVisible",
+          "value": true
+        },
+        {
+          "op": "replace",
+          "path": "/containerEvidence/workspaceVisible",
+          "value": false
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-074",
+      "requirementKey": "viewport_1280_uses_side_panel_surface",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "name": "composite-review-counted-as-product-viewport",
+      "base": "/documents/screenshotMetadatas/2",
+      "targetSchema": "v2_external_brain_screenshot_metadata.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/captureVariantId",
+          "value": "viewport_workspace_1280_composite"
+        },
+        {
+          "op": "replace",
+          "path": "/captureMode",
+          "value": "composite_review_only"
+        },
+        {
+          "op": "replace",
+          "path": "/captureSurface",
+          "value": "composite_review"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-075",
+      "requirementKey": "composite_review_counted_as_product_viewport",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "allowedWarnings": [
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "name": "entry-background-request-id-mismatch",
+      "base": "/documents/executionObservations/0",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/0/backgroundResult/requestId",
+          "value": "req_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-076",
+      "requirementKey": "entry_background_request_id_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_REQUEST_ID_CORRELATION_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_REQUEST_ID_CORRELATION_INVALID"
+    },
+    {
+      "name": "valid-prior-route-not-preserved",
+      "base": "/documents/executionObservations/5",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeEvents/0/routeIntent",
+          "value": "source_library"
+        },
+        {
+          "op": "replace",
+          "path": "/routeEvents/0/resolvedPath",
+          "value": "#/knowledge/sources?workspaceId=workspace_research"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-077",
+      "requirementKey": "valid_prior_route_not_preserved",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID"
+    },
+    {
+      "name": "invalid-prior-context-recovers-to-graph",
+      "base": "/documents/executionObservations/6",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeEvents/0/routeIntent",
+          "value": "graph"
+        },
+        {
+          "op": "replace",
+          "path": "/routeEvents/0/resolvedPath",
+          "value": "#/knowledge/graph?workspaceId=workspace_research"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-078",
+      "requirementKey": "invalid_prior_context_recovers_to_graph",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID"
+    },
+    {
+      "name": "forget-reopen-workspace-id-mismatch",
+      "base": "/documents/executionObservations/26",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/forgetLifecycle/reopenChecks/0/workspaceId",
+          "value": "workspace_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-079",
+      "requirementKey": "forget_reopen_workspace_id_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FORGET_DURABLE_IDENTITY_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID"
+    },
+    {
+      "name": "forget-reopen-source-id-mismatch",
+      "base": "/documents/executionObservations/26",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/forgetLifecycle/reopenChecks/0/sourceId",
+          "value": "source_runtime_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-080",
+      "requirementKey": "forget_reopen_source_id_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FORGET_DURABLE_IDENTITY_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID"
+    },
+    {
+      "name": "attempt-sequence-duplicated",
+      "base": "/documents/executionObservations/26",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/1/sequence",
+          "value": 1
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-081",
+      "requirementKey": "attempt_sequence_duplicated",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ATTEMPT_SEQUENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ATTEMPT_SEQUENCE_INVALID"
+    },
+    {
+      "name": "attempt-timestamp-not-monotonic",
+      "base": "/documents/executionObservations/26",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/attempts/1/entryAction/observedAt",
+          "value": "2026-07-16T09:59:00+08:00"
+        },
+        {
+          "op": "replace",
+          "path": "/attempts/1/backgroundResult/observedAt",
+          "value": "2026-07-16T09:59:00+08:00"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-082",
+      "requirementKey": "attempt_timestamp_not_monotonic",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ATTEMPT_SEQUENCE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ATTEMPT_SEQUENCE_INVALID"
+    },
+    {
+      "name": "route-event-source-id-mismatch",
+      "base": "/documents/executionObservations/26",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeEvents/1/sourceId",
+          "value": "source_runtime_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-083",
+      "requirementKey": "route_event_source_id_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "name": "architecture-scan-missing-workspace-root",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/testCommands/3/result/scanRoots/1"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-084",
+      "requirementKey": "architecture_scan_missing_workspace_root",
+      "expectedLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_RESULT_SHAPE_INVALID"
+    },
+    {
+      "name": "architecture-repository-commit-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/repositoryCommit",
+          "value": "ffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-085",
+      "requirementKey": "architecture_repository_commit_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-scanned-path-index-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/scannedPathIndexSha256",
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-086",
+      "requirementKey": "architecture_scanned_path_index_hash_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-ruleset-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/rulesetSha256",
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-087",
+      "requirementKey": "architecture_ruleset_hash_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-allowlist-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/allowlistSha256",
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-088",
+      "requirementKey": "architecture_allowlist_hash_mismatch",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "contract-fixture-promoted-to-production-acceptance",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/evidenceClass",
+          "value": "production_acceptance"
+        },
+        {
+          "op": "replace",
+          "path": "/acceptanceMode",
+          "value": "real_chrome_dual_container"
+        },
+        {
+          "op": "replace",
+          "path": "/claim",
+          "value": "V2-PX External Brain Productization passed dual-container real-Chrome acceptance."
+        },
+        {
+          "op": "replace",
+          "path": "/humanReview/evidenceClass",
+          "value": "production_acceptance"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-089",
+      "requirementKey": "contract_fixture_promoted_to_production_acceptance",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+      "allowedWarnings": [
+        "PX_HUMAN_REVIEW_EVIDENCE_INVALID",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_FIXTURE_EVIDENCE_PROMOTION_INVALID"
+    },
+    {
+      "name": "source-origin-and-fingerprint-combination-duplicated",
+      "base": "/documents/acceptanceManifest",
+      "targetSchema": "v2_external_brain_acceptance_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/1/originRef",
+          "value": "https://example.com/fixture/1"
+        },
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/1/contentFingerprint/artifactPath",
+          "value": "virtual/sources/sample_01.txt"
+        },
+        {
+          "op": "replace",
+          "path": "/sourceCorpus/1/contentFingerprint/value",
+          "value": "549d77148243859e5840eb146db0c2ffd8a6e9aa4b43ea5ced7a23685938fd3a"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-090",
+      "requirementKey": "source_origin_and_fingerprint_combination_duplicated",
+      "expectedLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SOURCE_FIXTURE_UNIQUENESS_INVALID"
+    },
+    {
+      "name": "artifact-raw-bytes-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/auditArtifacts/acceptanceHtml/sha256",
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-091",
+      "requirementKey": "artifact_raw_bytes_hash_mismatch",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "name": "referenced-artifact-path-missing",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scenarioResults/7/executionObservationPath",
+          "value": "virtual/missing-execution.json"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-092",
+      "requirementKey": "referenced_artifact_path_missing",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "name": "human-review-evidence-class-mismatch",
+      "base": "/documents/humanReview",
+      "targetSchema": "v2_external_brain_human_review.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/evidenceClass",
+          "value": "production_acceptance"
+        },
+        {
+          "op": "replace",
+          "path": "/signedClaim",
+          "value": "V2-PX External Brain Productization passed dual-container real-Chrome acceptance."
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-093",
+      "requirementKey": "human_review_evidence_class_mismatch",
+      "expectedPrimaryFailure": "PX_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID"
+    },
+    {
+      "name": "successful-back-route-identity-changed",
+      "base": "/documents/executionObservations/8",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeEvents/1/workspaceId",
+          "value": "workspace_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-094",
+      "requirementKey": "successful_back_route_identity_changed",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "name": "successful-reopen-workspace-identity-changed",
+      "base": "/documents/executionObservations/8",
+      "targetSchema": "v2_external_brain_execution_observation.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/routeEvents/2/workspaceId",
+          "value": "workspace_other"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-095",
+      "requirementKey": "successful_reopen_workspace_identity_changed",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "name": "successful-back-coverage-missing",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/8/successfulRecoveryModes/1"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-096",
+      "requirementKey": "successful_back_coverage_missing",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_ROUTE_COVERAGE_FAILED",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_RECOVERY_COVERAGE_FAILED"
+    },
+    {
+      "name": "successful-reopen-coverage-missing",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/8/successfulRecoveryModes/2"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-097",
+      "requirementKey": "successful_reopen_coverage_missing",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_ROUTE_COVERAGE_FAILED",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_RECOVERY_COVERAGE_FAILED"
+    },
+    {
+      "name": "architecture-source-tree-hash-mismatch",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/testCommands/3/result/sourceTreeSha256",
+          "value": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-098",
+      "requirementKey": "architecture_source_tree_hash_mismatch",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-excluded-path-targets-source-root",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "add",
+          "path": "/testCommands/3/result/excludedPaths/-",
+          "value": "apps/chrome-extension/entrypoints/workspace"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-099",
+      "requirementKey": "architecture_excluded_path_targets_source_root",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-path-index-order-mismatch",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/canonicalPathIndex/content",
+          "value": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\napps/chrome-extension/entrypoints/workspace/index.html\napps/chrome-extension/entrypoints/sidepanel/App.tsx\n"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-100",
+      "requirementKey": "architecture_path_index_order_mismatch",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_ARCHITECTURE_BOUNDARY_FAILED",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "architecture-path-index-omits-workspace",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/canonicalPathIndex/content",
+          "value": "apps/chrome-extension/entrypoints/sidepanel/App.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-101",
+      "requirementKey": "architecture_path_index_omits_workspace",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_ARCHITECTURE_BOUNDARY_FAILED",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "name": "scope-overclaim-contract-fixture",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/claim",
+          "value": "V2-PX External Brain Productization passed dual-container real-Chrome acceptance."
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-102",
+      "requirementKey": "scope_overclaim_contract_fixture",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "expectedLayer": "schema",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_SCOPE_OVERCLAIM"
+    },
+    {
+      "name": "permission-verification-shape-missing",
+      "base": "/documents/report",
+      "targetSchema": "v2_external_brain_report.schema.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scenarioResults/23/permissionVerification/newScanStopped"
+        }
+      ],
+      "expectedSchemaValid": false,
+      "requirementId": "PX-N-103",
+      "requirementKey": "permission_verification_shape_missing",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED",
+      "expectedLayer": "schema",
+      "allowedWarnings": [],
+      "ruleIdUnderTest": "PX_RULE_PERMISSION_VERIFICATION_INVALID"
+    },
+    {
+      "name": "g4-source-static-data-service-import",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nimport { query } from \"data_service/client\";\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "55bcdaf1be8adc3d2f2572c8671f82ab94c038d0e0611970c74b6371a25c3de5"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "55bcdaf1be8adc3d2f2572c8671f82ab94c038d0e0611970c74b6371a25c3de5"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 55bcdaf1be8adc3d2f2572c8671f82ab94c038d0e0611970c74b6371a25c3de5 apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "d02161fd79d06531daf9d950b38daefaac8dd04e9964e54373d9d913b8350ae0"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-104",
+      "requirementKey": "g4_source_static_data_service_import",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "name": "g4-source-dynamic-runtime-service-import",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nexport const loadReader = () => import(\"navia_runtime/modules/page_reading\");\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "61a1c36931b41ee6600bcd595670f4d133be3dcd036592aebeae75cb7268443b"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "61a1c36931b41ee6600bcd595670f4d133be3dcd036592aebeae75cb7268443b"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 61a1c36931b41ee6600bcd595670f4d133be3dcd036592aebeae75cb7268443b apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "43f9996416e62882829b11dbce7fd45406b26e3687289aa05bad23c467e5d2e5"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-105",
+      "requirementKey": "g4_source_dynamic_runtime_service_import",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "name": "g4-source-direct-fetch-normalized-endpoint",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nexport const bypass = () => fetch (\"http://localhost:17861/v1/query\");\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "98066a77d70c61802512054eba27e1f311ea91e4608431116b871d8e87f10b71"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "98066a77d70c61802512054eba27e1f311ea91e4608431116b871d8e87f10b71"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 98066a77d70c61802512054eba27e1f311ea91e4608431116b871d8e87f10b71 apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "2c749a013eb4a8ec637d387dc9c6594a135639957c381cc46820fd948390ef11"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-106",
+      "requirementKey": "g4_source_direct_fetch_normalized_endpoint",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "name": "g4-source-knowledge-item-creation",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nexport const fabricateItem = () => new KnowledgeItem({ id: \"fake\" });\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "b9dc10105347f98c13262442b6c9d880acd325d7c895453877fbd4a713b855f8"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "b9dc10105347f98c13262442b6c9d880acd325d7c895453877fbd4a713b855f8"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 b9dc10105347f98c13262442b6c9d880acd325d7c895453877fbd4a713b855f8 apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "a494217175f86d70c4907225e93d3bfd05865cde093f949104020c3d1c573c53"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-107",
+      "requirementKey": "g4_source_knowledge_item_creation",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "name": "g4-source-evidence-ref-creation",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nexport const fabricateEvidence = () => new EvidenceRef({ id: \"fake\" });\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "a8de5ae4fe7f4a704caf02fbbc892104c14065a421f33d27eef70644cffd8b72"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "a8de5ae4fe7f4a704caf02fbbc892104c14065a421f33d27eef70644cffd8b72"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 a8de5ae4fe7f4a704caf02fbbc892104c14065a421f33d27eef70644cffd8b72 apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "31bb6bf9a8489d6644a834adb7ac2f11a472f4d1eeddc622e9a672dddeec8546"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-108",
+      "requirementKey": "g4_source_evidence_ref_creation",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "name": "g4-source-graph-relation-creation",
+      "base": "/documents/architectureScanManifest",
+      "targetSchema": "v2_external_brain_architecture_scan_manifest.schema.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/content",
+          "value": "import { runtimeClient } from \"../../src/shared/runtimeClient\";\nimport { openWorkspaceAction } from \"../../src/modules/knowledge_workspace/openWorkspaceAction\";\nexport const sidePanelKnowledgeEntry = { runtimeClient, openWorkspaceAction };\nexport const fabricateEdge = () => graphRelation(\"a\", \"b\");\n"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/inlineSource/sha256",
+          "value": "95d413e9e61907971c54b8954ae898ac72ded8062ddef5cfefd3d74a5452f6a1"
+        },
+        {
+          "op": "replace",
+          "path": "/trackedPaths/0/blobSha256",
+          "value": "95d413e9e61907971c54b8954ae898ac72ded8062ddef5cfefd3d74a5452f6a1"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/content",
+          "value": "100644 95d413e9e61907971c54b8954ae898ac72ded8062ddef5cfefd3d74a5452f6a1 apps/chrome-extension/entrypoints/sidepanel/App.tsx\n100644 f50ef1fd88671c0ec9d5b094783b8dfeb724676ae0ff3b6fd8a81e38e690dc70 apps/chrome-extension/entrypoints/workspace/index.html\n100644 f0a7781eb292e0293f3ba745ea7e9a0bf200f9a14d63e0bebacc684df8317187 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n"
+        },
+        {
+          "op": "replace",
+          "path": "/canonicalSourceTree/sha256",
+          "value": "9551dde5cbfd52cf5bb639f2808cb377df6f2f194c8b6e8f3cc84cb88a40ea1d"
+        }
+      ],
+      "expectedSchemaValid": true,
+      "requirementId": "PX-N-109",
+      "requirementKey": "g4_source_graph_relation_creation",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "expectedLayer": "semantic",
+      "allowedWarnings": [
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+      ],
+      "ruleIdUnderTest": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED"
+    }
+  ]
+}

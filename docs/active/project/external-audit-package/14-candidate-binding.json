@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "v2-px6-candidate-binding/v1",
+  "evidenceClass": "production_acceptance",
+  "px6RunId": "px6-machine-exit-20260914t164500z",
+  "t04RunId": "t04-r4-resolved-invocation-20260914t145648z",
+  "snapshotCommit": "275a7bc8a1ece67a60b1762ef7e295d6f13dab2a",
+  "exitManifestRawSha256": "1e37f5ed06dd28bf94cd3fb4b2f92ee7f0fe79f7d041353f6a58b4a1ed1f4186",
+  "exitManifestContentSha256": "618c9c17626ed6c7373fcd55fab731585a1e145c7768b752566364a78cefff66",
+  "exitManifest": {
+    "artifactRoot": "t04_candidate",
+    "path": "exit-manifest.json",
+    "sha256": "1e37f5ed06dd28bf94cd3fb4b2f92ee7f0fe79f7d041353f6a58b4a1ed1f4186",
+    "byteLength": 4646,
+    "mediaType": "application/json"
+  },
+  "publicEvidenceArchive": {
+    "artifactRoot": "t04_candidate",
+    "path": "public/t04-public-evidence.tar.gz",
+    "sha256": "815146b7af5718ce3343abcffa7c4ab195caed959cadd286908095df5d28f5a9",
+    "byteLength": 276990454,
+    "mediaType": "application/gzip"
+  },
+  "independentImplementationAudit": {
+    "artifactRoot": "t04_external_audit",
+    "path": "t04.1-independent-implementation-exit-audit.md",
+    "sha256": "5f48071ea11010a485a3e1189330961d8c6f7fda0bf04a468ae28f5831f0e3dc",
+    "byteLength": 27197,
+    "mediaType": "text/markdown"
+  },
+  "independentAuditFatal": 0,
+  "independentAuditMajor": 0,
+  "artifactRootConsistency": "closed",
+  "denominators": {
+    "productionScenarios": 17,
+    "sources": 12,
+    "webSources": 6,
+    "localSources": 3,
+    "noteSources": 3,
+    "routeCells": 20,
+    "forgetRecoveryChains": 12,
+    "faultClasses": 4,
+    "viewportClasses": 4,
+    "axeSerious": 0,
+    "axeCritical": 0,
+    "keyboardPassed": 5,
+    "keyboardTotal": 5,
+    "validationRules": 63,
+    "machineRulesPassed": 61,
+    "humanRulesPending": 2,
+    "contractFixtures": 109,
+    "productionMutations": 42,
+    "t04Acceptance": 14,
+    "t04Negatives": 25
+  }
+}

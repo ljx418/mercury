@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 import threading
+import urllib.error
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
 
 from jsonschema import Draft202012Validator
+import pytest
 
-from navia_runtime.modules.memory.data_service_client import DataServiceClientConfig, DataServiceHttpClient
+from navia_runtime.modules.memory.data_service_client import DataServiceClientConfig, DataServiceClientError, DataServiceHttpClient
 
 
 class _Server:
@@ -134,6 +136,13 @@ def test_v2_data_service_client_maps_auth_required_and_sends_api_key() -> None:
     assert any(request["apiKey"] == "target-key" for request in server.requests)
 
 
+def test_v2_data_service_client_maps_http_5xx_to_unreachable() -> None:
+    error = urllib.error.HTTPError("http://127.0.0.1:8003", 503, "unavailable", {}, None)
+    with pytest.raises(DataServiceClientError, match="temporarily unavailable") as failure:
+        DataServiceHttpClient._raise_http_error(error)
+    assert failure.value.code == "DATA_SERVICE_UNREACHABLE"
+
+
 def test_v2_data_service_client_source_lifecycle_mapping() -> None:
     server = _Server()
     client = DataServiceHttpClient(DataServiceClientConfig(base_url=server.base_url))
@@ -169,4 +178,3 @@ def test_v2_data_service_client_maps_malformed_response_to_version_mismatch() ->
     assert status["adapterStatus"] == "blocked"
     assert status["dataServiceStatus"] == "version_mismatch"
     assert status["userAction"] == "upgrade_data_service"
-

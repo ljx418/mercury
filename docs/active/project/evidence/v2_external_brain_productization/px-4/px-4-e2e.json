@@ -1,0 +1,547 @@
+{
+  "schemaVersion": "v2-px-4-workspace-products-e2e/v1",
+  "generatedAt": "2026-09-08T09:40:01.138Z",
+  "extensionRoot": "/mnt/c/workspace/navia/apps/chrome-extension/chrome-mv3-unpacked",
+  "headless": true,
+  "realRuntime": "http://127.0.0.1:17861",
+  "realSourceSetup": {
+    "sourceId": "src_00000000000000000000000026",
+    "title": "Navia PRD - V2-PX Route A",
+    "originUrl": "navia://docs/active/project/01-prd.md",
+    "status": "trace_ready",
+    "operationId": "op_00000000000000000000000027",
+    "evidenceRefCount": 1,
+    "idempotentReplay": false,
+    "sourceFingerprint": "dcee59149f80b129ed22628dcd4e2d36828ffce1cf6eecb43072c78bd44879bd"
+  },
+  "sourceId": "src_00000000000000000000000026",
+  "checks": [
+    {
+      "id": "workspace_build_artifact",
+      "passed": true,
+      "detail": "workspace.html exists in WXT production output"
+    },
+    {
+      "id": "manifest_permissions_unchanged",
+      "passed": true,
+      "detail": "[\"activeTab\",\"scripting\",\"sidePanel\",\"storage\",\"tabs\"]"
+    },
+    {
+      "id": "no_remote_script_csp",
+      "passed": true,
+      "detail": "Manifest does not relax extension script CSP"
+    },
+    {
+      "id": "runtime_get_url_shape",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html"
+    },
+    {
+      "id": "quick_surface_real_source",
+      "passed": true,
+      "detail": "当前 sourceNavia PRD - V2-PX Route Atrace_ready · src_00000000000000000000000026 · op_00000000000000000000000027"
+    },
+    {
+      "id": "sidepanel_management_absent",
+      "passed": true,
+      "detail": "Full management panels are absent from Side Panel"
+    },
+    {
+      "id": "sidepanel_420_no_horizontal_overflow",
+      "passed": true,
+      "detail": "{\"clientWidth\":420,\"scrollWidth\":420}"
+    },
+    {
+      "id": "sidepanel_360_no_horizontal_overflow",
+      "passed": true,
+      "detail": "{\"clientWidth\":360,\"scrollWidth\":360}"
+    },
+    {
+      "id": "trace_quick_view_runtime_evidence",
+      "passed": true,
+      "detail": "Evidence Tracesrc_00000000000000000000000026fallback_textV2-7 已证明 planning-aligned local knowledge acceptance，但当前完整 Knowledge 管理面仍主要承载在窄 Side Panel 中，尚未形成用户可从网页伴读入口自然进入的独立宽屏管理工作台。下一阶段固定为 `V2-PX External Brain Productization`，只补齐 Side Panel 快捷面、Extension Workspace Page、入口、路由、跨容器状态恢复和真实 Chrome 产品化证据，不改写已通过的 V2-7 合同与后端能力结论。这里只展示 Runtime 返回的 EvidenceRef，不推断 located 状态。"
+    },
+    {
+      "id": "production_sidepanel_entry",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "runtime_online_authority",
+      "passed": true,
+      "detail": "Workspace loaded real Runtime status"
+    },
+    {
+      "id": "ask_current_workspace_entry",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "open_in_workspace_preserves_source_context",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "view_source_entry",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "open_workspace_entry",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "source_identity",
+      "passed": true,
+      "detail": "src_00000000000000000000000026"
+    },
+    {
+      "id": "cross_container_operation_identity",
+      "passed": true,
+      "detail": "{\"sidepanelIdentity\":\"trace_ready · src_00000000000000000000000026 · op_00000000000000000000000027\",\"sidepanelSourceId\":\"src_00000000000000000000000026\",\"workspaceOperationId\":\"op_00000000000000000000000027\",\"expected\":\"op_00000000000000000000000027\"}"
+    },
+    {
+      "id": "workspace_trace_runtime_evidence",
+      "passed": true,
+      "detail": "Evidence TraceNavia PRD - V2-PX Route A关闭src_00000000000000000000000026fallback_textV2-7 已证明 planning-aligned local knowledge acceptance，但当前完整 Knowledge 管理面仍主要承载在窄 Side Panel 中，尚未形成用户可从网页伴读入口自然进入的独立宽屏管理工作台。下一阶段固定为 `V2-PX External Brain Productization`，只补齐 Side Panel 快捷面、Extension Workspace Page、入口、路由、跨容器状态恢复和真实 Chrome 产品化证据，不改写已通过的 V2-7 合同与后端能力结论。fallback_shown"
+    },
+    {
+      "id": "workspace_ask_real_runtime",
+      "passed": true,
+      "detail": "Source-backed answer1 evidence refs基于已保存来源《Navia PRD - V2-PX Route A》，Navia 可以回答当前问题，但 V2-1 仍使用 mock adapter。ev_073b63be45f45654"
+    },
+    {
+      "id": "workspace_graph_runtime_nodes",
+      "passed": true,
+      "detail": "nodes=2"
+    },
+    {
+      "id": "workspace_graph_node_selection",
+      "passed": true,
+      "detail": "Navia Knowledgeworkspace"
+    },
+    {
+      "id": "workspace_permission_grant",
+      "passed": true,
+      "detail": "\n    NNaviaKnowledge Workspace来源库证据问答知识图谱权限Workspace IDws_default权限Navia Knowledge刷新状态RuntimeonlineAdapterreadydata_serviceuncheckedSource buildtrace_readyPermissionRoot显式授权授权只允许后续用户触发的导入；不会自动扫描，不删除既有 source。授权名称脱敏路径授权PX-4 explicit test grant~/Documents/px-4-auditgranted · single_file撤销\n  \n\n\n"
+    },
+    {
+      "id": "workspace_permission_revoke",
+      "passed": true,
+      "detail": "\n    NNaviaKnowledge Workspace来源库证据问答知识图谱权限Workspace IDws_default权限Navia Knowledge刷新状态RuntimeonlineAdapterreadydata_serviceuncheckedSource buildtrace_readyPermissionRoot显式授权授权只允许后续用户触发的导入；不会自动扫描，不删除既有 source。授权名称脱敏路径授权PX-4 explicit test grant~/Documents/px-4-auditrevoked · single_file撤销\n  \n\n\n"
+    },
+    {
+      "id": "workspace_forget_four_surfaces",
+      "passed": true,
+      "detail": "Runtime verificationLibrary trueAsk trueGraph trueTrace true"
+    },
+    {
+      "id": "workspace_forgotten_direct_route",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000113?workspaceId=ws_default"
+    },
+    {
+      "id": "workspace_768_no_horizontal_overflow",
+      "passed": true,
+      "detail": "{\"clientWidth\":768,\"scrollWidth\":768}"
+    },
+    {
+      "id": "direct_open_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000026?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_identity",
+      "passed": true,
+      "detail": "返回来源库Source DetailNavia PRD - V2-PX Route Anavia://docs/active/project/01-prd.md查看 Trace遗忘来源Source IDsrc_00000000000000000000000026Operation IDop_00000000000000000000000027状态trace_readyRevision1Evidence refs1证据来自 Runtime；Workspace 不补写定位状态。"
+    },
+    {
+      "id": "direct_open_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "five_route_four_mode_matrix",
+      "passed": true,
+      "detail": "20/20"
+    },
+    {
+      "id": "invalid_route_recovery",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/foreign"
+    },
+    {
+      "id": "workspace_not_found",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=workspace_missing"
+    },
+    {
+      "id": "workspace_not_found_recovery_target",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "source_not_found",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/source_missing?workspaceId=ws_default"
+    },
+    {
+      "id": "runtime_offline_shell",
+      "passed": true,
+      "detail": "RuntimeofflineAdapteruncheckeddata_serviceuncheckedSource buildunknown"
+    },
+    {
+      "id": "runtime_reconnect_authority_reload",
+      "passed": true,
+      "detail": "\n    NNaviaKnowledge Workspace来源库证据问答知识图谱权限Workspace IDws_default来源库Navia Knowledge刷新状态RuntimeonlineAdapterreadydata_serviceuncheckedSource buildforgottenSource Library已保存来源1/1 sourcesNavia Knowledge0 pending · trace 100%搜索来源构建状态全部Trace readyBuildingFailedDegradedNavia PRD - V2-PX Route Anavia://docs/active/project/01-prd.mdtrace_ready\n  \n\n\n"
+    },
+    {
+      "id": "concurrent_focus_existing_or_create",
+      "passed": true,
+      "detail": "Workspace pages after 8 concurrent requests: 1"
+    },
+    {
+      "id": "concurrent_result_identity",
+      "passed": true,
+      "detail": "[{\"requestId\":\"px1_concurrent_0\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"created_new\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_1\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_2\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_3\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_4\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_5\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_6\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_7\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698131,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"}]"
+    },
+    {
+      "id": "no_ingest_on_open",
+      "passed": true,
+      "detail": "Observed POST /v1/knowledge/sources requests: 0"
+    },
+    {
+      "id": "tab_close_then_user_create",
+      "passed": true,
+      "detail": "{\"requestId\":\"px3_after_tab_close\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"created_new\",\"tabId\":2011698133,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"}"
+    },
+    {
+      "id": "fresh_query_reuses_existing_tab",
+      "passed": true,
+      "detail": "{\"afterCloseResult\":{\"requestId\":\"px3_after_tab_close\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"created_new\",\"tabId\":2011698133,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},\"afterRestartEquivalent\":{\"requestId\":\"px3_restart_equivalent\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":2011698133,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"}}"
+    },
+    {
+      "id": "px3_no_ingest_after_lifecycle",
+      "passed": true,
+      "detail": "Observed POST /v1/knowledge/sources requests: 0"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/sidepanel-420.png",
+      "sha256": "54261f5c80a0f6fc9c785c95f07a6ced855b013334750e49bb81de9bc09fbf78",
+      "bytes": 108266
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/sidepanel-360.png",
+      "sha256": "b4578f732513be4a2ef814079906cb808c875057ae4b6022be745f6915307b8c",
+      "bytes": 102757
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-library-1280.png",
+      "sha256": "eafff28215d52302b30a3419ddbc8842db93eb9be6632a0c54b827bf2f967ec6",
+      "bytes": 39321
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-source-detail-1280.png",
+      "sha256": "ebaa5d216aea1c6e51c07239fa0a6d8fbf597f9701f9afa35a9fd503a2538a5c",
+      "bytes": 41445
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-forget-verification-1280.png",
+      "sha256": "0c072079a865b55d32e5d194f085769d93c7d5bfedd172e4290a1346a7732a8d",
+      "bytes": 58825
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-library-768.png",
+      "sha256": "6d4bacb41c537b5f3434f22755c78e9f2f64e63a63be1e594b3d8dae5b6ad83a",
+      "bytes": 36208
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-runtime-offline-1280.png",
+      "sha256": "1c05b0bd67e5e6e5ac3daa22cae082bc1d9123258e98f5c3f0711074cf7974f9",
+      "bytes": 38910
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-4/screenshots/workspace-runtime-reconnected-1280.png",
+      "sha256": "78d0e83aba05a2dcde8b88e6845d16f528c866697ba758dab1334e642ba12243",
+      "bytes": 39193
+    }
+  ],
+  "passed": true,
+  "issues": [],
+  "disposableSource": {
+    "sourceId": "src_00000000000000000000000113",
+    "workspaceId": "ws_default",
+    "sourceType": "authorized_local_document",
+    "title": "PX-4 disposable PRD source f81c9bed",
+    "originUrl": "navia://px-4-disposable/f81c9bed62a49c2d41a52083191cc3b816a736aae64f4041fa6a35d8d5c3ef48",
+    "status": "trace_ready",
+    "revision": 1,
+    "operationId": "op_00000000000000000000000114",
+    "evidenceRefs": [
+      {
+        "evidenceRefId": "ev_f81c9bed62a49c2d",
+        "sourceId": "src_00000000000000000000000113",
+        "locatorType": "fallback_text",
+        "textQuote": "# Navia / 伴航 V1 PRD\n\n版本：V1.0 PRD Baseline\n日期：2026-05-31\n产品名：Navia / 伴航\n角色名建议：小航\n阶段目标：Chrome 插件页面内交互优先的 Headless 伴随式 AI MVP\n\n---\n\n## 1. 产品背景\n\n用户在浏览网页、阅读文章、查看技术文档、调研产品、整理资料时，经常需要即时理解当前页面内容，并进一步提问、总结、结构化整理、生成思维导图。传统 Chatbot 需要复制粘贴内容，缺乏当前页面上下文，也很难沉淀为后续个人知识库和个人 Agent 的底层能力。\n\nNavia / 伴航的目标是构建一个伴随式 AI 系统：前",
+        "status": "fallback_shown",
+        "fallbackText": "# Navia / 伴航 V1 PRD\n\n版本：V1.0 PRD Baseline\n日期：2026-05-31\n产品名：Navia / 伴航\n角色名建议：小航\n阶段目标：Chrome 插件页面内交互优先的 Headless 伴随式 AI MVP\n\n---\n\n## 1. 产品背景\n\n用户在浏览网页、阅读文章、查看技术文档、调研产品、整理资料时，经常需要即时理解当前页面内容，并进一步提问、总结、结构化整理、生成思维导图。传统 Chatbot 需要复制粘贴内容，缺乏当前页面上下文，也很难沉淀为后续个人知识库和个人 Agent 的底层能力。\n\nNavia / 伴航的目标是构建一个伴随式 AI 系统：前",
+        "redactionApplied": true
+      }
+    ],
+    "createdAt": "2026-09-08T09:40:04Z",
+    "updatedAt": "2026-09-08T09:40:04Z"
+  },
+  "recoveryMatrix": [
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "reopen",
+      "passed": true
+    }
+  ],
+  "concurrentOpenResults": [
+    {
+      "requestId": "px1_concurrent_0",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "created_new",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_1",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_2",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_3",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_4",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_5",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_6",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_7",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 2011698131,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "path": "screenshots/03-permissions-revoked.png",
+  "sha256": "d4dfaed81f2838f285462353fdd1e136b44e5d8239c5cafba7346761c446798a",
+  "url": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default",
+  "surface": "workspace_page",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "capturedAt": "2026-09-13T15:54:29.425Z"
+}

@@ -2,6 +2,8 @@ import type { ExtractedPageContext } from "./pageContext";
 import type { AgentEvent } from "./sse";
 import { parseSseBlocks } from "./sse";
 
+declare const __NAVIA_E2E_BRIDGE__: boolean;
+
 export const RUNTIME_URL = "http://127.0.0.1:17861";
 export const LAST_SESSION_STORAGE_KEY = "navia_last_session_id";
 
@@ -185,8 +187,8 @@ export type KnowledgeServiceStatus = {
   observedAt: string;
   frontendInferredRuntimeStatus: RuntimeStatus;
   runtimeStatus: RuntimeStatus;
-  adapterStatus: "ready" | "degraded" | "blocked" | "not_configured";
-  dataServiceStatus: "unchecked" | "connected" | "auth_required" | "unreachable" | "version_mismatch" | "blocked_by_policy";
+  adapterStatus: "ready" | "degraded" | "blocked" | "unchecked" | "not_configured";
+  dataServiceStatus: "unchecked" | "connected" | "degraded" | "auth_required" | "unreachable" | "version_mismatch" | "blocked_by_policy";
   sourceBuildStatus?: "not_saved" | "queued" | "ingesting" | "building" | "trace_ready" | "degraded" | "failed" | "forgotten";
   capabilities?: Record<string, boolean>;
   userAction?: string;
@@ -195,6 +197,8 @@ export type KnowledgeServiceStatus = {
 };
 
 export type KnowledgeSource = {
+  contentSnapshot?: { encoding: "utf8"; text: string; byteLength: number; sha256: string };
+  permissionRootId?: string;
   sourceId: string;
   workspaceId: string;
   sourceType: string;
@@ -253,6 +257,7 @@ export type KnowledgeGraph = {
 };
 
 export type PermissionRoot = {
+  workspaceId: string;
   permissionRootId: string;
   displayName: string;
   redactedPath: string;
@@ -264,8 +269,98 @@ export type PermissionRoot = {
 
 export type PermissionResult = {
   permissionRoot: PermissionRoot;
-  operation: KnowledgeOperation;
+  operation?: KnowledgeOperation;
 };
+
+export type PermissionGrantInput = { workspaceId: string; displayName: string; path: string; scope: "single_file" | "directory" };
+export type PermissionScan = { scanId: string; workspaceId: string; permissionRootId: string; files: Array<{ fileId: string; displayName: string; sizeBytes: number; sha256: string }> };
+
+export type RuntimeRequestErrorKind = "transport" | "authentication" | "api" | "stale";
+
+export class RuntimeRequestError extends Error {
+  readonly kind: RuntimeRequestErrorKind;
+  readonly httpStatus?: number;
+  readonly code?: string;
+  readonly reason?: string;
+  readonly requestId?: string;
+
+  constructor(input: {
+    kind: RuntimeRequestErrorKind;
+    message: string;
+    httpStatus?: number;
+    code?: string;
+    reason?: string;
+    requestId?: string;
+  }) {
+    super(input.message);
+    this.name = "RuntimeRequestError";
+    this.kind = input.kind;
+    this.httpStatus = input.httpStatus;
+    this.code = input.code;
+    this.reason = input.reason;
+    this.requestId = input.requestId;
+  }
+}
+
+export function isRuntimeRequestError(error: unknown): error is RuntimeRequestError {
+  return error instanceof RuntimeRequestError;
+}
+
+export function isStaleRuntimeRequestError(error: unknown): error is RuntimeRequestError {
+  return isRuntimeRequestError(error) && error.kind === "stale";
+}
+
+export type LocalRuntimeSessionSnapshot = Readonly<{
+  hasToken: boolean;
+  generation: number;
+}>;
+
+type LocalRuntimeSessionListener = (snapshot: LocalRuntimeSessionSnapshot) => void;
+
+const localRuntimeSession = {
+  token: "",
+  generation: 0,
+  controllers: new Map<number, AbortController>()
+};
+const localRuntimeSessionListeners = new Set<LocalRuntimeSessionListener>();
+let localRuntimeControllerId = 0;
+
+function publishLocalRuntimeSession(): void {
+  const snapshot = getLocalRuntimeSessionSnapshot();
+  for (const listener of localRuntimeSessionListeners) listener(snapshot);
+}
+
+function replaceLocalRuntimeToken(token: string): void {
+  localRuntimeSession.generation += 1;
+  for (const controller of localRuntimeSession.controllers.values()) controller.abort();
+  localRuntimeSession.controllers.clear();
+  localRuntimeSession.token = token;
+  publishLocalRuntimeSession();
+}
+
+export function setLocalRuntimeToken(token: string): void {
+  replaceLocalRuntimeToken(token);
+}
+
+export function clearLocalRuntimeSession(): void {
+  replaceLocalRuntimeToken("");
+}
+
+export function hasLocalRuntimeToken(): boolean {
+  return Boolean(localRuntimeSession.token);
+}
+
+export function getLocalRuntimeSessionSnapshot(): LocalRuntimeSessionSnapshot {
+  return Object.freeze({
+    hasToken: Boolean(localRuntimeSession.token),
+    generation: localRuntimeSession.generation
+  });
+}
+
+export function subscribeLocalRuntimeSession(listener: LocalRuntimeSessionListener): () => void {
+  localRuntimeSessionListeners.add(listener);
+  return () => localRuntimeSessionListeners.delete(listener);
+}
 
 export type ForgetSourceResult = {
   forgetRequest: Record<string, unknown>;
@@ -285,6 +380,7 @@ export type ForgetSourceResult = {
 type ApiResponse<T> = {
   ok: boolean;
   data: T | null;
+  request_id?: string;
   error?: { message?: string; code?: string; details?: Record<string, unknown> };
 };
 
@@ -466,6 +562,78 @@ export async function getKnowledgeServiceStatus(): Promise<KnowledgeServiceStatu
   return unwrapApiResponse(await runtimeJson<KnowledgeServiceStatus>({ path: "/v1/knowledge/status" }));
 }
 
+export type KnowledgeStatusPollerOptions = {
+  load?: () => Promise<KnowledgeServiceStatus>;
+  onStatus: (status: KnowledgeServiceStatus) => void;
+  onOffline: (error: unknown) => void;
+  onlineIntervalMs?: number;
+  offlineDelaysMs?: readonly number[];
+  scheduler?: Pick<typeof globalThis, "setTimeout" | "clearTimeout">;
+};
+
+export function createKnowledgeStatusPoller(options: KnowledgeStatusPollerOptions) {
+  const load = options.load ?? getKnowledgeServiceStatus;
+  const onlineIntervalMs = options.onlineIntervalMs ?? 5_000;
+  const offlineDelaysMs = options.offlineDelaysMs ?? [1_000, 2_000, 4_000, 8_000];
+  const scheduler = options.scheduler ?? globalThis;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let stopped = true;
+  let inFlight = false;
+  let refreshPending = false;
+  let offlineAttempt = 0;
+
+  const clearTimer = () => {
+    if (timer !== undefined) scheduler.clearTimeout(timer);
+    timer = undefined;
+  };
+  const schedule = (delay: number) => {
+    clearTimer();
+    timer = scheduler.setTimeout(() => void poll(), delay) as ReturnType<typeof setTimeout>;
+  };
+  const poll = async () => {
+    if (stopped || inFlight) return;
+    inFlight = true;
+    let nextDelay = onlineIntervalMs;
+    try {
+      const status = await load();
+      if (stopped) return;
+      offlineAttempt = 0;
+      options.onStatus(status);
+    } catch (error) {
+      if (stopped) return;
+      options.onOffline(error);
+      nextDelay = offlineDelaysMs[Math.min(offlineAttempt, offlineDelaysMs.length - 1)] ?? 8_000;
+      offlineAttempt += 1;
+    } finally {
+      inFlight = false;
+      if (!stopped) {
+        const delay = refreshPending ? 0 : nextDelay;
+        refreshPending = false;
+        schedule(delay);
+      }
+    }
+  };
+
+  return {
+    start() {
+      if (!stopped) return;
+      stopped = false;
+      void poll();
+    },
+    requestNow() {
+      if (stopped) return;
+      clearTimer();
+      if (inFlight) refreshPending = true;
+      else void poll();
+    },
+    stop() {
+      stopped = true;
+      refreshPending = false;
+      clearTimer();
+    }
+  };
+}
+
 export async function listKnowledgeWorkspaces(): Promise<KnowledgeWorkspace[]> {
   const body = unwrapApiResponse(await runtimeJson<{ workspaces: KnowledgeWorkspace[]; cursor: string | null }>({ path: "/v1/knowledge/workspaces" }));
   return body.workspaces;
@@ -502,13 +670,25 @@ export async function getKnowledgeGraph(workspaceId = "ws_default"): Promise<Kno
   }));
 }
 
-export async function grantKnowledgePermission(input: { displayName: string; redactedPath: string; scope: PermissionRoot["scope"] }): Promise<PermissionResult> {
+export async function grantKnowledgePermission(input: PermissionGrantInput): Promise<PermissionResult> {
   return unwrapApiResponse(await runtimeJson<PermissionResult>({
     path: "/v1/knowledge/permissions",
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: input
   }));
+}
+
+export async function listKnowledgePermissions(workspaceId: string): Promise<PermissionRoot[]> {
+  return unwrapApiResponse(await runtimeJson<{ permissions: PermissionRoot[] }>({ path: `/v1/knowledge/permissions?workspaceId=${encodeURIComponent(workspaceId)}` })).permissions;
+}
+
+export async function scanKnowledgePermission(permissionRootId: string, workspaceId: string): Promise<PermissionScan> {
+  return unwrapApiResponse(await runtimeJson<PermissionScan>({ path: `/v1/knowledge/permissions/${encodeURIComponent(permissionRootId)}/scan`, method: "POST", headers: { "Content-Type": "application/json" }, body: { workspaceId } }));
+}
+
+export async function importKnowledgeFiles(permissionRootId: string, input: { workspaceId: string; scanId: string; fileIds: string[] }, idempotencyKey: string): Promise<{ sources: KnowledgeSource[]; operations: KnowledgeOperation[]; idempotentReplay: boolean }> {
+  return unwrapApiResponse(await runtimeJson<{ sources: KnowledgeSource[]; operations: KnowledgeOperation[]; idempotentReplay: boolean }>({ path: `/v1/knowledge/permissions/${encodeURIComponent(permissionRootId)}/imports`, method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKey }, body: input }));
 }
 
 export async function revokeKnowledgePermission(permissionRootId: string): Promise<PermissionResult> {
@@ -519,16 +699,64 @@ export async function revokeKnowledgePermission(permissionRootId: string): Promi
 }
 
 export async function forgetKnowledgeSource(sourceId: string, confirmationText: string): Promise<ForgetSourceResult> {
-  return unwrapApiResponse(await runtimeJson<ForgetSourceResult>({
+  const body = await runtimeJson<ForgetSourceResult>({
     path: `/v1/knowledge/sources/${encodeURIComponent(sourceId)}/forget`,
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: { confirmationText }
-  }));
+  });
+  const result = unwrapApiResponse(body);
+  if (!isForgetSourceResult(result)) {
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: "Forget Source 返回了无效的验证结果。",
+      code: "INVALID_RUNTIME_RESPONSE",
+      reason: "forget_verification_shape_invalid",
+      requestId: body.request_id
+    });
+  }
+  return result;
+}
+
+export function isForgetSourceResult(value: unknown): value is ForgetSourceResult {
+  if (!value || typeof value !== "object") return false;
+  const result = value as Partial<ForgetSourceResult>;
+  const verification = result.verification;
+  const operation = result.operation;
+  return Boolean(
+    verification
+    && typeof verification === "object"
+    && typeof verification.verificationId === "string"
+    && typeof verification.forgetRequestId === "string"
+    && typeof verification.sourceId === "string"
+    && typeof verification.libraryAbsent === "boolean"
+    && typeof verification.askAbsent === "boolean"
+    && typeof verification.graphAbsent === "boolean"
+    && typeof verification.traceAbsent === "boolean"
+    && typeof verification.verifiedAt === "string"
+    && operation
+    && typeof operation === "object"
+    && typeof operation.operationId === "string"
+    && typeof operation.operationType === "string"
+    && typeof operation.status === "string"
+    && typeof operation.createdAt === "string"
+  );
+}
+
+export function isForgetSourceVerified(value: unknown): value is ForgetSourceResult {
+  return isForgetSourceResult(value)
+    && value.operation.status === "succeeded"
+    && value.verification.libraryAbsent === true
+    && value.verification.askAbsent === true
+    && value.verification.graphAbsent === true
+    && value.verification.traceAbsent === true;
 }
 
 export async function saveCurrentPageToKnowledge(context: ExtractedPageContext): Promise<SaveKnowledgeSourceResult> {
-  const idempotencyKey = knowledgeIdempotencyKey(context);
+  const snapshotText = (context.cleaned_text || context.visible_text || context.title).slice(0, 24_000);
+  const snapshotBytes = new TextEncoder().encode(snapshotText);
+  const snapshotSha256 = await sha256Hex(snapshotBytes);
+  const idempotencyKey = knowledgeIdempotencyKey(context, snapshotSha256);
   const candidate = {
     candidateId: `cand_${crypto.randomUUID().replace(/-/g, "")}`,
     workspaceId: "ws_default",
@@ -539,7 +767,13 @@ export async function saveCurrentPageToKnowledge(context: ExtractedPageContext):
     createdAt: context.captured_at || new Date().toISOString(),
     idempotencyKey,
     artifactIds: [],
-    sourceRefs: knowledgeEvidenceRefs(context)
+    sourceRefs: knowledgeEvidenceRefs(context),
+    contentSnapshot: {
+      encoding: "utf8",
+      text: snapshotText,
+      byteLength: snapshotBytes.byteLength,
+      sha256: snapshotSha256
+    }
   };
   return unwrapApiResponse(await runtimeJson<SaveKnowledgeSourceResult>({
     path: "/v1/knowledge/sources",
@@ -651,31 +885,196 @@ type RuntimeProxyResponse<T> = {
 };
 
 async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> {
-  if (shouldUseRuntimeProxy()) {
-    const proxied = (await chrome.runtime.sendMessage({
-      type: "navia.runtimeFetch",
-      request
-    })) as RuntimeProxyResponse<T>;
-    if (!proxied.ok || !proxied.response) {
-      throw new Error(proxied.error ?? "Runtime proxy failed.");
-    }
-    return proxied.response.body;
-  }
+  const knowledgeRequest = request.path.startsWith("/v1/knowledge/");
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  const generation = localRuntimeSession.generation;
+  const controllerId = knowledgeRequest ? ++localRuntimeControllerId : null;
+  const controller = knowledgeRequest ? new AbortController() : null;
+  if (controllerId !== null && controller) localRuntimeSession.controllers.set(controllerId, controller);
 
-  const response = await fetch(`${RUNTIME_URL}${request.path}`, {
-    method: request.method ?? "GET",
-    headers: request.headers,
-    body: request.body === undefined ? undefined : JSON.stringify(request.body)
+  const headers = {
+    ...request.headers,
+    "X-Request-ID": requestId,
+    ...(knowledgeRequest && localRuntimeSession.token
+      ? { Authorization: `Bearer ${localRuntimeSession.token}` }
+      : {})
+  };
+  const preparedRequest = { ...request, headers };
+  let responseBytesObserved = false;
+
+  try {
+    if (knowledgeRequest && shouldUseRuntimeProxy() && localRuntimeSession.token) {
+      throw new RuntimeRequestError({
+        kind: "api",
+        message: "会话凭据仅允许在 Navia 扩展页面使用。",
+        code: "CREDENTIAL_SCOPE_VIOLATION",
+        reason: "content_script_proxy_forbidden",
+        requestId
+      });
+    }
+    if (shouldUseRuntimeProxy()) {
+      const proxied = (await chrome.runtime.sendMessage({
+        type: "navia.runtimeFetch",
+        request: preparedRequest
+      })) as RuntimeProxyResponse<T>;
+      if (!proxied.ok || !proxied.response) {
+        throw new RuntimeRequestError({
+          kind: "transport",
+          message: proxied.error ?? "Runtime proxy failed.",
+          reason: "runtime_proxy_failed",
+          requestId
+        });
+      }
+      if (knowledgeRequest && generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+      return classifyRuntimeResponse(proxied.response.body, proxied.response.status, requestId, knowledgeRequest);
+    }
+
+    const requestBody = preparedRequest.body === undefined ? undefined : JSON.stringify(preparedRequest.body);
+    const requestObservation = emitR2RuntimeObservation({
+      phase: "request",
+      method: preparedRequest.method ?? "GET",
+      url: `${RUNTIME_URL}${preparedRequest.path}`,
+      requestId,
+      contentType: request.headers?.["Content-Type"] ?? request.headers?.["content-type"] ?? null,
+      bodyBase64: requestBody === undefined ? null : bytesToBase64(new TextEncoder().encode(requestBody)),
+      containsPrivatePath: Boolean(preparedRequest.body && typeof preparedRequest.body === "object" && "path" in preparedRequest.body)
+    });
+    const responsePromise = fetch(`${RUNTIME_URL}${preparedRequest.path}`, {
+      method: preparedRequest.method ?? "GET",
+      headers: preparedRequest.headers,
+      body: requestBody,
+      signal: controller?.signal
+    });
+    await requestObservation;
+    const response = await responsePromise;
+    if (knowledgeRequest && generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+    let body: ApiResponse<T>;
+    try {
+      const responseBytes = new Uint8Array(await response.arrayBuffer());
+      responseBytesObserved = true;
+      await emitR2RuntimeObservation({
+        phase: "response",
+        method: preparedRequest.method ?? "GET",
+        url: `${RUNTIME_URL}${preparedRequest.path}`,
+        requestId,
+        status: response.status,
+        contentType: response.headers.get("content-type"),
+        bodyBase64: bytesToBase64(responseBytes)
+      });
+      body = JSON.parse(new TextDecoder().decode(responseBytes)) as ApiResponse<T>;
+    } catch {
+      throw new RuntimeRequestError({
+        kind: "api",
+        message: "Runtime 返回了无效的 JSON。",
+        httpStatus: response.status,
+        code: "INVALID_RUNTIME_RESPONSE",
+        reason: "invalid_json",
+        requestId
+      });
+    }
+    if (knowledgeRequest && generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(body.request_id ?? requestId);
+    return classifyRuntimeResponse(body, response.status, requestId, knowledgeRequest);
+  } catch (error) {
+    if (!responseBytesObserved) {
+      await emitR2RuntimeObservation({
+        phase: "transport_failure",
+        method: preparedRequest.method ?? "GET",
+        url: `${RUNTIME_URL}${preparedRequest.path}`,
+        requestId,
+        error: error instanceof Error ? error.message : "Runtime transport failed"
+      });
+    }
+    if (isRuntimeRequestError(error)) throw error;
+    if (knowledgeRequest && (generation !== localRuntimeSession.generation || isAbortError(error))) {
+      throw staleRuntimeRequestError(requestId);
+    }
+    throw new RuntimeRequestError({
+      kind: "transport",
+      message: error instanceof Error ? error.message : "Runtime 当前不可达",
+      reason: "runtime_transport_failed",
+      requestId
+    });
+  } finally {
+    if (controllerId !== null) localRuntimeSession.controllers.delete(controllerId);
+  }
+}
+
+async function emitR2RuntimeObservation(observation: Record<string, unknown>): Promise<void> {
+  if (typeof __NAVIA_E2E_BRIDGE__ === "undefined" || !__NAVIA_E2E_BRIDGE__) return;
+  if (typeof chrome === "undefined" || !chrome.runtime?.sendMessage) return;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const acknowledgement = await chrome.runtime.sendMessage({ type: "navia.e2e.r2.runtime_observation", observation });
+      if (acknowledgement?.ok === true) return;
+    } catch {
+      // Retry only the E2E transport; the Background de-duplicates phase/requestId.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let index = 0; index < bytes.length; index += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+  }
+  return btoa(binary);
+}
+
+function classifyRuntimeResponse<T>(body: ApiResponse<T>, status: number, fallbackRequestId: string, knowledgeRequest: boolean): ApiResponse<T> {
+  if (!knowledgeRequest) return body;
+  const requestId = body.request_id ?? fallbackRequestId;
+  const code = body.error?.code;
+  const detailsReason = body.error?.details?.reason;
+  const reason = typeof detailsReason === "string" ? detailsReason : body.error?.message;
+  if (status === 401 || status === 403) {
+    const error = new RuntimeRequestError({
+      kind: "authentication",
+      message: body.error?.message ?? "会话认证失效，请重新输入 Runtime 令牌",
+      httpStatus: status,
+      code,
+      reason,
+      requestId
+    });
+    clearLocalRuntimeSession();
+    throw error;
+  }
+  if (status < 200 || status >= 300 || !body.ok || body.data === null) {
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: body.error?.message ?? `Runtime request failed with HTTP ${status}.`,
+      httpStatus: status,
+      code,
+      reason,
+      requestId
+    });
+  }
+  return body;
+}
+
+function staleRuntimeRequestError(requestId: string): RuntimeRequestError {
+  return new RuntimeRequestError({
+    kind: "stale",
+    message: "Runtime 会话已变化，忽略旧请求结果。",
+    code: "STALE_RUNTIME_SESSION",
+    reason: "credential_generation_changed",
+    requestId
   });
-  return (await response.json()) as ApiResponse<T>;
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException
+    ? error.name === "AbortError"
+    : error instanceof Error && error.name === "AbortError";
 }
 
 function shouldUseRuntimeProxy(): boolean {
   return typeof chrome !== "undefined" && Boolean(chrome.runtime?.sendMessage) && window.location.protocol !== "chrome-extension:";
 }
 
-function knowledgeIdempotencyKey(context: ExtractedPageContext): string {
-  return `navia-v2-${hashString(`${context.url}:${context.title}:${context.captured_at}`)}`;
+function knowledgeIdempotencyKey(context: ExtractedPageContext, snapshotSha256: string): string {
+  return `navia-v2-${hashString(`${context.url}:${snapshotSha256}`)}`;
 }
 
 function knowledgeEvidenceRefs(context: ExtractedPageContext): Array<Record<string, unknown>> {
@@ -701,6 +1100,11 @@ function hashString(value: string): string {
     hash |= 0;
   }
   return Math.abs(hash).toString(36).padStart(8, "0");
+}
+
+async function sha256Hex(value: Uint8Array): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", Uint8Array.from(value).buffer);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
 async function streamRuntimeChatViaProxy(request: RuntimeRequest, onEvent: (event: AgentEvent) => void | Promise<void>): Promise<void> {
@@ -743,7 +1147,14 @@ async function streamRuntimeChatViaProxy(request: RuntimeRequest, onEvent: (even
 
 function unwrapApiResponse<T>(body: ApiResponse<T>): T {
   if (!body.ok || body.data === null) {
-    throw new Error(body.error?.message ?? "Runtime request failed.");
+    const detailsReason = body.error?.details?.reason;
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: body.error?.message ?? "Runtime request failed.",
+      code: body.error?.code,
+      reason: typeof detailsReason === "string" ? detailsReason : body.error?.message,
+      requestId: body.request_id
+    });
   }
   return body.data;
 }

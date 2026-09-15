@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_px_derived_facts.schema.json",
+  "title": "Navia V2 PX Derived Facts v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "runId", "generatedAt", "sealedRawRun", "generatorImplementation", "sourceMappings", "scenarioFacts", "summary", "seal"],
+  "properties": {
+    "schemaVersion": {"const": "v2-px-derived-facts/v1"},
+    "evidenceClass": {"const": "production_acceptance"},
+    "runId": {"type": "string", "minLength": 1},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "sealedRawRun": {"$ref": "#/$defs/ArtifactRef"},
+    "generatorImplementation": {"$ref": "#/$defs/ArtifactRef"},
+    "sourceMappings": {"type": "array", "minItems": 12, "items": {"$ref": "#/$defs/SourceMapping"}},
+    "scenarioFacts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/ScenarioFact"}},
+    "summary": {"type": "object", "minProperties": 1},
+    "seal": {"$ref": "#/$defs/Seal"}
+  },
+  "$defs": {
+    "ArtifactRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifactRoot", "path", "sha256", "byteLength", "mediaType"],
+      "properties": {
+        "artifactRoot": {"enum": ["source_run", "validation_run", "repository_snapshot"]},
+        "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!virtual/)[^\\u0000]+$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "byteLength": {"type": "integer", "minimum": 0},
+        "mediaType": {"type": "string", "minLength": 1}
+      }
+    },
+    "SourceMapping": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sourceSampleId", "sourceId", "workspaceId", "sourceType", "contentFingerprint", "registrationArtifactRef", "importRequestEventId", "importResponseEventId"],
+      "properties": {
+        "sourceSampleId": {"type": "string", "minLength": 1}, "sourceId": {"type": "string", "minLength": 1},
+        "workspaceId": {"type": "string", "minLength": 1}, "sourceType": {"enum": ["web", "local", "note"]},
+        "contentFingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "registrationArtifactRef": {"$ref": "#/$defs/ArtifactRef"},
+        "importRequestEventId": {"type": "string", "minLength": 1}, "importResponseEventId": {"type": "string", "minLength": 1},
+        "operationId": {"type": "string", "minLength": 1}
+      }
+    },
+    "Provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["domActionEventIds", "backgroundRequestEventIds", "backgroundResponseEventIds", "runtimeRequestEventIds", "runtimeTerminalEventIds", "routeObservationEventIds", "containerObservationEventIds", "screenshotEventIds", "commandResultEventIds", "faultEventIds"],
+      "properties": {
+        "domActionEventIds": {"$ref": "#/$defs/Ids"}, "backgroundRequestEventIds": {"$ref": "#/$defs/Ids"},
+        "backgroundResponseEventIds": {"$ref": "#/$defs/Ids"}, "runtimeRequestEventIds": {"$ref": "#/$defs/Ids"},
+        "runtimeTerminalEventIds": {"$ref": "#/$defs/Ids"}, "routeObservationEventIds": {"$ref": "#/$defs/Ids"},
+        "containerObservationEventIds": {"$ref": "#/$defs/Ids"}, "screenshotEventIds": {"$ref": "#/$defs/Ids"},
+        "commandResultEventIds": {"$ref": "#/$defs/Ids"}, "faultEventIds": {"$ref": "#/$defs/Ids"}
+      }
+    },
+    "Ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "ScenarioFact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scenarioId", "passed", "provenance", "facts"],
+      "properties": {"scenarioId": {"type": "string", "minLength": 1}, "passed": {"type": "boolean"}, "provenance": {"$ref": "#/$defs/Provenance"}, "facts": {"type": "object"}}
+    },
+    "Seal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inputMode", "contentSha256"],
+      "properties": {"inputMode": {"const": "canonical_json_without_seal_v1"}, "contentSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    }
+  }
+}

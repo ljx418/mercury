@@ -1,0 +1,223 @@
+{
+  "schemaVersion": "v2-px6-machine-exit-audit/v1",
+  "evidenceClass": "production_acceptance",
+  "px6RunId": "px6-machine-exit-20260914t164500z",
+  "candidateBinding": {
+    "artifactRoot": "px6_run",
+    "path": "candidate-binding.json",
+    "sha256": "e62e2a430c5d61a887efba2507deda225d9581e58dbfde5e8cf208590811572b",
+    "byteLength": 1887,
+    "mediaType": "application/json"
+  },
+  "status": "waiting_for_human_review",
+  "machinePassed": true,
+  "acceptanceResults": [
+    {
+      "acceptanceId": "PX6-A01",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "px6_run",
+          "path": "candidate-binding.json",
+          "sha256": "e62e2a430c5d61a887efba2507deda225d9581e58dbfde5e8cf208590811572b",
+          "byteLength": 1887,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A02",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "exit-manifest.json",
+          "sha256": "1e37f5ed06dd28bf94cd3fb4b2f92ee7f0fe79f7d041353f6a58b4a1ed1f4186",
+          "byteLength": 4646,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A03",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "replay/output/resolved-invocation-record.json",
+          "sha256": "9acea54c73f34f0261fe9b0bdf87c864f0656d1390d0227e1d40e7147fb81343",
+          "byteLength": 6360,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A04",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/source-run/raw/raw-run.json",
+          "sha256": "bb5e30a2f393d3610d1b918d78aa29d1eb59a31141ec1144ef4209c2c2d68a64",
+          "byteLength": 1868020,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A05",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/validation/derived-facts.json",
+          "sha256": "d076bc7f42ceae7f9fd2ff57e9e5e6742382517b9a3544c478decc55fb3e7c1d",
+          "byteLength": 505450,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A06",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/validation/derived-facts.json",
+          "sha256": "d076bc7f42ceae7f9fd2ff57e9e5e6742382517b9a3544c478decc55fb3e7c1d",
+          "byteLength": 505450,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A07",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/validation/derived-facts.json",
+          "sha256": "d076bc7f42ceae7f9fd2ff57e9e5e6742382517b9a3544c478decc55fb3e7c1d",
+          "byteLength": 505450,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A08",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "snapshot-revalidation.json",
+          "sha256": "e8fd82d2365c8ed4b8a25404f65136519e264600839ce3dc3df8e45944577cae",
+          "byteLength": 57953,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A09",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/validation/derived-facts.json",
+          "sha256": "d076bc7f42ceae7f9fd2ff57e9e5e6742382517b9a3544c478decc55fb3e7c1d",
+          "byteLength": 505450,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A10",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "t04_candidate",
+          "path": "fresh/validation/production-validation.json",
+          "sha256": "dab9096810931410ce96f59b002f5bd5b3625268fc0318afbc27c767b5bcd667",
+          "byteLength": 15812,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A11",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "px6_run",
+          "path": "document-drawio-audit.json",
+          "sha256": "54ce0ef8898fad9b6737b0b5784a31036d238e59abd1434e8838f352b92588db",
+          "byteLength": 3078,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A12",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "px6_run",
+          "path": "px6-negative-results.json",
+          "sha256": "cb7e4139506d0614c56c91b8869aa92787b9a2bffcc4b897ea14348ceeb46e5d",
+          "byteLength": 9668,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A13",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "px6_run",
+          "path": "machine-boundary.json",
+          "sha256": "1aeddb09251c6df25103744d679e63218e09b00b3d04a5f16e25bf8449792306",
+          "byteLength": 311,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A14",
+      "status": "passed",
+      "evidenceRefs": [
+        {
+          "artifactRoot": "px6_run",
+          "path": "public-bytes-audit.json",
+          "sha256": "806e9bf8b6df46af2406af6268433121ba77e456316b11799bd8b7b428ce92e7",
+          "byteLength": 306,
+          "mediaType": "application/json"
+        }
+      ]
+    },
+    {
+      "acceptanceId": "PX6-A15",
+      "status": "pending",
+      "evidenceRefs": []
+    },
+    {
+      "acceptanceId": "PX6-A16",
+      "status": "pending",
+      "evidenceRefs": []
+    }
+  ],
+  "gateStatus": {
+    "G1_entry": "passed",
+    "G2_route": "passed",
+    "G3_lifecycle": "passed",
+    "G4_architecture": "passed",
+    "G5_status": "passed",
+    "G6_ux_accessibility": "passed",
+    "G7_evidence": "pending"
+  },
+  "humanReviewStatus": "pending",
+  "g7Status": "pending",
+  "finalPassed": false,
+  "issues": [],
+  "claim": "PX-6 machine review package is ready for human review.",
+  "contentSha256": "6fe3d769f03ff616328dcba4155ddd839b8a680a55ebfc5864a8c05983bb5dbd"
+}

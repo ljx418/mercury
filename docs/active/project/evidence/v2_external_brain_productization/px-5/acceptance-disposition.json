@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-09",
+  "stage": "V2-PX-5",
+  "status": "FAIL_REOPENED",
+  "automatedCandidatePassed": false,
+  "finalReportPassed": false,
+  "px6Status": "BLOCKED_BY_PX5_MAJOR",
+  "confirmedMajorGroups": 5,
+  "humanReviewStatus": "pending",
+  "repairStatus": "R1_BACKEND_LIMITED_SCOPE_PASSED_FRONTEND_AND_CHROME_PENDING",
+  "newR1ImplementationMajors": 0,
+  "r1OverallPassed": false,
+  "repairAuditDocument": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-closure-audit-2026-09-09.md",
+  "issues": [
+    "M1: generated identities, trusted gestures and Runtime fingerprints lack corresponding raw observations",
+    "M2: source/screenshot identity and actual host-page entry are not proven",
+    "M3: Permission/Forget/UX outcomes contain hardcoded success values",
+    "M4: production validation does not enforce the frozen semantic and architecture rules",
+    "M5: fixture results and generated assertions were used as production acceptance proof"
+  ],
+  "auditDocument": "docs/active/project/evidence/v2_external_brain_productization/px-5/resumption-evidence-audit-2026-09-09.md",
+  "scope": "Evidence re-audit; not a new Chrome run or independent external certification",
+  "historicalArtifactsNotValidForAcceptance": [
+    "report.json",
+    "execution-observations/",
+    "screenshot-metadata/"
+  ]
+}

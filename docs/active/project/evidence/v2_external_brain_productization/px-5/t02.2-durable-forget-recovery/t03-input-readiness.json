@@ -1,0 +1,75 @@
+{
+  "allowedUse": "production_positive_input_candidate",
+  "fatal": 0,
+  "gaps": [],
+  "major": 0,
+  "observed": {
+    "completeRouteRecoveryIntents": [
+      "ask",
+      "graph",
+      "permissions",
+      "source_detail",
+      "source_library"
+    ],
+    "durableForgetRecovery": {
+      "errors": [],
+      "passed": true,
+      "recoveryCount": 12,
+      "requiredChains": 3,
+      "requiredModes": [
+        "direct_open",
+        "reload",
+        "back",
+        "reopen"
+      ],
+      "triggerCount": 12
+    },
+    "entryOrigins": {
+      "open_in_workspace": 2,
+      "open_workspace": 2,
+      "view_source": 3
+    },
+    "invalidOrForbiddenRouteRecoveries": [
+      "INVALID_ROUTE",
+      "WORKSPACE_NOT_FOUND"
+    ],
+    "registeredSourceCorpus": {
+      "artifactAndRuntimeLinkage": true,
+      "kinds": {
+        "explicit_local_document": 3,
+        "note_markdown": 3,
+        "real_web": 6
+      },
+      "samples": 12
+    },
+    "routeRecoveryIntentCount": 5,
+    "runtimeSourceTypes": {
+      "authorized_local_document": 3,
+      "user_note": 3,
+      "web_page": 6
+    },
+    "screenshotWidths": {
+      "1280": 1,
+      "360": 1,
+      "420": 1,
+      "768": 1
+    },
+    "screenshotsBySurface": {
+      "side_panel": 2,
+      "workspace_page": 8
+    },
+    "screenshotsWithoutProductViewport": 6,
+    "typedCommandResultTypes": {
+      "axe": 1,
+      "keyboard": 1,
+      "source_corpus": 1
+    },
+    "uniqueRuntimeSources": 12
+  },
+  "readOnly": true,
+  "readyForPositiveProductionValidation": true,
+  "schemaVersion": "v2-px-t03-input-readiness/v1",
+  "sourceRawSeal": "50489670ce76462105bb923b8b90044f9e3075f225941af5103911208b560624",
+  "sourceRunId": "t02-r2-durable-forget-production-input-20260912T165535",
+  "sourceSnapshotCommit": "fce3aaec9e8c8b7d88b29f60f3a94e63f9390699"
+}

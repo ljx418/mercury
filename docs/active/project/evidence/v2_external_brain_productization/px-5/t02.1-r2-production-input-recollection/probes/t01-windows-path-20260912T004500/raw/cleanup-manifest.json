@@ -1,0 +1,10 @@
+{
+  "browserPid": 336983,
+  "runtimePid": 337009,
+  "fixtureServer": true,
+  "profilePath": "/mnt/c/workspace/navia/.tmp/t02-r21-probe-profiles/navia-t01-profile-GTFiwp",
+  "extensionRoot": "/mnt/c/workspace/navia/.tmp/t02-extension1-probe-build-20260912T004500",
+  "tokenSha256": "1574077d2313f9cec8e6ec934a2124ac448a55bc89bc242f8e2c9dce8770552a",
+  "cleaned": true,
+  "completedAt": "2026-09-11T16:47:12.038Z"
+}

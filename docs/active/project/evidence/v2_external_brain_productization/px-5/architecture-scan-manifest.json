@@ -1,0 +1,173 @@
+{
+  "schemaVersion": "v2-external-brain-architecture-scan-manifest/v2",
+  "evidenceClass": "production_acceptance",
+  "repositoryCommit": "ae28b627eb0aba91ff0e9f950066a688d8d13d13",
+  "hashAlgorithm": "sha256",
+  "pathSeparator": "/",
+  "textEncoding": "utf-8",
+  "pathOrdering": "unicode_codepoint_ascending",
+  "treeEntryFormat": "<mode> <blobSha256> <path>\\n",
+  "pathIndexEntryFormat": "<path>\\n",
+  "symlinkPolicy": "hash_link_target_utf8",
+  "lineEndingPolicy": "raw_bytes",
+  "scanRoots": [
+    "apps/chrome-extension/entrypoints/sidepanel",
+    "apps/chrome-extension/entrypoints/workspace",
+    "apps/chrome-extension/src/modules/knowledge_workspace"
+  ],
+  "trackedPaths": [
+    {
+      "path": "apps/chrome-extension/entrypoints/sidepanel/index.html",
+      "blobSha256": "7b7e98d61af484153c93f554889a0c5c3670d334f4511f4d03d61acc5acf6b16",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/sidepanel/main.tsx",
+      "blobSha256": "716ce7589b77d2c37d369f04c4ad991c4a188c65a4277ead0a06be143c817e15",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/sidepanel/style.css",
+      "blobSha256": "ba4bea94abc8199c8007d5b482e3bca0a9b11ad621635e01f264b37d3fccdfb5",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/workspace/index.html",
+      "blobSha256": "295773623ab12f8888b3744d9c226a30d9a3ea24d73d13eca2192d742247aae8",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/workspace/main.tsx",
+      "blobSha256": "b802250d418ef63aeea2e5162386d54ef316a8a1ace3b6848fe8898928e423b4",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/workspace/style.css",
+      "blobSha256": "7a4248bb13a47a2f1c46ca4a6fc1fe6d0e99ae1421db649e7fd6dcafd35475e1",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/AskWithSourcesPanel.tsx",
+      "blobSha256": "f60973fdb27aa5e213ff86055d6e46386e3e4b2cfd472aa59240760721f67f75",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/DataServiceStatusCard.tsx",
+      "blobSha256": "97253ce9651eb6173495b83235453ced2c59f1be5730d762e83673f4936bc4ec",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/EvidenceTraceDrawer.tsx",
+      "blobSha256": "9c74e4a942c6738e286c54083f7f5411b7632fb54c1a52b71b1a02d7a4233a9a",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/ForgetSourceDialog.tsx",
+      "blobSha256": "ed5501f9cc9e6cc6347a793dd328a51a7e239481e93d234bfed537c4c5d36ad8",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeBuildStatus.tsx",
+      "blobSha256": "f08dec1f3ce8267e92cd75fb5f55f8d76811b34735aa8532e1b90019b4e1556d",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeGraphCanvas.tsx",
+      "blobSha256": "4688a6fc924d0526a8003b31e815cd46b1acad147799d2e17a23189fbc78f587",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.test.tsx",
+      "blobSha256": "503f83266655efbd9e692b2bcf848a45b22283ddacc6639e140c9b588dc030e5",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.tsx",
+      "blobSha256": "e4ae5679d3d547ea2b4fea6ba1829acb8517c1be38321dd80da726f3392fece0",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx",
+      "blobSha256": "74cd614413dba03a3aa3c5439c69c8e04521cc5c0824741a2c3591e6af3bb57d",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/PermissionRootManager.tsx",
+      "blobSha256": "13e78e74f586c1db6d15276f26ba9aee585e9c9dca22c2b647dd6392269c0a1f",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/SaveToKnowledgeCard.tsx",
+      "blobSha256": "4d4c0ca40ad5a153c817431580b80bb617a4a150276e3d6c1afac1ccdc982b28",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/ServiceStatusBanner.tsx",
+      "blobSha256": "ec39820a0947e71b872c862bf1307a754d3f1c072eb88219b0bdef1a85dc85d1",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/SourceDetailReader.tsx",
+      "blobSha256": "ac7673d62e1675cf2bd155868ac06498f704c961908dc6fe3827438287f23613",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/SourceLibraryPanel.tsx",
+      "blobSha256": "0c93bac224dc9a5de1a1a1e46948e28eb7aea17b5cdfd25975516a2a5a8455e9",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceProductComponents.test.tsx",
+      "blobSha256": "ff01c0bfe14d5f2ed56ef83ec7be34c9c3ccdf5700e2a9593b8048e186fb70d4",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.test.tsx",
+      "blobSha256": "af7943fd11c39295e063073d831129614202023db6517fd896882be1147e6972",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.tsx",
+      "blobSha256": "f1a70350a09329284f33f3e11760d1a2d650e5c9bf5bc62b2d5366d5e4e37d81",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.test.ts",
+      "blobSha256": "173494ad782344fb6d5f049a8c88c4693e318c48401212101ef2dd5f89943c58",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.ts",
+      "blobSha256": "349044b364d9aa049ea4de004920063a9d29e82ee6a6af312f145a67c7cc87bf",
+      "mode": "100644"
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/knowledge_workspace/workspaceRoutes.ts",
+      "blobSha256": "673efe9d2f84fb872dd235f598c8192c6dc4206241eef0ceef9e657d526005a1",
+      "mode": "100644"
+    }
+  ],
+  "excludedPaths": [
+    "node_modules",
+    "dist",
+    ".output"
+  ],
+  "canonicalPathIndex": {
+    "encoding": "utf8",
+    "content": "apps/chrome-extension/entrypoints/sidepanel/index.html\napps/chrome-extension/entrypoints/sidepanel/main.tsx\napps/chrome-extension/entrypoints/sidepanel/style.css\napps/chrome-extension/entrypoints/workspace/index.html\napps/chrome-extension/entrypoints/workspace/main.tsx\napps/chrome-extension/entrypoints/workspace/style.css\napps/chrome-extension/src/modules/knowledge_workspace/AskWithSourcesPanel.tsx\napps/chrome-extension/src/modules/knowledge_workspace/DataServiceStatusCard.tsx\napps/chrome-extension/src/modules/knowledge_workspace/EvidenceTraceDrawer.tsx\napps/chrome-extension/src/modules/knowledge_workspace/ForgetSourceDialog.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeBuildStatus.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeGraphCanvas.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.test.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.tsx\napps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\napps/chrome-extension/src/modules/knowledge_workspace/PermissionRootManager.tsx\napps/chrome-extension/src/modules/knowledge_workspace/SaveToKnowledgeCard.tsx\napps/chrome-extension/src/modules/knowledge_workspace/ServiceStatusBanner.tsx\napps/chrome-extension/src/modules/knowledge_workspace/SourceDetailReader.tsx\napps/chrome-extension/src/modules/knowledge_workspace/SourceLibraryPanel.tsx\napps/chrome-extension/src/modules/knowledge_workspace/WorkspaceProductComponents.test.tsx\napps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.test.tsx\napps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.tsx\napps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.test.ts\napps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.ts\napps/chrome-extension/src/modules/knowledge_workspace/workspaceRoutes.ts\n",
+    "sha256": "21746b7d80bb47fbb7c8e6645f934368ebeca2bd70d6adb396548de26cf50521"
+  },
+  "canonicalSourceTree": {
+    "encoding": "utf8",
+    "content": "100644 7b7e98d61af484153c93f554889a0c5c3670d334f4511f4d03d61acc5acf6b16 apps/chrome-extension/entrypoints/sidepanel/index.html\n100644 716ce7589b77d2c37d369f04c4ad991c4a188c65a4277ead0a06be143c817e15 apps/chrome-extension/entrypoints/sidepanel/main.tsx\n100644 ba4bea94abc8199c8007d5b482e3bca0a9b11ad621635e01f264b37d3fccdfb5 apps/chrome-extension/entrypoints/sidepanel/style.css\n100644 295773623ab12f8888b3744d9c226a30d9a3ea24d73d13eca2192d742247aae8 apps/chrome-extension/entrypoints/workspace/index.html\n100644 b802250d418ef63aeea2e5162386d54ef316a8a1ace3b6848fe8898928e423b4 apps/chrome-extension/entrypoints/workspace/main.tsx\n100644 7a4248bb13a47a2f1c46ca4a6fc1fe6d0e99ae1421db649e7fd6dcafd35475e1 apps/chrome-extension/entrypoints/workspace/style.css\n100644 f60973fdb27aa5e213ff86055d6e46386e3e4b2cfd472aa59240760721f67f75 apps/chrome-extension/src/modules/knowledge_workspace/AskWithSourcesPanel.tsx\n100644 97253ce9651eb6173495b83235453ced2c59f1be5730d762e83673f4936bc4ec apps/chrome-extension/src/modules/knowledge_workspace/DataServiceStatusCard.tsx\n100644 9c74e4a942c6738e286c54083f7f5411b7632fb54c1a52b71b1a02d7a4233a9a apps/chrome-extension/src/modules/knowledge_workspace/EvidenceTraceDrawer.tsx\n100644 ed5501f9cc9e6cc6347a793dd328a51a7e239481e93d234bfed537c4c5d36ad8 apps/chrome-extension/src/modules/knowledge_workspace/ForgetSourceDialog.tsx\n100644 f08dec1f3ce8267e92cd75fb5f55f8d76811b34735aa8532e1b90019b4e1556d apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeBuildStatus.tsx\n100644 4688a6fc924d0526a8003b31e815cd46b1acad147799d2e17a23189fbc78f587 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeGraphCanvas.tsx\n100644 503f83266655efbd9e692b2bcf848a45b22283ddacc6639e140c9b588dc030e5 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.test.tsx\n100644 e4ae5679d3d547ea2b4fea6ba1829acb8517c1be38321dd80da726f3392fece0 apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeQuickSurface.tsx\n100644 74cd614413dba03a3aa3c5439c69c8e04521cc5c0824741a2c3591e6af3bb57d apps/chrome-extension/src/modules/knowledge_workspace/KnowledgeWorkspaceShell.tsx\n100644 13e78e74f586c1db6d15276f26ba9aee585e9c9dca22c2b647dd6392269c0a1f apps/chrome-extension/src/modules/knowledge_workspace/PermissionRootManager.tsx\n100644 4d4c0ca40ad5a153c817431580b80bb617a4a150276e3d6c1afac1ccdc982b28 apps/chrome-extension/src/modules/knowledge_workspace/SaveToKnowledgeCard.tsx\n100644 ec39820a0947e71b872c862bf1307a754d3f1c072eb88219b0bdef1a85dc85d1 apps/chrome-extension/src/modules/knowledge_workspace/ServiceStatusBanner.tsx\n100644 ac7673d62e1675cf2bd155868ac06498f704c961908dc6fe3827438287f23613 apps/chrome-extension/src/modules/knowledge_workspace/SourceDetailReader.tsx\n100644 0c93bac224dc9a5de1a1a1e46948e28eb7aea17b5cdfd25975516a2a5a8455e9 apps/chrome-extension/src/modules/knowledge_workspace/SourceLibraryPanel.tsx\n100644 ff01c0bfe14d5f2ed56ef83ec7be34c9c3ccdf5700e2a9593b8048e186fb70d4 apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceProductComponents.test.tsx\n100644 af7943fd11c39295e063073d831129614202023db6517fd896882be1147e6972 apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.test.tsx\n100644 f1a70350a09329284f33f3e11760d1a2d650e5c9bf5bc62b2d5366d5e4e37d81 apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.tsx\n100644 173494ad782344fb6d5f049a8c88c4693e318c48401212101ef2dd5f89943c58 apps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.test.ts\n100644 349044b364d9aa049ea4de004920063a9d29e82ee6a6af312f145a67c7cc87bf apps/chrome-extension/src/modules/knowledge_workspace/workspaceAuthority.ts\n100644 673efe9d2f84fb872dd235f598c8192c6dc4206241eef0ceef9e657d526005a1 apps/chrome-extension/src/modules/knowledge_workspace/workspaceRoutes.ts\n",
+    "sha256": "0e9a22d0ba47c7706dd6670dbf9335776f256648471ad413809731050d612d7f"
+  },
+  "rulesetArtifact": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/audit-inputs/architecture-ruleset.json",
+    "sha256": "11c62efd408e09373d37a68007f4fc3c040c648366546e69bc2686a26d07610e"
+  },
+  "allowlistArtifact": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/audit-inputs/architecture-allowlist.json",
+    "sha256": "6f39f56e890538e81c18f2e7799b258b0adc581336bcca45bdc49b3664c6b776"
+  }
+}

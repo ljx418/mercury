@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "v2-px-prototype-audit-package/v4",
+  "generatedAt": "2026-07-16T06:09:43.933Z",
+  "gateStatus": "px_0_1b_local_repair_candidate_pending_independent_review",
+  "hashAlgorithm": "sha256",
+  "transportArtifact": "v2-px-prototype-self-contained.html",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "752d18a939b4ea31750b51661eb320370c1768ae0702916bb360c8239e995008"
+    },
+    {
+      "path": "v2-px-prototype-self-contained.html",
+      "sha256": "c0f20778d1b4744546fe22a8f3f253aa6b0a864997139364bde0e5b4adf5a471"
+    },
+    {
+      "path": "qa-summary.json",
+      "sha256": "06b470f9f7ea5679797fa3d276864d109abe3ee3c4a050d127e8c1a11cadc542"
+    },
+    {
+      "path": "third-party-notices.md",
+      "sha256": "3ed06fa5be471a3ec7b284f78337aa1349b352726d88b4ee44ed47c4db9f95a0"
+    },
+    {
+      "path": "AUDIT_PACKAGE.md",
+      "sha256": "b079ab43fd6b9ba290927bec07a508ccb5f618f8e72040f1ecc0a9be697af37f"
+    },
+    {
+      "path": "assets/baseline-v1-launcher-docked.png",
+      "sha256": "8f366cc2c73c43f6ee542f2424c783d6fa0b0058bc51f3bb65d7f604f47dddde"
+    },
+    {
+      "path": "assets/baseline-v1-sidebar-expanded.png",
+      "sha256": "e8a90d4ccce40351fa9b2d6e90d3acae61187adadb1f677426e0f039111f8571"
+    },
+    {
+      "path": "assets/baseline-v1-sidebar-resized.png",
+      "sha256": "6b7bb075e03cef68c9828df2b3d74f2f1af2fefa2de09f48fcc72c4134f7a26b"
+    },
+    {
+      "path": "assets/concept-external-brain.png",
+      "sha256": "46bd6259b7581b68deb65c477213f0a22a85386796277ad11bd1ab3bb217632b"
+    },
+    {
+      "path": "assets/lucide-1.24.0.min.js",
+      "sha256": "40bee90e38803be12dab4baf61e7dcb1833b844b6c529e173393fbcc09bd4778"
+    },
+    {
+      "path": "assets/target-sidepanel-save.png",
+      "sha256": "8359203c15280c6d2321ab6122458aba1beec25d8237d5790d3ba1c83d99678c"
+    },
+    {
+      "path": "assets/target-workspace-ask.png",
+      "sha256": "866f292345d942ed8fcc6961919a93eb09d0bf6f1f7f73c08c0886e9577bd511"
+    },
+    {
+      "path": "assets/target-workspace-graph.png",
+      "sha256": "5d98a116004d0d8f366d5cbd2daa2d26015d2f317a282c1cf86aeefd8d158677"
+    },
+    {
+      "path": "assets/target-workspace-permissions.png",
+      "sha256": "a5423dbddeea89b83213e39ec1de706c5120c31eb906c6b8d8bf8234d2babda9"
+    },
+    {
+      "path": "assets/target-workspace-sources.png",
+      "sha256": "26b3ebd2eb6e34a0e3f29b1737775a2ad9ba30f1092e4f756f60902351269f2a"
+    }
+  ],
+  "requiredStaticAssertions": [
+    "history.pushState",
+    "popstate",
+    "hashchange",
+    "workspaceId",
+    "source_current_page_001",
+    "state.save !== \"trace_ready\"",
+    "loadForgottenSourceIds",
+    "persistForgottenSourceIds",
+    "loadSavedSourceRegistry",
+    "persistSavedSourceRegistry",
+    "routeContextStatus",
+    "data-source-id",
+    "WORKSPACE_NOT_FOUND",
+    "SOURCE_NOT_FOUND",
+    "FORBIDDEN",
+    "INVALID_ROUTE",
+    "forgetVerification",
+    "trapFocus",
+    "aria-label=\"向当前 Workspace 提问\"",
+    "onSave / onRetry"
+  ],
+  "headlessPrototypeChecks": {
+    "browser": "host Google Chrome headless, muted",
+    "unsavedCurrentSourceDirectOpen": "SOURCE_NOT_FOUND",
+    "savedSourceIdentity": "passed",
+    "savedSourceFullReload": "passed_same_source_detail",
+    "savedSourceReopen": "passed_same_source_detail",
+    "savedSourceBackRecovery": "passed_same_source_detail",
+    "sourceIdSpecificGraphLifecycle": "passed",
+    "forgottenExistingSourceFullReload": "SOURCE_NOT_FOUND",
+    "forgottenExistingSourceDirectOpen": "SOURCE_NOT_FOUND",
+    "invalidContextOpenInWorkspace": "recovered_to_source_library",
+    "validContextOpenInWorkspace": "preserved_graph_route",
+    "askAccessibleName": "passed",
+    "selfContainedBrowserLoad": "passed_9_embedded_images_zero_console_issues",
+    "browserProcessCleanup": "passed"
+  },
+  "claimBoundary": "This package is a prototype audit candidate. localStorage tombstones are review-only simulation; production authority remains Runtime. The package does not prove a production extension entrypoint, product accessibility or PX completion."
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_px_production_package.schema.json",
+  "title": "Navia V2 PX Production Package v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "acceptanceProfile", "runId", "createdAt", "sealedRawRun", "derivedFacts", "productionValidation", "contractRegression", "humanReview", "renderedReport", "acceptanceHtml", "automatedCandidatePassed", "humanReviewStatus", "passed", "claim"],
+  "properties": {
+    "schemaVersion": {"const": "v2-px-production-package/v1"}, "evidenceClass": {"const": "production_acceptance"},
+    "acceptanceProfile": {"enum": ["production_candidate", "production_final"]}, "runId": {"type": "string", "minLength": 1}, "createdAt": {"type": "string", "format": "date-time"},
+    "sealedRawRun": {"$ref": "#/$defs/ArtifactRef"}, "derivedFacts": {"$ref": "#/$defs/ArtifactRef"}, "productionValidation": {"$ref": "#/$defs/ArtifactRef"}, "contractRegression": {"$ref": "#/$defs/ArtifactRef"}, "humanReview": {"$ref": "#/$defs/ArtifactRef"}, "renderedReport": {"$ref": "#/$defs/ArtifactRef"}, "acceptanceHtml": {"$ref": "#/$defs/ArtifactRef"},
+    "automatedCandidatePassed": {"type": "boolean"}, "humanReviewStatus": {"enum": ["pending", "passed", "failed"]}, "passed": {"type": "boolean"}, "claim": {"type": "string", "minLength": 1}
+  },
+  "$defs": {"ArtifactRef": {"type": "object", "additionalProperties": false, "required": ["artifactRoot", "path", "sha256", "byteLength", "mediaType"], "properties": {"artifactRoot": {"enum": ["source_run", "validation_run", "repository_snapshot"]}, "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!virtual/)[^\\u0000]+$"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "byteLength": {"type": "integer", "minimum": 0}, "mediaType": {"type": "string", "minLength": 1}}}}
+}

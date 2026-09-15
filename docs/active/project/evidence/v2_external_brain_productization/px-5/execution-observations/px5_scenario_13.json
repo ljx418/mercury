@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "v2-external-brain-execution-observation/v6",
+  "scenarioId": "px5_scenario_13",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "entryContext": {
+    "status": "not_applicable"
+  },
+  "attempts": [
+    {
+      "sequence": 1,
+      "entryAction": {
+        "eventType": "direct_route",
+        "actor": "browser_navigation",
+        "trustedUserGesture": false,
+        "requestId": "px5_px5_scenario_13",
+        "origin": "direct_route",
+        "routeIntent": "source_detail",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000002843",
+        "operationId": "op_00000000000000000000002844",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      "backgroundResult": {
+        "outcome": "direct_open_restored",
+        "requestId": "px5_px5_scenario_13",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      }
+    }
+  ],
+  "routeEvents": [
+    {
+      "kind": "initial",
+      "resolvedPath": "#/knowledge/sources/src_00000000000000000000002843?workspaceId=ws_default",
+      "routeIntent": "source_detail",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "kind": "reload_restore",
+      "resolvedPath": "#/knowledge/sources/src_00000000000000000000002843?workspaceId=ws_default",
+      "routeIntent": "source_detail",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "kind": "back_restore",
+      "resolvedPath": "#/knowledge/sources/src_00000000000000000000002843?workspaceId=ws_default",
+      "routeIntent": "source_detail",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "kind": "reopen_restore",
+      "resolvedPath": "#/knowledge/sources/src_00000000000000000000002843?workspaceId=ws_default",
+      "routeIntent": "source_detail",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "containerObservations": [
+    {
+      "container": "side_panel",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "background",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "workspace_page",
+      "ids": {
+        "status": "observed",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000002843",
+        "operationId": "op_00000000000000000000002844"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "runtimeObservation": {
+    "transportOutcome": "response",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "ids": {
+      "status": "observed",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "operationId": "op_00000000000000000000002844"
+    },
+    "responseFingerprint": "98fc4a2101868e92bb8b39a2c4ec5c265bc1c47fd2d866d1b8fb88ba00e64f6e",
+    "transportEvidence": {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/px-5-raw-e2e.json",
+      "sha256": "98fc4a2101868e92bb8b39a2c4ec5c265bc1c47fd2d866d1b8fb88ba00e64f6e"
+    }
+  },
+  "ingestCounters": {
+    "before": 0,
+    "after": 0
+  }
+}

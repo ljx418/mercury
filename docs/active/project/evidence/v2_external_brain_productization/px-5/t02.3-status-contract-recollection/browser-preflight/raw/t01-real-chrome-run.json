@@ -1,0 +1,364 @@
+{
+  "schemaVersion": "v2-t01-r1-frontend-real-chrome/v1",
+  "runId": "t01-2026-09-13T15-54-07-665Z",
+  "generatedAt": "2026-09-13T15:54:07.687Z",
+  "extensionRoot": "/mnt/c/workspace/navia-t02.3-status-20260913/.tmp/t02-extension-build-t02-r2-status-contract-production-input-d-20260913T234858",
+  "runtimeUrl": "http://127.0.0.1:17861",
+  "headless": false,
+  "sidePanelMode": "extension_page_user_gesture+e2e_bridge",
+  "sidePanelIdentity": {
+    "locationHref": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/sidepanel.html?naviaE2ETabId=1986251207",
+    "title": "Navia",
+    "viewport": {
+      "width": 360,
+      "height": 759
+    },
+    "hasNaviaRoot": true,
+    "naviaRootVisible": true,
+    "evidenceCardCount": 0,
+    "evidenceCardLabels": [],
+    "containsEvidenceCardMindmap": false,
+    "containsReadingMap": false,
+    "readingMapNavCount": 0,
+    "readingMapDetailText": "",
+    "containsSourcePanel": false,
+    "sourceEvidenceVisible": false,
+    "sourceEvidenceText": "",
+    "visibleTextSample": ""
+  },
+  "extensionId": "lnomjbimmkmhoppihmndnpepoldhmcmj",
+  "sourceIdentity": {
+    "workspaceId": "ws_default",
+    "sourceId": "src_00000000000000000000000003",
+    "operationId": "op_00000000000000000000000004",
+    "workspaceOperationId": "op_00000000000000000000000004"
+  },
+  "permissionRoots": [
+    {
+      "name": "T01 document 1",
+      "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/01-prd.md",
+      "basename": "01-prd.md",
+      "sha256": "fce3928cec1f5ebb7a987a8b06ba0d538bfaef9c5412ea52549b489a4d85c3b5",
+      "bytes": 123272,
+      "permissionRootId": "perm_5bd7939a5d384fbea7bd3aed4a2b94d2",
+      "importedSourceId": "src_00000000000000000000000005",
+      "retainedSourceSha256": "fce3928cec1f5ebb7a987a8b06ba0d538bfaef9c5412ea52549b489a4d85c3b5",
+      "revokedScanStatus": 403,
+      "revokedImportStatus": 403
+    },
+    {
+      "name": "T01 document 2",
+      "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/02-architecture.md",
+      "basename": "02-architecture.md",
+      "sha256": "7f40e3de8e46da1d95a7be273ae692ce540d911e24fd4ccf826a9bc784a45651",
+      "bytes": 137885,
+      "permissionRootId": "perm_2bc09695c8664da7930a6badd504e151",
+      "importedSourceId": "src_00000000000000000000000007",
+      "retainedSourceSha256": "7f40e3de8e46da1d95a7be273ae692ce540d911e24fd4ccf826a9bc784a45651",
+      "revokedScanStatus": 403,
+      "revokedImportStatus": 403
+    },
+    {
+      "name": "T01 document 3",
+      "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/04-acceptance-plan.md",
+      "basename": "04-acceptance-plan.md",
+      "sha256": "dbfaf5e2adad47511dadc90b06800cc04278ff92f3d588370b60d16d7e1700c7",
+      "bytes": 129274,
+      "permissionRootId": "perm_baf9d96d07774db681988dbd9ae6c783",
+      "importedSourceId": "src_00000000000000000000000009",
+      "retainedSourceSha256": "dbfaf5e2adad47511dadc90b06800cc04278ff92f3d588370b60d16d7e1700c7",
+      "revokedScanStatus": 403,
+      "revokedImportStatus": 403
+    }
+  ],
+  "forgetVerification": {
+    "libraryAbsent": true,
+    "askAbsent": true,
+    "graphAbsent": true,
+    "traceAbsent": true
+  },
+  "tokenLeakChecks": [
+    {
+      "surface": "side_panel",
+      "passed": true,
+      "observation": {
+        "action": "t01_secret_scan",
+        "urlContains": false,
+        "referrerContains": false,
+        "localStorageContains": false,
+        "sessionStorageContains": false,
+        "chromeStorageContains": false,
+        "indexedDbContains": false,
+        "bodyTextContains": false,
+        "inputValueEmpty": true
+      }
+    },
+    {
+      "surface": "workspace",
+      "passed": true,
+      "observation": {
+        "urlContains": false,
+        "referrerContains": false,
+        "localStorageContains": false,
+        "sessionStorageContains": false,
+        "chromeStorageContains": false,
+        "indexedDbContains": false,
+        "bodyTextContains": false,
+        "inputValueEmpty": true
+      }
+    },
+    {
+      "surface": "public_artifact_raw_bytes",
+      "passed": true,
+      "observation": {
+        "scannedFiles": 16,
+        "hits": []
+      }
+    }
+  ],
+  "checks": [
+    {
+      "id": "fresh_extension_build",
+      "passed": true,
+      "detail": "/mnt/c/workspace/navia-t02.3-status-20260913/.tmp/t02-extension-build-t02-r2-status-contract-production-input-d-20260913T234858"
+    },
+    {
+      "id": "extension_id_shape",
+      "passed": true,
+      "detail": "lnomjbimmkmhoppihmndnpepoldhmcmj"
+    },
+    {
+      "id": "native_side_panel_opened",
+      "passed": true,
+      "detail": "extension_page_user_gesture+e2e_bridge"
+    },
+    {
+      "id": "sidepanel_bound_to_host_tab",
+      "passed": true,
+      "detail": "{\"locationHref\":\"chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/sidepanel.html?naviaE2ETabId=1986251207\",\"title\":\"Navia\",\"viewport\":{\"width\":360,\"height\":759},\"hasNaviaRoot\":true,\"naviaRootVisible\":true,\"evidenceCardCount\":0,\"evidenceCardLabels\":[],\"containsEvidenceCardMindmap\":false,\"containsReadingMap\":false,\"readingMapNavCount\":0,\"readingMapDetailText\":\"\",\"containsSourcePanel\":false,\"sourceEvidenceVisible\":false,\"sourceEvidenceText\":\"\",\"visibleTextSample\":\"\"}"
+    },
+    {
+      "id": "sidepanel_root_present",
+      "passed": true,
+      "detail": "extension_page_user_gesture+e2e_bridge"
+    },
+    {
+      "id": "sidepanel_403_is_authentication",
+      "passed": true,
+      "detail": "Wrong token produced authentication_required."
+    },
+    {
+      "id": "sidepanel_token_input_cleared",
+      "passed": true,
+      "detail": "{\"action\":\"t01_secret_scan\",\"urlContains\":false,\"referrerContains\":false,\"localStorageContains\":false,\"sessionStorageContains\":false,\"chromeStorageContains\":false,\"indexedDbContains\":false,\"bodyTextContains\":false,\"inputValueEmpty\":true}"
+    },
+    {
+      "id": "token_not_exposed_side_panel",
+      "passed": true,
+      "detail": "{\"action\":\"t01_secret_scan\",\"urlContains\":false,\"referrerContains\":false,\"localStorageContains\":false,\"sessionStorageContains\":false,\"chromeStorageContains\":false,\"indexedDbContains\":false,\"bodyTextContains\":false,\"inputValueEmpty\":true}"
+    },
+    {
+      "id": "sidepanel_source_identity",
+      "passed": true,
+      "detail": "trace_ready · src_00000000000000000000000003 · op_00000000000000000000000004"
+    },
+    {
+      "id": "workspace_requires_second_token",
+      "passed": true,
+      "detail": "Workspace exposed its own unauthenticated Runtime session."
+    },
+    {
+      "id": "sidepanel_reload_clears_page_session",
+      "passed": true,
+      "detail": "Chrome rebuilt the tab-specific Side Panel without persisting its Runtime token."
+    },
+    {
+      "id": "sidepanel_token_input_cleared",
+      "passed": true,
+      "detail": "{\"action\":\"t01_secret_scan\",\"urlContains\":false,\"referrerContains\":false,\"localStorageContains\":false,\"sessionStorageContains\":false,\"chromeStorageContains\":false,\"indexedDbContains\":false,\"bodyTextContains\":false,\"inputValueEmpty\":true}"
+    },
+    {
+      "id": "sidepanel_disconnect_isolated",
+      "passed": true,
+      "detail": "Side Panel disconnect did not clear the Workspace document session."
+    },
+    {
+      "id": "sidepanel_token_input_cleared",
+      "passed": true,
+      "detail": "{\"action\":\"t01_secret_scan\",\"urlContains\":false,\"referrerContains\":false,\"localStorageContains\":false,\"sessionStorageContains\":false,\"chromeStorageContains\":false,\"indexedDbContains\":false,\"bodyTextContains\":false,\"inputValueEmpty\":true}"
+    },
+    {
+      "id": "workspace_disconnect_isolated",
+      "passed": true,
+      "detail": "Workspace disconnect did not clear the native Side Panel document session."
+    },
+    {
+      "id": "dual_container_identity",
+      "passed": true,
+      "detail": "{\"sourceId\":\"src_00000000000000000000000003\",\"operationId\":\"op_00000000000000000000000004\",\"workspaceOperationId\":\"op_00000000000000000000000004\"}"
+    },
+    {
+      "id": "token_not_exposed_workspace",
+      "passed": true,
+      "detail": "{\"urlContains\":false,\"referrerContains\":false,\"localStorageContains\":false,\"sessionStorageContains\":false,\"chromeStorageContains\":false,\"indexedDbContains\":false,\"bodyTextContains\":false,\"inputValueEmpty\":true}"
+    },
+    {
+      "id": "stale_graph_not_restored",
+      "passed": true,
+      "detail": "Delayed real Runtime graph response stayed cleared after disconnect."
+    },
+    {
+      "id": "sidepanel_session_isolated",
+      "passed": true,
+      "detail": "Workspace disconnect did not disconnect Side Panel."
+    },
+    {
+      "id": "windows_path_rejected_before_runtime",
+      "passed": true,
+      "detail": "Permission form rejected an untranslated Windows path."
+    },
+    {
+      "id": "permission_revoked_T01 document 1",
+      "passed": true,
+      "detail": "{\"permissionRootId\":\"perm_5bd7939a5d384fbea7bd3aed4a2b94d2\",\"workspaceId\":\"ws_default\",\"displayName\":\"T01 document 1\",\"redactedPath\":\"[authorized local path]\",\"scope\":\"single_file\",\"state\":\"revoked\",\"createdAt\":\"2026-09-13T15:54:28Z\",\"revokedAt\":\"2026-09-13T15:54:28Z\"}"
+    },
+    {
+      "id": "revoked_scan_denied_T01 document 1",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "revoked_source_retained_T01 document 1",
+      "passed": true,
+      "detail": "{\"status\":200,\"sourceId\":\"src_00000000000000000000000005\",\"sha256\":\"fce3928cec1f5ebb7a987a8b06ba0d538bfaef9c5412ea52549b489a4d85c3b5\"}"
+    },
+    {
+      "id": "revoked_import_denied_T01 document 1",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "permission_revoked_T01 document 2",
+      "passed": true,
+      "detail": "{\"permissionRootId\":\"perm_2bc09695c8664da7930a6badd504e151\",\"workspaceId\":\"ws_default\",\"displayName\":\"T01 document 2\",\"redactedPath\":\"[authorized local path]\",\"scope\":\"single_file\",\"state\":\"revoked\",\"createdAt\":\"2026-09-13T15:54:28Z\",\"revokedAt\":\"2026-09-13T15:54:29Z\"}"
+    },
+    {
+      "id": "revoked_scan_denied_T01 document 2",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "revoked_source_retained_T01 document 2",
+      "passed": true,
+      "detail": "{\"status\":200,\"sourceId\":\"src_00000000000000000000000007\",\"sha256\":\"7f40e3de8e46da1d95a7be273ae692ce540d911e24fd4ccf826a9bc784a45651\"}"
+    },
+    {
+      "id": "revoked_import_denied_T01 document 2",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "permission_revoked_T01 document 3",
+      "passed": true,
+      "detail": "{\"permissionRootId\":\"perm_baf9d96d07774db681988dbd9ae6c783\",\"workspaceId\":\"ws_default\",\"displayName\":\"T01 document 3\",\"redactedPath\":\"[authorized local path]\",\"scope\":\"single_file\",\"state\":\"revoked\",\"createdAt\":\"2026-09-13T15:54:29Z\",\"revokedAt\":\"2026-09-13T15:54:29Z\"}"
+    },
+    {
+      "id": "revoked_scan_denied_T01 document 3",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "revoked_source_retained_T01 document 3",
+      "passed": true,
+      "detail": "{\"status\":200,\"sourceId\":\"src_00000000000000000000000009\",\"sha256\":\"dbfaf5e2adad47511dadc90b06800cc04278ff92f3d588370b60d16d7e1700c7\"}"
+    },
+    {
+      "id": "revoked_import_denied_T01 document 3",
+      "passed": true,
+      "detail": "{\"status\":403,\"code\":\"TOOL_PERMISSION_DENIED\"}"
+    },
+    {
+      "id": "forget_exact_confirmation",
+      "passed": true,
+      "detail": "Confirmation is disabled before exact text."
+    },
+    {
+      "id": "forget_four_surfaces",
+      "passed": true,
+      "detail": "{\"libraryAbsent\":true,\"askAbsent\":true,\"graphAbsent\":true,\"traceAbsent\":true}"
+    },
+    {
+      "id": "transport_is_offline",
+      "passed": true,
+      "detail": "{\"observation\":\"Real Runtime stop produced stable offline authority, not authentication_required.\",\"offlineValues\":[\"offline\",\"unchecked\",\"unchecked\",\"unknown\"]}"
+    },
+    {
+      "id": "token_not_exposed_public_artifacts",
+      "passed": true,
+      "detail": "{\"scannedFiles\":16,\"hits\":[]}"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "screenshots/01-native-sidepanel-connected.png",
+      "sha256": "337bd9b2fc74f49aae72ddf179c7f4526fb6346f2dc4a0207ec90ef2174b6192",
+      "surface": "native_side_panel_with_host",
+      "viewport": {
+        "width": 2560,
+        "height": 1800
+      },
+      "captureRegion": {
+        "left": 80,
+        "top": 80,
+        "width": 2560,
+        "height": 1800
+      },
+      "capturedAt": "2026-09-13T15:54:21.684Z"
+    },
+    {
+      "path": "screenshots/02-workspace-source-detail.png",
+      "sha256": "fc36ac7af04af32b0f40822a9e5a6edec45d905c590de5e9925b25564c7353ea",
+      "url": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/workspace.html#/knowledge/sources/src_00000000000000000000000003?workspaceId=ws_default",
+      "surface": "workspace_page",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "capturedAt": "2026-09-13T15:54:28.072Z"
+    },
+    {
+      "path": "screenshots/03-permissions-revoked.png",
+      "sha256": "d4dfaed81f2838f285462353fdd1e136b44e5d8239c5cafba7346761c446798a",
+      "url": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default",
+      "surface": "workspace_page",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "capturedAt": "2026-09-13T15:54:29.425Z"
+    },
+    {
+      "path": "screenshots/04-forget-library.png",
+      "sha256": "93686a0e11eeebe588eda6a285c274f7892d4797b11f5a93b4fad0819aef940c",
+      "url": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/workspace.html#/knowledge/sources?workspaceId=ws_default",
+      "surface": "workspace_page",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "capturedAt": "2026-09-13T15:54:29.695Z"
+    },
+    {
+      "path": "screenshots/05-runtime-offline.png",
+      "sha256": "8ba31e189c1c5ecaef18e4dd2aba22e73b4b1a068abba8662996da7a3ff51753",
+      "url": "chrome-extension://lnomjbimmkmhoppihmndnpepoldhmcmj/workspace.html#/knowledge/sources?workspaceId=ws_default",
+      "surface": "workspace_page",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "capturedAt": "2026-09-13T15:54:33.978Z"
+    }
+  ],
+  "passed": true
+}

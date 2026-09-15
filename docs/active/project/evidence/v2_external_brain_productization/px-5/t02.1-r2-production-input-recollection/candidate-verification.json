@@ -1,0 +1,601 @@
+{
+  "checks": [
+    {
+      "id": "T02-A01-schema-meta",
+      "observed": "PASS",
+      "passed": true,
+      "requirement": "Draft 2020-12 schema meta-validation"
+    },
+    {
+      "id": "T02-A01-schema-instance",
+      "observed": [],
+      "passed": true,
+      "requirement": "sealed raw run validates against its captured schema"
+    },
+    {
+      "id": "T02-A01-collector-invariants",
+      "observed": {
+        "errors": [],
+        "exitCode": 0
+      },
+      "passed": true,
+      "requirement": "captured collector validateRawRun returns no invariant errors"
+    },
+    {
+      "id": "T02-A02-captured-inputs",
+      "observed": {
+        "references": {
+          "buildIndex": true,
+          "collectorImplementation": true,
+          "rawSchemaArtifact": true
+        },
+        "snapshotCommit": "9205336cc8ae11024bd9a98e2896dfe37edbdb1e"
+      },
+      "passed": true,
+      "requirement": "snapshot/build/collector/schema references bind captured bytes"
+    },
+    {
+      "id": "T02-A02-build-index",
+      "observed": {
+        "actualFiles": 91,
+        "errors": [],
+        "indexedFiles": 91
+      },
+      "passed": true,
+      "requirement": "all fresh extension build files match path/mode/length/hash index"
+    },
+    {
+      "id": "T02-A10-artifact-index",
+      "observed": {
+        "duplicatePaths": [],
+        "index": 953,
+        "raw": 953
+      },
+      "passed": true,
+      "requirement": "raw artifacts equal the authoritative index and paths are unique"
+    },
+    {
+      "id": "T02-A10-artifact-bytes",
+      "observed": {
+        "errors": [],
+        "mode": "local-complete-run",
+        "privateLocalOnly": 6,
+        "public": 947,
+        "publicBytes": 9027730
+      },
+      "passed": true,
+      "requirement": "every allowed artifact path has matching length/hash and public/private classification"
+    },
+    {
+      "id": "T02-A10-artifact-references",
+      "observed": [],
+      "passed": true,
+      "requirement": "all event artifact references resolve to the authoritative artifact index"
+    },
+    {
+      "id": "T02.1-A01-current-seal",
+      "observed": {
+        "artifacts": 953,
+        "events": 1127,
+        "rawSha256": "711d2f2c976658427148c5b717710d0a8ecf09b83b20aa43210e270d6523b0f2",
+        "recomputedSeal": "acdc13434fe140daf5e3ea86abbe10c61ca1fb0509db9de17e10c44f3d4abcb0",
+        "runId": "t02-r2-raw-production-input-20260912T053500",
+        "sealSha256": "acdc13434fe140daf5e3ea86abbe10c61ca1fb0509db9de17e10c44f3d4abcb0",
+        "snapshotCommit": "9205336cc8ae11024bd9a98e2896dfe37edbdb1e"
+      },
+      "passed": true,
+      "requirement": "new run identity, raw bytes, canonical seal and counts are immutable"
+    },
+    {
+      "id": "T02.1-A01-old-run-immutable",
+      "observed": {
+        "rawExists": true,
+        "rawSha256": "ade431410ec375b7ab48e9de7e41472c2b9e7baa72fce30373809b807a493f2e",
+        "sealSha256": "725fb2eedb6902900744b67577f55d5434987adba91be05cb376a7b216aa40f7"
+      },
+      "passed": true,
+      "requirement": "previous accepted T02 raw run remains byte-identical and separate"
+    },
+    {
+      "id": "T02.1-A01-no-cross-run-reference",
+      "observed": {
+        "oldRunIdOccurrences": 0
+      },
+      "passed": true,
+      "requirement": "new sealed raw run contains no old run identifier or cross-run merge"
+    },
+    {
+      "id": "T02-A03-event-order",
+      "observed": {
+        "eventKinds": {
+          "background_request": 7,
+          "background_response": 7,
+          "command_result": 9,
+          "container_observation": 51,
+          "dom_action": 9,
+          "fault_end": 4,
+          "fault_start": 4,
+          "navigation_start": 67,
+          "route_observation": 51,
+          "runtime_request": 454,
+          "runtime_response": 439,
+          "screenshot": 10,
+          "transport_failure": 15
+        },
+        "events": 1127
+      },
+      "passed": true,
+      "requirement": "events have unique IDs, current run ID and contiguous collector sequence"
+    },
+    {
+      "id": "T02-A03-segments",
+      "observed": {
+        "distinct": {
+          "browserContextId": 2,
+          "runtimePid": 2,
+          "runtimeSessionId": 2,
+          "segmentId": 2
+        },
+        "ranges": [
+          [
+            1,
+            1122
+          ],
+          [
+            1123,
+            1127
+          ]
+        ]
+      },
+      "passed": true,
+      "requirement": "two complete segments prove a distinct Runtime restart authority"
+    },
+    {
+      "id": "T02-A06-exact-one-terminal",
+      "observed": {
+        "backgroundRequests": 7,
+        "backgroundResponses": 7,
+        "errors": [],
+        "orphans": [],
+        "runtimeRequests": 454,
+        "runtimeResponses": 439,
+        "transportFailures": 15
+      },
+      "passed": true,
+      "requirement": "every Background/Runtime request has exactly one linked terminal outcome"
+    },
+    {
+      "id": "T02.1-A03-trusted-entries",
+      "observed": {
+        "invalidChains": [],
+        "origins": {
+          "open_in_workspace": 2,
+          "open_workspace": 2,
+          "view_source": 3
+        }
+      },
+      "passed": true,
+      "requirement": "three production entry origins meet counts and trusted action/background/route chains"
+    },
+    {
+      "id": "T02-A05-runtime-authority",
+      "observed": [],
+      "passed": true,
+      "requirement": "route/container stable IDs are linked to prior same-navigation Runtime authority"
+    },
+    {
+      "id": "T02.1-A05-route-matrix",
+      "observed": {
+        "ask": [
+          "back",
+          "direct_open",
+          "push",
+          "reload",
+          "reopen"
+        ],
+        "graph": [
+          "back",
+          "direct_open",
+          "reload",
+          "reopen"
+        ],
+        "permissions": [
+          "back",
+          "direct_open",
+          "reload",
+          "reopen"
+        ],
+        "source_detail": [
+          "back",
+          "direct_open",
+          "push",
+          "reload",
+          "reopen"
+        ],
+        "source_library": [
+          "back",
+          "direct_open",
+          "push",
+          "recovery",
+          "reload",
+          "reopen"
+        ]
+      },
+      "passed": true,
+      "requirement": "five canonical routes each have direct-open/reload/Back/reopen observations"
+    },
+    {
+      "id": "T02.1-A06-route-recovery",
+      "observed": {
+        "errors": [
+          [
+            "scenario_route_error_invalid",
+            "INVALID_ROUTE"
+          ],
+          [
+            "scenario_route_error_workspace_missing",
+            "WORKSPACE_NOT_FOUND"
+          ]
+        ],
+        "pairedRecoveries": [
+          "INVALID_ROUTE",
+          "WORKSPACE_NOT_FOUND"
+        ]
+      },
+      "passed": true,
+      "requirement": "at least two canonical route errors have trusted recovery to Source Library"
+    },
+    {
+      "id": "T02.1-A07-axe",
+      "observed": {
+        "critical": 0,
+        "engine": "axe-core",
+        "resultType": "axe",
+        "schemaVersion": "v2-px-axe-result/v1",
+        "serious": 0,
+        "surfaces": [
+          "side_panel",
+          "workspace_page"
+        ],
+        "violations": []
+      },
+      "passed": true,
+      "requirement": "real typed axe-core result covers both product surfaces with serious=0 and critical=0"
+    },
+    {
+      "id": "T02.1-A08-keyboard",
+      "observed": {
+        "assertionsPassed": 5,
+        "assertionsTotal": 5,
+        "escapePassed": true,
+        "focusReturnPassed": true,
+        "reducedMotionPassed": true,
+        "resultType": "keyboard",
+        "schemaVersion": "v2-px-keyboard-result/v1",
+        "surface": "workspace_page",
+        "tabReachedInteractive": true,
+        "traceOpenedByKeyboard": true
+      },
+      "passed": true,
+      "requirement": "typed keyboard result has all five real interaction assertions passing"
+    },
+    {
+      "id": "T02.1-A04-source-corpus",
+      "observed": {
+        "errors": [],
+        "kinds": {
+          "explicit_local_document": 3,
+          "note_markdown": 3,
+          "real_web": 6
+        },
+        "runtimeSourceTypes": {
+          "authorized_local_document": 3,
+          "user_note": 3,
+          "web_page": 6
+        },
+        "samples": 12,
+        "unique": {
+          "contentFingerprint": 12,
+          "operationId": 12,
+          "sourceId": 12,
+          "sourceSampleId": 12
+        }
+      },
+      "passed": true,
+      "requirement": "single-run corpus is exactly 6 web + 3 explicit local + 3 note with unique bytes and Runtime IDs"
+    },
+    {
+      "id": "T02.1-A09-permission",
+      "observed": [
+        "scenario_permission_1",
+        "scenario_permission_2",
+        "scenario_permission_3"
+      ],
+      "passed": true,
+      "requirement": "three independent Permission scenarios include real Runtime operations"
+    },
+    {
+      "id": "T02.1-A09-durable-forget",
+      "observed": [],
+      "passed": true,
+      "requirement": "three Forget mutations have four-surface verification and four same-source reopen authorities"
+    },
+    {
+      "id": "T02.1-A09-faults",
+      "observed": {
+        "errors": [],
+        "intervals": [
+          [
+            980,
+            1058,
+            "adapter_blocked"
+          ],
+          [
+            1060,
+            1072,
+            "data_service_unreachable"
+          ],
+          [
+            1074,
+            1086,
+            "source_failed"
+          ],
+          [
+            1088,
+            1122,
+            "runtime_offline"
+          ]
+        ]
+      },
+      "passed": true,
+      "requirement": "four controlled fault intervals are non-overlapping and contain observed screenshots"
+    },
+    {
+      "id": "T02.1-A09-screenshots",
+      "observed": {
+        "errors": [],
+        "productPairs": [
+          [
+            "side_panel",
+            360
+          ],
+          [
+            "side_panel",
+            420
+          ],
+          [
+            "workspace_page",
+            768
+          ],
+          [
+            "workspace_page",
+            1280
+          ]
+        ],
+        "screenshots": 10
+      },
+      "passed": true,
+      "requirement": "all screenshots have real PNG/hash/metadata/observation linkage and four product viewport mappings"
+    },
+    {
+      "id": "T02-A10-public-private",
+      "observed": {
+        "hits": [],
+        "mode": "local",
+        "privatePaths": 6,
+        "scannedPublicFiles": 947
+      },
+      "passed": true,
+      "requirement": "public bytes contain no credential/private-user-path shapes and private bytes follow package mode"
+    },
+    {
+      "id": "T02-A10-cleanup",
+      "observed": {
+        "browserClosed": true,
+        "fixtureServerClosed": true,
+        "generatedAt": "2026-09-11T21:39:48.599Z",
+        "passed": true,
+        "profileRemoved": true,
+        "runId": "t02-r2-raw-production-input-20260912T053500",
+        "runtimeStopped": true,
+        "schemaVersion": "v2-px-r2-cleanup/v1"
+      },
+      "passed": true,
+      "requirement": "browser/runtime/fixture server/profile cleanup is complete"
+    },
+    {
+      "id": "T02-A12-command-results",
+      "observed": {
+        "axe-core:side-panel+workspace": 0,
+        "node e2e/chrome-v2-t01-r1-frontend.mjs": 0,
+        "playwright:keyboard-accessibility": 0,
+        "pnpm build:e2e": 0,
+        "pnpm test": 0,
+        "pnpm test:v2-px-r2-raw-collector": 0,
+        "pnpm typecheck": 0,
+        "python3 -m pytest -q": 0,
+        "r2:register-source-corpus": 0
+      },
+      "passed": true,
+      "requirement": "all six prerequisites and three structured real-browser commands terminated with exitCode=0"
+    },
+    {
+      "id": "T02-A12-test-counts",
+      "observed": {
+        "collector11": true,
+        "frontend169": true,
+        "runtime307": true,
+        "t01Checks": 36,
+        "t01Passed": true,
+        "t01RawPresent": true
+      },
+      "passed": true,
+      "requirement": "collector 11, frontend 169, Runtime 307 and T01 real Chrome 36 all pass"
+    },
+    {
+      "id": "T02-A11-collection-diagnostic",
+      "observed": {
+        "generatedAt": "2026-09-11T21:39:48.603Z",
+        "missingObservations": [],
+        "passed": true,
+        "runId": "t02-r2-raw-production-input-20260912T053500",
+        "schemaVersion": "v2-px-collection-diagnostic/v1",
+        "sealedRawRun": {
+          "path": "raw/raw-run.json",
+          "sha256": "711d2f2c976658427148c5b717710d0a8ecf09b83b20aa43210e270d6523b0f2"
+        }
+      },
+      "passed": true,
+      "requirement": "post-seal collection diagnostic is empty and binds the raw bytes"
+    },
+    {
+      "id": "T02.1-A11-t03-input-readiness",
+      "observed": {
+        "exitCode": 0,
+        "result": {
+          "allowedUse": "production_positive_input_candidate",
+          "fatal": 0,
+          "gaps": [],
+          "major": 0,
+          "observed": {
+            "completeRouteRecoveryIntents": [
+              "ask",
+              "graph",
+              "permissions",
+              "source_detail",
+              "source_library"
+            ],
+            "entryOrigins": {
+              "open_in_workspace": 2,
+              "open_workspace": 2,
+              "view_source": 3
+            },
+            "invalidOrForbiddenRouteRecoveries": [
+              "INVALID_ROUTE",
+              "WORKSPACE_NOT_FOUND"
+            ],
+            "registeredSourceCorpus": {
+              "artifactAndRuntimeLinkage": true,
+              "kinds": {
+                "explicit_local_document": 3,
+                "note_markdown": 3,
+                "real_web": 6
+              },
+              "samples": 12
+            },
+            "routeRecoveryIntentCount": 5,
+            "runtimeSourceTypes": {
+              "authorized_local_document": 3,
+              "user_note": 3,
+              "web_page": 6
+            },
+            "screenshotWidths": {
+              "1280": 1,
+              "360": 1,
+              "420": 1,
+              "768": 1
+            },
+            "screenshotsBySurface": {
+              "side_panel": 2,
+              "workspace_page": 8
+            },
+            "screenshotsWithoutProductViewport": 6,
+            "typedCommandResultTypes": {
+              "axe": 1,
+              "keyboard": 1,
+              "source_corpus": 1
+            },
+            "uniqueRuntimeSources": 12
+          },
+          "readOnly": true,
+          "readyForPositiveProductionValidation": true,
+          "schemaVersion": "v2-px-t03-input-readiness/v1",
+          "sourceRawSeal": "acdc13434fe140daf5e3ea86abbe10c61ca1fb0509db9de17e10c44f3d4abcb0",
+          "sourceRunId": "t02-r2-raw-production-input-20260912T053500",
+          "sourceSnapshotCommit": "9205336cc8ae11024bd9a98e2896dfe37edbdb1e"
+        }
+      },
+      "passed": true,
+      "requirement": "independent T03 input checker exits 0 with no Fatal/Major gaps"
+    }
+  ],
+  "claimBoundary": "A local machine pass is not T02.1, T03, PX-5, PX-6 or V2 acceptance.",
+  "fatal": 0,
+  "independentReview": "PENDING",
+  "localCandidatePassed": true,
+  "machineChecks": 31,
+  "machineFailed": 0,
+  "machinePassed": 31,
+  "major": 0,
+  "mode": "local_complete_run",
+  "px5": "FAIL_REOPENED",
+  "rawSha256": "711d2f2c976658427148c5b717710d0a8ecf09b83b20aa43210e270d6523b0f2",
+  "runId": "t02-r2-raw-production-input-20260912T053500",
+  "schemaVersion": "v2-px-t02.1-candidate-verification/v1",
+  "sealSha256": "acdc13434fe140daf5e3ea86abbe10c61ca1fb0509db9de17e10c44f3d4abcb0",
+  "snapshotCommit": "9205336cc8ae11024bd9a98e2896dfe37edbdb1e",
+  "t02_1Status": "CANDIDATE_PASS_PENDING_INDEPENDENT_REVIEW",
+  "t03Implementation": "NO_GO",
+  "t03InputReadiness": {
+    "allowedUse": "production_positive_input_candidate",
+    "fatal": 0,
+    "gaps": [],
+    "major": 0,
+    "observed": {
+      "completeRouteRecoveryIntents": [
+        "ask",
+        "graph",
+        "permissions",
+        "source_detail",
+        "source_library"
+      ],
+      "entryOrigins": {
+        "open_in_workspace": 2,
+        "open_workspace": 2,
+        "view_source": 3
+      },
+      "invalidOrForbiddenRouteRecoveries": [
+        "INVALID_ROUTE",
+        "WORKSPACE_NOT_FOUND"
+      ],
+      "registeredSourceCorpus": {
+        "artifactAndRuntimeLinkage": true,
+        "kinds": {
+          "explicit_local_document": 3,
+          "note_markdown": 3,
+          "real_web": 6
+        },
+        "samples": 12
+      },
+      "routeRecoveryIntentCount": 5,
+      "runtimeSourceTypes": {
+        "authorized_local_document": 3,
+        "user_note": 3,
+        "web_page": 6
+      },
+      "screenshotWidths": {
+        "1280": 1,
+        "360": 1,
+        "420": 1,
+        "768": 1
+      },
+      "screenshotsBySurface": {
+        "side_panel": 2,
+        "workspace_page": 8
+      },
+      "screenshotsWithoutProductViewport": 6,
+      "typedCommandResultTypes": {
+        "axe": 1,
+        "keyboard": 1,
+        "source_corpus": 1
+      },
+      "uniqueRuntimeSources": 12
+    },
+    "readOnly": true,
+    "readyForPositiveProductionValidation": true,
+    "schemaVersion": "v2-px-t03-input-readiness/v1",
+    "sourceRawSeal": "acdc13434fe140daf5e3ea86abbe10c61ca1fb0509db9de17e10c44f3d4abcb0",
+    "sourceRunId": "t02-r2-raw-production-input-20260912T053500",
+    "sourceSnapshotCommit": "9205336cc8ae11024bd9a98e2896dfe37edbdb1e"
+  }
+}

@@ -6,8 +6,8 @@ type KnowledgeBuildStatusProps = {
   status: KnowledgeServiceStatus | null;
 };
 
-export function KnowledgeBuildStatus({ source, operation, status }: KnowledgeBuildStatusProps) {
-  const buildStatus = source?.status ?? status?.sourceBuildStatus ?? "not_saved";
+export function KnowledgeBuildStatus({ source, operation }: KnowledgeBuildStatusProps) {
+  const buildStatus = source?.status ?? "not_saved";
   return (
     <div className={`knowledge-build-status knowledge-build-status-${buildStatus}`} aria-label="V2 source build status">
       <span>{buildStatusLabel(buildStatus)}</span>

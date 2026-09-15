@@ -1,0 +1,326 @@
+{
+  "generatedAt": "2026-07-16T12:00:00+08:00",
+  "mode": "headless_chromium_muted",
+  "status": "superseded_visual_baseline_not_current_px_acceptance",
+  "auditPackageStatus": "px_0_1b_local_static_candidate_pending_independent_package_review",
+  "scope": "The 54 checks predate PX-0.1 canonical routing, lifecycle, Forget and accessibility corrections. They remain a visual baseline only and cannot support current prototype or PX acceptance.",
+  "prototypeUrl": "file:///C:/workspace/navia/docs/active/project/design/v2-external-brain-productization-prototype-review/index.html",
+  "postRevisionChecks": {
+    "checkedAt": "2026-07-16T12:00:00+08:00",
+    "inlineJavaScriptSyntax": "passed_px_0_1_node_check",
+    "requiredEntryLabels": [
+      "查看来源",
+      "打开工作台",
+      "在工作台中打开"
+    ],
+    "comparisonDisclosure": "passed",
+    "canonicalRouteBehavior": "headless_host_chrome_passed_for_saved_source_identity",
+    "savedSourceIdentity": {
+      "status": "passed",
+      "route": "#/knowledge/sources/source_current_page_001?workspaceId=workspace_research",
+      "detailTitle": "个人知识库产品化设计审查",
+      "breadcrumbSourceId": "source_current_page_001"
+    },
+    "savedSourceFullReload": "passed_same_source_detail",
+    "savedSourceReopen": "passed_same_source_detail",
+    "savedSourceBackRecovery": "passed_same_source_detail",
+    "reviewSavedSourceRegistry": "implemented_localStorage_review_only_not_production_authority",
+    "forgetFourSurfaceBehavior": "headless_host_chrome_passed_for_existing_source_forget_then_full_reload_and_direct_open",
+    "forgetBackRecovery": {
+      "status": "passed",
+      "result": "SOURCE_NOT_FOUND",
+      "forgottenSourceReopened": false
+    },
+    "unsavedCurrentSourceDirectOpen": "SOURCE_NOT_FOUND",
+    "sourceIdSpecificGraphLifecycle": "passed",
+    "forgottenSourceDirectOpen": "SOURCE_NOT_FOUND",
+    "forgottenExistingSourceFullReload": "SOURCE_NOT_FOUND",
+    "prototypeTombstonePersistence": "passed_localStorage_review_only_not_production_authority",
+    "invalidForeignHash": "INVALID_ROUTE",
+    "invalidContextOpenInWorkspace": "recovered_to_source_library",
+    "validContextOpenInWorkspace": "preserved_graph_route",
+    "askTextareaAccessibleName": "passed",
+    "resetRestoresInitialDom": "passed",
+    "accessibilityBehavior": "ask accessible name and dialog mechanics locally checked; full axe/keyboard evidence requires PX-5",
+    "freshRealChromeInteraction": "pending_px_1_entrypoint_spike",
+    "reason": "PX-0.1b remains open until all contracts, fixtures, Drawio and the flat external audit package are independently reviewed. Fresh host-Chrome headless checks cover unsaved-source rejection, saved-source identity across full reload/reopen/Back, forgotten-source rejection, invalid-context fallback and valid-context preservation. Browser cleanup was verified by chrome.exe process name plus the isolated profile marker. The review registry is prototype-only; old 54/54 checks remain a visual baseline."
+  },
+  "summary": {
+    "total": 54,
+    "passed": 54,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "name": "原型初始化",
+      "passed": true,
+      "detail": "data-prototype-ready=true"
+    },
+    {
+      "name": "关键模块 #target-product-canvas",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #concept-canvas",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #traceDrawer",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #forgetDialog",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #permissionDialog",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #componentDemo",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "关键模块 #flowBoard",
+      "passed": true,
+      "detail": "DOM 唯一存在"
+    },
+    {
+      "name": "Side Panel 快捷动作触达",
+      "passed": true,
+      "detail": "heights=44,44,44,44"
+    },
+    {
+      "name": "键盘焦点可见",
+      "passed": true,
+      "detail": "{\"outlineStyle\":\"solid\",\"outlineWidth\":\"3px\"}"
+    },
+    {
+      "name": "单次保存异步状态机",
+      "passed": true,
+      "detail": "not_saved → queued → ingesting → building → trace_ready"
+    },
+    {
+      "name": "Workspace 路由 ask",
+      "passed": true,
+      "detail": "#/knowledge/ask"
+    },
+    {
+      "name": "Workspace 路由 graph",
+      "passed": true,
+      "detail": "#/knowledge/graph"
+    },
+    {
+      "name": "Workspace 路由 permissions",
+      "passed": true,
+      "detail": "#/knowledge/settings/permissions"
+    },
+    {
+      "name": "Workspace 路由 sources",
+      "passed": true,
+      "detail": "#/knowledge/sources/source_web_bilibili"
+    },
+    {
+      "name": "Evidence Trace 打开",
+      "passed": true,
+      "detail": "located 默认态可见"
+    },
+    {
+      "name": "Trace 状态 fallback_shown",
+      "passed": true,
+      "detail": "状态未合并"
+    },
+    {
+      "name": "Trace 状态 blocked",
+      "passed": true,
+      "detail": "状态未合并"
+    },
+    {
+      "name": "Trace 状态 located",
+      "passed": true,
+      "detail": "状态未合并"
+    },
+    {
+      "name": "PermissionRoot 对话框",
+      "passed": true,
+      "detail": "显式授权，不默认扫描"
+    },
+    {
+      "name": "授权记录追加",
+      "passed": true,
+      "detail": "新增脱敏路径记录"
+    },
+    {
+      "name": "Forget 二次确认",
+      "passed": true,
+      "detail": "确认词正确后放行"
+    },
+    {
+      "name": "Forget 验证完成",
+      "passed": true,
+      "detail": "对话框关闭并给出四面验证反馈"
+    },
+    {
+      "name": "组件实验台 1",
+      "passed": true,
+      "detail": "ServiceStatusBanner"
+    },
+    {
+      "name": "组件实验台 2",
+      "passed": true,
+      "detail": "SaveToKnowledgeCard"
+    },
+    {
+      "name": "组件实验台 3",
+      "passed": true,
+      "detail": "KnowledgeBuildStatus"
+    },
+    {
+      "name": "组件实验台 4",
+      "passed": true,
+      "detail": "WorkspaceSwitcher"
+    },
+    {
+      "name": "组件实验台 5",
+      "passed": true,
+      "detail": "SourceLibraryPanel"
+    },
+    {
+      "name": "组件实验台 6",
+      "passed": true,
+      "detail": "SourceDetailReader"
+    },
+    {
+      "name": "组件实验台 7",
+      "passed": true,
+      "detail": "AskWithSourcesPanel"
+    },
+    {
+      "name": "组件实验台 8",
+      "passed": true,
+      "detail": "EvidenceTraceDrawer"
+    },
+    {
+      "name": "组件实验台 9",
+      "passed": true,
+      "detail": "KnowledgeGraphCanvas"
+    },
+    {
+      "name": "组件实验台 10",
+      "passed": true,
+      "detail": "PermissionRootManager"
+    },
+    {
+      "name": "组件实验台 11",
+      "passed": true,
+      "detail": "ForgetSourceDialog"
+    },
+    {
+      "name": "组件实验台 12",
+      "passed": true,
+      "detail": "Launcher / SidePanelShell"
+    },
+    {
+      "name": "体验路线 save",
+      "passed": true,
+      "detail": "步骤 1 / 5 → 步骤 2 / 5"
+    },
+    {
+      "name": "体验路线 service",
+      "passed": true,
+      "detail": "步骤 1 / 5 → 步骤 2 / 5"
+    },
+    {
+      "name": "体验路线 library",
+      "passed": true,
+      "detail": "步骤 1 / 4 → 步骤 2 / 4"
+    },
+    {
+      "name": "体验路线 ask",
+      "passed": true,
+      "detail": "步骤 1 / 5 → 步骤 2 / 5"
+    },
+    {
+      "name": "体验路线 graph",
+      "passed": true,
+      "detail": "步骤 1 / 4 → 步骤 2 / 4"
+    },
+    {
+      "name": "体验路线 permission",
+      "passed": true,
+      "detail": "步骤 1 / 4 → 步骤 2 / 4"
+    },
+    {
+      "name": "体验路线 forget",
+      "passed": true,
+      "detail": "步骤 1 / 5 → 步骤 2 / 5"
+    },
+    {
+      "name": "图片资源 assets/baseline-v1-launcher-docked.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/baseline-v1-sidebar-expanded.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/baseline-v1-sidebar-resized.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/target-workspace-sources.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/target-sidepanel-save.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/target-workspace-ask.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/target-workspace-graph.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/target-workspace-permissions.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "图片资源 assets/concept-external-brain.png",
+      "passed": true,
+      "detail": "已加载"
+    },
+    {
+      "name": "响应式 420x900",
+      "passed": true,
+      "detail": "关键容器无非预期横向溢出"
+    },
+    {
+      "name": "响应式 360x800",
+      "passed": true,
+      "detail": "关键容器无非预期横向溢出"
+    },
+    {
+      "name": "控制台错误",
+      "passed": true,
+      "detail": "无 error / warning"
+    }
+  ],
+  "consoleIssues": []
+}

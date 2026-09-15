@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_architecture_scan_manifest.schema.json",
+  "title": "V2-PX Architecture Scan Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "repositoryCommit", "hashAlgorithm", "pathSeparator", "textEncoding", "pathOrdering", "treeEntryFormat", "pathIndexEntryFormat", "symlinkPolicy", "lineEndingPolicy", "scanRoots", "trackedPaths", "excludedPaths", "canonicalPathIndex", "canonicalSourceTree", "rulesetArtifact", "allowlistArtifact"],
+  "properties": {
+    "schemaVersion": {"const": "v2-external-brain-architecture-scan-manifest/v2"},
+    "evidenceClass": {"enum": ["contract_fixture", "production_acceptance"]},
+    "repositoryCommit": {"type": "string", "pattern": "^[a-f0-9]{40}([a-f0-9]{24})?$"},
+    "hashAlgorithm": {"const": "sha256"},
+    "pathSeparator": {"const": "/"},
+    "textEncoding": {"const": "utf-8"},
+    "pathOrdering": {"const": "unicode_codepoint_ascending"},
+    "treeEntryFormat": {"const": "<mode> <blobSha256> <path>\\n"},
+    "pathIndexEntryFormat": {"const": "<path>\\n"},
+    "symlinkPolicy": {"const": "hash_link_target_utf8"},
+    "lineEndingPolicy": {"const": "raw_bytes"},
+    "scanRoots": {
+      "type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true,
+      "items": {"enum": ["apps/chrome-extension/entrypoints/sidepanel", "apps/chrome-extension/entrypoints/workspace", "apps/chrome-extension/src/modules/knowledge_workspace"]}
+    },
+    "trackedPaths": {
+      "type": "array", "minItems": 3,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "blobSha256", "mode"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(apps/chrome-extension/entrypoints/(sidepanel|workspace)|apps/chrome-extension/src/modules/knowledge_workspace)/"},
+          "blobSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "mode": {"enum": ["100644", "100755", "120000"]},
+          "inlineSource": {"$ref": "#/$defs/InlineBytes"}
+        }
+      }
+    },
+    "excludedPaths": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"enum": ["node_modules", "dist", ".output"]}},
+    "canonicalPathIndex": {"$ref": "#/$defs/InlineBytes"},
+    "canonicalSourceTree": {"$ref": "#/$defs/InlineBytes"},
+    "rulesetArtifact": {"$ref": "#/$defs/ArtifactRef"},
+    "allowlistArtifact": {"$ref": "#/$defs/ArtifactRef"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evidenceClass": {"const": "contract_fixture"}}, "required": ["evidenceClass"]},
+      "then": {"properties": {"trackedPaths": {"items": {"required": ["inlineSource"]}}}}
+    },
+    {
+      "if": {"properties": {"evidenceClass": {"const": "production_acceptance"}}, "required": ["evidenceClass"]},
+      "then": {"properties": {"trackedPaths": {"items": {"not": {"required": ["inlineSource"]}}}}}
+    }
+  ],
+  "$defs": {
+    "InlineBytes": {
+      "type": "object", "additionalProperties": false,
+      "required": ["encoding", "content", "sha256"],
+      "properties": {"encoding": {"const": "utf8"}, "content": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    },
+    "ArtifactRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}
+    }
+  }
+}

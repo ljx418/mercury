@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "v2-external-brain-screenshot-metadata/v6",
+  "scenarioId": "px5_scenario_32",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "executionMode": "headless_real_chrome",
+  "browser": "chrome",
+  "viewport": {
+    "width": 1280,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "imagePath": "docs/active/project/evidence/v2_external_brain_productization/px-5/screenshots/workspace-adapter_blocked-1280.png",
+  "imageSha256": "76ef679f6782ba6075736da7e2273a8e31231ed882323a7de55aed8604a1ae1d",
+  "captureVariantId": "capture_px5_scenario_32",
+  "captureMode": "product_surface",
+  "captureSurface": "workspace_page",
+  "capturePhase": "route_ready",
+  "containerEvidence": {
+    "hostPageVisible": false,
+    "sidePanelVisible": false,
+    "workspaceVisible": true
+  },
+  "entryPoint": "status_recovery",
+  "routeIntent": "source_library",
+  "resolvedPath": "#/knowledge/sources?workspaceId=ws_default",
+  "routeRecoveryResult": "not_applicable",
+  "openOutcome": "not_applicable",
+  "observedIds": {
+    "sidePanel": {
+      "status": "not_applicable"
+    },
+    "background": {
+      "status": "not_applicable"
+    },
+    "runtime": {
+      "status": "observed",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "operationId": "op_00000000000000000000002844"
+    },
+    "workspace": {
+      "status": "observed",
+      "workspaceId": "ws_default"
+    }
+  },
+  "statusObservation": {
+    "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "frontendInferredRuntimeStatus": "online",
+    "runtimeStatus": "online",
+    "adapterStatus": "blocked",
+    "dataServiceStatus": "unchecked",
+    "sourceBuildStatus": "unknown",
+    "capabilities": {
+      "workspace": true,
+      "sourceImport": true,
+      "buildStatus": true,
+      "query": true,
+      "graph": true,
+      "sourceTrace": true,
+      "forgetVerification": true
+    },
+    "userAction": "configure_adapter",
+    "message": "Observed by PX-5 real Chrome automation.",
+    "redactionApplied": true
+  }
+}

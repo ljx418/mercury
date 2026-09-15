@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_execution_observation.schema.json",
+  "title": "V2-PX Execution Observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "scenarioId", "capturedAt", "evidenceClass", "entryContext", "attempts",
+    "routeEvents", "containerObservations", "runtimeObservation", "ingestCounters"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "v2-external-brain-execution-observation/v6"},
+    "scenarioId": {"type": "string", "minLength": 1},
+    "capturedAt": {"type": "string", "format": "date-time"},
+    "evidenceClass": {"enum": ["contract_fixture", "production_acceptance"]},
+    "entryContext": {"$ref": "#/$defs/EntryContext"},
+    "attempts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/Attempt"}
+    },
+    "routeEvents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/RouteEvent"}
+    },
+    "containerObservations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/ContainerObservation"}
+    },
+    "runtimeObservation": {"$ref": "#/$defs/RuntimeObservation"},
+    "ingestCounters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["before", "after"],
+      "properties": {
+        "before": {"type": "integer", "minimum": 0},
+        "after": {"type": "integer", "minimum": 0}
+      }
+    },
+    "forgetLifecycle": {"$ref": "#/$defs/ForgetLifecycleObservation"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "attempts": {
+            "contains": {
+              "properties": {
+                "entryAction": {
+                  "properties": {"origin": {"const": "open_in_workspace"}},
+                  "required": ["origin"]
+                }
+              },
+              "required": ["entryAction"]
+            }
+          }
+        },
+        "required": ["attempts"]
+      },
+      "then": {
+        "properties": {
+          "entryContext": {
+            "properties": {"status": {"enum": ["observed_valid", "observed_invalid"]}},
+            "required": ["status"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "attempts": {
+            "contains": {
+              "properties": {"entryAction": {"properties": {"eventType": {"const": "forget"}}, "required": ["eventType"]}},
+              "required": ["entryAction"]
+            }
+          }
+        },
+        "required": ["attempts"]
+      },
+      "then": {"required": ["forgetLifecycle"]}
+    }
+  ],
+  "$defs": {
+    "RouteIntent": {"enum": ["source_detail", "source_library", "ask", "graph", "permissions"]},
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "EntryContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["observed_valid", "observed_invalid", "not_applicable"]},
+        "priorRouteIntent": {"$ref": "#/$defs/RouteIntent"},
+        "priorResolvedPath": {"type": "string", "pattern": "^#/knowledge/"},
+        "priorSourceId": {"type": "string", "minLength": 1},
+        "attemptedPath": {"type": "string", "minLength": 1},
+        "fallbackReason": {"enum": ["INVALID_ROUTE", "WORKSPACE_NOT_FOUND", "SOURCE_NOT_FOUND", "FORBIDDEN"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "observed_valid"}}, "required": ["status"]},
+          "then": {
+            "required": ["priorRouteIntent", "priorResolvedPath"],
+            "not": {
+              "anyOf": [
+                {"required": ["attemptedPath"]},
+                {"required": ["fallbackReason"]}
+              ]
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "observed_invalid"}}, "required": ["status"]},
+          "then": {
+            "required": ["attemptedPath", "fallbackReason"],
+            "not": {
+              "anyOf": [
+                {"required": ["priorRouteIntent"]},
+                {"required": ["priorResolvedPath"]},
+                {"required": ["priorSourceId"]}
+              ]
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "not_applicable"}}, "required": ["status"]},
+          "then": {
+            "not": {
+              "anyOf": [
+                {"required": ["priorRouteIntent"]},
+                {"required": ["priorResolvedPath"]},
+                {"required": ["priorSourceId"]},
+                {"required": ["attemptedPath"]},
+                {"required": ["fallbackReason"]}
+              ]
+            }
+          }
+        },
+        {
+          "if": {"properties": {"priorRouteIntent": {"const": "source_detail"}}, "required": ["priorRouteIntent"]},
+          "then": {"required": ["priorSourceId"]}
+        }
+      ]
+    },
+    "Attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "entryAction", "backgroundResult"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "entryAction": {"$ref": "#/$defs/EntryAction"},
+        "backgroundResult": {"$ref": "#/$defs/BackgroundResult"}
+      }
+    },
+    "EntryAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eventType", "actor", "trustedUserGesture", "requestId", "origin", "routeIntent", "workspaceId", "observedAt"],
+      "properties": {
+        "eventType": {"enum": ["view_source", "open_workspace", "open_in_workspace", "direct_route", "status_recovery", "permission", "forget"]},
+        "actor": {"enum": ["user", "browser_navigation", "test_fault_fixture"]},
+        "trustedUserGesture": {"type": "boolean"},
+        "requestId": {"type": "string", "minLength": 1},
+        "origin": {"enum": ["view_source", "open_workspace", "open_in_workspace", "direct_route", "status_recovery", "permission", "forget"]},
+        "routeIntent": {"$ref": "#/$defs/RouteIntent"},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "operationId": {"type": "string", "minLength": 1},
+        "observedAt": {"type": "string", "format": "date-time"}
+      },
+      "allOf": [
+        {"if": {"properties": {"eventType": {"const": "view_source"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "view_source"}}}},
+        {"if": {"properties": {"eventType": {"const": "open_workspace"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "open_workspace"}}}},
+        {"if": {"properties": {"eventType": {"const": "open_in_workspace"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "open_in_workspace"}}}},
+        {"if": {"properties": {"eventType": {"const": "direct_route"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "direct_route"}}}},
+        {"if": {"properties": {"eventType": {"const": "status_recovery"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "status_recovery"}}}},
+        {"if": {"properties": {"eventType": {"const": "permission"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "permission"}}}},
+        {"if": {"properties": {"eventType": {"const": "forget"}}, "required": ["eventType"]}, "then": {"properties": {"origin": {"const": "forget"}}}},
+        {
+          "if": {"properties": {"eventType": {"enum": ["view_source", "open_workspace", "open_in_workspace"]}}, "required": ["eventType"]},
+          "then": {"properties": {"actor": {"const": "user"}, "trustedUserGesture": {"const": true}}}
+        },
+        {
+          "if": {"properties": {"origin": {"const": "open_workspace"}}, "required": ["origin"]},
+          "then": {"properties": {"routeIntent": {"const": "source_library"}}, "not": {"required": ["sourceId"]}}
+        },
+        {
+          "if": {"properties": {"origin": {"const": "view_source"}}, "required": ["origin"]},
+          "then": {"properties": {"routeIntent": {"const": "source_detail"}}, "required": ["sourceId"]}
+        }
+      ]
+    },
+    "BackgroundResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "requestId", "observedAt"],
+      "properties": {
+        "outcome": {"enum": ["focused_existing", "created_new", "direct_open_restored", "recovered", "blocked", "not_applicable"]},
+        "requestId": {"type": "string", "minLength": 1},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "tabId": {"type": "integer", "minimum": 0},
+        "workspaceUrl": {"type": "string", "pattern": "^chrome-extension://[^/]+/workspace\\.html#/knowledge/"},
+        "errorCode": {"enum": ["WORKSPACE_NOT_FOUND", "SOURCE_NOT_FOUND", "FORBIDDEN", "INVALID_ROUTE", "RUNTIME_OFFLINE", "OPEN_WORKSPACE_FAILED", "UNSUPPORTED_HOST_STRATEGY"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"outcome": {"enum": ["focused_existing", "created_new"]}}, "required": ["outcome"]},
+          "then": {"required": ["tabId", "workspaceUrl"], "not": {"required": ["errorCode"]}}
+        },
+        {
+          "if": {"properties": {"outcome": {"enum": ["recovered", "blocked"]}}, "required": ["outcome"]},
+          "then": {"required": ["errorCode"]}
+        }
+      ]
+    },
+    "RouteEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "resolvedPath", "routeIntent", "workspaceId", "observedAt"],
+      "properties": {
+        "kind": {"enum": ["initial", "push", "reload_restore", "back_restore", "reopen_restore", "recovery", "direct_open_after_forget", "reload_after_forget", "back_after_forget", "reopen_after_forget"]},
+        "resolvedPath": {"type": "string", "pattern": "^#/knowledge/"},
+        "routeIntent": {"$ref": "#/$defs/RouteIntent"},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "errorCode": {"enum": ["WORKSPACE_NOT_FOUND", "SOURCE_NOT_FOUND", "FORBIDDEN", "INVALID_ROUTE"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"kind": {"enum": ["direct_open_after_forget", "reload_after_forget", "back_after_forget", "reopen_after_forget"]}}, "required": ["kind"]},
+          "then": {"required": ["sourceId", "errorCode"], "properties": {"routeIntent": {"const": "source_detail"}, "errorCode": {"const": "SOURCE_NOT_FOUND"}}}
+        }
+      ]
+    },
+    "ForgetReopenCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "workspaceId", "sourceId", "outcome", "errorCode", "routeRecoveryResult", "observedAt"],
+      "properties": {
+        "mode": {"enum": ["direct_open", "reload", "back", "reopen"]},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "outcome": {"const": "recovered"},
+        "errorCode": {"const": "SOURCE_NOT_FOUND"},
+        "routeRecoveryResult": {"const": "recovered_to_library"},
+        "observedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "ForgetLifecycleObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workspaceId", "sourceId", "statusBefore", "statusAfter", "reopenChecks"],
+      "properties": {
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "statusBefore": {"allOf": [{"$ref": "v2_knowledge_status.schema.json"}, {"properties": {"sourceBuildStatus": {"const": "trace_ready"}}}]},
+        "statusAfter": {"allOf": [{"$ref": "v2_knowledge_status.schema.json"}, {"properties": {"sourceBuildStatus": {"const": "forgotten"}}}]},
+        "reopenChecks": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"$ref": "#/$defs/ForgetReopenCheck"},
+          "allOf": [
+            {"contains": {"properties": {"mode": {"const": "direct_open"}}, "required": ["mode"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"mode": {"const": "reload"}}, "required": ["mode"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"mode": {"const": "back"}}, "required": ["mode"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"mode": {"const": "reopen"}}, "required": ["mode"]}, "minContains": 1, "maxContains": 1}
+          ]
+        }
+      }
+    },
+    "IdObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["observed", "not_applicable", "unavailable"]},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "operationId": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "observed"}}, "required": ["status"]},
+          "then": {"required": ["workspaceId"]}
+        },
+        {
+          "if": {"properties": {"status": {"enum": ["not_applicable", "unavailable"]}}, "required": ["status"]},
+          "then": {
+            "not": {
+              "anyOf": [
+                {"required": ["workspaceId"]},
+                {"required": ["sourceId"]},
+                {"required": ["operationId"]}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ContainerObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["container", "ids", "observedAt"],
+      "properties": {
+        "container": {"enum": ["side_panel", "background", "workspace_page"]},
+        "ids": {"$ref": "#/$defs/IdObservation"},
+        "observedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "RuntimeObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transportOutcome", "observedAt", "ids", "transportEvidence"],
+      "properties": {
+        "transportOutcome": {"enum": ["response", "timeout", "connection_refused"]},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "ids": {"$ref": "#/$defs/IdObservation"},
+        "responseFingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "transportErrorCode": {"enum": ["RUNTIME_TIMEOUT", "RUNTIME_CONNECTION_REFUSED"]},
+        "transportEvidence": {"$ref": "#/$defs/ArtifactRef"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"transportOutcome": {"const": "response"}}, "required": ["transportOutcome"]},
+          "then": {
+            "required": ["responseFingerprint"],
+            "properties": {"ids": {"properties": {"status": {"const": "observed"}}}},
+            "not": {"required": ["transportErrorCode"]}
+          }
+        },
+        {
+          "if": {"properties": {"transportOutcome": {"enum": ["timeout", "connection_refused"]}}, "required": ["transportOutcome"]},
+          "then": {
+            "required": ["transportErrorCode"],
+            "properties": {"ids": {"properties": {"status": {"const": "unavailable"}}}},
+            "not": {"required": ["responseFingerprint"]}
+          }
+        },
+        {
+          "if": {"properties": {"transportOutcome": {"const": "timeout"}}, "required": ["transportOutcome"]},
+          "then": {"properties": {"transportErrorCode": {"const": "RUNTIME_TIMEOUT"}}}
+        },
+        {
+          "if": {"properties": {"transportOutcome": {"const": "connection_refused"}}, "required": ["transportOutcome"]},
+          "then": {"properties": {"transportErrorCode": {"const": "RUNTIME_CONNECTION_REFUSED"}}}
+        }
+      ]
+    }
+  }
+}

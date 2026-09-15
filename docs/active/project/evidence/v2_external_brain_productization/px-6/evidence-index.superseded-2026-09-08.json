@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "v2-px-6-evidence-index/v1",
+  "generatedAt": "2026-09-08T10:42:54.085Z",
+  "status": "waiting_for_human_review",
+  "px5Validator": {
+    "passed": true,
+    "stage": "V2-PX-5-production-evidence-validation",
+    "automatedCandidatePassed": true,
+    "finalReportPassed": false,
+    "humanReviewStatus": "pending",
+    "counts": {
+      "schemas": 9,
+      "schemaInstances": 82,
+      "sources": 12,
+      "scenarios": 39,
+      "screenshots": 39,
+      "executionObservations": 39,
+      "architectureFiles": 26,
+      "architectureViolations": 0
+    },
+    "gateResults": {
+      "G1_entry": true,
+      "G2_route": true,
+      "G3_lifecycle": true,
+      "G4_architecture": true,
+      "G5_status": true,
+      "G6_ux_accessibility": true,
+      "G7_evidence": true
+    },
+    "issues": []
+  },
+  "authorities": [
+    {
+      "path": "docs/active/project/01-prd.md",
+      "sha256": "dcee59149f80b129ed22628dcd4e2d36828ffce1cf6eecb43072c78bd44879bd"
+    },
+    {
+      "path": "docs/active/project/02-architecture.md",
+      "sha256": "7b4fb1ba58d3cbd720fc46abffd2efabe570efe61159717431f6fb93445be8a6"
+    },
+    {
+      "path": "docs/active/project/stage-gates/v2-external-brain-productization.md",
+      "sha256": "e8e7231686c6afb7bf44ac33d6a178ea386d367087e3fe1fd0ce1336433cf909"
+    },
+    {
+      "path": "docs/active/project/design/v2-px-5-development-plan.md",
+      "sha256": "aaae9f75cc7192f999129d608dd415e5146966e7346d522449d2aaf919d1b977"
+    },
+    {
+      "path": "docs/active/project/design/v2-px-5-acceptance-plan.md",
+      "sha256": "6dec453a399d2f0bf2db3e4ea2678e7236d854d1f80eeeedd75b2861350a3d50"
+    },
+    {
+      "path": "docs/active/project/design/v2-px-6-development-plan.md",
+      "sha256": "148b5eb91a16cf88f1c72175abd3372dda1714a9bf8508eb3772bc991b23fa98"
+    },
+    {
+      "path": "docs/active/project/design/v2-px-6-acceptance-plan.md",
+      "sha256": "bc974606ccad574296632a534b81cbf6ddf1ad41259243e44ba32780279177ca"
+    },
+    {
+      "path": "docs/active/project/stage-gates/v2-px-6-preimplementation-audit.md",
+      "sha256": "e1f1cd1b966707aa294ef5f3bf623cafe1690211ba6b41f8664e259a46bb9cdd"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/acceptance.md",
+      "sha256": "af79ea997d9fbc91db31706fa6df57f4d48541f93a36485b22088d2f083d6eb6"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/prd-review.md",
+      "sha256": "298588271b1cf0942c150450ad4c5618b5dba066db672c80736eaade6281f2a9"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/architecture-review.md",
+      "sha256": "51b57b8ebcfe9a249a0ce35286a0db533b45e92e23b274ff8d89e36d2efb357a"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/false-green-audit.md",
+      "sha256": "ef30b4e053797f75d48aa9c96cbb5bb4ccedce84a88bb8a63df2c3a6d6cea292"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/independent-audit.md",
+      "sha256": "7249e07111ed9ed043b33292fbb75a76115d2181f74e2f06de7b556b637be551"
+    }
+  ],
+  "machineEvidence": [
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/report.json",
+      "sha256": "4d0de888843bdf0bda5fb62edd491f725dc9c01a8534684328af7adebb65b859"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/human-review.json",
+      "sha256": "99aac94eb47ed2c304f660806c48f33b3d2617a20cd0a890c839f06f8006c579"
+    },
+    {
+      "path": "docs/active/project/design/v2-memory-personal-knowledge-base-gap.drawio",
+      "sha256": "bb1ec0d6fb9db9b4b7dd69bc210a8e44026c4191e64677976d8c748f3f30b389"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/sample-manifest.json",
+      "sha256": "621527efce5d711cf538c6626ab6e3c4d3a35c24f146aeda299bdfa6a23f3008"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/architecture-scan-manifest.json",
+      "sha256": "455bfe9ae6f49a515bb3a03d2c396d9c55e596fa96020f6c2c5d3e801660eef1"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/automated-gate-results.json",
+      "sha256": "df119b0ddd9e31abcab375ac0acb613fc43b557f6063be07b6c0083f181adbf9"
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/acceptance-report.html",
+      "sha256": "f0a6ca8a33dac7f93cf368d2215943841929bebac9d44ae771f958221bd460fb"
+    }
+  ],
+  "issues": []
+}

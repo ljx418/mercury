@@ -1,0 +1,6 @@
+.local-runtime-access { border-bottom: 1px solid #d7dfdc; padding: 12px; color: #293832; background: #f2f7f5; min-width: 0; }
+.local-runtime-access form, .local-runtime-access > div { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-top: 8px; }
+.local-runtime-access label { display: grid; gap: 4px; flex: 1 1 180px; min-width: 0; font-size: 12px; }
+.local-runtime-access input { width: 100%; box-sizing: border-box; min-width: 0; padding: 7px; border: 1px solid #a9b9b2; border-radius: 4px; }
+.local-runtime-access button { padding: 7px 10px; border: 1px solid #a9b9b2; border-radius: 4px; background: white; color: #293832; cursor: pointer; }
+.local-runtime-access p { color: #a52c32; overflow-wrap: anywhere; }

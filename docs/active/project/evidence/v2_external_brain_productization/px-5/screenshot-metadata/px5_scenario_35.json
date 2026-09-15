@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "v2-external-brain-screenshot-metadata/v6",
+  "scenarioId": "px5_scenario_35",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "executionMode": "headless_real_chrome",
+  "browser": "chrome",
+  "viewport": {
+    "width": 1280,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "imagePath": "docs/active/project/evidence/v2_external_brain_productization/px-5/screenshots/workspace-runtime-offline-1280.png",
+  "imageSha256": "0dfd78a5197d800990f5414a83c064b01d7b2e415dbdc44104a6d100f2922168",
+  "captureVariantId": "capture_px5_scenario_35",
+  "captureMode": "product_surface",
+  "captureSurface": "workspace_page",
+  "capturePhase": "error_recovery",
+  "containerEvidence": {
+    "hostPageVisible": false,
+    "sidePanelVisible": false,
+    "workspaceVisible": true
+  },
+  "entryPoint": "status_recovery",
+  "routeIntent": "source_library",
+  "resolvedPath": "#/knowledge/sources?workspaceId=ws_default",
+  "routeRecoveryResult": "blocked_with_recovery_action",
+  "openOutcome": "blocked",
+  "observedIds": {
+    "sidePanel": {
+      "status": "not_applicable"
+    },
+    "background": {
+      "status": "not_applicable"
+    },
+    "runtime": {
+      "status": "unavailable"
+    },
+    "workspace": {
+      "status": "observed",
+      "workspaceId": "ws_default"
+    }
+  },
+  "statusObservation": {
+    "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "frontendInferredRuntimeStatus": "offline",
+    "runtimeStatus": null,
+    "adapterStatus": "unchecked",
+    "dataServiceStatus": "unchecked",
+    "sourceBuildStatus": "unknown",
+    "capabilities": {
+      "workspace": false,
+      "sourceImport": false,
+      "buildStatus": false,
+      "query": false,
+      "graph": false,
+      "sourceTrace": false,
+      "forgetVerification": false
+    },
+    "userAction": "start_runtime",
+    "message": "Runtime connection refused by controlled Playwright route abort.",
+    "redactionApplied": true
+  },
+  "errorCode": "RUNTIME_OFFLINE"
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "T01 document 1",
+    "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/01-prd.md",
+    "basename": "01-prd.md",
+    "sha256": "fce3928cec1f5ebb7a987a8b06ba0d538bfaef9c5412ea52549b489a4d85c3b5",
+    "bytes": 123272
+  },
+  {
+    "name": "T01 document 2",
+    "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/02-architecture.md",
+    "basename": "02-architecture.md",
+    "sha256": "7f40e3de8e46da1d95a7be273ae692ce540d911e24fd4ccf826a9bc784a45651",
+    "bytes": 137885
+  },
+  {
+    "name": "T01 document 3",
+    "path": "/mnt/c/workspace/navia-t02.3-status-20260913/docs/active/project/evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/browser-preflight/input/authorized-documents/04-acceptance-plan.md",
+    "basename": "04-acceptance-plan.md",
+    "sha256": "dbfaf5e2adad47511dadc90b06800cc04278ff92f3d588370b60d16d7e1700c7",
+    "bytes": 129274
+  }
+]

@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_local_permission.schema.json",
+  "title": "V2 explicit local permission and import v1",
+  "$defs": {
+    "LookupOutcome": { "enum": ["found", "empty", "forgotten", "unavailable"] },
+    "AskAbsenceObservation": {
+      "type": "object",
+      "required": ["workspaceId", "lookupOutcome", "status", "answer", "evidenceRefs"],
+      "properties": {
+        "workspaceId": { "type": "string", "minLength": 1 },
+        "lookupOutcome": { "const": "empty" },
+        "status": { "const": "degraded" },
+        "answer": { "const": "" },
+        "evidenceRefs": { "type": "array", "maxItems": 0 }
+      }
+    },
+    "TraceAbsenceObservation": {
+      "type": "object",
+      "required": ["sourceId", "lookupOutcome", "status", "entries"],
+      "properties": {
+        "sourceId": { "type": "string", "minLength": 1 },
+        "lookupOutcome": { "const": "forgotten" },
+        "status": { "const": "blocked" },
+        "entries": { "type": "array", "maxItems": 0 }
+      }
+    },
+    "ForgetInput": {
+      "type": "object",
+      "required": ["confirmationText"],
+      "properties": { "confirmationText": { "const": "forget" } },
+      "additionalProperties": false
+    },
+    "GrantRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/"
+        },
+        "scope": {
+          "enum": [
+            "single_file",
+            "directory"
+          ]
+        }
+      },
+      "required": [
+        "workspaceId",
+        "displayName",
+        "path",
+        "scope"
+      ]
+    },
+    "ScanRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "workspaceId"
+      ]
+    },
+    "ImportRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "scanId": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "fileIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        }
+      },
+      "required": [
+        "workspaceId",
+        "scanId",
+        "fileIds"
+      ]
+    },
+    "PermissionRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "permissionRootId": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redactedPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "enum": [
+            "single_file",
+            "directory"
+          ]
+        },
+        "state": {
+          "enum": [
+            "granted",
+            "revoked"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revokedAt": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "permissionRootId",
+        "workspaceId",
+        "displayName",
+        "redactedPath",
+        "scope",
+        "state",
+        "createdAt"
+      ]
+    },
+    "ScanResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scanId": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "permissionRootId": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 128
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "files": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "fileId": {
+                "type": "string",
+                "minLength": 8,
+                "maxLength": 128
+              },
+              "displayName": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sizeBytes": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5242880
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "fileId",
+              "displayName",
+              "sizeBytes",
+              "sha256"
+            ]
+          }
+        }
+      },
+      "required": [
+        "scanId",
+        "permissionRootId",
+        "workspaceId",
+        "files"
+      ]
+    },
+    "ErrorReason": {
+      "enum": [
+        "invalid_request",
+        "missing_permission",
+        "revoked_permission",
+        "workspace_mismatch",
+        "path_not_allowed",
+        "file_changed",
+        "unsupported_file",
+        "unsupported_platform",
+        "limit_exceeded",
+        "idempotency_conflict"
+      ]
+    }
+  }
+}

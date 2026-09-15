@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "v2-external-brain-screenshot-metadata/v6",
+  "scenarioId": "px5_scenario_34",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "executionMode": "headless_real_chrome",
+  "browser": "chrome",
+  "viewport": {
+    "width": 1280,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "imagePath": "docs/active/project/evidence/v2_external_brain_productization/px-5/screenshots/workspace-source_failed-1280.png",
+  "imageSha256": "648a23071918ba8d4c9ed94cc2d45460b84f8944e208b8c91e04e02e4a756a95",
+  "captureVariantId": "capture_px5_scenario_34",
+  "captureMode": "product_surface",
+  "captureSurface": "workspace_page",
+  "capturePhase": "route_ready",
+  "containerEvidence": {
+    "hostPageVisible": false,
+    "sidePanelVisible": false,
+    "workspaceVisible": true
+  },
+  "entryPoint": "status_recovery",
+  "routeIntent": "source_library",
+  "resolvedPath": "#/knowledge/sources?workspaceId=ws_default",
+  "routeRecoveryResult": "not_applicable",
+  "openOutcome": "not_applicable",
+  "observedIds": {
+    "sidePanel": {
+      "status": "not_applicable"
+    },
+    "background": {
+      "status": "not_applicable"
+    },
+    "runtime": {
+      "status": "observed",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000002843",
+      "operationId": "op_00000000000000000000002844"
+    },
+    "workspace": {
+      "status": "observed",
+      "workspaceId": "ws_default"
+    }
+  },
+  "statusObservation": {
+    "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "frontendInferredRuntimeStatus": "online",
+    "runtimeStatus": "online",
+    "adapterStatus": "ready",
+    "dataServiceStatus": "unchecked",
+    "sourceBuildStatus": "failed",
+    "capabilities": {
+      "workspace": true,
+      "sourceImport": true,
+      "buildStatus": true,
+      "query": true,
+      "graph": true,
+      "sourceTrace": true,
+      "forgetVerification": true
+    },
+    "userAction": "retry_source_build",
+    "message": "Observed by PX-5 real Chrome automation.",
+    "redactionApplied": true
+  }
+}

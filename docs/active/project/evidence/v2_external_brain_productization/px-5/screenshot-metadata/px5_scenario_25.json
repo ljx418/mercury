@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "v2-external-brain-screenshot-metadata/v6",
+  "scenarioId": "px5_scenario_25",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "executionMode": "headless_real_chrome",
+  "browser": "chrome",
+  "viewport": {
+    "width": 1280,
+    "height": 900,
+    "deviceScaleFactor": 1
+  },
+  "imagePath": "docs/active/project/evidence/v2_external_brain_productization/px-5/screenshots/route-error-source-not-found-1280.png",
+  "imageSha256": "bf3bbf8489899fea34f6b4ee7a6767cd80ecf7cb5d67c7ac4eb575b730e5a1d7",
+  "captureVariantId": "capture_px5_scenario_25",
+  "captureMode": "product_surface",
+  "captureSurface": "route_error",
+  "capturePhase": "error_recovery",
+  "containerEvidence": {
+    "hostPageVisible": false,
+    "sidePanelVisible": false,
+    "workspaceVisible": true
+  },
+  "entryPoint": "direct_route",
+  "routeIntent": "source_detail",
+  "resolvedPath": "#/knowledge/sources/source_missing?workspaceId=ws_default",
+  "routeRecoveryResult": "recovered_to_library",
+  "openOutcome": "recovered",
+  "observedIds": {
+    "sidePanel": {
+      "status": "not_applicable"
+    },
+    "background": {
+      "status": "not_applicable"
+    },
+    "runtime": {
+      "status": "observed",
+      "workspaceId": "ws_default"
+    },
+    "workspace": {
+      "status": "observed",
+      "workspaceId": "ws_default"
+    }
+  },
+  "statusObservation": {
+    "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "frontendInferredRuntimeStatus": "online",
+    "runtimeStatus": "online",
+    "adapterStatus": "ready",
+    "dataServiceStatus": "unchecked",
+    "sourceBuildStatus": "trace_ready",
+    "capabilities": {
+      "workspace": true,
+      "sourceImport": true,
+      "buildStatus": true,
+      "query": true,
+      "graph": true,
+      "sourceTrace": true,
+      "forgetVerification": true
+    },
+    "userAction": "none",
+    "message": "Observed by PX-5 real Chrome automation.",
+    "redactionApplied": true
+  },
+  "errorCode": "SOURCE_NOT_FOUND"
+}

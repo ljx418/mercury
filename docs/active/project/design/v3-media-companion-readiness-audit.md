@@ -1,64 +1,56 @@
 # V3 Media Companion Readiness Audit
 
-## 1. 审计范围
+日期：2026-09-15。性质：主代理内部文档复核；仍需外部独立审查。
 
-本审计只覆盖 V3 文档基线：
+## 1. 本轮触发
 
-```text
-docs/active/project/01-prd.md
-docs/active/project/02-architecture.md
-docs/active/project/03-development-plan.md
-docs/active/project/04-acceptance-plan.md
-docs/active/project/stage-gates/v3-media-companion.md
-docs/active/project/design/v3-media-companion-gap.md
-docs/active/project/design/v3-media-companion-gap.drawio
-docs/active/project/design/v3-media-companion-development-acceptance-plan.md
-```
+用户要求把 BiliNote 研究固化到 V3，并以 BV1ZpYd66ELP 为首个 B站样本。实际能力探测发现该视频公开字幕为空；同时 PX-6 H01 本地页面显示 Mock adapter 和 data_service unchecked。
 
-本阶段不审计代码实现。
+原“V3.0 只做 transcript-first、ASR 全部延后”的计划不能让指定样本生成可信大纲；原 H01 wording 也不足以证明真实持久化。本轮因此同步修订产品、架构、计划、验收和 Draw.io。
 
-## 2. 审计结论
+## 2. 已闭环的文档问题
 
-```text
-Go for V3 Media Companion documentation baseline.
+- 平台顺序改为 B站优先，YouTube 后续映射。
+- 首个 BV 的 bvid/cid/时长/字幕事实和不可替换规则已冻结。
+- 本地 ASR 作为 V3.0 限定 fallback；trusted user action、取消、清理和禁止自动下载已写入。
+- BiliNote 的字幕/ASR/后台任务/时间戳图文路线已映射，marker 正则权威和自动下载路线被拒绝。
+- MediaPageContext、MediaCaptureGrant、MediaTranscript、MediaIngestRun、VideoOutline、MediaEvidenceRef、MediaJumpbackTarget 及具体代码所有权已定义。
+- 12 页 B站固定分母、指定 BV 的操作步骤、seek 误差、四视口、Axe、Keyboard 和网络日志门槛已定义。
+- H01-RDS 被设为 V3 持久化前置；Mock 不能冒充 real data_service。
 
-No-Go for implementation until a future V3.0 kickoff audit confirms no fatal / major issue.
-No-Go for claiming V3.0 implemented, complete Monica-like parity, video/audio understanding ready, ASR/VLM/OCR/Gemini Video ready, live understanding ready, or cross-video RAG ready.
-```
+## 3. 实现与剩余边界
 
-## 3. 产品就绪度
+H01-RDS real adapter 已形成实现候选。定向测试、真实 `data_service` source import/build/trace、同快照重复保存零 build、Runtime 重启后同一 source 和非空 trace已通过；全新 Windows Chrome profile 的 extension-page 冒烟已显示 `data_service connected`、无 Mock/unchecked、无页面错误。该冒烟不是原生 Side Panel 三入口人工操作，Side Panel、Workspace Library、Source Detail 三入口一致性仍待 H01 人工验收。
 
-通过：
+BilibiliMediaCollector、tabCapture/Local ASR、VideoOutline/Media Mindmap、Media renderer/jumpback 和 12-page real Chrome evidence 均未实现或未采集。
 
-- V3 已重新登记为 active 长期路线。
-- 目标体验明确：Monica-like YouTube 视频助手 + B站 AI 视频总结式概览。
-- V3.0 与 V3.x 已区分。
-- 视频概览、章节时间轴、Media Mindmap、截图证据和 timestamp jumpback 已纳入规划。
+本轮文档不把 bilinote 克隆、bilibili_learning 实验目录、普通 pageContext.ts B站 DOM 识别或 data_service HTTP spike 计为 V3 产品实现。
 
-剩余风险：
+## 4. 内部静态审计项目
 
-- YouTube / B站的字幕可用性、登录态、反自动化和平台 UI 漂移属于未来实现风险。
-- 截图证据可证明 timestamp 可见帧，但不能证明画面语义理解。
+- [x] PRD/架构/开发/验收/stage gate/gap 使用同一 B站优先顺序。
+- [x] Draw.io 8 页以内，XML 可解析，页面/节点 ID 无重复、无越界、边引用完整。
+- [x] 指定 BV、H01-RDS、BiliNote 研究、V3-B0..B6 和 No-Go 在 MD/Draw.io 中一致。
+- [x] 文档无“V3 implemented”“ASR ready”“real RAG ready”等过度声明。
+- [x] 现有 PX-6 sealed evidence 未被修改或并入新结论。
+- [x] H01-RDS 实现候选与 H01 真实 Chrome 待验收状态分离。
 
-## 4. 架构就绪度
+### 4.1 交叉审计修订
 
-通过：
+本轮在最终对账中发现并关闭四个文档漂移，未以“已有内部 PASS”掩盖问题：
 
-- 具体目标实体已命名：Content Script Media Collector、`MediaPageContext`、A Media Page Perception、D Adapter / Governance / Trace、C Media Mindmap、B Media Companion Renderer、`VideoFrameEvidenceRef`、`MediaJumpbackTarget`。
-- A/B/C/D 边界保持清楚。
-- 多模态 Adapter 被约束在 D governance 后方。
+- `04-acceptance-plan.md` 残留旧联合矩阵的 `16/24`，已改为 B站首批 `10/12` 内容时间轴分母，并明确 blocked/degraded 两页不得抵扣十个成功样本。
+- `03-development-plan.md` 曾把本地 ASR 误归 `V3-B2`，已统一为 `V3-B3`；B2 只负责页内字幕。
+- `02-architecture.md` 的旧概览链仍写 YouTube/B站并行，已改成 B站字幕优先、本地 ASR 回退链；YouTube 只保留为 B6 后的 Y1 合同映射。
+- `LocalTabAudioAsrAdapter` 与 `LocalAsrAdapter` 命名已统一为 `LocalAsrAdapter`；标签页捕获生命周期由 `MediaCaptureController` 所有。
 
-未发现阻塞文档规划的 fatal / major 架构缺口。
+修订后静态交叉检查为 Fatal 0 / Major 0；外部审查仍未执行。
 
-## 5. 验收就绪度
+## 5. 当前结论
 
-通过：
+V3 Bilibili-first document candidate: INTERNAL STATIC AUDIT PASS；EXTERNAL REVIEW RECOMMENDED。
+Implementation: NO-GO。
+H01 under real-persistence expectation: UNBLOCKED FOR HUMAN CHROME EXECUTION；NOT PASSED。
+External independent document audit: REQUIRED。
 
-- 未来验收矩阵要求 24 个真实视频页，覆盖 YouTube 和 B站。
-- 未来通过门槛覆盖视频概览、时间轴、截图证据、timestamp jumpback、degraded / blocked。
-- False-green 防线覆盖无字幕视频伪理解、第三方总结冒充、fallback 冒充 located、过早声明 ASR/VLM ready。
-
-## 6. 最终判断
-
-当前文档可以支撑 V3 文档评审和未来实现规划。它不支持立即进入实现，也不支持任何视频理解完成声明。
-
+H01 人工执行必须使用 real mode，并完成 RDS-03/04；V3-B0..B6 代码仍需独立文档审查达到 Fatal=0/Major=0 及用户明确授权。

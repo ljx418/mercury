@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/schemas/v2-px-snapshot-input-manifest/v1",
+  "title": "V2 PX T04 Snapshot Input Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "t04RunId", "createdAt", "baseline", "governance", "snapshot", "dependencyClosure", "environment", "replayPolicy", "freshLanePolicy", "humanBoundary"],
+  "properties": {
+    "schemaVersion": {"const": "v2-px-snapshot-input-manifest/v1"},
+    "evidenceClass": {"const": "production_acceptance"},
+    "t04RunId": {"type": "string", "pattern": "^t04-r4-[a-z0-9-]+$"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "baseline": {"$ref": "#/$defs/baseline"},
+    "governance": {"$ref": "#/$defs/governance"},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "dependencyClosure": {"$ref": "#/$defs/dependencyClosure"},
+    "environment": {"$ref": "#/$defs/environment"},
+    "replayPolicy": {"$ref": "#/$defs/replayPolicy"},
+    "freshLanePolicy": {"$ref": "#/$defs/freshLanePolicy"},
+    "humanBoundary": {"$ref": "#/$defs/humanBoundary"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "relativePath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\u0000).+$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactRoot", "path", "sha256", "byteLength", "mediaType"],
+      "properties": {
+        "artifactRoot": {"enum": ["source_run", "baseline_validation", "replay_validation", "fresh_source_run", "fresh_validation", "repository_snapshot", "t04_run"]},
+        "path": {"$ref": "#/$defs/relativePath"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byteLength": {"type": "integer", "minimum": 0},
+        "mediaType": {"type": "string", "minLength": 1}
+      }
+    },
+    "repositoryArtifactRef": {"allOf":[{"$ref":"#/$defs/artifactRef"},{"properties":{"artifactRoot":{"const":"repository_snapshot"}}}]},
+    "externalDocumentAuditRef": {"allOf":[{"$ref":"#/$defs/repositoryArtifactRef"},{"properties":{"path":{"const":"docs/active/project/evidence/v2_external_brain_productization/px-5/t04-r4-snapshot-revalidation/t04.1-input-manifest-remediation-independent-document-audit.md"},"mediaType":{"const":"text/markdown"}}}]},
+    "implementationAuthorizationRef": {"allOf":[{"$ref":"#/$defs/repositoryArtifactRef"},{"properties":{"path":{"const":"docs/active/project/evidence/v2_external_brain_productization/px-5/t04-r4-snapshot-revalidation/t04.1-implementation-authorization.json"},"mediaType":{"const":"application/json"}}}]},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceRunId", "sealedRawRun", "sealSha256", "sourceSnapshotCommit", "t03ValidationRunId", "t03CandidateRoot", "t03IndependentAudit", "forbiddenCandidateIds"],
+      "properties": {
+        "sourceRunId": {"const": "t02-r2-t01-structured-production-input-20260914T125700"},
+        "sealedRawRun": {"$ref": "#/$defs/artifactRef"},
+        "sealSha256": {"const": "fed6155ace6c0132c70c86bd3daccef987bd7c441df8960811e734274ea1b70f"},
+        "sourceSnapshotCommit": {"const": "430cddcb7ff618978851af1f3b9a3c48f2370d36"},
+        "t03ValidationRunId": {"const": "t03-r3-production-exit-candidate-20260914T134804"},
+        "t03CandidateRoot": {"$ref": "#/$defs/artifactRef"},
+        "t03IndependentAudit": {"$ref": "#/$defs/artifactRef"},
+        "forbiddenCandidateIds": {
+          "type": "array",
+          "prefixItems": [{"const": "t03-r3-production-exit-candidate-20260914T132413"}],
+          "items": false,
+          "minItems": 1,
+          "maxItems": 1
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["externalDocumentAudit", "externalDocumentAuditFatal", "externalDocumentAuditMajor", "implementationAuthorization", "authorizationRecord", "approvedScope"],
+      "properties": {
+        "externalDocumentAudit": {"$ref": "#/$defs/externalDocumentAuditRef"},
+        "externalDocumentAuditFatal": {"const": 0},
+        "externalDocumentAuditMajor": {"const": 0},
+        "implementationAuthorization": {"$ref": "#/$defs/implementationAuthorizationRef"},
+        "authorizationRecord": {"$ref": "#/$defs/authorizationRecord"},
+        "approvedScope": {"const": "T04.1 resolved-invocation remediation and complete T04-0..T04-7 rerun"}
+      }
+    },
+    "authorizationRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "stage", "decision", "approvedScope", "userId", "userInstructionText", "userInstructionSha256", "externalDocumentAuditSha256", "authorizedAt", "recordedBy"],
+      "properties": {
+        "schemaVersion": {"const": "v2-px-t04.1-implementation-authorization/v1"},
+        "stage": {"const": "T04.1"},
+        "decision": {"const": "approved"},
+        "approvedScope": {"const": "T04.1 resolved-invocation remediation and complete T04-0..T04-7 rerun"},
+        "userId": {"const": "repository_owner_current_chat"},
+        "userInstructionText": {"type": "string", "minLength": 1},
+        "userInstructionSha256": {"$ref": "#/$defs/sha256"},
+        "externalDocumentAuditSha256": {"$ref": "#/$defs/sha256"},
+        "authorizedAt": {"type": "string", "format": "date-time"},
+        "recordedBy": {"type": "string", "minLength": 1}
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseCommit", "acceptanceCommit", "snapshotBundle", "treeSha256", "pathIndex", "sourceIndex", "buildIndex", "workingTreePolicy", "mainStateAlgorithm", "mainHeadBefore", "mainHeadAfter", "mainIndexBeforeSha256", "mainIndexAfterSha256"],
+      "properties": {
+        "baseCommit": {"const": "430cddcb7ff618978851af1f3b9a3c48f2370d36"},
+        "acceptanceCommit": {"$ref": "#/$defs/gitCommit"},
+        "snapshotBundle": {"$ref": "#/$defs/artifactRef"},
+        "treeSha256": {"$ref": "#/$defs/sha256"},
+        "pathIndex": {"$ref": "#/$defs/artifactRef"},
+        "sourceIndex": {"$ref": "#/$defs/artifactRef"},
+        "buildIndex": {"$ref": "#/$defs/artifactRef"},
+        "workingTreePolicy": {"const": "detached_local_commit_main_tree_read_only"},
+        "mainStateAlgorithm": {"const": "git_status_porcelain_v2_z_sha256_v1"},
+        "mainHeadBefore": {"$ref": "#/$defs/gitCommit"},
+        "mainHeadAfter": {"$ref": "#/$defs/gitCommit"},
+        "mainIndexBeforeSha256": {"$ref": "#/$defs/sha256"},
+        "mainIndexAfterSha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "dependencyFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "sha256", "byteLength", "role", "sourceDisposition", "sourceReferenceSha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/relativePath"},
+        "mode": {"enum": ["100644", "100755", "120000"]},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "byteLength": {"type": "integer", "minimum": 0},
+        "role": {"enum": ["entrypoint", "module", "schema", "spec", "registry", "fixture", "lockfile", "runner", "product_source", "test"]},
+        "sourceDisposition": {"enum": ["product_base_commit", "t03_independent_audit", "t04_authorized_implementation", "frozen_contract"]},
+        "sourceReferenceSha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "importEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "specifier", "resolvedPath"],
+      "properties": {
+        "from": {"$ref": "#/$defs/relativePath"},
+        "specifier": {"type": "string", "pattern": "^\\.{1,2}/"},
+        "resolvedPath": {"$ref": "#/$defs/relativePath"}
+      }
+    },
+    "dependencyClosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "entrypoints", "files", "importEdges", "declaredArtifacts", "lockfiles", "missingEdges", "undeclaredReads", "unexpectedFiles", "closureSha256"],
+      "properties": {
+        "algorithm": {"const": "esm_relative_import_graph_plus_declared_artifacts_v1"},
+        "entrypoints": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}},
+        "files": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/dependencyFile"}},
+        "importEdges": {"type": "array", "items": {"$ref": "#/$defs/importEdge"}},
+        "declaredArtifacts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}},
+        "lockfiles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/relativePath"}},
+        "missingEdges": {"type": "array", "maxItems": 0},
+        "undeclaredReads": {"type": "array", "maxItems": 0},
+        "unexpectedFiles": {"type": "array", "maxItems": 0},
+        "closureSha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["os", "architecture", "nodeVersion", "npmVersion", "pnpmVersion", "pythonVersion", "chromeVersion", "chromeExecutableSha256", "playwrightBrowserRevision", "packageManagerInstallMode", "packageLock", "resolvedPackages", "pythonInstallMode", "runtimeRequirements", "runtimeLockedRequirements", "runtimeWheelhouseIndex", "timezone", "locale"],
+      "properties": {
+        "os": {"type": "string", "minLength": 1},
+        "architecture": {"type": "string", "minLength": 1},
+        "nodeVersion": {"type": "string", "pattern": "^v?[0-9]+\\.[0-9]+\\.[0-9]+"},
+        "npmVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"},
+        "pnpmVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"},
+        "pythonVersion": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"},
+        "chromeVersion": {"type": "string", "minLength": 1},
+        "chromeExecutableSha256": {"$ref": "#/$defs/sha256"},
+        "playwrightBrowserRevision": {"type": "string", "minLength": 1},
+        "packageManagerInstallMode": {"const": "pnpm_install_frozen_lockfile"},
+        "packageLock": {"$ref": "#/$defs/artifactRef"},
+        "resolvedPackages": {"$ref": "#/$defs/artifactRef"},
+        "pythonInstallMode": {"const": "offline_wheelhouse_require_hashes"},
+        "runtimeRequirements": {"$ref": "#/$defs/artifactRef"},
+        "runtimeLockedRequirements": {"$ref": "#/$defs/artifactRef"},
+        "runtimeWheelhouseIndex": {"$ref": "#/$defs/artifactRef"},
+        "timezone": {"type": "string", "minLength": 1},
+        "locale": {"type": "string", "minLength": 1}
+      }
+    },
+    "normalizedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "ignoredJsonPointers"],
+      "properties": {
+        "path": {"const": "invocation-record.json"},
+        "ignoredJsonPointers": {"type": "array", "prefixItems": [{"const": "/recordedAt"}], "items": false, "minItems": 1, "maxItems": 1}
+      }
+    },
+    "replayPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outputRoot", "validationRunId", "exactArtifactPaths", "normalizedArtifacts"],
+      "properties": {
+        "outputRoot": {"const": "fresh_empty_isolated_namespace"},
+        "validationRunId": {"const": "baseline_same_id_isolated_root"},
+        "exactArtifactPaths": {
+          "type": "array",
+          "prefixItems": [
+            {"const": "derived-facts.json"}, {"const": "contract-regression.json"}, {"const": "production-mutation-results.json"},
+            {"const": "production-validation.json"}, {"const": "architecture-scan-manifest.json"}, {"const": "status-contract-errors.json"},
+            {"const": "human-review.pending.json"}, {"const": "report.json"}, {"const": "acceptance-report.html"}, {"const": "production-package.json"}
+          ],
+          "items": false,
+          "minItems": 10,
+          "maxItems": 10
+        },
+        "normalizedArtifacts": {"type": "array", "prefixItems": [{"$ref": "#/$defs/normalizedArtifact"}], "items": false, "minItems": 1, "maxItems": 1}
+      }
+    },
+    "freshLanePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["newRunRequired", "crossRunReuseAllowed", "requiredT02Checks", "requiredT03Checks"],
+      "properties": {
+        "newRunRequired": {"const": true},
+        "crossRunReuseAllowed": {"const": false},
+        "requiredT02Checks": {"type": "array", "minItems": 12, "maxItems": 12, "uniqueItems": true, "items": {"type": "string", "pattern": "^T02-A(?:0[1-9]|1[0-2])$"}},
+        "requiredT03Checks": {"type": "array", "minItems": 14, "maxItems": 14, "uniqueItems": true, "items": {"type": "string", "pattern": "^T03-A(?:0[1-9]|1[0-4])$"}}
+      }
+    },
+    "humanBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["humanReviewStatus", "g7Status", "finalPassed", "signingAllowed", "nextSigningStage"],
+      "properties": {
+        "humanReviewStatus": {"const": "pending"},
+        "g7Status": {"const": "pending"},
+        "finalPassed": {"const": false},
+        "signingAllowed": {"const": false},
+        "nextSigningStage": {"const": "PX-6"}
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "stage": "V2-PX-0.2-contract-fixture-validation",
+  "counts": {
+    "schemas": 9,
+    "positiveInstances": 65,
+    "fixtureSuiteRoots": 1,
+    "fixtureValidationInstances": 175,
+    "rules": 63,
+    "semanticRules": 41,
+    "fixtures": 109
+  },
+  "implementationArtifact": {
+    "path": "apps/chrome-extension/e2e/validate-v2-external-brain-productization-report.mjs",
+    "sha256": "16947f89bb5a94812a00e80eacc8252177ea0800a7dee798261ba4b98c1e2cc6"
+  },
+  "frozenInputs": {
+    "semanticSpecSha256": "cd3924a6012039ad6daf13510a33c3428b02ebec013b52b4966bb73c8616acc2",
+    "fixtureSuiteSha256": "f9051bc7ad81dfc6862313085634ee98eab6eb0b185802fefe71f950be09f806",
+    "positiveEvidencePayloadSha256": "b85c4b27e27ac0f372406b44dc7ee65b5a31c78bb4a16595e8f9cd1fcb4ff0ac"
+  },
+  "computedGateResults": {
+    "G1_entry": true,
+    "G2_route": true,
+    "G3_lifecycle": true,
+    "G4_architecture": true,
+    "G5_status": true,
+    "G6_ux_accessibility": true,
+    "G7_evidence": true
+  },
+  "semanticResultBinding": {
+    "ruleSetId": "v2-px-semantic-rules/v6",
+    "rulesChecked": 63,
+    "semanticRulesCovered": 41,
+    "positiveInstancesChecked": 65,
+    "fixtureRequirementsChecked": 109,
+    "validatorImplementationArtifact": {
+      "path": "apps/chrome-extension/e2e/validate-v2-external-brain-productization-report.mjs",
+      "sha256": "16947f89bb5a94812a00e80eacc8252177ea0800a7dee798261ba4b98c1e2cc6"
+    },
+    "failedRules": []
+  },
+  "issues": [],
+  "fixtureFailuresVerified": 109
+}

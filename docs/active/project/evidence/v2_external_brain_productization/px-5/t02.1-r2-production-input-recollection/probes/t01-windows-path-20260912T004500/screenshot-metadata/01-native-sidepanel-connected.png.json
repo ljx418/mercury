@@ -1,0 +1,16 @@
+{
+  "path": "screenshots/01-native-sidepanel-connected.png",
+  "sha256": "29911df3d9c5154dc937a718976ff1537bd66607b0691e89fdb6f99baa16d53c",
+  "surface": "native_side_panel_with_host",
+  "viewport": {
+    "width": 2560,
+    "height": 1800
+  },
+  "captureRegion": {
+    "left": 80,
+    "top": 80,
+    "width": 2560,
+    "height": 1800
+  },
+  "capturedAt": "2026-09-11T16:46:57.884Z"
+}

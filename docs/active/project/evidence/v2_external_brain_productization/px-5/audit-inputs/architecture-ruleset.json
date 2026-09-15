@@ -1,0 +1,14 @@
+{
+  "rulesetId": "v2-px-architecture-boundary/v2",
+  "forbiddenImportFragments": [
+    "data_service"
+  ],
+  "forbiddenRuntimeEndpoints": [
+    "127.0.0.1:17861/v1/knowledge"
+  ],
+  "frontendFactConstructors": [
+    "KnowledgeItem",
+    "EvidenceRef",
+    "graphRelation"
+  ]
+}

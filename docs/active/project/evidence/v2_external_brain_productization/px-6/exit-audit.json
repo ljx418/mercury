@@ -1,0 +1,20 @@
+{
+  "passed": false,
+  "stage": "V2-PX-6-automated-exit-audit",
+  "status": "BLOCKED_BY_PX5_MAJOR",
+  "humanReviewStatus": "pending",
+  "finalReportPassed": false,
+  "drawioPages": 8,
+  "evidenceIndex": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-6/evidence-index.json",
+    "sha256": "fa7f85ecec64624dbfa626a248a351bc8d2e9a7dd1ebccb79e2ca2d3b7ac4c2b"
+  },
+  "issues": [
+    "M1: generated identities, trusted gestures and Runtime fingerprints lack corresponding raw observations",
+    "M2: source/screenshot identity and actual host-page entry are not proven",
+    "M3: Permission/Forget/UX outcomes contain hardcoded success values",
+    "M4: production validation does not enforce the frozen semantic and architecture rules",
+    "M5: fixture results and generated assertions were used as production acceptance proof"
+  ],
+  "supersededBy": "docs/active/project/evidence/v2_external_brain_productization/px-5/acceptance-disposition.json"
+}

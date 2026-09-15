@@ -1,0 +1,100 @@
+{
+  "evidenceClass": "backend_repair_audit",
+  "date": "2026-09-09",
+  "scope": "R1 backend only: F-1 through F-6",
+  "status": "PASSED_LIMITED_SCOPE",
+  "r1StagePassed": false,
+  "px5Passed": false,
+  "px6Status": "BLOCKED_BY_PX5_MAJOR",
+  "sourceBasis": "Current dirty worktree; hashes below identify reviewed files, not a frozen production Git snapshot.",
+  "independentReview": {
+    "reviewer": "Hume",
+    "agentId": "01a084b4-b9c5-7963-857d-645093e879e0",
+    "fatal": 0,
+    "major": 0,
+    "testsPassed": 103,
+    "additionalFaultInjectionsPassed": 10,
+    "scope": "Independent backend code and focused tests only; not full-suite, live HTTP or Chrome re-execution."
+  },
+  "tests": [
+    {
+      "command": "PYTHONPATH=services/local-runtime pytest -q services/local-runtime/tests/test_v2_r1_backend_repair.py",
+      "phase": "before_repair",
+      "exitCode": 1,
+      "failed": 53,
+      "log": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-before.log"
+    },
+    {
+      "command": "NAVIA_DB_PATH=<isolated temporary database> PYTHONPATH=services/local-runtime pytest -q services/local-runtime/tests",
+      "phase": "final_full_suite",
+      "exitCode": 0,
+      "passed": 239,
+      "warnings": 55,
+      "log": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-full-suite-closure.log"
+    },
+    {
+      "command": "PYTHONPATH=services/local-runtime pytest -q -s services/local-runtime/tests/test_v2_r1_backend_http.py",
+      "phase": "final_live_http",
+      "exitCode": 0,
+      "passed": 1,
+      "log": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-http-closure.log"
+    }
+  ],
+  "boundaries": [
+    "No frontend edits in this repair",
+    "No Chrome acceptance",
+    "MockKnowledgeServiceAdapter, not real data_service or RAG",
+    "No main-worktree commit or push",
+    "No old report generator or old production validator executed"
+  ],
+  "artifacts": [
+    {
+      "sha256": "efffc4551026f8f5309a2464d2260616e64b2bc22834b386e48f649ecc253b24",
+      "path": "services/local-runtime/navia_runtime/modules/memory/guards.py"
+    },
+    {
+      "sha256": "f8504a6d3a067e5e0885597328bdab9806e7318dc6833dbbeac031f3a5263d81",
+      "path": "services/local-runtime/navia_runtime/modules/memory/permissions.py"
+    },
+    {
+      "sha256": "5fff4403328ab361a2a2cfeac335ae69e93a2c3788a7c1ff9c2ad93ece6f256b",
+      "path": "services/local-runtime/navia_runtime/modules/memory/runtime/__init__.py"
+    },
+    {
+      "sha256": "88d43f52e8819e11b62f5da50f709fd57205890f2703aee06e8da745764c4703",
+      "path": "services/local-runtime/navia_runtime/app.py"
+    },
+    {
+      "sha256": "aef0e2c08f4cf37121ed5662a2c041c52404f55f7277a1172993f1c5319e947e",
+      "path": "services/local-runtime/tests/test_v2_local_permissions.py"
+    },
+    {
+      "sha256": "06177e0f28a6852e1bef7c265eeb697b7f443fda04f42d949775daeba12e7c2d",
+      "path": "services/local-runtime/tests/test_v2_r1_backend_repair.py"
+    },
+    {
+      "sha256": "cccb29a3f978fe6cf61001d9ec605b1581e4a33f0cfd51d4fbc51a865fc057fb",
+      "path": "services/local-runtime/tests/test_v2_r1_backend_http.py"
+    },
+    {
+      "sha256": "fd5a396dc1a6d6484db428fc7b0da5474a3d502cf8cdf3433507a88c6b26968e",
+      "path": "docs/active/project/contracts/v2_local_permission.schema.json"
+    },
+    {
+      "sha256": "3013824bcced628e4e2110508b39296a7840de8576d92f811bf7952746b1c250",
+      "path": "docs/active/project/contracts/v2_knowledge_api.openapi.yaml"
+    },
+    {
+      "sha256": "f6342b87b6e826c73b9641f9bbfc90ed8cabf84a52e7cfc0ac253639a9deeef8",
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-before.log"
+    },
+    {
+      "sha256": "4a310354a64c4138c15295087014db68ba4453b24f4bf9e883f89b1ba48dd7a2",
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-full-suite-closure.log"
+    },
+    {
+      "sha256": "46f87bad8563e89780f17da03172c10abac7ee754116de51986a8db3ce9830e1",
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/r1-backend-http-closure.log"
+    }
+  ]
+}

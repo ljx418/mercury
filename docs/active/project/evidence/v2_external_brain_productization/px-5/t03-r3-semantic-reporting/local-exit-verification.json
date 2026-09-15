@@ -1,0 +1,240 @@
+{
+  "schemaVersion": "v2-px-t03-local-exit-verification/v1",
+  "scope": "local_self_audit_only",
+  "candidateRoot": "docs/active/project/evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/runs/t03-r3-production-exit-candidate-20260914T134804",
+  "sourceRoot": "docs/active/project/evidence/v2_external_brain_productization/px-5/t02.5-t01-structured-regression-recollection/runs/t02-r2-t01-structured-production-input-20260914T125700",
+  "negativeRoot": "docs/active/project/evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/runs/t03-r3-negative-t02.4-missing-t01-20260914T132625",
+  "checks": [
+    {
+      "id": "T03-A01-required-artifacts",
+      "passed": true,
+      "requirement": "all fixed candidate artifacts exist",
+      "observed": [
+        "derived-facts.json",
+        "production-validation.json",
+        "report.json",
+        "human-review.pending.json",
+        "production-package.json",
+        "invocation-record.json",
+        "contract-regression.json",
+        "production-mutation-results.json",
+        "status-contract-errors.json",
+        "architecture-scan-manifest.json"
+      ]
+    },
+    {
+      "id": "T03-A01-schema-meta-and-instance",
+      "passed": true,
+      "requirement": "seven candidate schemas pass Draft 2020-12 meta and root-instance validation",
+      "observed": {
+        "schemas": 7,
+        "errors": 0
+      }
+    },
+    {
+      "id": "T03-A02-artifact-reference-bytes",
+      "passed": true,
+      "requirement": "all P7 ArtifactRefs resolve within their declared root and match byte length/hash",
+      "observed": {
+        "checked": 87,
+        "errors": []
+      }
+    },
+    {
+      "id": "T03-A01-source-seal",
+      "passed": true,
+      "requirement": "candidate binds the immutable T02.5 raw bytes and canonical seal",
+      "observed": {
+        "runId": "t02-r2-t01-structured-production-input-20260914T125700",
+        "rawSha256": "ce272df479499e10092bc5d6a24610ebcd91782c87d4be34dceb09f296a5f0c3",
+        "sealSha256": "fed6155ace6c0132c70c86bd3daccef987bd7c441df8960811e734274ea1b70f",
+        "recomputedSeal": "fed6155ace6c0132c70c86bd3daccef987bd7c441df8960811e734274ea1b70f"
+      }
+    },
+    {
+      "id": "T03-A03-A06-derived-coverage",
+      "passed": true,
+      "requirement": "derived facts retain the fixed production-positive source, route, recovery, fault, UX and T01 denominators",
+      "observed": {
+        "events": 1387,
+        "artifacts": 1172,
+        "scenarios": 88,
+        "sources": {
+          "web": 6,
+          "note": 3,
+          "local": 3
+        },
+        "routeMatrixComplete": true,
+        "ordinaryRecoveries": 2,
+        "durableForget": [
+          12,
+          12
+        ],
+        "t01": [
+          36,
+          36,
+          36
+        ]
+      }
+    },
+    {
+      "id": "T03-A11-derived-canonical-seal",
+      "passed": true,
+      "requirement": "DerivedFacts seal is canonical JSON without seal and is independently reproducible",
+      "observed": {
+        "declared": "81b129e9e8857d53d062cea8ff01fcdb1fab39c54375fdb9d56759ef0efa95b4",
+        "recomputed": "81b129e9e8857d53d062cea8ff01fcdb1fab39c54375fdb9d56759ef0efa95b4"
+      }
+    },
+    {
+      "id": "T03-A04-rule-profile",
+      "passed": true,
+      "requirement": "production_candidate executes the exact 63-rule registry with only two Human rules pending",
+      "observed": {
+        "rules": 63,
+        "statuses": {
+          "passed": 61,
+          "pending": 2
+        },
+        "pending": [
+          "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+          "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID"
+        ],
+        "mappingsOk": true
+      }
+    },
+    {
+      "id": "T03-A10-gate-and-claim-boundary",
+      "passed": true,
+      "requirement": "G1-G6 pass while G7/Human/final remain pending/false",
+      "observed": {
+        "gates": {
+          "G1": "passed",
+          "G2": "passed",
+          "G3": "passed",
+          "G4": "passed",
+          "G5": "passed",
+          "G6": "passed",
+          "G7": "pending"
+        },
+        "machinePassed": true,
+        "humanReviewStatus": "pending",
+        "finalPassed": false
+      }
+    },
+    {
+      "id": "T03-A05-contract-regression",
+      "passed": true,
+      "requirement": "109 requirements map one-to-one to the frozen requirement registry and canonical primary failures",
+      "observed": {
+        "requirements": 109,
+        "cases": 109,
+        "issues": []
+      }
+    },
+    {
+      "id": "T03-A07-production-mutations",
+      "passed": true,
+      "requirement": "all 42 frozen production mutations alter non-report evidence and fail with the registered primary failure",
+      "observed": {
+        "expected": 42,
+        "actual": 42,
+        "passed": 42,
+        "failed": 0
+      }
+    },
+    {
+      "id": "T03-A06-status-observations",
+      "passed": true,
+      "requirement": "203 Runtime responses plus one event-backed frontend offline inference validate without authority errors",
+      "observed": {
+        "checked": 204,
+        "errors": []
+      }
+    },
+    {
+      "id": "T03-A08-architecture-scan-inputs",
+      "passed": true,
+      "requirement": "G4 scan manifest binds the frozen commit, exact roots, 28 inline blobs, path/tree indexes, ruleset and allowlist",
+      "observed": {
+        "commit": "430cddcb7ff618978851af1f3b9a3c48f2370d36",
+        "trackedPaths": 28,
+        "embeddedSourceCount": 0,
+        "gitBlobErrors": []
+      }
+    },
+    {
+      "id": "T03-A12-report-inputs",
+      "passed": true,
+      "requirement": "pure report stays non-final and every scenario/command/audit path resolves to the declared bytes",
+      "observed": {
+        "scenarios": 17,
+        "commands": 9,
+        "artifactRefs": 31,
+        "errors": []
+      }
+    },
+    {
+      "id": "T03-6-A02-A07-package-boundary",
+      "passed": true,
+      "requirement": "Package binds the candidate while Human Review/final remain pending/false and contains no self/invocation reference",
+      "observed": {
+        "runId": "t03-r3-production-exit-candidate-20260914T134804",
+        "human": "pending",
+        "passed": false
+      }
+    },
+    {
+      "id": "T03-6-A06-T03-7-A04-invocation",
+      "passed": true,
+      "requirement": "InvocationRecord has the exact four successful steps, portable paths and a final package hash without self-reference",
+      "observed": {
+        "steps": [
+          "derive",
+          "validate",
+          "report",
+          "package"
+        ],
+        "leakedAbsolutePaths": []
+      }
+    },
+    {
+      "id": "T03-A09-T03-7-A07-negative-diagnostic",
+      "passed": true,
+      "requirement": "T02.4 exits through the exact T03-IN-11 diagnostic and cannot emit validation/report/package/invocation success artifacts",
+      "observed": {
+        "files": [
+          "collection-diagnostic.json",
+          "input/invocation/derive.mjs",
+          "input/v2PxDerivedFacts.mjs",
+          "logs/invocation/derive.stderr.log",
+          "logs/invocation/derive.stdout.log"
+        ],
+        "missingObservations": [
+          {
+            "requirementId": "T03-IN-11",
+            "numerator": "sealed passing T01 assertions",
+            "denominator": "36 unique passed assertion IDs",
+            "observed": 0,
+            "required": 36,
+            "eventKinds": [
+              "command_result"
+            ],
+            "scenarioIds": []
+          }
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "checksTotal": 16,
+    "checksPassed": 16,
+    "checksFailed": 0,
+    "localExitCandidatePassed": true,
+    "independentExitAudit": "pending",
+    "t03Passed": false,
+    "fatal": 0,
+    "major": 0
+  },
+  "claimBoundary": "Local T03 implementation exit candidate only; T03, PX-5, PX-6, V2 and RKM acceptance remain pending."
+}

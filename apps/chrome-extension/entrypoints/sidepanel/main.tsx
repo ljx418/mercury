@@ -13,7 +13,8 @@ import { canSubmitChatInput, shouldSubmitOnKeyDown } from "../../src/chatInputSh
 import { createChatProviderTestCollector, type ChatProviderTestStatus } from "../../src/settingsDiagnostics";
 import { chatStreamOptions, resolveChatProviderDraft } from "../../src/chatProviderSelection";
 import { TurnNavigatorView } from "../../src/TurnNavigatorView";
-import { KnowledgeWorkspaceShell } from "../../src/modules/knowledge_workspace/KnowledgeWorkspaceShell";
+import { KnowledgeQuickSurface, type QuickWorkspaceRequest } from "../../src/modules/knowledge_workspace/KnowledgeQuickSurface";
+import { LocalRuntimeAccess, type LocalRuntimeAccessChange } from "../../src/modules/knowledge_workspace/LocalRuntimeAccess";
 import { SaveToKnowledgeCard } from "../../src/modules/knowledge_workspace/SaveToKnowledgeCard";
 import {
   getHistorySessions,
@@ -25,6 +26,7 @@ import { deriveConversationTurns, groupMessagesByTurn, shouldShowTurnNavigator }
 import {
   checkRuntimeHealth,
   checkPiSidecarHealth,
+  createKnowledgeStatusPoller,
   askKnowledgeSources,
   createChatSession,
   deleteProvider,
@@ -37,6 +39,9 @@ import {
   getSettings,
   grantKnowledgePermission,
   importProvider,
+  isForgetSourceVerified,
+  isRuntimeRequestError,
+  isStaleRuntimeRequestError,
   listChatSessions,
   listKnowledgeSources,
   listKnowledgeWorkspaces,
@@ -194,6 +199,32 @@ function App() {
     }
   }
 
+  function clearKnowledgeSensitiveState() {
+    setKnowledgeStatus(null);
+    setKnowledgeStatusError(null);
+    setKnowledgeSource(null);
+    setKnowledgeOperation(null);
+    setKnowledgeSources([]);
+    setSelectedKnowledgeSource(null);
+    setKnowledgeWorkspaceError(null);
+    setKnowledgeAskQuestion("");
+    setKnowledgeAskError(null);
+    setKnowledgeQueryResult(null);
+    setKnowledgeGraph(null);
+    setKnowledgePermissions([]);
+    setGovernanceError(null);
+    setForgetResult(null);
+  }
+
+  function handleKnowledgeRuntimeAccessChange(change: LocalRuntimeAccessChange) {
+    clearKnowledgeSensitiveState();
+    if (change.status === "connected") {
+      setRuntimeStatus("online");
+      void refreshKnowledgeStatus();
+      void refreshKnowledgeWorkspace();
+    }
+  }
+
   async function checkRuntime() {
     setRuntimeStatus("checking");
     try {
@@ -219,6 +250,7 @@ function App() {
       const status = await getKnowledgeServiceStatus();
       setKnowledgeStatus(status);
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeStatus(null);
       setKnowledgeStatusError(error instanceof Error ? error.message : "V2 knowledge status 读取失败。");
     } finally {
@@ -246,6 +278,7 @@ function App() {
       setKnowledgeStatus((current) => current ? { ...current, sourceBuildStatus: result.source.status } : current);
       void refreshKnowledgeWorkspace(result.source.workspaceId, result.source.sourceId);
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeSaveError(error instanceof Error ? error.message : "保存到知识库失败。");
     } finally {
       setKnowledgeSaving(false);
@@ -273,9 +306,37 @@ function App() {
       setSelectedKnowledgeWorkspaceId(workspaceId);
       setKnowledgeGraph(await getKnowledgeGraph(workspaceId));
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeWorkspaceError(error instanceof Error ? error.message : "Knowledge Workspace 加载失败。");
     } finally {
       setKnowledgeWorkspaceLoading(false);
+    }
+  }
+
+  async function openKnowledgeWorkspace(request: QuickWorkspaceRequest = {
+    origin: "open_workspace",
+    routeIntent: "source_library",
+    workspaceId: selectedKnowledgeWorkspaceId
+  }) {
+    setKnowledgeWorkspaceError(null);
+    try {
+      const response = await chrome.runtime.sendMessage({
+        type: "OPEN_NAVIA_KNOWLEDGE_WORKSPACE",
+        requestId: crypto.randomUUID(),
+        hostStrategy: "extension_workspace_page",
+        origin: request.origin,
+        routeIntent: request.routeIntent,
+        workspaceId: request.workspaceId,
+        ...(request.sourceId ? { sourceId: request.sourceId } : {}),
+        reusePolicy: "focus_existing_or_create"
+      }) as { outcome?: string; errorCode?: string } | undefined;
+      if (!response || !["created_new", "focused_existing"].includes(String(response.outcome))) {
+        setKnowledgeWorkspaceError(`Workspace 打开失败：${response?.errorCode ?? "OPEN_WORKSPACE_FAILED"}`);
+      }
+    } catch (error) {
+      setKnowledgeWorkspaceError(
+        `Workspace 打开失败：${error instanceof Error ? error.message : "OPEN_WORKSPACE_FAILED"}`
+      );
     }
   }
 
@@ -291,6 +352,7 @@ function App() {
     try {
       setSelectedKnowledgeSource(await getKnowledgeSource(sourceId));
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeWorkspaceError(error instanceof Error ? error.message : "Source detail 加载失败。");
     }
   }
@@ -315,6 +377,7 @@ function App() {
       });
       setKnowledgeQueryResult(result);
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeAskError(error instanceof Error ? error.message : "Ask with Sources 失败。");
     } finally {
       setKnowledgeAskLoading(false);
@@ -326,6 +389,7 @@ function App() {
     try {
       setKnowledgeGraph(await getKnowledgeGraph(selectedKnowledgeWorkspaceId));
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setKnowledgeWorkspaceError(error instanceof Error ? error.message : "Knowledge Graph 加载失败。");
     }
   }
@@ -335,18 +399,24 @@ function App() {
       setGovernanceError("Runtime offline，无法授权。");
       return;
     }
+    if (!permissionPath.trim().startsWith("/")) {
+      setGovernanceError("请输入 Runtime POSIX 绝对路径");
+      return;
+    }
     setGovernanceLoading(true);
     setGovernanceError(null);
     try {
       const result = await grantKnowledgePermission({
         displayName: permissionName.trim() || "User selected source",
-        redactedPath: permissionPath.trim() || "user-authorized-path",
+        workspaceId: selectedKnowledgeWorkspaceId,
+        path: permissionPath.trim(),
         scope: "single_file"
       });
       setKnowledgePermissions((current) => [result.permissionRoot, ...current.filter((item) => item.permissionRootId !== result.permissionRoot.permissionRootId)]);
       setPermissionName("");
       setPermissionPath("");
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setGovernanceError(error instanceof Error ? error.message : "PermissionRoot 授权失败。");
     } finally {
       setGovernanceLoading(false);
@@ -360,6 +430,7 @@ function App() {
       const result = await revokeKnowledgePermission(permissionRootId);
       setKnowledgePermissions((current) => current.map((item) => item.permissionRootId === permissionRootId ? result.permissionRoot : item));
     } catch (error) {
+      if (isStaleRuntimeRequestError(error)) return;
       setGovernanceError(error instanceof Error ? error.message : "PermissionRoot 撤销失败。");
     } finally {
       setGovernanceLoading(false);
@@ -373,9 +444,14 @@ function App() {
     try {
       const result = await forgetKnowledgeSource(selectedKnowledgeSource.sourceId, "forget");
       setForgetResult(result);
+      if (!isForgetSourceVerified(result)) {
+        setGovernanceError("遗忘未完成");
+        return;
+      }
       await refreshKnowledgeWorkspace(selectedKnowledgeSource.workspaceId);
     } catch (error) {
-      setGovernanceError(error instanceof Error ? error.message : "Forget Source 失败。");
+      if (isStaleRuntimeRequestError(error)) return;
+      setGovernanceError(isRuntimeRequestError(error) && error.code === "INVALID_RUNTIME_RESPONSE" ? "遗忘未完成" : error instanceof Error ? error.message : "Forget Source 失败。");
     } finally {
       setGovernanceLoading(false);
     }
@@ -925,6 +1001,30 @@ function App() {
   useEffect(() => {
     if (!__NAVIA_E2E_BRIDGE__) return;
     const port = chrome.runtime.connect({ name: "navia.e2e.sidepanel" });
+    const observedEntryTargets: Record<string, QuickWorkspaceRequest["origin"]> = {
+      "view-source": "view_source",
+      "open-workspace": "open_workspace",
+      "open-in-workspace": "open_in_workspace",
+      "ask-current-workspace": "open_in_workspace"
+    };
+    const observeTrustedEntry = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-testid]") : null;
+      const testId = target?.dataset.testid;
+      const origin = testId ? observedEntryTargets[testId] : undefined;
+      if (!event.isTrusted || !target || !testId || !origin) return;
+      port.postMessage({
+        type: "navia.e2e.r2.dom_action",
+        actionId: `act_${crypto.randomUUID().replace(/-/g, "")}`,
+        eventType: event.type,
+        isTrusted: event.isTrusted,
+        origin,
+        target: `[data-testid='${testId}']`,
+        priorPath: location.href,
+        sourceObservedAt: new Date(event.timeStamp > Date.now() ? Date.now() : performance.timeOrigin + event.timeStamp).toISOString(),
+        sourceMonotonicMs: event.timeStamp
+      });
+    };
+    document.addEventListener("click", observeTrustedEntry, true);
     const onMessage = (message: unknown) => {
       if (!isE2ECommandMessage(message)) return;
       void executeE2ECommand(message.command)
@@ -949,6 +1049,7 @@ function App() {
     };
     port.onMessage.addListener(onMessage);
     return () => {
+      document.removeEventListener("click", observeTrustedEntry, true);
       port.onMessage.removeListener(onMessage);
       port.disconnect();
     };
@@ -1014,12 +1115,40 @@ function App() {
     if (command.action === "jumpback_source_card") {
       return await jumpbackSourceCard(command.index ?? 0);
     }
+    if (command.action === "t01_dom") {
+      return executeT01DomCommand(command);
+    }
+    if (command.action === "t01_secret_scan") {
+      return await inspectT01SecretExposure(command.secret);
+    }
     throw new Error(`Unsupported E2E command: ${command.action}`);
   }
 
   useEffect(() => {
     checkRuntime();
     void loadSettings();
+  }, []);
+
+  useEffect(() => {
+    const poller = createKnowledgeStatusPoller({
+      onStatus(status) {
+        setRuntimeStatus("online");
+        setKnowledgeStatus(status);
+        setKnowledgeStatusError(null);
+      },
+      onOffline(error) {
+        if (isStaleRuntimeRequestError(error)) return;
+        setRuntimeStatus(isRuntimeRequestError(error) && error.kind !== "transport" ? "online" : "offline");
+        setKnowledgeStatus(null);
+        setKnowledgeStatusError(isRuntimeRequestError(error) && error.kind === "authentication"
+          ? "会话认证失效，请重新输入 Runtime 令牌"
+          : "Runtime offline，V2 knowledge status 由前端本地推断。");
+        setKnowledgeSource(null);
+        setKnowledgeOperation(null);
+      }
+    });
+    poller.start();
+    return () => poller.stop();
   }, []);
 
   const measureTurnNavigator = useCallback(() => {
@@ -1303,48 +1432,30 @@ function App() {
         ) : null}
 
         {activeView === "knowledge" ? (
-          <KnowledgeWorkspaceShell
+          <><LocalRuntimeAccess workspaceId={selectedKnowledgeWorkspaceId} onChange={handleKnowledgeRuntimeAccessChange} />
+          <KnowledgeQuickSurface
             runtimeStatus={runtimeStatus}
+            pageContext={pageContext}
             serviceStatus={knowledgeStatus}
             serviceLoading={knowledgeStatusLoading}
             serviceError={knowledgeStatusError}
-            workspaces={knowledgeWorkspaces.length ? knowledgeWorkspaces : [{
-              workspaceId: selectedKnowledgeWorkspaceId,
-              name: "Navia Knowledge",
-              sourceCount: knowledgeSources.length,
-              pendingBuildCount: 0,
-              traceCoverage: knowledgeSources.length ? 1 : 0,
-              createdAt: new Date(0).toISOString()
-            }]}
-            sources={knowledgeSources}
-            selectedWorkspaceId={selectedKnowledgeWorkspaceId}
+            currentPageSource={knowledgeSource}
             selectedSource={selectedKnowledgeSource}
-            loading={knowledgeWorkspaceLoading}
-            error={knowledgeWorkspaceError}
-            askQuestion={knowledgeAskQuestion}
-            askLoading={knowledgeAskLoading}
-            askError={knowledgeAskError}
-            queryResult={knowledgeQueryResult}
-            graph={knowledgeGraph}
-            permissions={knowledgePermissions}
-            permissionName={permissionName}
-            permissionPath={permissionPath}
-            governanceLoading={governanceLoading}
-            governanceError={governanceError}
-            forgetResult={forgetResult}
+            operation={knowledgeOperation}
+            saving={knowledgeSaving}
+            saveError={knowledgeSaveError}
+            workspaces={knowledgeWorkspaces}
+            selectedWorkspaceId={selectedKnowledgeWorkspaceId}
+            sourcesLoading={knowledgeWorkspaceLoading}
+            sourcesError={knowledgeWorkspaceError}
+            workspaceActionError={knowledgeWorkspaceError}
             onRefreshStatus={() => void refreshKnowledgeStatus()}
-            onRefreshWorkspace={() => void refreshKnowledgeWorkspace()}
+            onRefreshSources={() => void refreshKnowledgeWorkspace()}
+            onSave={() => void saveCurrentPageToKnowledgeBase()}
             onSelectWorkspace={(workspaceId) => void selectKnowledgeWorkspace(workspaceId)}
-            onSelectSource={(sourceId) => void selectKnowledgeSource(sourceId)}
-            onAskQuestionChange={setKnowledgeAskQuestion}
-            onAskSources={() => void askKnowledgeWorkspace()}
-            onRefreshGraph={() => void refreshKnowledgeGraph()}
-            onPermissionNameChange={setPermissionName}
-            onPermissionPathChange={setPermissionPath}
-            onGrantPermission={() => void grantPermissionRoot()}
-            onRevokePermission={(permissionRootId) => void revokePermissionRoot(permissionRootId)}
-            onForgetSelectedSource={() => void forgetSelectedKnowledgeSource()}
+            onOpenWorkspace={(request) => void openKnowledgeWorkspace(request)}
           />
+          </>
         ) : null}
 
         {activeView === "debug" ? (
@@ -1690,7 +1801,9 @@ type E2ECommand =
   | { action: "question"; message?: string }
   | { action: "mindmap" }
   | { action: "source_cards_snapshot" }
-  | { action: "jumpback_source_card"; index?: number };
+  | { action: "jumpback_source_card"; index?: number }
+  | { action: "t01_dom"; operation: "click" | "fill" | "text" | "count"; testId: string; value?: string }
+  | { action: "t01_secret_scan"; secret: string };
 
 type E2EHandlers = {
   checkRuntime?: () => Promise<boolean>;
@@ -1714,6 +1827,14 @@ function isE2ECommand(value: unknown): value is E2ECommand {
   if (action === "view") {
     return record.view === "chat" || record.view === "agent" || record.view === "debug" || record.view === "settings";
   }
+  if (action === "t01_dom") {
+    return (
+      (record.operation === "click" || record.operation === "fill" || record.operation === "text" || record.operation === "count") &&
+      typeof record.testId === "string" &&
+      (record.value === undefined || typeof record.value === "string")
+    );
+  }
+  if (action === "t01_secret_scan") return typeof record.secret === "string" && record.secret.length >= 32;
   return (
     action === "snapshot" ||
     action === "panel_identity" ||
@@ -1727,6 +1848,68 @@ function isE2ECommand(value: unknown): value is E2ECommand {
     action === "source_cards_snapshot" ||
     (action === "jumpback_source_card" && (record.index === undefined || typeof record.index === "number"))
   );
+}
+
+const T01_E2E_TEST_IDS = new Set([
+  "navia-sidepanel-root",
+  "read-current-page",
+  "current-page-context-card",
+  "nav-knowledge-tab",
+  "local-runtime-token-input",
+  "local-runtime-connect",
+  "local-runtime-disconnect",
+  "local-runtime-status",
+  "local-runtime-error",
+  "save-current-source",
+  "quick-source-identity",
+  "open-workspace",
+  "view-source"
+]);
+
+function executeT01DomCommand(command: Extract<E2ECommand, { action: "t01_dom" }>): Record<string, unknown> {
+  if (!T01_E2E_TEST_IDS.has(command.testId)) throw new Error(`T01 testid is not allowed: ${command.testId}`);
+  const elements = Array.from(document.querySelectorAll<HTMLElement>(`[data-testid="${CSS.escape(command.testId)}"]`));
+  if (command.operation === "count") return { action: command.action, operation: command.operation, testId: command.testId, count: elements.length };
+  const element = elements[0];
+  if (!element) throw new Error(`T01 DOM element not found: ${command.testId}`);
+  if (command.operation === "click") {
+    element.click();
+    return { action: command.action, operation: command.operation, testId: command.testId };
+  }
+  if (command.operation === "text") {
+    return { action: command.action, operation: command.operation, testId: command.testId, text: element.textContent ?? "" };
+  }
+  if (!(element instanceof HTMLInputElement) || command.testId !== "local-runtime-token-input") {
+    throw new Error(`T01 fill is not allowed for: ${command.testId}`);
+  }
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  if (!setter) throw new Error("Native input value setter is unavailable.");
+  setter.call(element, command.value ?? "");
+  element.dispatchEvent(new Event("input", { bubbles: true }));
+  element.dispatchEvent(new Event("change", { bubbles: true }));
+  return { action: command.action, operation: command.operation, testId: command.testId };
+}
+
+async function inspectT01SecretExposure(secret: string): Promise<Record<string, unknown>> {
+  const storage: Record<string, unknown> = {};
+  for (const area of ["local", "session", "sync"] as const) {
+    try { storage[area] = await chrome.storage[area].get(null); }
+    catch { storage[area] = null; }
+  }
+  let databases: Array<{ name?: string; version?: number }> = [];
+  try { databases = await indexedDB.databases(); } catch { databases = []; }
+  const input = document.querySelector<HTMLInputElement>("[data-testid='local-runtime-token-input']");
+  return {
+    action: "t01_secret_scan",
+    urlContains: location.href.includes(secret),
+    referrerContains: document.referrer.includes(secret),
+    localStorageContains: JSON.stringify({ ...localStorage }).includes(secret),
+    sessionStorageContains: JSON.stringify({ ...sessionStorage }).includes(secret),
+    chromeStorageContains: JSON.stringify(storage).includes(secret),
+    indexedDbContains: JSON.stringify(databases).includes(secret),
+    bodyTextContains: (document.body.innerText || "").includes(secret),
+    inputValueEmpty: !input || input.value === ""
+  };
 }
 
 function sourceCardsSnapshot(): Array<{ index: number; testId: string | null; nodeId: string; sourceRefIds: string[]; label: string; excerpt: string }> {

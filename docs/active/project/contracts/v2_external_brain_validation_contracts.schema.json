@@ -1,0 +1,1708 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_validation_contracts.schema.json",
+  "title": "Navia V2-PX Validation Registry And Fixture Contracts",
+  "x-navia-contract-version": "v4",
+  "x-navia-rule-registry": [
+    {
+      "ruleId": "PX_RULE_REPORT_ISSUES_NOT_EMPTY",
+      "failureCode": "PX_REPORT_ISSUES_NOT_EMPTY",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_CHILD_RESULT_FAILED",
+      "failureCode": "PX_CHILD_RESULT_FAILED",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_CLAIM_STATUS_MISMATCH",
+      "failureCode": "PX_CLAIM_STATUS_MISMATCH",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+      "failureCode": "PX_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SOURCE_CORPUS_INVALID",
+      "failureCode": "PX_SOURCE_CORPUS_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCENARIO_ID_DUPLICATED",
+      "failureCode": "PX_SCENARIO_ID_DUPLICATED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCENARIO_SET_MISMATCH",
+      "failureCode": "PX_SCENARIO_SET_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SUMMARY_RECOMPUTE_MISMATCH",
+      "failureCode": "PX_SUMMARY_RECOMPUTE_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SOURCE_DISTRIBUTION_FAILED",
+      "failureCode": "PX_SOURCE_DISTRIBUTION_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCENARIO_SOURCE_REFERENCE_INVALID",
+      "failureCode": "PX_SCENARIO_SOURCE_REFERENCE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SOURCE_KIND_RECOMPUTE_MISMATCH",
+      "failureCode": "PX_SOURCE_KIND_RECOMPUTE_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ENTRY_COVERAGE_FAILED",
+      "failureCode": "PX_ENTRY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ROUTE_COVERAGE_FAILED",
+      "failureCode": "PX_ROUTE_COVERAGE_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_RECOVERY_COVERAGE_FAILED",
+      "failureCode": "PX_RECOVERY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "failureCode": "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_STATUS_COVERAGE_FAILED",
+      "failureCode": "PX_STATUS_COVERAGE_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_GOVERNANCE_COVERAGE_FAILED",
+      "failureCode": "PX_GOVERNANCE_COVERAGE_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCREENSHOT_EVIDENCE_INVALID",
+      "failureCode": "PX_SCREENSHOT_EVIDENCE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCREENSHOT_METADATA_MISMATCH",
+      "failureCode": "PX_SCREENSHOT_METADATA_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "failureCode": "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_V2_REGRESSION_FAILED",
+      "failureCode": "PX_V2_REGRESSION_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCOPE_OVERCLAIM",
+      "failureCode": "PX_SCOPE_OVERCLAIM",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_FAULT_INJECTION_MISMATCH",
+      "failureCode": "PX_FAULT_INJECTION_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_COVERAGE_TAG_SEMANTIC_MISMATCH",
+      "failureCode": "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ACTION_ROUTE_MISMATCH",
+      "failureCode": "PX_ACTION_ROUTE_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_EXPECTED_RESULT_MAPPING_MISMATCH",
+      "failureCode": "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ROUTE_PATH_ID_MISMATCH",
+      "failureCode": "PX_ROUTE_PATH_ID_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_HOST_STRATEGY_URL_MISMATCH",
+      "failureCode": "PX_HOST_STRATEGY_URL_MISMATCH",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_ROUTE_ERROR_CODE_MISMATCH",
+      "failureCode": "PX_ROUTE_ERROR_CODE_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "failureCode": "PX_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_PERMISSION_VERIFICATION_INVALID",
+      "failureCode": "PX_PERMISSION_VERIFICATION_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_FORGET_FOUR_SURFACE_INVALID",
+      "failureCode": "PX_FORGET_FOUR_SURFACE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SHARED_ITEM_RECOMPUTE_INVALID",
+      "failureCode": "PX_SHARED_ITEM_RECOMPUTE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+      "failureCode": "PX_TEST_COMMAND_RESULT_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_EXECUTION_OBSERVATION_INVALID",
+      "failureCode": "PX_EXECUTION_OBSERVATION_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+      "failureCode": "PX_ENTRY_ACTION_OBSERVATION_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "failureCode": "PX_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_TAB_REUSE_SEQUENCE_INVALID",
+      "failureCode": "PX_TAB_REUSE_SEQUENCE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SCHEMA_CHECK_SET_MISMATCH",
+      "failureCode": "PX_SCHEMA_CHECK_SET_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SEMANTIC_POSITIVE_BASE_INVALID",
+      "failureCode": "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+      "failureCode": "PX_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "failureCode": "PX_UX_ACCESSIBILITY_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "failureCode": "PX_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "failureCode": "PX_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "failureCode": "PX_FORGET_DURABLE_RECOVERY_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "failureCode": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "failureCode": "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_REQUEST_ID_CORRELATION_INVALID",
+      "failureCode": "PX_REQUEST_ID_CORRELATION_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "failureCode": "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID",
+      "failureCode": "PX_FORGET_DURABLE_IDENTITY_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ATTEMPT_SEQUENCE_INVALID",
+      "failureCode": "PX_ATTEMPT_SEQUENCE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+      "failureCode": "PX_ROUTE_EVENT_IDENTITY_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "failureCode": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+      "failureCode": "PX_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+      "failureCode": "PX_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+      "enforcementLayer": "semantic"
+    },
+    {
+      "ruleId": "PX_RULE_ARCHITECTURE_RESULT_SHAPE_INVALID",
+      "failureCode": "PX_ARCHITECTURE_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_ACTION_ROUTE_SHAPE_INVALID",
+      "failureCode": "PX_ACTION_ROUTE_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "failureCode": "PX_SOURCE_CORPUS_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_HUMAN_REVIEW_SHAPE_INVALID",
+      "failureCode": "PX_HUMAN_REVIEW_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SCHEMA_RESULT_SHAPE_INVALID",
+      "failureCode": "PX_SCHEMA_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_SEMANTIC_RESULT_SHAPE_INVALID",
+      "failureCode": "PX_SEMANTIC_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_ROUTE_ERROR_SHAPE_INVALID",
+      "failureCode": "PX_ROUTE_ERROR_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    },
+    {
+      "ruleId": "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID",
+      "failureCode": "PX_EXPECTED_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema"
+    }
+  ],
+  "$defs": {
+    "RuleId": {
+      "type": "string",
+      "enum": [
+        "PX_RULE_REPORT_ISSUES_NOT_EMPTY",
+        "PX_RULE_CHILD_RESULT_FAILED",
+        "PX_RULE_CLAIM_STATUS_MISMATCH",
+        "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+        "PX_RULE_SOURCE_CORPUS_INVALID",
+        "PX_RULE_SCENARIO_ID_DUPLICATED",
+        "PX_RULE_SCENARIO_SET_MISMATCH",
+        "PX_RULE_SUMMARY_RECOMPUTE_MISMATCH",
+        "PX_RULE_SOURCE_DISTRIBUTION_FAILED",
+        "PX_RULE_SCENARIO_SOURCE_REFERENCE_INVALID",
+        "PX_RULE_SOURCE_KIND_RECOMPUTE_MISMATCH",
+        "PX_RULE_ENTRY_COVERAGE_FAILED",
+        "PX_RULE_ROUTE_COVERAGE_FAILED",
+        "PX_RULE_RECOVERY_COVERAGE_FAILED",
+        "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+        "PX_RULE_STATUS_COVERAGE_FAILED",
+        "PX_RULE_GOVERNANCE_COVERAGE_FAILED",
+        "PX_RULE_SCREENSHOT_EVIDENCE_INVALID",
+        "PX_RULE_SCREENSHOT_METADATA_MISMATCH",
+        "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+        "PX_RULE_V2_REGRESSION_FAILED",
+        "PX_RULE_SCOPE_OVERCLAIM",
+        "PX_RULE_FAULT_INJECTION_MISMATCH",
+        "PX_RULE_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_RULE_ACTION_ROUTE_MISMATCH",
+        "PX_RULE_EXPECTED_RESULT_MAPPING_MISMATCH",
+        "PX_RULE_ROUTE_PATH_ID_MISMATCH",
+        "PX_RULE_HOST_STRATEGY_URL_MISMATCH",
+        "PX_RULE_ROUTE_ERROR_CODE_MISMATCH",
+        "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+        "PX_RULE_PERMISSION_VERIFICATION_INVALID",
+        "PX_RULE_FORGET_FOUR_SURFACE_INVALID",
+        "PX_RULE_SHARED_ITEM_RECOMPUTE_INVALID",
+        "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+        "PX_RULE_EXECUTION_OBSERVATION_INVALID",
+        "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+        "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+        "PX_RULE_TAB_REUSE_SEQUENCE_INVALID",
+        "PX_RULE_SCHEMA_CHECK_SET_MISMATCH",
+        "PX_RULE_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_RULE_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+        "PX_RULE_UX_ACCESSIBILITY_FAILED",
+        "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+        "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+        "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+        "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+        "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+        "PX_RULE_REQUEST_ID_CORRELATION_INVALID",
+        "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+        "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID",
+        "PX_RULE_ATTEMPT_SEQUENCE_INVALID",
+        "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+        "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+        "PX_RULE_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+        "PX_RULE_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+        "PX_RULE_ARCHITECTURE_RESULT_SHAPE_INVALID",
+        "PX_RULE_ACTION_ROUTE_SHAPE_INVALID",
+        "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+        "PX_RULE_HUMAN_REVIEW_SHAPE_INVALID",
+        "PX_RULE_SCHEMA_RESULT_SHAPE_INVALID",
+        "PX_RULE_SEMANTIC_RESULT_SHAPE_INVALID",
+        "PX_RULE_ROUTE_ERROR_SHAPE_INVALID",
+        "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID"
+      ]
+    },
+    "FailureCode": {
+      "type": "string",
+      "enum": [
+        "SCHEMA_VALIDATION_FAILED",
+        "PX_REPORT_ISSUES_NOT_EMPTY",
+        "PX_CHILD_RESULT_FAILED",
+        "PX_CLAIM_STATUS_MISMATCH",
+        "PX_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+        "PX_SOURCE_CORPUS_INVALID",
+        "PX_SCENARIO_ID_DUPLICATED",
+        "PX_SCENARIO_SET_MISMATCH",
+        "PX_SUMMARY_RECOMPUTE_MISMATCH",
+        "PX_SOURCE_DISTRIBUTION_FAILED",
+        "PX_SCENARIO_SOURCE_REFERENCE_INVALID",
+        "PX_SOURCE_KIND_RECOMPUTE_MISMATCH",
+        "PX_ENTRY_COVERAGE_FAILED",
+        "PX_ROUTE_COVERAGE_FAILED",
+        "PX_RECOVERY_COVERAGE_FAILED",
+        "PX_IDENTITY_OR_IDEMPOTENCY_FAILED",
+        "PX_STATUS_COVERAGE_FAILED",
+        "PX_GOVERNANCE_COVERAGE_FAILED",
+        "PX_SCREENSHOT_EVIDENCE_INVALID",
+        "PX_SCREENSHOT_METADATA_MISMATCH",
+        "PX_ARTIFACT_PATH_OR_HASH_INVALID",
+        "PX_V2_REGRESSION_FAILED",
+        "PX_SCOPE_OVERCLAIM",
+        "PX_FAULT_INJECTION_MISMATCH",
+        "PX_COVERAGE_TAG_SEMANTIC_MISMATCH",
+        "PX_ACTION_ROUTE_MISMATCH",
+        "PX_EXPECTED_RESULT_MAPPING_MISMATCH",
+        "PX_ROUTE_PATH_ID_MISMATCH",
+        "PX_HOST_STRATEGY_URL_MISMATCH",
+        "PX_ROUTE_ERROR_CODE_MISMATCH",
+        "PX_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+        "PX_PERMISSION_VERIFICATION_INVALID",
+        "PX_FORGET_FOUR_SURFACE_INVALID",
+        "PX_SHARED_ITEM_RECOMPUTE_INVALID",
+        "PX_TEST_COMMAND_RESULT_INVALID",
+        "PX_EXECUTION_OBSERVATION_INVALID",
+        "PX_ENTRY_ACTION_OBSERVATION_INVALID",
+        "PX_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+        "PX_TAB_REUSE_SEQUENCE_INVALID",
+        "PX_SCHEMA_CHECK_SET_MISMATCH",
+        "PX_SEMANTIC_POSITIVE_BASE_INVALID",
+        "PX_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+        "PX_UX_ACCESSIBILITY_FAILED",
+        "PX_HUMAN_REVIEW_EVIDENCE_INVALID",
+        "PX_ARCHITECTURE_BOUNDARY_FAILED",
+        "PX_FORGET_DURABLE_RECOVERY_INVALID",
+        "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+        "PX_VIEWPORT_SURFACE_MAPPING_INVALID",
+        "PX_REQUEST_ID_CORRELATION_INVALID",
+        "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+        "PX_FORGET_DURABLE_IDENTITY_INVALID",
+        "PX_ATTEMPT_SEQUENCE_INVALID",
+        "PX_ROUTE_EVENT_IDENTITY_INVALID",
+        "PX_ARCHITECTURE_SCAN_SCOPE_INVALID",
+        "PX_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+        "PX_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+        "PX_ARCHITECTURE_RESULT_SHAPE_INVALID",
+        "PX_ACTION_ROUTE_SHAPE_INVALID",
+        "PX_SOURCE_CORPUS_SHAPE_INVALID",
+        "PX_HUMAN_REVIEW_SHAPE_INVALID",
+        "PX_SCHEMA_RESULT_SHAPE_INVALID",
+        "PX_SEMANTIC_RESULT_SHAPE_INVALID",
+        "PX_ROUTE_ERROR_SHAPE_INVALID",
+        "PX_EXPECTED_RESULT_SHAPE_INVALID"
+      ]
+    },
+    "RequirementId": {
+      "type": "string",
+      "enum": [
+        "PX-N-001",
+        "PX-N-002",
+        "PX-N-003",
+        "PX-N-004",
+        "PX-N-005",
+        "PX-N-006",
+        "PX-N-007",
+        "PX-N-008",
+        "PX-N-009",
+        "PX-N-010",
+        "PX-N-011",
+        "PX-N-012",
+        "PX-N-013",
+        "PX-N-014",
+        "PX-N-015",
+        "PX-N-016",
+        "PX-N-017",
+        "PX-N-018",
+        "PX-N-019",
+        "PX-N-020",
+        "PX-N-021",
+        "PX-N-022",
+        "PX-N-023",
+        "PX-N-024",
+        "PX-N-025",
+        "PX-N-026",
+        "PX-N-027",
+        "PX-N-028",
+        "PX-N-029",
+        "PX-N-030",
+        "PX-N-031",
+        "PX-N-032",
+        "PX-N-033",
+        "PX-N-034",
+        "PX-N-035",
+        "PX-N-036",
+        "PX-N-037",
+        "PX-N-038",
+        "PX-N-039",
+        "PX-N-040",
+        "PX-N-041",
+        "PX-N-042",
+        "PX-N-043",
+        "PX-N-044",
+        "PX-N-045",
+        "PX-N-046",
+        "PX-N-047",
+        "PX-N-048",
+        "PX-N-049",
+        "PX-N-050",
+        "PX-N-051",
+        "PX-N-052",
+        "PX-N-053",
+        "PX-N-054",
+        "PX-N-055",
+        "PX-N-056",
+        "PX-N-057",
+        "PX-N-058",
+        "PX-N-059",
+        "PX-N-060",
+        "PX-N-061",
+        "PX-N-062",
+        "PX-N-063",
+        "PX-N-064",
+        "PX-N-065",
+        "PX-N-066",
+        "PX-N-067",
+        "PX-N-068",
+        "PX-N-069",
+        "PX-N-070",
+        "PX-N-071",
+        "PX-N-072",
+        "PX-N-073",
+        "PX-N-074",
+        "PX-N-075",
+        "PX-N-076",
+        "PX-N-077",
+        "PX-N-078",
+        "PX-N-079",
+        "PX-N-080",
+        "PX-N-081",
+        "PX-N-082",
+        "PX-N-083",
+        "PX-N-084",
+        "PX-N-085",
+        "PX-N-086",
+        "PX-N-087",
+        "PX-N-088",
+        "PX-N-089",
+        "PX-N-090",
+        "PX-N-091",
+        "PX-N-092",
+        "PX-N-093",
+        "PX-N-094",
+        "PX-N-095",
+        "PX-N-096",
+        "PX-N-097",
+        "PX-N-098",
+        "PX-N-099",
+        "PX-N-100",
+        "PX-N-101",
+        "PX-N-102",
+        "PX-N-103",
+        "PX-N-104",
+        "PX-N-105",
+        "PX-N-106",
+        "PX-N-107",
+        "PX-N-108",
+        "PX-N-109"
+      ]
+    },
+    "JsonPatchOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "op",
+        "path"
+      ],
+      "properties": {
+        "op": {
+          "enum": [
+            "add",
+            "remove",
+            "replace"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "value": {}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "enum": [
+                  "add",
+                  "replace"
+                ]
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "remove"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "FixtureCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "base",
+        "targetSchema",
+        "patch",
+        "expectedSchemaValid",
+        "requirementId",
+        "requirementKey",
+        "ruleIdUnderTest",
+        "expectedLayer",
+        "expectedPrimaryFailure",
+        "allowedWarnings"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "targetSchema": {
+          "type": "string",
+          "pattern": "^v2_[a-z0-9_]+\\.schema\\.json$"
+        },
+        "targetDef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "patch": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/JsonPatchOperation"
+          }
+        },
+        "expectedSchemaValid": {
+          "type": "boolean"
+        },
+        "requirementId": {
+          "$ref": "#/$defs/RequirementId"
+        },
+        "ruleIdUnderTest": {
+          "$ref": "#/$defs/RuleId"
+        },
+        "expectedLayer": {
+          "enum": [
+            "schema",
+            "semantic"
+          ]
+        },
+        "expectedPrimaryFailure": {
+          "$ref": "#/$defs/FailureCode"
+        },
+        "allowedWarnings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/FailureCode"
+          }
+        },
+        "requirementKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]+$"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "expectedLayer": {
+                "const": "schema"
+              }
+            },
+            "required": [
+              "expectedLayer"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expectedSchemaValid": {
+                "const": false
+              },
+              "expectedPrimaryFailure": {
+                "const": "SCHEMA_VALIDATION_FAILED"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "expectedLayer": {
+                "const": "semantic"
+              }
+            },
+            "required": [
+              "expectedLayer"
+            ]
+          },
+          "then": {
+            "properties": {
+              "expectedSchemaValid": {
+                "const": true
+              },
+              "expectedPrimaryFailure": {
+                "not": {
+                  "const": "SCHEMA_VALIDATION_FAILED"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "FixtureSuite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "patchDialect",
+        "baseFile",
+        "rules",
+        "cases"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "v2-external-brain-px-0.1b-fixtures/v10"
+        },
+        "patchDialect": {
+          "const": "RFC6902"
+        },
+        "baseFile": {
+          "const": "px-0.1b-positive-instances.json"
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 63,
+          "maxItems": 63,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/RuleId"
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 109,
+          "maxItems": 109,
+          "items": {
+            "$ref": "#/$defs/FixtureCase"
+          }
+        }
+      }
+    },
+    "RequirementRegistryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirementId",
+        "requirementKey",
+        "description",
+        "ruleId",
+        "enforcementLayer",
+        "expectedPrimaryFailure"
+      ],
+      "properties": {
+        "requirementId": {
+          "$ref": "#/$defs/RequirementId"
+        },
+        "requirementKey": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9_]+$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ruleId": {
+          "$ref": "#/$defs/RuleId"
+        },
+        "enforcementLayer": {
+          "enum": [
+            "schema",
+            "semantic"
+          ]
+        },
+        "expectedPrimaryFailure": {
+          "$ref": "#/$defs/FailureCode"
+        }
+      }
+    }
+  },
+  "x-navia-requirement-registry": [
+    {
+      "requirementId": "PX-N-001",
+      "requirementKey": "workspace_open_workspace_to_graph",
+      "description": "workspace open workspace to graph",
+      "ruleId": "PX_RULE_ACTION_ROUTE_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-002",
+      "requirementKey": "manifest_source_without_origin_ref",
+      "description": "manifest source without origin ref",
+      "ruleId": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-003",
+      "requirementKey": "manifest_expected_open_outcome_mismatch",
+      "description": "manifest expected open outcome mismatch",
+      "ruleId": "PX_RULE_EXPECTED_RESULT_MAPPING_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_EXPECTED_RESULT_MAPPING_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-004",
+      "requirementKey": "report_passed_with_failed_scenario",
+      "description": "report passed with failed scenario",
+      "ruleId": "PX_RULE_CHILD_RESULT_FAILED",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-005",
+      "requirementKey": "report_passed_with_failed_command",
+      "description": "report passed with failed command",
+      "ruleId": "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-006",
+      "requirementKey": "report_passed_conclusion_failed",
+      "description": "report passed conclusion failed",
+      "ruleId": "PX_RULE_CLAIM_STATUS_MISMATCH",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-007",
+      "requirementKey": "report_fake_summary_counts",
+      "description": "report fake summary counts",
+      "ruleId": "PX_RULE_SUMMARY_RECOMPUTE_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SUMMARY_RECOMPUTE_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-008",
+      "requirementKey": "report_source_kinds_mismatch",
+      "description": "report source kinds mismatch",
+      "ruleId": "PX_RULE_SOURCE_KIND_RECOMPUTE_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_KIND_RECOMPUTE_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-009",
+      "requirementKey": "report_nonparticipant_carries_id",
+      "description": "report nonparticipant carries id",
+      "ruleId": "PX_RULE_EXECUTION_OBSERVATION_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-010",
+      "requirementKey": "report_missing_g4_forbidden_scan",
+      "description": "report missing g4 forbidden scan",
+      "ruleId": "PX_RULE_ARCHITECTURE_CHECK_COVERAGE_MISSING",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_CHECK_COVERAGE_MISSING"
+    },
+    {
+      "requirementId": "PX-N-011",
+      "requirementKey": "report_axe_serious_but_g6_true",
+      "description": "report axe serious but g6 true",
+      "ruleId": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-012",
+      "requirementKey": "report_keyboard_partial_but_g6_true",
+      "description": "report keyboard partial but g6 true",
+      "ruleId": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-013",
+      "requirementKey": "report_viewport_overlap_but_g6_true",
+      "description": "report viewport overlap but g6 true",
+      "ruleId": "PX_RULE_UX_ACCESSIBILITY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_UX_ACCESSIBILITY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-014",
+      "requirementKey": "human_review_evidence_without_hash",
+      "description": "human review evidence without hash",
+      "ruleId": "PX_RULE_HUMAN_REVIEW_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-015",
+      "requirementKey": "execution_timeout_with_response_fingerprint",
+      "description": "execution timeout with response fingerprint",
+      "ruleId": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-016",
+      "requirementKey": "execution_timeout_without_transport_evidence",
+      "description": "execution timeout without transport evidence",
+      "ruleId": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-017",
+      "requirementKey": "execution_event_origin_mismatch",
+      "description": "execution event origin mismatch",
+      "ruleId": "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-018",
+      "requirementKey": "execution_open_in_workspace_without_prior_context",
+      "description": "execution open in workspace without prior context",
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-019",
+      "requirementKey": "execution_tab_reuse_different_tab_id",
+      "description": "execution tab reuse different tab id",
+      "ruleId": "PX_RULE_TAB_REUSE_SEQUENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_TAB_REUSE_SEQUENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-020",
+      "requirementKey": "execution_tab_reuse_ingest_increment",
+      "description": "execution tab reuse ingest increment",
+      "ruleId": "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_IDENTITY_OR_IDEMPOTENCY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-021",
+      "requirementKey": "report_missing_human_review_artifact",
+      "description": "report missing human review artifact",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-022",
+      "requirementKey": "status_offline_with_online_downstream_authority",
+      "description": "status offline with online downstream authority",
+      "ruleId": "PX_RULE_RUNTIME_OFFLINE_AUTHORITY_VIOLATION",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-023",
+      "requirementKey": "execution_invalid_prior_context_without_fallback_reason",
+      "description": "execution invalid prior context without fallback reason",
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CONTEXT_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-024",
+      "requirementKey": "report_schema_result_missing_schema_ids",
+      "description": "report schema result missing schema ids",
+      "ruleId": "PX_RULE_SCHEMA_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-025",
+      "requirementKey": "report_schema_result_count_does_not_match_ids",
+      "description": "report schema result count does not match ids",
+      "ruleId": "PX_RULE_SCHEMA_CHECK_SET_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCHEMA_CHECK_SET_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-026",
+      "requirementKey": "report_semantic_result_partial_execution_coverage",
+      "description": "report semantic result partial execution coverage",
+      "ruleId": "PX_RULE_SEMANTIC_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-027",
+      "requirementKey": "report_source_library_with_graph_path",
+      "description": "report source library with graph path",
+      "ruleId": "PX_RULE_ROUTE_PATH_ID_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_PATH_ID_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-028",
+      "requirementKey": "execution_extension_host_with_localhost_url",
+      "description": "execution extension host with localhost url",
+      "ruleId": "PX_RULE_HOST_STRATEGY_URL_MISMATCH",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-029",
+      "requirementKey": "report_missing_screenshot_artifact",
+      "description": "report missing screenshot artifact",
+      "ruleId": "PX_RULE_SCREENSHOT_EVIDENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_EVIDENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-030",
+      "requirementKey": "report_missing_scenario_log_artifact",
+      "description": "report missing scenario log artifact",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-031",
+      "requirementKey": "report_missing_audit_artifact",
+      "description": "report missing audit artifact",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-032",
+      "requirementKey": "report_coverage_tag_entry_mismatch",
+      "description": "report coverage tag entry mismatch",
+      "ruleId": "PX_RULE_COVERAGE_TAG_SEMANTIC_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_COVERAGE_TAG_SEMANTIC_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-033",
+      "requirementKey": "report_forget_missing_after",
+      "description": "report forget missing after",
+      "ruleId": "PX_RULE_FORGET_FOUR_SURFACE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-034",
+      "requirementKey": "report_shared_recompute_without_supporting_source",
+      "description": "report shared recompute without supporting source",
+      "ruleId": "PX_RULE_SHARED_ITEM_RECOMPUTE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-035",
+      "requirementKey": "manifest_legacy_string_fingerprint",
+      "description": "manifest legacy string fingerprint",
+      "ruleId": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-036",
+      "requirementKey": "manifest_absolute_fingerprint_artifact_path",
+      "description": "manifest absolute fingerprint artifact path",
+      "ruleId": "PX_RULE_SOURCE_CORPUS_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-037",
+      "requirementKey": "manifest_recoverable_missing_expected_error_code",
+      "description": "manifest recoverable missing expected error code",
+      "ruleId": "PX_RULE_ROUTE_ERROR_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-038",
+      "requirementKey": "report_missing_route_recovery_result",
+      "description": "report missing route recovery result",
+      "ruleId": "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-039",
+      "requirementKey": "report_missing_open_outcome",
+      "description": "report missing open outcome",
+      "ruleId": "PX_RULE_EXPECTED_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-040",
+      "requirementKey": "report_passed_command_nonzero_exit",
+      "description": "report passed command nonzero exit",
+      "ruleId": "PX_RULE_TEST_COMMAND_RESULT_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-041",
+      "requirementKey": "report_test_log_hash_mismatch",
+      "description": "report test log hash mismatch",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-042",
+      "requirementKey": "execution_user_entry_without_trusted_gesture",
+      "description": "execution user entry without trusted gesture",
+      "ruleId": "PX_RULE_ENTRY_ACTION_OBSERVATION_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-043",
+      "requirementKey": "execution_cross_container_id_mismatch",
+      "description": "execution cross container id mismatch",
+      "ruleId": "PX_RULE_IDENTITY_OR_IDEMPOTENCY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_IDENTITY_OR_IDEMPOTENCY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-044",
+      "requirementKey": "report_human_review_pending_success",
+      "description": "report human review pending success",
+      "ruleId": "PX_RULE_FINAL_GATE_OR_HUMAN_REVIEW_FAILED",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-045",
+      "requirementKey": "report_blocking_warning_not_empty",
+      "description": "report blocking warning not empty",
+      "ruleId": "PX_RULE_REPORT_ISSUES_NOT_EMPTY",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_REPORT_ISSUES_NOT_EMPTY"
+    },
+    {
+      "requirementId": "PX-N-046",
+      "requirementKey": "manifest_duplicate_source_sample_id",
+      "description": "manifest duplicate source sample id",
+      "ruleId": "PX_RULE_SOURCE_CORPUS_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_CORPUS_INVALID"
+    },
+    {
+      "requirementId": "PX-N-047",
+      "requirementKey": "report_duplicate_scenario_id",
+      "description": "report duplicate scenario id",
+      "ruleId": "PX_RULE_SCENARIO_ID_DUPLICATED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_ID_DUPLICATED"
+    },
+    {
+      "requirementId": "PX-N-048",
+      "requirementKey": "report_scenario_set_mismatch",
+      "description": "report scenario set mismatch",
+      "ruleId": "PX_RULE_SCENARIO_SET_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_SET_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-049",
+      "requirementKey": "manifest_source_distribution_regression",
+      "description": "manifest source distribution regression",
+      "ruleId": "PX_RULE_SOURCE_DISTRIBUTION_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_DISTRIBUTION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-050",
+      "requirementKey": "report_scenario_references_missing_sample",
+      "description": "report scenario references missing sample",
+      "ruleId": "PX_RULE_SCENARIO_SOURCE_REFERENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCENARIO_SOURCE_REFERENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-051",
+      "requirementKey": "report_entry_coverage_below_threshold",
+      "description": "report entry coverage below threshold",
+      "ruleId": "PX_RULE_ENTRY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ENTRY_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-052",
+      "requirementKey": "report_route_direct_reload_pair_missing",
+      "description": "report route direct reload pair missing",
+      "ruleId": "PX_RULE_ROUTE_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-053",
+      "requirementKey": "report_recovery_coverage_below_threshold",
+      "description": "report recovery coverage below threshold",
+      "ruleId": "PX_RULE_RECOVERY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-054",
+      "requirementKey": "report_status_fault_coverage_below_threshold",
+      "description": "report status fault coverage below threshold",
+      "ruleId": "PX_RULE_STATUS_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_STATUS_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-055",
+      "requirementKey": "report_governance_coverage_below_threshold",
+      "description": "report governance coverage below threshold",
+      "ruleId": "PX_RULE_GOVERNANCE_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_GOVERNANCE_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-056",
+      "requirementKey": "screenshot_viewport_does_not_match_manifest",
+      "description": "screenshot viewport does not match manifest",
+      "ruleId": "PX_RULE_SCREENSHOT_METADATA_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_METADATA_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-057",
+      "requirementKey": "report_v2_regression_assertion_failed",
+      "description": "report v2 regression assertion failed",
+      "ruleId": "PX_RULE_V2_REGRESSION_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_V2_REGRESSION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-058",
+      "requirementKey": "report_fault_injection_status_mismatch",
+      "description": "report fault injection status mismatch",
+      "ruleId": "PX_RULE_FAULT_INJECTION_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FAULT_INJECTION_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-059",
+      "requirementKey": "report_action_route_cross_document_mismatch",
+      "description": "report action route cross document mismatch",
+      "ruleId": "PX_RULE_ACTION_ROUTE_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ACTION_ROUTE_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-060",
+      "requirementKey": "report_route_error_code_mismatch",
+      "description": "report route error code mismatch",
+      "ruleId": "PX_RULE_ROUTE_ERROR_CODE_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_ERROR_CODE_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-061",
+      "requirementKey": "human_review_evidence_hash_does_not_match",
+      "description": "human review evidence hash does not match",
+      "ruleId": "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_HUMAN_REVIEW_EVIDENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-062",
+      "requirementKey": "report_architecture_boundary_has_violations",
+      "description": "report architecture boundary has violations",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-063",
+      "requirementKey": "positive_base_observation_set_mismatch",
+      "description": "positive base observation set mismatch",
+      "ruleId": "PX_RULE_SEMANTIC_POSITIVE_BASE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SEMANTIC_POSITIVE_BASE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-064",
+      "requirementKey": "forget_direct_open_succeeds",
+      "description": "forget direct open succeeds",
+      "ruleId": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-065",
+      "requirementKey": "forget_reload_missing_error_code",
+      "description": "forget reload missing error code",
+      "ruleId": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-066",
+      "requirementKey": "forget_back_mode_not_covered",
+      "description": "forget back mode not covered",
+      "ruleId": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-067",
+      "requirementKey": "forget_reopen_check_omitted",
+      "description": "forget reopen check omitted",
+      "ruleId": "PX_RULE_FORGET_DURABLE_RECOVERY_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-068",
+      "requirementKey": "screenshot_decoded_size_1x1",
+      "description": "screenshot decoded size 1x1",
+      "ruleId": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-069",
+      "requirementKey": "screenshot_ihdr_size_does_not_match_metadata",
+      "description": "screenshot ihdr size does not match metadata",
+      "ruleId": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-070",
+      "requirementKey": "screenshot_hash_valid_metadata_size_false",
+      "description": "screenshot hash valid metadata size false",
+      "ruleId": "PX_RULE_SCREENSHOT_DECODED_DIMENSION_MISMATCH",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH"
+    },
+    {
+      "requirementId": "PX-N-071",
+      "requirementKey": "viewport_360_uses_workspace_surface",
+      "description": "viewport 360 uses workspace surface",
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "requirementId": "PX-N-072",
+      "requirementKey": "viewport_420_uses_workspace_surface",
+      "description": "viewport 420 uses workspace surface",
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "requirementId": "PX-N-073",
+      "requirementKey": "viewport_768_uses_side_panel_surface",
+      "description": "viewport 768 uses side panel surface",
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "requirementId": "PX-N-074",
+      "requirementKey": "viewport_1280_uses_side_panel_surface",
+      "description": "viewport 1280 uses side panel surface",
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "requirementId": "PX-N-075",
+      "requirementKey": "composite_review_counted_as_product_viewport",
+      "description": "composite review counted as product viewport",
+      "ruleId": "PX_RULE_VIEWPORT_SURFACE_MAPPING_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_VIEWPORT_SURFACE_MAPPING_INVALID"
+    },
+    {
+      "requirementId": "PX-N-076",
+      "requirementKey": "entry_background_request_id_mismatch",
+      "description": "entry background request id mismatch",
+      "ruleId": "PX_RULE_REQUEST_ID_CORRELATION_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_REQUEST_ID_CORRELATION_INVALID"
+    },
+    {
+      "requirementId": "PX-N-077",
+      "requirementKey": "valid_prior_route_not_preserved",
+      "description": "valid prior route not preserved",
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-078",
+      "requirementKey": "invalid_prior_context_recovers_to_graph",
+      "description": "invalid prior context recovers to graph",
+      "ruleId": "PX_RULE_OPEN_IN_WORKSPACE_CAUSALITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-079",
+      "requirementKey": "forget_reopen_workspace_id_mismatch",
+      "description": "forget reopen workspace id mismatch",
+      "ruleId": "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FORGET_DURABLE_IDENTITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-080",
+      "requirementKey": "forget_reopen_source_id_mismatch",
+      "description": "forget reopen source id mismatch",
+      "ruleId": "PX_RULE_FORGET_DURABLE_IDENTITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FORGET_DURABLE_IDENTITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-081",
+      "requirementKey": "attempt_sequence_duplicated",
+      "description": "attempt sequence duplicated",
+      "ruleId": "PX_RULE_ATTEMPT_SEQUENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ATTEMPT_SEQUENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-082",
+      "requirementKey": "attempt_timestamp_not_monotonic",
+      "description": "attempt timestamp not monotonic",
+      "ruleId": "PX_RULE_ATTEMPT_SEQUENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ATTEMPT_SEQUENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-083",
+      "requirementKey": "route_event_source_id_mismatch",
+      "description": "route event source id mismatch",
+      "ruleId": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-084",
+      "requirementKey": "architecture_scan_missing_workspace_root",
+      "description": "architecture scan missing workspace root",
+      "ruleId": "PX_RULE_ARCHITECTURE_RESULT_SHAPE_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-085",
+      "requirementKey": "architecture_repository_commit_mismatch",
+      "description": "architecture repository commit mismatch",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-086",
+      "requirementKey": "architecture_scanned_path_index_hash_mismatch",
+      "description": "architecture scanned path index hash mismatch",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-087",
+      "requirementKey": "architecture_ruleset_hash_mismatch",
+      "description": "architecture ruleset hash mismatch",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-088",
+      "requirementKey": "architecture_allowlist_hash_mismatch",
+      "description": "architecture allowlist hash mismatch",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-089",
+      "requirementKey": "contract_fixture_promoted_to_production_acceptance",
+      "description": "contract fixture promoted to production acceptance",
+      "ruleId": "PX_RULE_FIXTURE_EVIDENCE_PROMOTION_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_FIXTURE_EVIDENCE_PROMOTION_INVALID"
+    },
+    {
+      "requirementId": "PX-N-090",
+      "requirementKey": "source_origin_and_fingerprint_combination_duplicated",
+      "description": "source origin and fingerprint combination duplicated",
+      "ruleId": "PX_RULE_SOURCE_FIXTURE_UNIQUENESS_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_SOURCE_FIXTURE_UNIQUENESS_INVALID"
+    },
+    {
+      "requirementId": "PX-N-091",
+      "requirementKey": "artifact_raw_bytes_hash_mismatch",
+      "description": "Artifact hash must match the exact once-parsed UTF-8 bytes.",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-092",
+      "requirementKey": "referenced_artifact_path_missing",
+      "description": "Every referenced artifact path must resolve in the fixture byte map or filesystem.",
+      "ruleId": "PX_RULE_ARTIFACT_PATH_OR_HASH_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARTIFACT_PATH_OR_HASH_INVALID"
+    },
+    {
+      "requirementId": "PX-N-093",
+      "requirementKey": "human_review_evidence_class_mismatch",
+      "description": "Report and loaded Human Review must use the same evidence class and claim level.",
+      "ruleId": "PX_RULE_HUMAN_REVIEW_EVIDENCE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_HUMAN_REVIEW_EVIDENCE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-094",
+      "requirementKey": "successful_back_route_identity_changed",
+      "description": "Successful Back must preserve the canonical route and stable IDs.",
+      "ruleId": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-095",
+      "requirementKey": "successful_reopen_workspace_identity_changed",
+      "description": "Successful reopen must preserve the canonical workspace and source identity.",
+      "ruleId": "PX_RULE_ROUTE_EVENT_IDENTITY_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ROUTE_EVENT_IDENTITY_INVALID"
+    },
+    {
+      "requirementId": "PX-N-096",
+      "requirementKey": "successful_back_coverage_missing",
+      "description": "The five-route successful recovery matrix must include Back.",
+      "ruleId": "PX_RULE_RECOVERY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-097",
+      "requirementKey": "successful_reopen_coverage_missing",
+      "description": "The five-route successful recovery matrix must include reopen.",
+      "ruleId": "PX_RULE_RECOVERY_COVERAGE_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_RECOVERY_COVERAGE_FAILED"
+    },
+    {
+      "requirementId": "PX-N-098",
+      "requirementKey": "architecture_source_tree_hash_mismatch",
+      "description": "Architecture source tree hash must be recomputable from the scan manifest.",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-099",
+      "requirementKey": "architecture_excluded_path_targets_source_root",
+      "description": "Architecture exclusions must not contain or cover a required source root.",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-100",
+      "requirementKey": "architecture_path_index_order_mismatch",
+      "description": "Architecture path index must use the frozen order and serialization.",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-101",
+      "requirementKey": "architecture_path_index_omits_workspace",
+      "description": "Architecture path index must include tracked Workspace files.",
+      "ruleId": "PX_RULE_ARCHITECTURE_SCAN_SCOPE_INVALID",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_SCAN_SCOPE_INVALID"
+    },
+    {
+      "requirementId": "PX-N-102",
+      "requirementKey": "scope_overclaim_contract_fixture",
+      "description": "Contract fixture evidence must not carry the production acceptance claim.",
+      "ruleId": "PX_RULE_SCOPE_OVERCLAIM",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-103",
+      "requirementKey": "permission_verification_shape_missing",
+      "description": "Permission verification must retain all frozen before/after fields.",
+      "ruleId": "PX_RULE_PERMISSION_VERIFICATION_INVALID",
+      "enforcementLayer": "schema",
+      "expectedPrimaryFailure": "SCHEMA_VALIDATION_FAILED"
+    },
+    {
+      "requirementId": "PX-N-104",
+      "requirementKey": "g4_source_static_data_service_import",
+      "description": "Tracked source with a forbidden static data_service import must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-105",
+      "requirementKey": "g4_source_dynamic_runtime_service_import",
+      "description": "Tracked source with a forbidden dynamic Runtime service import must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-106",
+      "requirementKey": "g4_source_direct_fetch_normalized_endpoint",
+      "description": "Tracked source with whitespace-varied fetch to a normalized loopback data_service endpoint must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-107",
+      "requirementKey": "g4_source_knowledge_item_creation",
+      "description": "Tracked frontend source creating KnowledgeItem facts must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-108",
+      "requirementKey": "g4_source_evidence_ref_creation",
+      "description": "Tracked frontend source creating EvidenceRef facts must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    },
+    {
+      "requirementId": "PX-N-109",
+      "requirementKey": "g4_source_graph_relation_creation",
+      "description": "Tracked frontend source creating graph relations must fail even when reported violations remain zero.",
+      "ruleId": "PX_RULE_ARCHITECTURE_BOUNDARY_FAILED",
+      "enforcementLayer": "semantic",
+      "expectedPrimaryFailure": "PX_ARCHITECTURE_BOUNDARY_FAILED"
+    }
+  ]
+}

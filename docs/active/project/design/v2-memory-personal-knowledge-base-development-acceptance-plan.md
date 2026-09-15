@@ -1,12 +1,13 @@
 # V2 Memory / Personal Knowledge Base Development And Acceptance Plan
 
-本计划用于记录 V2-1..V2-6 mock-first / controlled-boundary 实现基线，并冻结 V2-7 真实数据验收的剩余开发与出门顺序。
+本计划用于记录 V2-1..V2-6 mock-first / controlled-boundary 实现基线，以及已经完成的 V2-7 真实数据验收。V2-7 的要求继续作为后续产品化回归基线，不再描述为待完成工作。
 
 当前放行口径：
 
 ```text
-Go for V2 implementation-baseline record through V2-6.
-No-Go for V2 planning-aligned acceptance claim until V2-7 real-data acceptance passes.
+V2-7 real-data acceptance: PASSED.
+Allowed claim: V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance.
+No-Go for V2 implemented, V2 ready, complete external brain, default local-file reading or RAG ready.
 ```
 
 ## 1. 文档阶段计划
@@ -31,9 +32,9 @@ No-Go for V2 planning-aligned acceptance claim until V2-7 real-data acceptance p
 | `V2-4` | 已完成基线 | Knowledge Workspace shell | workspace switcher、source library、source detail、trace drawer、service status banner 可用 |
 | `V2-5` | 已完成基线 | Ask with Sources / Knowledge Graph | 回答和图谱节点有 evidence refs 或 degraded reason |
 | `V2-6` | 已完成基线 | PermissionRoot / ForgetSource | 显式授权、撤销、删除 / 遗忘和 before / after query 验证 |
-| `V2-7` | 待完成 | 真实数据验收 | 独立 evidence package、HTML report、PRD review、false-green audit 无 fatal / major |
+| `V2-7` | 已完成 | 真实数据验收 | 独立 evidence package、HTML report、PRD review、false-green audit 已生成并通过，fatal / major 为零 |
 
-## 2.1 当前实现实体和 V2-7 剩余目标
+## 2.1 当前实现实体和 V2-7 完成记录
 
 | 子阶段 | 目标文件 / 目录 | 目标职责 |
 |---|---|---|
@@ -47,9 +48,9 @@ No-Go for V2 planning-aligned acceptance claim until V2-7 real-data acceptance p
 | `V2-7` | `apps/chrome-extension/e2e/chrome-v2-memory-personal-knowledge.mjs` 或同等 headless runner | 真实 Chrome 或 headless 验收保存、授权、问答、trace、graph、forget |
 | `V2-7` | `docs/active/project/evidence/v2_memory_personal_knowledge_base/` | 独立 V2 证据包 |
 
-## 3. V2-7 验收矩阵
+## 3. V2-7 已执行验收矩阵
 
-V2-7 真实数据验收至少覆盖：
+V2-7 已按以下冻结口径完成真实数据验收；后续回归不得降低这些口径：
 
 Source corpus：
 
@@ -88,16 +89,16 @@ screenshot_paths
 
 注意：Runtime offline 必须由前端 transport failure / timeout 推导。Runtime 离线时 `/v1/knowledge/status` 不可达，不能把 Runtime offline 写成 Runtime 在线返回的成功响应。
 
-未来实现验收必须覆盖以下服务状态样本：
+V2-7 已覆盖以下服务状态样本；后续产品化回归必须继续覆盖：
 
 - Runtime offline：UI 不空白，提示启动 Runtime / 重试 / 打开 Debug。
 - Adapter degraded 或 blocked：UI 说明 V2 Adapter / Governance 未就绪或策略阻止，不误写为 data_service 错误。
 - data_service auth_required / unreachable / version_mismatch 至少一种：UI 提供配置、重连或升级提示。
 - source build failed / degraded：Source detail 和 SaveToKnowledgeCard 显示失败原因、重试或降级路径。
 
-## 3.1 V2-7 出门产物
+## 3.1 V2-7 已完成出门产物
 
-V2-7 必须补齐并验证：
+以下证据已经生成并通过；它们是 V2 planning-aligned local knowledge acceptance 的权威 active 证据：
 
 ```text
 docs/active/project/evidence/v2_memory_personal_knowledge_base/sample-manifest.json
@@ -108,7 +109,7 @@ docs/active/project/evidence/v2_memory_personal_knowledge_base/prd-review.md
 docs/active/project/evidence/v2_memory_personal_knowledge_base/false-green-audit.md
 ```
 
-V2-7 必须继续使用已经冻结的合同与语义校验：
+V2-7 已使用以下冻结合同与语义校验；重新生成证据时必须继续验证：
 
 ```text
 docs/active/project/contracts/v2_memory_sample_manifest.schema.json
@@ -131,7 +132,7 @@ docs/active/project/design/v2-memory-personal-knowledge-semantic-validator.md
 - B 前端直接读写 data_service workspace。
 - B 前端直接探测 data_service health 或绕过 Runtime / V2 Adapter 展示服务状态。
 - Runtime offline、Adapter blocked、data_service unreachable、source build failed 被合并成同一个 generic error。
-- 用 V2-1..V2-6 mock-first 子阶段 evidence 替代 V2-7 真实数据验收。
+- 用 V2-1..V2-6 mock-first 子阶段 evidence 替代已通过的 V2-7 真实数据验收，或用 V2-7 证据冒充独立 Workspace Page 产品化证据。
 - cross-source query 被计入 source corpus。
 - evidence_refs 仅检查非空，不验证语义支撑。
 - data_service console 冒充 Navia 产品 UI。

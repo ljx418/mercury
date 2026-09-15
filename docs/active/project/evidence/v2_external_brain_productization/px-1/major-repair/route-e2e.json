@@ -1,0 +1,383 @@
+{
+  "schemaVersion": "v2-px-1-workspace-router-e2e/v2",
+  "generatedAt": "2026-09-08T08:41:33.855Z",
+  "extensionRoot": "/mnt/c/workspace/navia/apps/chrome-extension/chrome-mv3-unpacked",
+  "headless": true,
+  "realRuntime": "http://127.0.0.1:17861",
+  "realSourceSetup": {
+    "sourceId": "src_00000000000000000000000002",
+    "title": "Navia PRD - V2-PX Route A",
+    "originUrl": "navia://docs/active/project/01-prd.md",
+    "status": "trace_ready",
+    "evidenceRefCount": 1,
+    "idempotentReplay": true,
+    "sourceFingerprint": "dcee59149f80b129ed22628dcd4e2d36828ffce1cf6eecb43072c78bd44879bd"
+  },
+  "sourceId": "src_00000000000000000000000002",
+  "checks": [
+    {
+      "id": "workspace_build_artifact",
+      "passed": true,
+      "detail": "workspace.html exists in WXT production output"
+    },
+    {
+      "id": "manifest_permissions_unchanged",
+      "passed": true,
+      "detail": "[\"activeTab\",\"scripting\",\"sidePanel\",\"storage\",\"tabs\"]"
+    },
+    {
+      "id": "no_remote_script_csp",
+      "passed": true,
+      "detail": "Manifest does not relax extension script CSP"
+    },
+    {
+      "id": "runtime_get_url_shape",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html"
+    },
+    {
+      "id": "production_sidepanel_entry",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "runtime_online_authority",
+      "passed": true,
+      "detail": "Workspace loaded real Runtime status"
+    },
+    {
+      "id": "source_identity",
+      "passed": true,
+      "detail": "src_00000000000000000000000002"
+    },
+    {
+      "id": "direct_open_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_library",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000002?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000002?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000002?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_detail",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/src_00000000000000000000000002?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_source_identity",
+      "passed": true,
+      "detail": "返回来源库Source DetailNavia PRD - V2-PX Route Anavia://docs/active/project/01-prd.mdSource IDsrc_00000000000000000000000002状态trace_readyRevision1证据引用1"
+    },
+    {
+      "id": "direct_open_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_ask",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/ask?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_graph",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/graph?workspaceId=ws_default"
+    },
+    {
+      "id": "direct_open_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "reload_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "browser_back_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "reopen_permissions",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/settings/permissions?workspaceId=ws_default"
+    },
+    {
+      "id": "five_route_four_mode_matrix",
+      "passed": true,
+      "detail": "20/20"
+    },
+    {
+      "id": "invalid_route_recovery",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/foreign"
+    },
+    {
+      "id": "workspace_not_found",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=workspace_missing"
+    },
+    {
+      "id": "workspace_not_found_recovery_target",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "id": "source_not_found",
+      "passed": true,
+      "detail": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources/source_missing?workspaceId=ws_default"
+    },
+    {
+      "id": "runtime_offline_shell",
+      "passed": true,
+      "detail": "RuntimeofflineAdapteruncheckeddata_serviceuncheckedSource buildunknown"
+    },
+    {
+      "id": "concurrent_focus_existing_or_create",
+      "passed": true,
+      "detail": "Workspace pages after 8 concurrent requests: 1"
+    },
+    {
+      "id": "concurrent_result_identity",
+      "passed": true,
+      "detail": "[{\"requestId\":\"px1_concurrent_0\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"created_new\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_1\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_2\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_3\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_4\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_5\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_6\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"},{\"requestId\":\"px1_concurrent_7\",\"hostStrategy\":\"extension_workspace_page\",\"outcome\":\"focused_existing\",\"tabId\":1683117269,\"workspaceUrl\":\"chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default\"}]"
+    },
+    {
+      "id": "no_ingest_on_open",
+      "passed": true,
+      "detail": "Observed POST /v1/knowledge/sources requests: 0"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-1/major-repair/screenshots/workspace-library-1280.png",
+      "sha256": "1841ad49fa521eb9d79285d11a84d8029c2b8848953b4441abd091ab75f2d2e7",
+      "bytes": 32613
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-1/major-repair/screenshots/workspace-source-detail-1280.png",
+      "sha256": "e769abe5508d04a7451e21c24d644a23e1f578837a5edfaf5e040281b298f74d",
+      "bytes": 35458
+    },
+    {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-1/major-repair/screenshots/workspace-runtime-offline-1280.png",
+      "sha256": "fc38703111ad3c2797e9e7c57690607fe3774d016c474a323d5804a2d6dd5799",
+      "bytes": 38461
+    }
+  ],
+  "passed": true,
+  "issues": [],
+  "recoveryMatrix": [
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_library",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "source_detail",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "ask",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "graph",
+      "recoveryMode": "reopen",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "direct_open",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "reload",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "browser_back",
+      "passed": true
+    },
+    {
+      "routeIntent": "permissions",
+      "recoveryMode": "reopen",
+      "passed": true
+    }
+  ],
+  "concurrentOpenResults": [
+    {
+      "requestId": "px1_concurrent_0",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "created_new",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_1",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_2",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_3",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_4",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_5",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_6",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "requestId": "px1_concurrent_7",
+      "hostStrategy": "extension_workspace_page",
+      "outcome": "focused_existing",
+      "tabId": 1683117269,
+      "workspaceUrl": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    }
+  ]
+}

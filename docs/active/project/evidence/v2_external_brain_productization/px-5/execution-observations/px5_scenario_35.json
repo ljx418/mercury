@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "v2-external-brain-execution-observation/v6",
+  "scenarioId": "px5_scenario_35",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "entryContext": {
+    "status": "not_applicable"
+  },
+  "attempts": [
+    {
+      "sequence": 1,
+      "entryAction": {
+        "eventType": "status_recovery",
+        "actor": "test_fault_fixture",
+        "trustedUserGesture": false,
+        "requestId": "px5_px5_scenario_35",
+        "origin": "status_recovery",
+        "routeIntent": "source_library",
+        "workspaceId": "ws_default",
+        "operationId": "op_00000000000000000000002844",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      "backgroundResult": {
+        "outcome": "blocked",
+        "requestId": "px5_px5_scenario_35",
+        "observedAt": "2026-09-08T10:39:50.416Z",
+        "errorCode": "RUNTIME_OFFLINE"
+      }
+    }
+  ],
+  "routeEvents": [
+    {
+      "kind": "recovery",
+      "resolvedPath": "#/knowledge/sources?workspaceId=ws_default",
+      "routeIntent": "source_library",
+      "workspaceId": "ws_default",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "containerObservations": [
+    {
+      "container": "side_panel",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "background",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "workspace_page",
+      "ids": {
+        "status": "observed",
+        "workspaceId": "ws_default"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "runtimeObservation": {
+    "transportOutcome": "connection_refused",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "ids": {
+      "status": "unavailable"
+    },
+    "transportErrorCode": "RUNTIME_CONNECTION_REFUSED",
+    "transportEvidence": {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/logs/chrome-production-e2e.log",
+      "sha256": "828d1079b5793108359fa6f76289e0cafa386bd2c5c8cdb1416c4bedb3de3131"
+    }
+  },
+  "ingestCounters": {
+    "before": 0,
+    "after": 0
+  }
+}

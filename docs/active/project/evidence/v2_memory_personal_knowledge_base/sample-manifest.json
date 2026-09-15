@@ -1,6 +1,6 @@
 {
   "schemaVersion": "v2-memory-manifest-draft-2026-07-10",
-  "generatedAt": "2026-07-13T10:48:59.692Z",
+  "generatedAt": "2026-09-08T10:12:18.881Z",
   "sourceCorpus": [
     {
       "sampleId": "v2_src_web_domestic_portal_163_news_home",
@@ -196,7 +196,7 @@
       "redactedLocalPath": "docs/active/project/design/v2-memory-personal-knowledge-base-gap.md",
       "workspaceId": "workspace_product_planning",
       "expectedEvidence": [
-        "# V2 Memory / Personal Knowledge Base Gap Companion 本 companion 解释 `v2-memory-personal-knowledge-base-gap.drawio` 的图纸口径。当前图纸用于同步 V2-1..V2-6 mock-first / controlled-boundary 实现基线，并明",
+        "# V2 Memory / Personal Knowledge Base Gap Companion 本 companion 解释 `v2-memory-personal-knowledge-base-gap.drawio` 的最新图纸口径。图纸以当前代码、active PRD、目标架构和已通过的 V2 planning-aligned evidence ",
         "Authorized active document path: docs/active/project/design/v2-memory-personal-knowledge-base-gap.md"
       ]
     },
@@ -207,7 +207,7 @@
       "redactedLocalPath": "docs/active/project/design/v2-memory-personal-knowledge-lifecycle-adr.md",
       "workspaceId": "workspace_product_planning",
       "expectedEvidence": [
-        "# ADR: V2 Memory Lifecycle, Idempotency, Permission Revoke and Forget Cascade ## Status Proposed for V2-0. Not approved for V2-1 implementation until reviewed. ## Context V2 adds p",
+        "# ADR: V2 Memory Lifecycle, Idempotency, Permission Revoke and Forget Cascade ## Status Accepted on 2026-07-15 for the V2 planning-aligned baseline and retained as a V2-PX invarian",
         "Authorized active document path: docs/active/project/design/v2-memory-personal-knowledge-lifecycle-adr.md"
       ]
     },

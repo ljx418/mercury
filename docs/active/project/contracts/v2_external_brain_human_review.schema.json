@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_human_review.schema.json",
+  "title": "V2-PX Human Product Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "status", "gateReviews", "blockingIssues", "signedClaim"],
+  "properties": {
+    "schemaVersion": {"const": "v2-external-brain-human-review/v3"},
+    "evidenceClass": {"enum": ["contract_fixture", "production_acceptance"]},
+    "status": {"enum": ["pending", "passed", "failed"]},
+    "reviewer": {"type": "string", "minLength": 1},
+    "reviewedAt": {"type": "string", "format": "date-time"},
+    "gateReviews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["G1_entry", "G2_route", "G3_lifecycle", "G4_architecture", "G5_status", "G6_ux_accessibility", "G7_evidence"],
+      "properties": {
+        "G1_entry": {"$ref": "#/$defs/ReviewItem"},
+        "G2_route": {"$ref": "#/$defs/ReviewItem"},
+        "G3_lifecycle": {"$ref": "#/$defs/ReviewItem"},
+        "G4_architecture": {"$ref": "#/$defs/ReviewItem"},
+        "G5_status": {"$ref": "#/$defs/ReviewItem"},
+        "G6_ux_accessibility": {"$ref": "#/$defs/ReviewItem"},
+        "G7_evidence": {"$ref": "#/$defs/ReviewItem"}
+      }
+    },
+    "blockingIssues": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "signedClaim": {
+      "enum": [
+        "V2-PX contract fixture review passed; not product acceptance evidence.",
+        "V2-PX External Brain Productization passed dual-container real-Chrome acceptance.",
+        "V2-PX External Brain Productization acceptance did not pass."
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "passed"}}, "required": ["status"]},
+      "then": {
+        "required": ["reviewer", "reviewedAt"],
+        "properties": {
+          "blockingIssues": {"maxItems": 0},
+          "gateReviews": {"$ref": "#/$defs/PassedGateReviews"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["pending", "failed"]}}, "required": ["status"]},
+      "then": {"properties": {"signedClaim": {"const": "V2-PX External Brain Productization acceptance did not pass."}}}
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "passed"}, "evidenceClass": {"const": "contract_fixture"}},
+        "required": ["status", "evidenceClass"]
+      },
+      "then": {"properties": {"signedClaim": {"const": "V2-PX contract fixture review passed; not product acceptance evidence."}}}
+    },
+    {
+      "if": {
+        "properties": {"status": {"const": "passed"}, "evidenceClass": {"const": "production_acceptance"}},
+        "required": ["status", "evidenceClass"]
+      },
+      "then": {"properties": {"signedClaim": {"const": "V2-PX External Brain Productization passed dual-container real-Chrome acceptance."}}}
+    }
+  ],
+  "$defs": {
+    "ReviewItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidenceArtifacts", "notes"],
+      "properties": {
+        "status": {"enum": ["pending", "passed", "failed"]},
+        "evidenceArtifacts": {"type": "array", "items": {"$ref": "#/$defs/ArtifactRef"}},
+        "notes": {"type": "string"}
+      }
+    },
+    "PassedGateReviews": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["G1_entry", "G2_route", "G3_lifecycle", "G4_architecture", "G5_status", "G6_ux_accessibility", "G7_evidence"],
+      "properties": {
+        "G1_entry": {"$ref": "#/$defs/PassedReviewItem"},
+        "G2_route": {"$ref": "#/$defs/PassedReviewItem"},
+        "G3_lifecycle": {"$ref": "#/$defs/PassedReviewItem"},
+        "G4_architecture": {"$ref": "#/$defs/PassedReviewItem"},
+        "G5_status": {"$ref": "#/$defs/PassedReviewItem"},
+        "G6_ux_accessibility": {"$ref": "#/$defs/PassedReviewItem"},
+        "G7_evidence": {"$ref": "#/$defs/PassedReviewItem"}
+      }
+    },
+    "PassedReviewItem": {
+      "allOf": [
+        {"$ref": "#/$defs/ReviewItem"},
+        {"properties": {"status": {"const": "passed"}, "evidenceArtifacts": {"minItems": 1}}}
+      ]
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    }
+  }
+}

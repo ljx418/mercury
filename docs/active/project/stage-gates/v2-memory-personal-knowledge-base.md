@@ -4,7 +4,7 @@
 
 ## 1. 允许声明
 
-当前 V2-7 证据通过后最多允许声明：
+当前 V2-7 证据已经通过，最多允许声明：
 
 ```text
 V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance.
@@ -26,7 +26,7 @@ Web Research / PPT / Deep Research ready。
 
 ```text
 Go for V2 Memory / Personal Knowledge Base implementation-baseline record through V2-6.
-Go for V2 planning-aligned local knowledge acceptance claim after V2-7 evidence passes; No-Go for V2 ready / RAG ready claims.
+V2-7 evidence passed; the active allowed claim is V2 planning-aligned local knowledge acceptance only. No-Go for V2 ready / RAG ready claims.
 ```
 
 ## 2. 阶段目标
@@ -91,17 +91,17 @@ docs/active/project/evidence/v2_memory_personal_knowledge_base/v2-7-acceptance-b
 
 ## 5. 文档与 V2-7 门禁
 
-- [ ] PRD、架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名。
-- [ ] drawio 不超过 8 页，中文书写。
-- [ ] drawio 包含目标架构与当前架构差异、开发及验收计划、项目里程碑、验收门槛及出门条件。
-- [ ] 架构图必须出现具体代码实体、状态、交互方向和分层结构。
-- [ ] data_service 只作为候选服务，不写成 Navia 已默认启用能力。
-- [ ] V2 Adapter / Governance 是唯一跨项目接入层。
-- [ ] 前端服务状态必须被规划为用户可见能力，区分 Runtime offline、Adapter degraded / blocked、data_service auth_required / unreachable / version_mismatch、source build failed / degraded / forgotten。
-- [ ] B 前端不得直接探测 data_service；状态必须经 `runtimeClient.ts` V2 knowledge section 调用 Navia Runtime `/v1/knowledge/status` 或同等 V2 Adapter 聚合接口。
-- [ ] 本地文件导入默认关闭，必须显式授权。
-- [ ] 删除 / 遗忘必须通过 before / after query 证明。
-- [ ] No-Go 覆盖 V2 ready、默认本地读取、Web Research、PPT、Deep Research、多 Agent、产品浏览器自动操作、媒体理解。
+- [x] PRD、架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名。
+- [x] drawio 不超过 8 页，中文书写。
+- [x] drawio 包含目标架构与当前架构差异、开发及验收计划、项目里程碑、验收门槛及出门条件。
+- [x] 架构图出现具体代码实体、状态、交互方向和分层结构。
+- [x] data_service 只作为候选服务，不写成 Navia 已默认启用能力。
+- [x] V2 Adapter / Governance 是唯一跨项目接入层。
+- [x] 前端服务状态被规划为用户可见能力，区分 Runtime offline、Adapter degraded / blocked、data_service auth_required / unreachable / version_mismatch、source build failed / degraded / forgotten。
+- [x] B 前端不直接探测 data_service；状态经 `runtimeClient.ts` V2 knowledge section 调用 Navia Runtime `/v1/knowledge/status` 或同等 V2 Adapter 聚合接口。
+- [x] 本地文件导入默认关闭，必须显式授权。
+- [x] 删除 / 遗忘通过 before / after query 证明。
+- [x] No-Go 覆盖 V2 ready、默认本地读取、Web Research、PPT、Deep Research、多 Agent、产品浏览器自动操作、媒体理解。
 - [x] V2-1..V2-6 子阶段 evidence 被记录为实现基线，不被误用为 V2-7 真实数据验收通过。
 - [x] V2-7 独立证据包已生成并通过；`v2-7-acceptance-blocked-audit.md` 仅作为过期阻塞记录保留。
 
@@ -129,6 +129,14 @@ V2-7 已补齐的出门证据：
 V2-7 证据通过后允许声明 `V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance`；仍不得声明 V2 implemented、V2 ready、默认本地文件读取或 RAG ready。
 
 后续 data_service 产品化适配或更完整个人知识库阶段，必须重新制定开发与验收计划，再进入代码开发；每个子阶段完成后必须有 PRD review、false-green audit 和真实数据或真实浏览器证据。
+
+当前后续产品化阶段已经独立登记为：
+
+```text
+docs/active/project/stage-gates/v2-external-brain-productization.md
+```
+
+该 stage gate 只覆盖 Side Panel Quick Surface 与 Extension Workspace Page 的双容器产品化，不重新打开 V2-7 通过结论。自动化知识维护、自动文件整理、摘要刷新、遗忘候选和 `Knowledge Dream Cycle` 仍属于 V2.x 研究路线，必须另建 stage gate；当前 Forget 继续由用户主动发起。
 
 ## 7. 出门证据
 

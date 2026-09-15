@@ -1,0 +1,9 @@
+{
+  "allowlistId": "v2-px-architecture-allowlist/v1",
+  "excludedPaths": [
+    "node_modules",
+    "dist",
+    ".output"
+  ],
+  "directRuntimeClientOnly": true
+}

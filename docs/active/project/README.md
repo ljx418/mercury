@@ -146,6 +146,37 @@ docs/active/project/evidence/v1_3_evidence_card_mindmap/false-green-audit.md
 docs/active/project/evidence/v1_3_evidence_card_mindmap/screenshots/
 ```
 
+## 独立审查归档（按阶段）
+
+只读静态审查、隔离诊断复现、文档方向复审的输出按其所属阶段归档在 evidence 目录下。审查者匿名 ID、审查日期、结论均在文首自报；本节仅作为索引，不重复结论。
+
+| 阶段 | 路径 | 性质 |
+|---|---|---|
+| V2-PX / R1 实现期 | `evidence/v2_external_brain_productization/px-5/r0-independent-review.md` | 方案级独立只读审查（R0；2 名审查者） |
+| V2-PX / R1 实现期 | `evidence/v2_external_brain_productization/px-5/r1-implementation-risk-stop-2026-09-09.md` | 主代理实现期风险与停止记录（含 R1-M1/M2/M3） |
+| V2-PX / R1 实现期 | `evidence/v2_external_brain_productization/px-5/r1-independent-audit-2026-09-09.md` | 主代理独立只读审查 + 隔离诊断（F-1..F-10；六项 Major） |
+| V2-PX / R1 实现期 | `evidence/v2_external_brain_productization/px-5/r1-backend-closure-audit-2026-09-09.md` | 用户授权"仅后端风险闭环"后的限定独立复审（103 passed；F-1..F-6 关闭） |
+| V2-PX / R1 实现期 | `evidence/v2_external_brain_productization/px-5/resumption-evidence-audit-2026-09-09.md` | PX-5 中断恢复证据复核（5 组 Major） |
+| V2-PX / T02.1 | `evidence/v2_external_brain_productization/px-5/t02.1-r2-production-input-recollection/independent-audit.md` | R2 重采的 raw/schema/collection 历史限定 PASS；T03 positive-base 资格已由后续实施期 Major 重开 |
+| V2-PX / T03 风险停止 | `evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/t03-implementation-risk-stop-durable-forget-2026-09-12.md` | 12/12 条 Forget 重开缺少 `SOURCE_NOT_FOUND` 与 Source Library recovery；T03 停止并等待 T02.2 决策 |
+| V2-PX / T02.2 | `evidence/v2_external_brain_productization/px-5/t02.2-durable-forget-recovery/independent-audit.md` | Durable Forget production-positive R2 input 限定 PASS；Fatal 0 / Major 0 / Minor 4；只允许更新 T03 实施前审计 |
+| V2-PX / T03 Status 风险停止 | `evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/t03-implementation-risk-stop-status-contract-2026-09-13.md` | T03-4 拒绝旧 T02.2 的 7 条非法 `userAction=retry`；T03-0..3 限定 PASS，后续停止 |
+| V2-PX / T02.3 自审 | `evidence/v2_external_brain_productization/px-5/t02.3-status-contract-recollection/self-audit-2026-09-14.md` | 用户授权同一代理自审；新 run 203 Status / 0 error、本地及公开包 34/34、Fatal 0 / Major 0 / Minor 1；仅放行 T03 恢复，不构成组织独立或产品签署 |
+| V2-PX / T03 offline authority 停止 | `evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/t03-implementation-risk-stop-runtime-offline-boundary-2026-09-14.md` | T03-4 检出 T02.3 offline interval 内 1 个成功 Runtime response；撤回其正基线资格，T02.4 待批准 |
+| V2-PX / T03 实现出门 | `evidence/v2_external_brain_productization/px-5/t03-r3-semantic-reporting/independent-implementation-exit-audit.md` | R3 production-candidate pipeline LIMITED PASS；Fatal 0 / Major 0 / Minor 5；Human/G7/final 仍 pending/false，只允许 T04 规划审计 |
+| V2-PX / T04 实现出门 | `evidence/v2_external_brain_productization/px-5/t04-r4-snapshot-revalidation/independent-implementation-exit-audit.md` | R4-P 确定性重放 + R4-E 全新真实 Chrome LIMITED PASS；Fatal 0 / Major 0 / Minor 1；Human/G7/final 仍 pending/false，PX-6 前须关闭 `artifactRoot` 命名 Minor |
+| V2-PX / T04.1 与 PX-6 文档冻结 | `evidence/v2_external_brain_productization/px-6/document-freeze/` | T04.1 全量重跑修复、PX-6 机器/人类/最终状态机、Schema、负例和两轮内部文档审计；代码实施仍 NO-GO |
+| V2-PX / PX6-0..5 机器出门 | `evidence/v2_external_brain_productization/px-6/implementation/independent-implementation-exit-audit.md` | 候选 `px6-machine-exit-20260914t164500z` LIMITED PASS；Fatal 0 / Major 0 / Minor 0；A15/A16、H01..H07、Human/G7/final 仍 pending，PX6-7 fail-closed |
+| V2-PX / H01-RDS 解阻 | `evidence/v2_external_brain_productization/px-6/implementation/h01-real-data-service-implementation-candidate-2026-09-15.md` | 真实 DS Runtime 候选与 B站锚点服务级复验；RDS-03/04 真实 Chrome 三入口仍 pending，不构成 H01/PX-6 PASS |
+| V2-RKM 文档方向 | `evidence/v2_real_knowledge_maintenance/rkm-doc-readiness-review-2026-09-10.md` | 外部审计包第二轮独立复审（19 项哈希、Draw.io 结构、双仓协议、阶段依赖、假绿、过度承诺） |
+| V2-RKM 文档修订 | `evidence/v2_real_knowledge_maintenance/rkm-doc-review-remediation-2026-09-10.md` | S-1..S-16逐项设计处置与保留验证义务；不改写原独立结论，不放行产品开发 |
+| V2-RKM 分阶段审查 | `evidence/v2_real_knowledge_maintenance/rkm-staged-implementation-review-2026-09-10.md` | 两组独立多轮复核、详细工作包/验收卡、未交付机器合同与剩余门槛；19文件平铺包待ClaudeCode CLI复审 |
+| V2-RKM round2原审查 | `evidence/v2_real_knowledge_maintenance/rkm-doc-readiness-review-round2-2026-09-10.md` | G-1..G-7发现与历史结论原文；错误的36项/阶段措辞由后续处置supersede |
+| V2-RKM DOC-Closure处置 | `evidence/v2_real_knowledge_maintenance/rkm-doc-readiness-round2-remediation-2026-09-10.md` | 39项封闭注册表、唯一T01..10、G-1..G-7字段闭环及三组限定范围0/0/0复核；待外部CLI审查 |
+| V2-RKM 风险再核查 | 同上文件第6节 | RC-01..04状态/调度、turn事务交接、离线撤销、Forget与恢复；图纸同步，新增修订仍待独立复审 |
+
+历史阶段（如 V1 / V1.1 / V1.2 / A-V1.2 / V1.2-AC-* / V1.3 / V1.4）的独立审计与 false-green 复审保留在各阶段 `evidence/<stage>/` 下，文件命名遵循 `<stage>-<scope>-audit.md` 或 `false-green-audit.md`。
+
 ## A 模块当前必读
 
 进入 A-V1.2 开发或审计前，至少读取：

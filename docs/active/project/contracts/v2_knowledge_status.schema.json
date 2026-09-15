@@ -3,7 +3,7 @@
   "$id": "https://navia.local/contracts/v2_knowledge_status.schema.json",
   "title": "Navia V2 Knowledge Service Status",
   "type": "object",
-  "required": ["schemaVersion", "observedAt", "runtimeStatus", "frontendInferredRuntimeStatus", "adapterStatus", "dataServiceStatus"],
+  "required": ["schemaVersion", "observedAt", "runtimeStatus", "frontendInferredRuntimeStatus", "adapterStatus", "dataServiceStatus", "sourceBuildStatus"],
   "properties": {
     "schemaVersion": { "const": "v2-knowledge-status-draft-2026-07-10" },
     "observedAt": { "type": "string", "format": "date-time" },
@@ -14,20 +14,20 @@
     },
     "runtimeStatus": {
       "description": "Returned by Runtime only when Runtime is reachable; otherwise frontendInferredRuntimeStatus is authoritative.",
-      "type": "string",
-      "enum": ["checking", "online", "offline"]
+      "type": ["string", "null"],
+      "enum": ["checking", "online", null]
     },
     "adapterStatus": {
       "type": "string",
-      "enum": ["ready", "degraded", "blocked", "not_configured"]
+      "enum": ["ready", "degraded", "blocked", "unchecked"]
     },
     "dataServiceStatus": {
       "type": "string",
-      "enum": ["unchecked", "connected", "auth_required", "unreachable", "version_mismatch", "blocked_by_policy"]
+      "enum": ["unchecked", "connected", "degraded", "auth_required", "unreachable", "version_mismatch"]
     },
     "sourceBuildStatus": {
       "type": "string",
-      "enum": ["not_saved", "queued", "ingesting", "building", "trace_ready", "degraded", "failed", "forgotten"]
+      "enum": ["not_saved", "queued", "ingesting", "building", "trace_ready", "degraded", "failed", "forgotten", "unknown"]
     },
     "capabilities": {
       "type": "object",
@@ -49,5 +49,28 @@
     "message": { "type": "string" },
     "redactionApplied": { "type": "boolean" }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"frontendInferredRuntimeStatus": {"const": "offline"}},
+        "required": ["frontendInferredRuntimeStatus"]
+      },
+      "then": {
+        "properties": {
+          "runtimeStatus": {"type": "null"},
+          "adapterStatus": {"const": "unchecked"},
+          "dataServiceStatus": {"const": "unchecked"},
+          "sourceBuildStatus": {"const": "unknown"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"frontendInferredRuntimeStatus": {"const": "online"}},
+        "required": ["frontendInferredRuntimeStatus"]
+      },
+      "then": {"properties": {"runtimeStatus": {"const": "online"}}}
+    }
+  ],
   "additionalProperties": false
 }

@@ -92,6 +92,25 @@ class DataServiceHttpClient:
             body["tags"] = tags
         return self._request("POST", "/api/workspaces", body=body)
 
+    def describe_workspace(self, *, workspace_id: str) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}",
+        )
+
+    def list_sources(self, *, workspace_id: str, limit: int = 100) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}/sources",
+            query={"limit": str(limit)},
+        )
+
+    def describe_source(self, *, workspace_id: str, source_id: str) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}/sources/{urllib.parse.quote(source_id, safe='')}",
+        )
+
     def import_text_source(self, *, workspace_id: str, title: str, content: str, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
         return self._request(
             "POST",
@@ -111,6 +130,19 @@ class DataServiceHttpClient:
         return self._request(
             "GET",
             f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}/sources/{urllib.parse.quote(source_id, safe='')}/trace",
+        )
+
+    def start_build(self, *, workspace_id: str, mode: str = "incremental") -> dict[str, Any]:
+        return self._request(
+            "POST",
+            f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}/build/start",
+            body={"mode": mode},
+        )
+
+    def build_status(self, *, workspace_id: str, operation_id: str) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            f"/api/workspaces/{urllib.parse.quote(workspace_id, safe='')}/build/operations/{urllib.parse.quote(operation_id, safe='')}",
         )
 
     def remove_source(self, *, workspace_id: str, source_id: str, reason: str = "navia_forget") -> dict[str, Any]:
@@ -189,7 +221,8 @@ class DataServiceHttpClient:
     def _raise_http_error(exc: urllib.error.HTTPError) -> None:
         if exc.code in {401, 403}:
             raise DataServiceClientError("DATA_SERVICE_AUTH_REQUIRED", "data_service requires a valid API key.", status_code=exc.code) from exc
+        if 500 <= exc.code <= 599:
+            raise DataServiceClientError("DATA_SERVICE_UNREACHABLE", "data_service is temporarily unavailable through the configured HTTP boundary.", status_code=exc.code) from exc
         if exc.code in {404, 409, 422}:
             raise DataServiceClientError("DATA_SERVICE_POLICY_BLOCKED", f"data_service rejected the request with HTTP {exc.code}.", status_code=exc.code) from exc
         raise DataServiceClientError("DATA_SERVICE_VERSION_MISMATCH", f"data_service returned HTTP {exc.code}.", status_code=exc.code) from exc
-

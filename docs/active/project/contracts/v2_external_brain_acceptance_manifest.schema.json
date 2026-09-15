@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_acceptance_manifest.schema.json",
+  "title": "V2-PX Acceptance Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "evidenceClass",
+    "acceptanceMode",
+    "sourceCorpus",
+    "scenarios"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "v2-external-brain-acceptance-manifest/v5"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidenceClass": {
+      "enum": ["contract_fixture", "production_acceptance"]
+    },
+    "acceptanceMode": {
+      "enum": ["contract_fixture", "real_chrome_dual_container"]
+    },
+    "sourceCorpus": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "$ref": "#/$defs/SourceSample"
+      }
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "$ref": "#/$defs/Scenario"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evidenceClass": {"const": "contract_fixture"}}, "required": ["evidenceClass"]},
+      "then": {"properties": {"acceptanceMode": {"const": "contract_fixture"}}}
+    },
+    {
+      "if": {"properties": {"evidenceClass": {"const": "production_acceptance"}}, "required": ["evidenceClass"]},
+      "then": {"properties": {"acceptanceMode": {"const": "real_chrome_dual_container"}}}
+    }
+  ],
+  "$defs": {
+    "SourceKind": {
+      "type": "string",
+      "enum": [
+        "real_web",
+        "explicit_local_document",
+        "note_markdown"
+      ]
+    },
+    "RouteIntent": {
+      "type": "string",
+      "enum": [
+        "source_detail",
+        "source_library",
+        "ask",
+        "graph",
+        "permissions"
+      ]
+    },
+    "FaultInjection": {
+      "type": "string",
+      "enum": [
+        "none",
+        "runtime_offline",
+        "adapter_blocked",
+        "data_service_unreachable",
+        "source_failed",
+        "source_degraded"
+      ]
+    },
+    "CoverageTag": {
+      "type": "string",
+      "enum": [
+        "entry_view_source",
+        "entry_open_workspace",
+        "entry_open_in_workspace",
+        "route_direct_open",
+        "route_reload",
+        "route_back_reopen",
+        "invalid_id_recovery",
+        "forbidden_id_recovery",
+        "cross_container_identity",
+        "tab_reuse",
+        "runtime_offline",
+        "adapter_blocked",
+        "data_service_unreachable",
+        "source_failed_or_degraded",
+        "permission_grant_revoke",
+        "forget_four_surface",
+        "responsive_sidepanel_420",
+        "responsive_sidepanel_360",
+        "responsive_workspace_1280",
+        "responsive_workspace_768",
+        "accessibility_keyboard_dialog_motion"
+      ]
+    },
+    "SourceSample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceSampleId",
+        "sourceKind",
+        "dataMode",
+        "originLabel",
+        "originRef",
+        "contentFingerprint",
+        "authorizationMode"
+      ],
+      "properties": {
+        "sourceSampleId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceKind": {
+          "$ref": "#/$defs/SourceKind"
+        },
+        "dataMode": {
+          "const": "real"
+        },
+        "originLabel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "originRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contentFingerprint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "inputMode", "artifactPath", "value"],
+          "properties": {
+            "algorithm": {"const": "sha256"},
+            "inputMode": {"const": "raw_bytes_v1"},
+            "artifactPath": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^(?!https?://)(?!file:)(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+            },
+            "value": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+          }
+        },
+        "authorizationMode": {
+          "type": "string",
+          "enum": [
+            "current_page_user_save",
+            "explicit_permission_root",
+            "user_authored"
+          ]
+        }
+      }
+    },
+    "Scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenarioId",
+        "sourceSampleIds",
+        "entryPoint",
+        "routeIntent",
+        "executionMode",
+        "viewport",
+        "coverageTags",
+        "faultInjection",
+        "expected"
+      ],
+      "properties": {
+        "scenarioId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceSampleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "entryPoint": {
+          "type": "string",
+          "enum": [
+            "view_source",
+            "open_workspace",
+            "open_in_workspace",
+            "direct_route",
+            "status_recovery",
+            "permission",
+            "forget"
+          ]
+        },
+        "routeIntent": {
+          "$ref": "#/$defs/RouteIntent"
+        },
+        "executionMode": {
+          "type": "string",
+          "enum": [
+            "contract_fixture",
+            "headless_real_chrome",
+            "visible_real_chrome"
+          ]
+        },
+        "viewport": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "width",
+            "height"
+          ],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 320
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 568
+            }
+          }
+        },
+        "coverageTags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/CoverageTag"
+          }
+        },
+        "faultInjection": {
+          "$ref": "#/$defs/FaultInjection"
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "outcome",
+            "openOutcome",
+            "routeRecoveryResult",
+            "requiresScreenshot",
+            "requiresScreenshotMetadata",
+            "requiresIdConsistency",
+            "requiresNoDuplicateIngest"
+          ],
+          "properties": {
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "pass",
+                "recoverable_error",
+                "blocked",
+                "degraded"
+              ]
+            },
+            "openOutcome": {
+              "enum": [
+                "focused_existing", "created_new", "direct_open_restored",
+                "recovered", "blocked", "not_applicable"
+              ]
+            },
+            "routeRecoveryResult": {
+              "enum": [
+                "not_applicable", "restored_direct_open", "restored_after_reload",
+                "restored_after_back", "recovered_to_library", "blocked_with_recovery_action"
+              ]
+            },
+            "requiresScreenshot": {
+              "const": true
+            },
+            "requiresScreenshotMetadata": {
+              "const": true
+            },
+            "requiresIdConsistency": {
+              "type": "boolean"
+            },
+            "requiresNoDuplicateIngest": {
+              "type": "boolean"
+            },
+            "expectedErrorCode": {
+              "type": "string",
+              "enum": [
+                "WORKSPACE_NOT_FOUND",
+                "SOURCE_NOT_FOUND",
+                "FORBIDDEN",
+                "INVALID_ROUTE",
+                "RUNTIME_OFFLINE",
+                "OPEN_WORKSPACE_FAILED"
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "expected": {
+                "properties": {"outcome": {"enum": ["recoverable_error", "blocked"]}},
+                "required": ["outcome"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "expected": {"required": ["expectedErrorCode"]}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "expected": {
+                "properties": {"outcome": {"const": "recoverable_error"}},
+                "required": ["outcome"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "expected": {
+                "properties": {
+                  "openOutcome": {"const": "recovered"},
+                  "routeRecoveryResult": {"const": "recovered_to_library"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "expected": {
+                "properties": {"outcome": {"const": "blocked"}},
+                "required": ["outcome"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "expected": {
+                "properties": {
+                  "openOutcome": {"const": "blocked"},
+                  "routeRecoveryResult": {"const": "blocked_with_recovery_action"}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

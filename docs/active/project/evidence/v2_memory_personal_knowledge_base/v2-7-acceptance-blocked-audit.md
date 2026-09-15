@@ -1,5 +1,7 @@
 # V2-7 Acceptance Blocked Audit
 
+> **SUPERSEDED EVIDENCE (2026-07-14):** 本文件只记录早期 V2-7 阻塞时点，不代表当前 active 阶段状态。后续 `sample-manifest.json`、`report.json`、`acceptance-report.html`、screenshots、PRD review 和 false-green audit 已生成并通过；当前权威口径见 `docs/active/project/01-prd.md`、`04-acceptance-plan.md` 和 `design/v2-memory-personal-knowledge-base-readiness-audit.md`。不得引用本文件声明 V2-7 当前仍阻塞。
+
 ## Stop Point
 
 V2-1 through V2-6 implementation work is complete within the currently executable, mock-first and controlled-boundary scope.
@@ -74,4 +76,3 @@ docs/active/project/evidence/v2_memory_personal_knowledge_base/screenshots/
 ```
 
 The report must validate against `docs/active/project/contracts/v2_memory_report.schema.json` and pass semantic review before the V2 acceptance claim is allowed.
-

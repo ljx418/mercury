@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_workspace_contracts.schema.json",
+  "title": "V2-PX Workspace Contracts",
+  "$defs": {
+    "WorkspaceHostStrategy": {
+      "const": "extension_workspace_page"
+    },
+    "RouteIntent": {
+      "enum": ["source_detail", "source_library", "ask", "graph", "permissions"]
+    },
+    "WorkspaceErrorCode": {
+      "enum": [
+        "WORKSPACE_NOT_FOUND",
+        "SOURCE_NOT_FOUND",
+        "FORBIDDEN",
+        "INVALID_ROUTE",
+        "RUNTIME_OFFLINE",
+        "OPEN_WORKSPACE_FAILED",
+        "UNSUPPORTED_HOST_STRATEGY"
+      ]
+    },
+    "OpenWorkspaceAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "requestId", "hostStrategy", "origin", "routeIntent", "workspaceId", "reusePolicy"],
+      "properties": {
+        "type": {"const": "OPEN_NAVIA_KNOWLEDGE_WORKSPACE"},
+        "requestId": {"type": "string", "minLength": 1},
+        "hostStrategy": {"$ref": "#/$defs/WorkspaceHostStrategy"},
+        "origin": {"enum": ["view_source", "open_workspace", "open_in_workspace"]},
+        "routeIntent": {"$ref": "#/$defs/RouteIntent"},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "operationId": {"type": "string", "minLength": 1},
+        "reusePolicy": {"const": "focus_existing_or_create"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"origin": {"const": "open_workspace"}}, "required": ["origin"]},
+          "then": {
+            "properties": {"routeIntent": {"const": "source_library"}},
+            "not": {"required": ["sourceId"]}
+          }
+        },
+        {
+          "if": {"properties": {"origin": {"const": "view_source"}}, "required": ["origin"]},
+          "then": {
+            "properties": {"routeIntent": {"const": "source_detail"}},
+            "required": ["sourceId"]
+          }
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "source_detail"}}, "required": ["routeIntent"]},
+          "then": {"required": ["sourceId"]}
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "source_library"}}, "required": ["routeIntent"]},
+          "then": {"not": {"required": ["sourceId"]}}
+        }
+      ]
+    },
+    "WorkspaceRouteState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hostStrategy", "routeIntent", "workspaceId", "resolvedPath", "recoveryState"],
+      "properties": {
+        "hostStrategy": {"$ref": "#/$defs/WorkspaceHostStrategy"},
+        "routeIntent": {"$ref": "#/$defs/RouteIntent"},
+        "workspaceId": {"type": "string", "minLength": 1},
+        "sourceId": {"type": "string", "minLength": 1},
+        "operationId": {"type": "string", "minLength": 1},
+        "resolvedPath": {"type": "string", "minLength": 1},
+        "recoveryState": {"enum": ["loading", "ready", "recoverable_error", "blocked"]},
+        "errorCode": {"$ref": "#/$defs/WorkspaceErrorCode"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"routeIntent": {"const": "source_library"}}, "required": ["routeIntent"]},
+          "then": {
+            "properties": {"resolvedPath": {"pattern": "^#/knowledge/sources\\?workspaceId=[^&#]+$"}},
+            "not": {"required": ["sourceId"]}
+          }
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "source_detail"}}, "required": ["routeIntent"]},
+          "then": {
+            "required": ["sourceId"],
+            "properties": {"resolvedPath": {"pattern": "^#/knowledge/sources/[^/?#]+\\?workspaceId=[^&#]+$"}}
+          }
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "ask"}}, "required": ["routeIntent"]},
+          "then": {"properties": {"resolvedPath": {"pattern": "^#/knowledge/ask\\?workspaceId=[^&#]+$"}}}
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "graph"}}, "required": ["routeIntent"]},
+          "then": {"properties": {"resolvedPath": {"pattern": "^#/knowledge/graph\\?workspaceId=[^&#]+$"}}}
+        },
+        {
+          "if": {"properties": {"routeIntent": {"const": "permissions"}}, "required": ["routeIntent"]},
+          "then": {"properties": {"resolvedPath": {"pattern": "^#/knowledge/settings/permissions\\?workspaceId=[^&#]+$"}}}
+        },
+        {
+          "if": {"properties": {"recoveryState": {"enum": ["recoverable_error", "blocked"]}}, "required": ["recoveryState"]},
+          "then": {"required": ["errorCode"]}
+        },
+        {
+          "if": {"properties": {"recoveryState": {"enum": ["loading", "ready"]}}, "required": ["recoveryState"]},
+          "then": {"not": {"required": ["errorCode"]}}
+        }
+      ]
+    },
+    "WorkspaceOpenResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestId", "hostStrategy", "outcome"],
+      "properties": {
+        "requestId": {"type": "string", "minLength": 1},
+        "hostStrategy": {"$ref": "#/$defs/WorkspaceHostStrategy"},
+        "outcome": {"enum": ["focused_existing", "created_new", "recoverable_error", "blocked"]},
+        "tabId": {"type": "integer", "minimum": 0},
+        "workspaceUrl": {
+          "type": "string",
+          "pattern": "^chrome-extension://[^/]+/workspace\\.html#/knowledge/"
+        },
+        "errorCode": {"$ref": "#/$defs/WorkspaceErrorCode"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"outcome": {"enum": ["focused_existing", "created_new"]}}, "required": ["outcome"]},
+          "then": {
+            "required": ["tabId", "workspaceUrl"],
+            "not": {"required": ["errorCode"]}
+          }
+        },
+        {
+          "if": {"properties": {"outcome": {"enum": ["recoverable_error", "blocked"]}}, "required": ["outcome"]},
+          "then": {
+            "required": ["errorCode"],
+            "not": {"anyOf": [{"required": ["tabId"]}, {"required": ["workspaceUrl"]}]}
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {"$ref": "#/$defs/OpenWorkspaceAction"},
+    {"$ref": "#/$defs/WorkspaceRouteState"},
+    {"$ref": "#/$defs/WorkspaceOpenResult"}
+  ]
+}

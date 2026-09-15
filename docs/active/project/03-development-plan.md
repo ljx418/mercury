@@ -1,5 +1,17 @@
 # Navia / 伴航 V1 开发计划大纲
 
+> 2026-09-14 V2-PX 当前状态：T02.5 是唯一生产正输入；T03 R3 与 T04 R4 均已取得独立实现出门限定通过。T04 独立审计为 Fatal 0/Major 0/Minor 1。当前已完成 T04.1 全量重跑修复文档与 PX-6 machine/human/final 两阶段文档、Schema 和负例候选；外部文档审查及用户另行代码授权前不得实施。Human Review、G7、final 仍 pending/pending/false，PX-5/PX-6/RKM 均未通过。
+
+> 2026-09-10 `DOC-Closure`：当前只允许细化D01..D09需求和验收义务，不表示T05/RKM-0已开始。T01..T04仅原PX修复，完成PX-6、获得用户代码批准且T05实施前审计Fatal=0/Major=0后，才实施T05..T10 RKM增量；不允许从文档阶段分叉并行实施。RKM-1保留真实DS协议spike但不冒充UI E2E；T04/T10独立审查者轮换、证据目录隔离，见详细开发计划5。
+
+> 2026-09-09 新增V2-RKM文档规划：先完成原R1->R2->R3->R4->PX-6，再RKM-0合同/原型、RKM-1真实适配、RKM-2持久问答、RKM-3对话记忆、RKM-4可逆维护、RKM-5全量出门。DOC-Closure及实施任务T01..10的目标体验见 [详细开发计划](design/v2-real-knowledge-maintenance-development-plan.md)。R1仅后端限定通过；当前用户只批准文档，不批准生产开发或云调用。
+
+> 2026-09-10风险再核查：RC-01..04补齐维护运行/日程、turn事务outbox/授权游标、离线撤销控制面、Forget与restore/备份优先级。T05先冻结合同和故障负例，T07..09按详细计划分别实现，T10全量重跑；当前不执行代码、迁移或模型调用。
+
+> 本轮多轮独立审查：RKM详细开发6已拆T01..10及D01..09；验收9逐卡AC01..10对应。原PX卡不依赖后续RKM合同，T05产出合同而非先验要求产物；后续阶段依赖实际冻结版本。顶层必需断言固定39条（S01..14、S-01..16、RC六条、IR三条），G-1..G-7均在合同/ADR/验收中给出确定性处置；用户只批准文档。
+
+> 2026-09-09 当前PX修复顺序：R0合同审计 -> R1 Runtime权限/前端 -> R2原始证据 -> R3共享校验 -> R4隔离快照复验 -> PX-6人工。每步独立记录验收与PRD检视，不跨越未关闭Major。执行细则见 [修复执行合同](design/v2-px-5-repair-execution-contract.md)。用户已批准此计划，尚未验收完成。
+
 版本：V1.0 Development Plan Baseline
 日期：2026-05-31
 
@@ -1920,7 +1932,7 @@ V2-DOC-5：文档审计，确认无 fatal / major 规格偏差后，才能进入
 
 ```text
 Go for V2 Memory / Personal Knowledge Base implementation-baseline record through V2-6.
-Go for V2 planning-aligned local knowledge acceptance claim after V2-7 evidence passes; No-Go for V2 ready / RAG ready claims.
+V2-7 evidence passed; the active allowed claim is V2 planning-aligned local knowledge acceptance only. No-Go for V2 ready / RAG ready claims.
 ```
 
 V2 实现阶段状态：
@@ -1999,6 +2011,79 @@ docs/active/project/design/v2-memory-personal-knowledge-base-readiness-audit.md
 docs/active/project/design/v2-memory-personal-knowledge-prototype-review/index.html
 ```
 
+### 17.1 V2-PX External Brain Productization 开发计划
+
+V2-PX 只负责把已通过 planning-aligned acceptance 的 V2 Knowledge 能力形成可发现、可路由、可恢复的双容器产品体验。路线 A `Extension Workspace Page` 已冻结，PX-0..PX-4 已通过各自门禁；PX-5 因证据假绿被重新打开。当前 T02.2 输入已限定通过，下一项是 T03/R3 共享 semantic/AST 校验与纯报告流水线。路线 A/B 决策仍由 `design/v2-external-brain-workspace-hosting-adr.md` 约束，T03 不改变产品宿主或 public API。
+
+| 子阶段 | 开发内容 | 开发前门禁 | 子阶段 E2E / PRD 检视 |
+|---|---|---|---|
+| `PX-0` | 冻结双容器、三个入口、Workspace route、`OpenWorkspaceAction`、验收 schema 和 semantic validator | PRD / 架构 / stage gate / drawio / 原型一致；合同 schema 可解析 | 外部挑战审计后重开为 PX-0.1，旧 PASS 结论废止 |
+| `PX-0.1` | 同步 V2-7 完成态；修复原型 route/Back/Forget/a11y；冻结生命周期；收紧首批 Workspace/Report/截图合同和负向夹具 | 初版四份 schema、canonical route、逐容器 ID、before/after、artifact existence 和 summary 规则 | 历史第二轮外部审计发现 5 个 Major；本阶段未通过，转入 PX-0.1b |
+| `PX-0.1b` | 修复外部审计的 lifecycle、source identity、scenario-aware observation、prior context/tab reuse、结构化 G4/G6/G7、可执行夹具和完整审计包问题 | Manifest v5、Report v12、Screenshot v6、Execution Observation v6、Human Review v3、63 条 RuleId、109 个 RFC 6902 case、自包含原型、durable Forget 和确定性 Gate 算法一致 | 完整包经独立复审无 fatal / major；否则 PX-0.2 No-Go |
+| `PX-0.2` | 实现 semantic validator 命令、summary/G1-G7 重算、artifact/hash 检查和 RFC 6902 正负测试 runner | PX-0.1b 九份机器合同、Gate 算法、完整审计包和 fixture suite 经独立复审无 fatal / major | validator 与全部失败码通过；否则 PX-1 No-Go |
+| `PX-1` | 先完成 WXT / Manifest V3 / CSP entrypoint spike，再新增 Extension Workspace entrypoint、router、直接打开 / 刷新 / Back / 重开 / 无效 ID 恢复 | 路线 A ADR、五类 route、extension permission 和回退条件审计闭环 | spike 六项事实、route component tests、真实扩展页面截图、PRD route review；失败则打回 PX-0，不静默切路线 B |
+| `PX-2` | Side Panel 改为 Quick Surface，增加查看来源、打开工作台、在工作台中打开 | 420 / 360 UX 验收标准和入口文案冻结 | 三入口实际可点击；窄侧栏无遮挡；PRD 入口 review |
+| `PX-3` | Background `OpenWorkspaceAction`、标签页复用、稳定 ID 交接、poll / reconnect | message / route 合同、非法 ID、重复打开与恢复语义闭环 | Side Panel / Workspace ID 一致；重复点击不重复 ingest；PRD 生命周期 review |
+| `PX-4` | 宽屏 Workspace 组件拆分与产品化 | 组件责任、事实来源、键盘 / dialog / responsive 标准冻结 | Sources / Ask / Trace / Graph / Permission / Forget 真实数据交互截图；PRD UX review |
+| `PX-5` | 按 T01→T02.x→T03→T04→T04.1 修复真实 Chrome 原始证据、共享验证、隔离重放与 root 一致性 | 前一 T 阶段限定 PASS；每条 candidate 单一 sealed run；不跨 run 拼接 | T03/T04 已限定通过；T04.1 必须新 run 全量重跑并独立审计 Fatal 0/Major 0 |
+| `PX-6` | PX6-0..5 重算机器出门包，PX6-6 真实人类可见 Chrome 审查，PX6-7 最终化 | T04.1 artifactRoot closed；PX-6 文档外审和用户授权 | A01..A16、H01..H07、G1..G7 全绿且最终独立审计 Fatal 0/Major 0 后才允许有限声明 |
+
+固定开发顺序为 `PX-0 -> PX-0.1 -> PX-0.1b -> PX-0.2 -> PX-1 -> PX-2 -> PX-3 -> PX-4 -> PX-5 -> PX-6`。PX-0.1b 未通过独立复审时不得进入 PX-0.2；PX-0.2 未通过可执行负向测试时不得进入 PX-1。每个子阶段必须先单独落盘 development / acceptance plan 和审计意见；失败时回到该子阶段计划，不得用后续截图掩盖前序合同或路由失败。
+
+PX-5 内部修复严格为 `T01 -> T02.x -> T03 -> T04 -> T04.1 -> PX-6`。T03/T04 目标实体已在限定范围实现并通过独立审查。T04.1 不允许局部补 JSON：它保留 T03 原始 `validation_run` InvocationRecord 用于确定性比较，另生成 `replay_validation`-only resolved InvocationRecord 供 PX-6 解析，并在新空目录完整执行 R4-P/R4-E/T02/T03/T04，重新生成 unsigned ExitManifest 和独立审计。随后 PX6-0..5 只生成 machine-only package 并停止；PX6-6 等待真实人类提交；PX6-7 才允许最终化。
+
+目标实现位置：
+
+```text
+apps/chrome-extension/entrypoints/background/index.ts
+apps/chrome-extension/entrypoints/sidepanel/main.tsx
+apps/chrome-extension/entrypoints/workspace/index.html
+apps/chrome-extension/entrypoints/workspace/main.tsx
+apps/chrome-extension/entrypoints/workspace/style.css
+apps/chrome-extension/src/runtimeClient.ts
+apps/chrome-extension/src/modules/knowledge_workspace/WorkspaceRouter.tsx
+apps/chrome-extension/src/modules/knowledge_workspace/*Panel.tsx
+apps/chrome-extension/src/modules/knowledge_workspace/*Drawer.tsx
+apps/chrome-extension/src/modules/knowledge_workspace/*Dialog.tsx
+apps/chrome-extension/e2e/*v2-external-brain-productization*
+docs/active/project/evidence/v2_external_brain_productization/
+```
+
+历史 PX-5 package scripts 已由 T01..T04 分阶段入口取代，不得重新运行旧 generator/validator 覆盖候选。未来授权后的唯一顺序入口为：
+
+```text
+pnpm --dir apps/chrome-extension exec node e2e/run-v2-px-r4-snapshot-revalidation.mjs \
+  --input-manifest <absolute-t04.1-input> --output-root <new-empty-t04.1-root>
+
+pnpm --dir apps/chrome-extension exec node e2e/run-v2-px-6-exit-audit.mjs \
+  --candidate-binding <absolute-json> --output-root <new-empty-px6-root>
+
+pnpm --dir apps/chrome-extension exec node e2e/run-v2-px-6-exit-audit.mjs \
+  --candidate-binding <absolute-json> --output-root <existing-waiting-px6-root> \
+  --review-submission <human-authored-absolute-json>
+```
+
+第一条当前已有 T04 实现，但 T04.1 重跑未授权；后两条是 PX-6 待新增入口，当前不存在也不得提前运行。每个入口必须记录 argv、cwd、允许环境、exit result、带 SHA-256 的 stdout/stderr 和结构化 InvocationRecord；计划命令不能写成已通过。
+
+V2-PX 实现不得修改 A Page Reading、C Mindmap 或 data_service 内部仓库，也不得为了打开 Workspace 新增 Runtime 平行事实接口。若确需公共合同变更，必须打回 PX-0。
+
+### 17.2 V2.x Knowledge Dream Cycle 自动化知识维护后续开发路线
+
+该路线当前只完成问题、边界和候选架构登记，不满足实际开发门禁，也不属于 PX-0..PX-6。未来建议顺序：
+
+```text
+KM-0 开源方案 spike、隐私威胁模型和用户研究
+KM-1 KnowledgeMaintenancePolicy / MaintenanceRun 合同与状态机
+KM-2 suggest-only duplicate / stale / organization proposals
+KM-3 evidence-grounded SummaryRevision 与冲突保留
+KM-4 Knowledge Maintenance Inbox、批量审查与“永不再建议”
+KM-5 archive / quarantine / restore 可逆生命周期
+KM-6 高风险 opt-in forget、物理文件操作沙箱和安全审计
+KM-7 真实数据质量、false-forget、恢复和无越权验收
+```
+
+进入 KM-1 前必须先完成人类对 KM-0 技术路线的选择。当前不得直接开发自动遗忘或宿主文件移动，也不得把候选开源项目视为已选依赖。
+
 ## 18. V3 Media Companion 文档与后续开发计划
 
 当前只执行 V3 文档开发，不进入实际代码开发。V3 的目标是把 Navia 从当前网页伴读扩展为视频页伴随理解，体验参考 Monica 在 YouTube 的视频总结 / Ask Video / Mindmap，以及 B站 AI 视频总结账号和工具中常见的视频省流总结、章节大纲、视频导图、字幕搜索、时间戳跳转和截图证据。
@@ -2008,8 +2093,8 @@ docs/active/project/design/v2-memory-personal-knowledge-prototype-review/index.h
 ```text
 V3-DOC-0：文档门禁，补齐 PRD、目标架构、开发计划、验收计划、stage gate、gap companion 和 drawio。
 V3-DOC-1：竞品和目标体验冻结，明确 Monica-like YouTube 体验、B站 AI 视频总结体验、视频概览图、Media Mindmap、截图证据和视频反跳。
-V3-DOC-2：V3.0 Transcript-first 范围冻结，明确 YouTube+B站、字幕 / 转录 / 简介 / 评论 / 弹幕 / metadata / 时间戳 / 截图证据。
-V3-DOC-3：V3.x Multimodal 路线冻结，规划 ASR、VLM、OCR、Gemini Video、live input、采样、隐私、成本、延迟和治理。
+V3-DOC-2（历史基线）：原 V3.0 Transcript-first 与 YouTube+B站并行范围已由 §18.1 的 B站优先 B0..B6 替代。
+V3-DOC-3（修订后）：V3.x 规划通用/云端 ASR、VLM、OCR、Gemini Video、live input、采样、隐私、成本、延迟和治理；显式当前标签页音频到本地 ASR 属于 V3-B3，不再延后。
 V3-DOC-4：验收矩阵和 false-green 防线冻结，定义真实样本、degraded / blocked、timestamp jumpback、截图证据和 HTML 报告。
 V3-DOC-5：文档审计，确认无 fatal / major 规格偏差后，才能进入未来 V3.0 实现规划。
 ```
@@ -2025,7 +2110,7 @@ V3-DOC-5：文档审计，确认无 fatal / major 规格偏差后，才能进入
 | `V3.0-4` | C Media Mindmap | 生成章节图、主题图、事件 / 论点 / 结论节点，并绑定 timeline source refs |
 | `V3.0-5` | B Media Companion Renderer | 展示视频概览卡、章节时间轴、Media Mindmap、截图证据卡、Ask Video 问答 |
 | `V3.0-6` | Media Jumpback | 节点 / 证据卡点击后 seek 到时间点；失败时 fallback / blocked 可见 |
-| `V3.0-7` | 真实 YouTube+B站验收 | 24 页矩阵、HTML 报告、截图、PRD review、false-green audit 无 fatal / major |
+| `V3.0-7` | 历史联合验收设想 | 已由 `V3-B6` 的 B站 12 页固定分母替代；YouTube 作为 `V3-Y1` 后续映射，不参与首轮出门 |
 
 用户目标体验：
 
@@ -2039,7 +2124,7 @@ V3-DOC-5：文档审计，确认无 fatal / major 规格偏差后，才能进入
 
 - V3-DOC-0 若 active PRD、架构、开发计划、验收计划、stage gate、drawio 名称或范围不一致，打回文档门禁。
 - V3-DOC-1 若竞品对标只写抽象口号，没有映射到 Monica-like YouTube 体验和 B站 AI 视频总结体验，打回目标体验。
-- V3-DOC-2 若 V3.0 混入 ASR/VLM/Gemini Video 真实交付承诺，打回范围冻结。
+- V3-DOC-2 若 V3.0 混入通用/云端 ASR、VLM 或 Gemini Video 真实交付承诺，打回范围冻结；显式当前标签页音频到本地 ASR 是已冻结例外。
 - V3-DOC-3 若多模态路线缺少用户授权、隐私、采样、成本、延迟、EventStore / Trace 和 false-green 防线，打回架构规划。
 - V3-DOC-4 若验收无法区分 timestamp seek、screenshot evidence、fallback 和 blocked，打回验收计划。
 - V3-DOC-5 若仍存在“完整 Monica-like parity complete”“真实视频画面已理解”“直播理解 ready”等过度声明，打回审计。
@@ -2053,7 +2138,7 @@ V3 Media Companion planning baseline ready for review.
 未来 V3.0 完成后最多允许声明：
 
 ```text
-V3.0 transcript-first video companion passed YouTube and Bilibili planning-aligned acceptance.
+V3.0 Bilibili-first video companion passed the frozen 12-page production acceptance.
 ```
 
 当前实现基线不得声明：
@@ -2062,7 +2147,7 @@ V3.0 transcript-first video companion passed YouTube and Bilibili planning-align
 V3.0 implemented.
 完整 Monica-like YouTube parity complete。
 真实视频画面 / 音频已被理解。
-ASR / VLM / OCR / Gemini Video ready。
+通用/云端 ASR / VLM / OCR / Gemini Video ready；显式本地 ASR fallback 除外。
 直播实时理解 ready。
 跨视频知识库 / RAG ready。
 ```
@@ -2076,3 +2161,37 @@ docs/active/project/design/v3-media-companion-gap.drawio
 docs/active/project/design/v3-media-companion-development-acceptance-plan.md
 docs/active/project/design/v3-media-companion-readiness-audit.md
 ```
+
+### 18.1 修订后的 B站优先实施顺序
+
+原 `V3.0-1..7` 被下列更具体工作包 supersede；YouTube 只能在 B站锚点通过后复用已冻结合同，不得与首轮并行扩大范围。
+
+| 子阶段 | 开发实体 | 验收和停止条件 |
+|---|---|---|
+| `V3-B0` | 冻结 BiliNote 研究决定、B站合同、H01-RDS 依赖和首个 BV | 文档/Draw.io/合同审计 Fatal=0、Major=0 |
+| `V3-B1` | `BilibiliMediaCollector`、`MediaPageContext` | 真实 BV1ZpYd66ELP 得到正确 bvid/cid/时长/单P/字幕不可用；不得仅用 fixture |
+| `V3-B2` | 页内字幕 resolver、字幕 hash 和 degraded UI | 至少 6 个有字幕 B站样本；无字幕样本不能生成大纲 |
+| `V3-B3` | `MediaCaptureController`、`MediaCaptureGrant`、`LocalAsrAdapter`、`MediaIngestRun` | 指定 BV 真实标签页音频本地转写；取消/关页/Runtime 离线均清理；无自动下载请求 |
+| `V3-B4` | A `VideoOutline`、`TimelineSegment`、C `MediaMindmapProjection` | 同一强类型对象派生图文与导图；节点证据覆盖率达门槛 |
+| `V3-B5` | B `MediaCompanionRenderer`、`MediaJumpbackController` | Side Panel 420/360、Workspace 768/1280；时间跳转、fallback、键盘和 Axe 通过 |
+| `V3-B6` | 真实 B站矩阵、持久化和出门报告 | 12 个 B站页；指定 BV 必须走 ASR 成功；H01-RDS 真实保存通过；独立审计 0 Fatal/0 Major |
+| `V3-Y1` | YouTube collector mapping | 复用 `MediaPageContext/VideoOutline`，不得另造平行协议 |
+
+每个子阶段开始前必须单独落盘开发计划、验收计划和实施前审计；每个子阶段完成后必须保存真实 Chrome 证据、PRD review 和 false-green audit。B3、B6 涉及音频授权与真实数据服务，属于高风险人类确认点。
+
+### 18.2 H01-RDS 解阻先于 V3-B1
+
+执行顺序固定为：
+
+```text
+PX-6 旧机器候选保持只读
+-> H01-RDS Runtime adapter 修复与服务级验收（已完成候选）
+-> 人类在真实 Chrome 完成 RDS-03/04 并重新执行 H01
+-> V3-B0 文档/合同出门
+-> V3-B1..B6
+-> V3-Y1
+```
+
+不得把已通过的 Mock PX 路径改名为 real adapter；不得跨 Mock/real 两个 run 拼接 H01 或 V3 production evidence。
+
+当前停点：H01-RDS 服务级候选已完成；V3-B0 文档已冻结并通过内部静态检查，但外部文档审查与用户代码授权尚未完成。不得越过 H01 三入口人工证据直接进入 V3-B1。

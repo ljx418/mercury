@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "v2-px-5-automated-gates/v1",
+  "generatedAt": "2026-09-09",
+  "automatedCandidatePassed": false,
+  "gateResults": {
+    "G1_entry": false,
+    "G2_route": false,
+    "G3_lifecycle": false,
+    "G4_architecture": false,
+    "G5_status": false,
+    "G6_ux_accessibility": false,
+    "G7_evidence": false
+  },
+  "humanReviewStatus": "pending",
+  "finalReportPassed": false,
+  "sourceReport": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/report.json",
+    "sha256": "4d0de888843bdf0bda5fb62edd491f725dc9c01a8534684328af7adebb65b859"
+  },
+  "counts": {
+    "schemas": 9,
+    "schemaInstances": 82,
+    "sources": 12,
+    "scenarios": 39,
+    "screenshots": 39,
+    "executionObservations": 39,
+    "architectureFiles": 26,
+    "architectureViolations": 0
+  },
+  "issues": [
+    "M1: generated identities, trusted gestures and Runtime fingerprints lack corresponding raw observations",
+    "M2: source/screenshot identity and actual host-page entry are not proven",
+    "M3: Permission/Forget/UX outcomes contain hardcoded success values",
+    "M4: production validation does not enforce the frozen semantic and architecture rules",
+    "M5: fixture results and generated assertions were used as production acceptance proof"
+  ],
+  "supersededBy": "docs/active/project/evidence/v2_external_brain_productization/px-5/acceptance-disposition.json",
+  "status": "BLOCKED_BY_PX5_MAJOR",
+  "gateInterpretation": "false means unproven after evidence retraction; not a newly executed functional failure"
+}

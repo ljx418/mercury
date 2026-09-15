@@ -176,7 +176,7 @@ def test_piagent_provider_shell_returns_recoverable_error_when_sidecar_unavailab
         )
     )
     assert events[0].type == "error"
-    assert events[0].data["code"] == "piagent_unavailable"
+    assert events[0].data["code"] == "piagent_sidecar_unavailable"
     assert events[0].data["recoverable"] is True
 
 

@@ -66,19 +66,30 @@
     },
     "AdapterStatus": {
       "type": "string",
-      "enum": ["ready", "degraded", "blocked", "not_configured"]
+      "enum": ["ready", "degraded", "blocked", "unchecked"]
     },
     "DataServiceStatus": {
       "type": "string",
-      "enum": ["unchecked", "connected", "auth_required", "unreachable", "version_mismatch", "blocked_by_policy"]
+      "enum": ["unchecked", "connected", "degraded", "auth_required", "unreachable", "version_mismatch"]
     },
     "SourceBuildStatus": {
       "type": "string",
-      "enum": ["not_saved", "queued", "ingesting", "building", "trace_ready", "degraded", "failed", "forgotten"]
+      "enum": ["not_saved", "queued", "ingesting", "building", "trace_ready", "degraded", "failed", "forgotten", "unknown"]
     },
     "SourceType": {
       "type": "string",
       "enum": ["web_page", "authorized_local_document", "note", "markdown", "pdf", "other_supported_source"]
+    },
+    "ContentSnapshot": {
+      "type": "object",
+      "required": ["encoding", "text", "byteLength", "sha256"],
+      "properties": {
+        "encoding": { "const": "utf8" },
+        "text": { "type": "string", "minLength": 1, "maxLength": 5242880 },
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 5242880 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
     },
     "Workspace": {
       "type": "object",
@@ -107,6 +118,8 @@
         "pageId": { "$ref": "#/$defs/Id" },
         "artifactIds": { "type": "array", "items": { "$ref": "#/$defs/Id" }, "uniqueItems": true },
         "sourceRefs": { "type": "array", "items": { "$ref": "#/$defs/EvidenceRef" }, "minItems": 1 },
+        "contentSnapshot": { "$ref": "#/$defs/ContentSnapshot" },
+        "permissionRootId": { "$ref": "#/$defs/Id" },
         "idempotencyKey": { "type": "string", "minLength": 8, "maxLength": 160 },
         "createdAt": { "$ref": "#/$defs/Timestamp" }
       },
@@ -125,6 +138,8 @@
         "revision": { "type": "integer", "minimum": 1 },
         "operationId": { "$ref": "#/$defs/Id" },
         "evidenceRefs": { "type": "array", "items": { "$ref": "#/$defs/EvidenceRef" } },
+        "contentSnapshot": { "$ref": "#/$defs/ContentSnapshot" },
+        "permissionRootId": { "$ref": "#/$defs/Id" },
         "degradedReason": { "type": "string" },
         "createdAt": { "$ref": "#/$defs/Timestamp" },
         "updatedAt": { "$ref": "#/$defs/Timestamp" }

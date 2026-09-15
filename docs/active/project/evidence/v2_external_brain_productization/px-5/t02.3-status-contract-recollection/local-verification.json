@@ -1,0 +1,833 @@
+{
+  "checks": [
+    {
+      "id": "T02-A01-schema-meta",
+      "observed": "PASS",
+      "passed": true,
+      "requirement": "Draft 2020-12 schema meta-validation"
+    },
+    {
+      "id": "T02-A01-schema-instance",
+      "observed": [],
+      "passed": true,
+      "requirement": "sealed raw run validates against its captured schema"
+    },
+    {
+      "id": "T02-A01-collector-invariants",
+      "observed": {
+        "errors": [],
+        "exitCode": 0
+      },
+      "passed": true,
+      "requirement": "captured collector validateRawRun returns no invariant errors"
+    },
+    {
+      "id": "T02-A02-captured-inputs",
+      "observed": {
+        "references": {
+          "buildIndex": true,
+          "collectorImplementation": true,
+          "rawSchemaArtifact": true
+        },
+        "snapshotCommit": "98d3a8be12cd168d10993e996a95e1e11e59c184"
+      },
+      "passed": true,
+      "requirement": "snapshot/build/collector/schema references bind captured bytes"
+    },
+    {
+      "id": "T02-A02-build-index",
+      "observed": {
+        "actualFiles": 91,
+        "errors": [],
+        "indexedFiles": 91
+      },
+      "passed": true,
+      "requirement": "all fresh extension build files match path/mode/length/hash index"
+    },
+    {
+      "id": "T02-A10-artifact-index",
+      "observed": {
+        "duplicatePaths": [],
+        "index": 1158,
+        "raw": 1158
+      },
+      "passed": true,
+      "requirement": "raw artifacts equal the authoritative index and paths are unique"
+    },
+    {
+      "id": "T02-A10-artifact-bytes",
+      "observed": {
+        "errors": [],
+        "mode": "local-complete-run",
+        "privateLocalOnly": 6,
+        "public": 1152,
+        "publicBytes": 13300203
+      },
+      "passed": true,
+      "requirement": "every allowed artifact path has matching length/hash and public/private classification without shrinking the accepted public baseline"
+    },
+    {
+      "id": "T02-A10-artifact-references",
+      "observed": [],
+      "passed": true,
+      "requirement": "all event artifact references resolve to the authoritative artifact index"
+    },
+    {
+      "id": "T02.1-A01-current-seal",
+      "observed": {
+        "artifacts": 1158,
+        "events": 1375,
+        "rawSha256": "7fd641697f508c9e9fb81ab2d3af8a1248b1df61e90c83346617f9b2596266a1",
+        "recomputedSeal": "430207668675497c9a9d5b22f8539ae66537c72a172ed35d18fafe8e28ba8270",
+        "runId": "t02-r2-status-contract-production-input-20260914T001017",
+        "sealSha256": "430207668675497c9a9d5b22f8539ae66537c72a172ed35d18fafe8e28ba8270",
+        "snapshotCommit": "98d3a8be12cd168d10993e996a95e1e11e59c184"
+      },
+      "passed": true,
+      "requirement": "new run identity, raw bytes, canonical seal and counts are immutable"
+    },
+    {
+      "id": "T02.1-A01-old-run-immutable",
+      "observed": {
+        "rawExists": true,
+        "rawSha256": "d0309d8bc946229fcef3862508648cef295cf3f124a758be9d3636b8e2eb107d",
+        "sealSha256": "50489670ce76462105bb923b8b90044f9e3075f225941af5103911208b560624"
+      },
+      "passed": true,
+      "requirement": "previous accepted T02 raw run remains byte-identical and separate"
+    },
+    {
+      "id": "T02.1-A01-no-cross-run-reference",
+      "observed": {
+        "oldRunIdOccurrences": 0
+      },
+      "passed": true,
+      "requirement": "new sealed raw run contains no old run identifier or cross-run merge"
+    },
+    {
+      "id": "T02-A03-event-order",
+      "observed": {
+        "eventKinds": {
+          "background_request": 7,
+          "background_response": 7,
+          "command_result": 9,
+          "container_observation": 63,
+          "dom_action": 21,
+          "fault_end": 4,
+          "fault_start": 4,
+          "navigation_start": 73,
+          "route_observation": 63,
+          "runtime_request": 557,
+          "runtime_response": 540,
+          "screenshot": 10,
+          "transport_failure": 17
+        },
+        "events": 1375
+      },
+      "passed": true,
+      "requirement": "events have unique IDs, current run ID and contiguous collector sequence"
+    },
+    {
+      "id": "T02-A03-segments",
+      "observed": {
+        "distinct": {
+          "browserContextId": 2,
+          "runtimePid": 2,
+          "runtimeSessionId": 2,
+          "segmentId": 2
+        },
+        "ranges": [
+          [
+            1,
+            1370
+          ],
+          [
+            1371,
+            1375
+          ]
+        ]
+      },
+      "passed": true,
+      "requirement": "two complete segments prove a distinct Runtime restart authority"
+    },
+    {
+      "id": "T02-A06-exact-one-terminal",
+      "observed": {
+        "backgroundRequests": 7,
+        "backgroundResponses": 7,
+        "errors": [],
+        "orphans": [],
+        "runtimeRequests": 557,
+        "runtimeResponses": 540,
+        "transportFailures": 17
+      },
+      "passed": true,
+      "requirement": "every Background/Runtime request has exactly one linked terminal outcome"
+    },
+    {
+      "id": "T02.1-A03-trusted-entries",
+      "observed": {
+        "invalidChains": [],
+        "origins": {
+          "open_in_workspace": 2,
+          "open_workspace": 2,
+          "view_source": 3
+        }
+      },
+      "passed": true,
+      "requirement": "three production entry origins meet counts and trusted action/background/route chains"
+    },
+    {
+      "id": "T02-A05-runtime-authority",
+      "observed": [],
+      "passed": true,
+      "requirement": "route/container stable IDs are linked to prior same-navigation Runtime authority"
+    },
+    {
+      "id": "T02.1-A05-route-matrix",
+      "observed": {
+        "ask": [
+          "back",
+          "direct_open",
+          "push",
+          "reload",
+          "reopen"
+        ],
+        "graph": [
+          "back",
+          "direct_open",
+          "reload",
+          "reopen"
+        ],
+        "permissions": [
+          "back",
+          "direct_open",
+          "reload",
+          "reopen"
+        ],
+        "source_detail": [
+          "back",
+          "direct_open",
+          "push",
+          "reload",
+          "reopen"
+        ],
+        "source_library": [
+          "back",
+          "direct_open",
+          "push",
+          "recovery",
+          "reload",
+          "reopen"
+        ]
+      },
+      "passed": true,
+      "requirement": "five canonical routes each have direct-open/reload/Back/reopen observations"
+    },
+    {
+      "id": "T02.1-A06-route-recovery",
+      "observed": {
+        "errors": [
+          [
+            "scenario_route_error_invalid",
+            "INVALID_ROUTE"
+          ],
+          [
+            "scenario_route_error_workspace_missing",
+            "WORKSPACE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_1_direct_open",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_1_reload",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_1_back",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_1_reopen",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_2_direct_open",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_2_reload",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_2_back",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_2_reopen",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_3_direct_open",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_3_reload",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_3_back",
+            "SOURCE_NOT_FOUND"
+          ],
+          [
+            "scenario_forget_3_reopen",
+            "SOURCE_NOT_FOUND"
+          ]
+        ],
+        "pairedRecoveries": [
+          "INVALID_ROUTE",
+          "WORKSPACE_NOT_FOUND"
+        ]
+      },
+      "passed": true,
+      "requirement": "at least two canonical route errors have trusted recovery to Source Library"
+    },
+    {
+      "id": "T02.1-A07-axe",
+      "observed": {
+        "critical": 0,
+        "engine": "axe-core",
+        "resultType": "axe",
+        "schemaVersion": "v2-px-axe-result/v1",
+        "serious": 0,
+        "surfaces": [
+          "side_panel",
+          "workspace_page"
+        ],
+        "violations": []
+      },
+      "passed": true,
+      "requirement": "real typed axe-core result covers both product surfaces with serious=0 and critical=0"
+    },
+    {
+      "id": "T02.1-A08-keyboard",
+      "observed": {
+        "assertionsPassed": 5,
+        "assertionsTotal": 5,
+        "escapePassed": true,
+        "focusReturnPassed": true,
+        "reducedMotionPassed": true,
+        "resultType": "keyboard",
+        "schemaVersion": "v2-px-keyboard-result/v1",
+        "surface": "workspace_page",
+        "tabReachedInteractive": true,
+        "traceOpenedByKeyboard": true
+      },
+      "passed": true,
+      "requirement": "typed keyboard result has all five real interaction assertions passing"
+    },
+    {
+      "id": "T02.1-A04-source-corpus",
+      "observed": {
+        "errors": [],
+        "kinds": {
+          "explicit_local_document": 3,
+          "note_markdown": 3,
+          "real_web": 6
+        },
+        "runtimeSourceTypes": {
+          "authorized_local_document": 3,
+          "user_note": 3,
+          "web_page": 6
+        },
+        "samples": 12,
+        "unique": {
+          "contentFingerprint": 12,
+          "operationId": 12,
+          "sourceId": 12,
+          "sourceSampleId": 12
+        }
+      },
+      "passed": true,
+      "requirement": "single-run corpus is exactly 6 web + 3 explicit local + 3 note with unique bytes and Runtime IDs"
+    },
+    {
+      "id": "T02.1-A09-permission",
+      "observed": [
+        "scenario_permission_1",
+        "scenario_permission_2",
+        "scenario_permission_3"
+      ],
+      "passed": true,
+      "requirement": "three independent Permission scenarios include real Runtime operations"
+    },
+    {
+      "id": "T02.1-A09-durable-forget",
+      "observed": [],
+      "passed": true,
+      "requirement": "three Forget mutations have four-surface verification plus four same-source SOURCE_NOT_FOUND and recovery chains"
+    },
+    {
+      "id": "T02.1-A09-faults",
+      "observed": {
+        "errors": [],
+        "intervals": [
+          [
+            1264,
+            1286,
+            "adapter_blocked"
+          ],
+          [
+            1288,
+            1304,
+            "data_service_unreachable"
+          ],
+          [
+            1306,
+            1328,
+            "source_failed"
+          ],
+          [
+            1330,
+            1370,
+            "runtime_offline"
+          ]
+        ]
+      },
+      "passed": true,
+      "requirement": "four controlled fault intervals are non-overlapping and contain observed screenshots"
+    },
+    {
+      "id": "T02.1-A09-screenshots",
+      "observed": {
+        "errors": [],
+        "productPairs": [
+          [
+            "side_panel",
+            360
+          ],
+          [
+            "side_panel",
+            420
+          ],
+          [
+            "workspace_page",
+            768
+          ],
+          [
+            "workspace_page",
+            1280
+          ]
+        ],
+        "screenshots": 10
+      },
+      "passed": true,
+      "requirement": "all screenshots have real PNG/hash/metadata/observation linkage and four product viewport mappings"
+    },
+    {
+      "id": "T02-A10-public-private",
+      "observed": {
+        "hits": [],
+        "mode": "local",
+        "privatePaths": 6,
+        "scannedPublicFiles": 1152
+      },
+      "passed": true,
+      "requirement": "public bytes contain no credential/private-user-path shapes and private bytes follow package mode"
+    },
+    {
+      "id": "T02-A10-cleanup",
+      "observed": {
+        "browserClosed": true,
+        "fixtureServerClosed": true,
+        "generatedAt": "2026-09-13T16:17:03.762Z",
+        "passed": true,
+        "profileRemoved": true,
+        "runId": "t02-r2-status-contract-production-input-20260914T001017",
+        "runtimeStopped": true,
+        "schemaVersion": "v2-px-r2-cleanup/v1"
+      },
+      "passed": true,
+      "requirement": "browser/runtime/fixture server/profile cleanup is complete"
+    },
+    {
+      "id": "T02-A12-command-results",
+      "observed": {
+        "axe-core:side-panel+workspace": 0,
+        "node e2e/chrome-v2-t01-r1-frontend.mjs": 0,
+        "playwright:keyboard-accessibility": 0,
+        "pnpm build:e2e": 0,
+        "pnpm test": 0,
+        "pnpm test:v2-px-r2-raw-collector": 0,
+        "pnpm typecheck": 0,
+        "python3 -m pytest -q": 0,
+        "r2:register-source-corpus": 0
+      },
+      "passed": true,
+      "requirement": "all six prerequisites and three structured real-browser commands terminated with exitCode=0"
+    },
+    {
+      "id": "T02-A12-test-counts",
+      "observed": {
+        "collector15": true,
+        "frontend169": true,
+        "runtime307": true,
+        "t01Checks": 36,
+        "t01Passed": true,
+        "t01RawPresent": true
+      },
+      "passed": true,
+      "requirement": "collector 15, frontend 169, Runtime 307 and T01 real Chrome 36 all pass"
+    },
+    {
+      "id": "T02-A11-collection-diagnostic",
+      "observed": {
+        "generatedAt": "2026-09-13T16:17:03.764Z",
+        "missingObservations": [],
+        "passed": true,
+        "runId": "t02-r2-status-contract-production-input-20260914T001017",
+        "schemaVersion": "v2-px-collection-diagnostic/v1",
+        "sealedRawRun": {
+          "path": "raw/raw-run.json",
+          "sha256": "7fd641697f508c9e9fb81ab2d3af8a1248b1df61e90c83346617f9b2596266a1"
+        }
+      },
+      "passed": true,
+      "requirement": "post-seal collection diagnostic is empty and binds the raw bytes"
+    },
+    {
+      "id": "T02.2-A09-t03-input-readiness",
+      "observed": {
+        "exitCode": 0,
+        "result": {
+          "allowedUse": "production_positive_input_candidate",
+          "fatal": 0,
+          "gaps": [],
+          "major": 0,
+          "observed": {
+            "completeRouteRecoveryIntents": [
+              "ask",
+              "graph",
+              "permissions",
+              "source_detail",
+              "source_library"
+            ],
+            "durableForgetRecovery": {
+              "errors": [],
+              "passed": true,
+              "recoveryCount": 12,
+              "requiredChains": 3,
+              "requiredModes": [
+                "direct_open",
+                "reload",
+                "back",
+                "reopen"
+              ],
+              "triggerCount": 12
+            },
+            "entryOrigins": {
+              "open_in_workspace": 2,
+              "open_workspace": 2,
+              "view_source": 3
+            },
+            "invalidOrForbiddenRouteRecoveries": [
+              "INVALID_ROUTE",
+              "WORKSPACE_NOT_FOUND"
+            ],
+            "registeredSourceCorpus": {
+              "artifactAndRuntimeLinkage": true,
+              "kinds": {
+                "explicit_local_document": 3,
+                "note_markdown": 3,
+                "real_web": 6
+              },
+              "samples": 12
+            },
+            "routeRecoveryIntentCount": 5,
+            "runtimeSourceTypes": {
+              "authorized_local_document": 3,
+              "user_note": 3,
+              "web_page": 6
+            },
+            "screenshotWidths": {
+              "1280": 1,
+              "360": 1,
+              "420": 1,
+              "768": 1
+            },
+            "screenshotsBySurface": {
+              "side_panel": 2,
+              "workspace_page": 8
+            },
+            "screenshotsWithoutProductViewport": 6,
+            "typedCommandResultTypes": {
+              "axe": 1,
+              "keyboard": 1,
+              "source_corpus": 1
+            },
+            "uniqueRuntimeSources": 12
+          },
+          "readOnly": true,
+          "readyForPositiveProductionValidation": true,
+          "schemaVersion": "v2-px-t03-input-readiness/v1",
+          "sourceRawSeal": "430207668675497c9a9d5b22f8539ae66537c72a172ed35d18fafe8e28ba8270",
+          "sourceRunId": "t02-r2-status-contract-production-input-20260914T001017",
+          "sourceSnapshotCommit": "98d3a8be12cd168d10993e996a95e1e11e59c184"
+        }
+      },
+      "passed": true,
+      "requirement": "independent T03 input checker exits 0 with no Fatal/Major gaps"
+    },
+    {
+      "id": "T02.2-A04-A07-durable-forget-recovery",
+      "observed": {
+        "errors": [],
+        "passed": true,
+        "recoveryCount": 12,
+        "requiredChains": 3,
+        "requiredModes": [
+          "direct_open",
+          "reload",
+          "back",
+          "reopen"
+        ],
+        "triggerCount": 12
+      },
+      "passed": true,
+      "requirement": "three sources by four navigation modes have observed SOURCE_NOT_FOUND and trusted Source Library recovery"
+    },
+    {
+      "id": "T02.3-A03-A05-current-status-contract",
+      "observed": {
+        "actionErrors": [],
+        "checked": 203,
+        "errors": [],
+        "recorded": {
+          "checked": 203,
+          "errors": [],
+          "schemaVersion": "v2-px-knowledge-status-evidence-check/v1"
+        }
+      },
+      "passed": true,
+      "requirement": "all successful raw Status responses validate before seal and controlled faults use canonical actions"
+    },
+    {
+      "id": "T02.3-A06-old-status-fail-closed",
+      "observed": {
+        "checked": 178,
+        "errorCount": 7,
+        "errors": [
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_f5fd2f0f-a83d-44f7-9414-7b8d792b3db9",
+            "responseEventId": "evt_0878a241-5678-4c4f-b888-47e4eb13f545",
+            "scenarioId": "scenario_fault_adapter_blocked"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_a4a09d8a-4363-4b67-b85f-079c038e5bee",
+            "responseEventId": "evt_90c3791d-89f0-4e28-a89a-603aecb10d91",
+            "scenarioId": "scenario_fault_adapter_blocked"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_3266c183-31bc-495f-9591-00ed305e104b",
+            "responseEventId": "evt_6fdbea03-6eba-4ca9-909b-9c15eb36ff77",
+            "scenarioId": "scenario_fault_data_service_unreachable"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_de2d0945-4fb0-4fbd-be74-ea51c9689749",
+            "responseEventId": "evt_a56dd282-80d7-4fda-99cb-89905080fd0a",
+            "scenarioId": "scenario_fault_data_service_unreachable"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_fcf88d3a-bbba-4cfd-8745-6e7fd0beaa82",
+            "responseEventId": "evt_4ec0974e-26a6-4d1e-bcfa-cf022238d1ac",
+            "scenarioId": "scenario_fault_data_service_unreachable"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_b829ef7a-557c-447e-923e-4c31ce6b1c3b",
+            "responseEventId": "evt_4fd27bb0-485b-4172-b881-3649ad9321e6",
+            "scenarioId": "scenario_fault_source_failed"
+          },
+          {
+            "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+            "path": "userAction",
+            "requestEventId": "evt_44df2cb4-d2fa-4fa8-94c2-b6c533ed5efe",
+            "responseEventId": "evt_587fa6cf-76a4-4943-9c4f-8e8ee12413bf",
+            "scenarioId": "scenario_fault_source_failed"
+          }
+        ],
+        "scenarios": {
+          "scenario_fault_adapter_blocked": 2,
+          "scenario_fault_data_service_unreachable": 3,
+          "scenario_fault_source_failed": 2
+        }
+      },
+      "passed": true,
+      "requirement": "old T02.2 raw remains invalid only for seven generic retry actions"
+    }
+  ],
+  "claimBoundary": "A local machine pass is not T02.3, T03, PX-5, PX-6 or V2 acceptance.",
+  "fatal": 0,
+  "independentReview": "PENDING",
+  "knowledgeStatusContract": {
+    "current": {
+      "checked": 203,
+      "errors": []
+    },
+    "old": {
+      "checked": 178,
+      "errors": [
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_f5fd2f0f-a83d-44f7-9414-7b8d792b3db9",
+          "responseEventId": "evt_0878a241-5678-4c4f-b888-47e4eb13f545",
+          "scenarioId": "scenario_fault_adapter_blocked"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_a4a09d8a-4363-4b67-b85f-079c038e5bee",
+          "responseEventId": "evt_90c3791d-89f0-4e28-a89a-603aecb10d91",
+          "scenarioId": "scenario_fault_adapter_blocked"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_3266c183-31bc-495f-9591-00ed305e104b",
+          "responseEventId": "evt_6fdbea03-6eba-4ca9-909b-9c15eb36ff77",
+          "scenarioId": "scenario_fault_data_service_unreachable"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_de2d0945-4fb0-4fbd-be74-ea51c9689749",
+          "responseEventId": "evt_a56dd282-80d7-4fda-99cb-89905080fd0a",
+          "scenarioId": "scenario_fault_data_service_unreachable"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_fcf88d3a-bbba-4cfd-8745-6e7fd0beaa82",
+          "responseEventId": "evt_4ec0974e-26a6-4d1e-bcfa-cf022238d1ac",
+          "scenarioId": "scenario_fault_data_service_unreachable"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_b829ef7a-557c-447e-923e-4c31ce6b1c3b",
+          "responseEventId": "evt_4fd27bb0-485b-4172-b881-3649ad9321e6",
+          "scenarioId": "scenario_fault_source_failed"
+        },
+        {
+          "message": "'retry' is not one of ['none', 'start_runtime', 'configure_adapter', 'configure_data_service', 'reconnect', 'upgrade_data_service', 'retry_source_build', 'open_debug']",
+          "path": "userAction",
+          "requestEventId": "evt_44df2cb4-d2fa-4fa8-94c2-b6c533ed5efe",
+          "responseEventId": "evt_587fa6cf-76a4-4943-9c4f-8e8ee12413bf",
+          "scenarioId": "scenario_fault_source_failed"
+        }
+      ]
+    }
+  },
+  "localCandidatePassed": true,
+  "machineChecks": 34,
+  "machineFailed": 0,
+  "machinePassed": 34,
+  "major": 0,
+  "mode": "local_complete_run",
+  "px5": "FAIL_REOPENED",
+  "rawSha256": "7fd641697f508c9e9fb81ab2d3af8a1248b1df61e90c83346617f9b2596266a1",
+  "runId": "t02-r2-status-contract-production-input-20260914T001017",
+  "schemaVersion": "v2-px-t02.3-candidate-verification/v1",
+  "sealSha256": "430207668675497c9a9d5b22f8539ae66537c72a172ed35d18fafe8e28ba8270",
+  "snapshotCommit": "98d3a8be12cd168d10993e996a95e1e11e59c184",
+  "t02_3Status": "CANDIDATE_PASS_PENDING_INDEPENDENT_REVIEW",
+  "t03Implementation": "NO_GO",
+  "t03InputReadiness": {
+    "allowedUse": "production_positive_input_candidate",
+    "fatal": 0,
+    "gaps": [],
+    "major": 0,
+    "observed": {
+      "completeRouteRecoveryIntents": [
+        "ask",
+        "graph",
+        "permissions",
+        "source_detail",
+        "source_library"
+      ],
+      "durableForgetRecovery": {
+        "errors": [],
+        "passed": true,
+        "recoveryCount": 12,
+        "requiredChains": 3,
+        "requiredModes": [
+          "direct_open",
+          "reload",
+          "back",
+          "reopen"
+        ],
+        "triggerCount": 12
+      },
+      "entryOrigins": {
+        "open_in_workspace": 2,
+        "open_workspace": 2,
+        "view_source": 3
+      },
+      "invalidOrForbiddenRouteRecoveries": [
+        "INVALID_ROUTE",
+        "WORKSPACE_NOT_FOUND"
+      ],
+      "registeredSourceCorpus": {
+        "artifactAndRuntimeLinkage": true,
+        "kinds": {
+          "explicit_local_document": 3,
+          "note_markdown": 3,
+          "real_web": 6
+        },
+        "samples": 12
+      },
+      "routeRecoveryIntentCount": 5,
+      "runtimeSourceTypes": {
+        "authorized_local_document": 3,
+        "user_note": 3,
+        "web_page": 6
+      },
+      "screenshotWidths": {
+        "1280": 1,
+        "360": 1,
+        "420": 1,
+        "768": 1
+      },
+      "screenshotsBySurface": {
+        "side_panel": 2,
+        "workspace_page": 8
+      },
+      "screenshotsWithoutProductViewport": 6,
+      "typedCommandResultTypes": {
+        "axe": 1,
+        "keyboard": 1,
+        "source_corpus": 1
+      },
+      "uniqueRuntimeSources": 12
+    },
+    "readOnly": true,
+    "readyForPositiveProductionValidation": true,
+    "schemaVersion": "v2-px-t03-input-readiness/v1",
+    "sourceRawSeal": "430207668675497c9a9d5b22f8539ae66537c72a172ed35d18fafe8e28ba8270",
+    "sourceRunId": "t02-r2-status-contract-production-input-20260914T001017",
+    "sourceSnapshotCommit": "98d3a8be12cd168d10993e996a95e1e11e59c184"
+  }
+}

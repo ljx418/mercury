@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "v2-external-brain-human-review/v3",
+  "evidenceClass": "production_acceptance",
+  "status": "pending",
+  "gateReviews": {
+    "G1_entry": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G2_route": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G3_lifecycle": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G4_architecture": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G5_status": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G6_ux_accessibility": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    },
+    "G7_evidence": {
+      "status": "pending",
+      "evidenceArtifacts": [],
+      "notes": "等待 PX-6 人工核查。"
+    }
+  },
+  "blockingIssues": [
+    "PX-6 human product review has not been signed."
+  ],
+  "signedClaim": "V2-PX External Brain Productization acceptance did not pass."
+}

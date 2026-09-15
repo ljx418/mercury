@@ -87,11 +87,12 @@ paths:
                   items: { type: string }
       responses:
         "200":
-          description: Answer with evidence refs or degraded reason.
+          description: Answer with evidence refs or degraded reason. lookupOutcome is found, empty or unavailable; only empty with matching workspace, degraded status and empty answer/evidenceRefs proves no active source. Missing/unknown/unavailable outcomes never prove absence. See v2_local_permission.schema.json AskAbsenceObservation.
   /v1/knowledge/graph:
     get:
       summary: Read graph view for a workspace
       operationId: getKnowledgeGraph
+      description: A successfully read empty graph has status ready with empty nodes and edges. A degraded or failed response must not be used as proof that a forgotten source is absent.
       parameters:
         - name: workspaceId
           in: query
@@ -111,11 +112,27 @@ paths:
           schema: { type: string }
       responses:
         "200":
-          description: located / fallback_shown / blocked trace entries.
+          description: located / fallback_shown / blocked trace entries. lookupOutcome is found, forgotten or unavailable; only forgotten with matching source, blocked status and empty entries proves forgotten absence. Permission failure is unavailable, not forgotten. See v2_local_permission.schema.json TraceAbsenceObservation.
   /v1/knowledge/permissions:
+    get:
+      summary: List session-scoped permissions in one workspace
+      parameters:
+        - name: workspaceId
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Existing Runtime ok/data/error/request_id envelope; data.permissions contains redacted permission roots.
     post:
       summary: Grant a user-visible local source permission root
       operationId: grantPermissionRoot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./v2_local_permission.schema.json#/$defs/GrantRequest"
       responses:
         "202":
           description: Permission operation queued or completed.
@@ -131,10 +148,57 @@ paths:
       responses:
         "202":
           description: Revoke operation queued or completed.
+  /v1/knowledge/permissions/{permissionRootId}/scan:
+    parameters:
+      - name: permissionRootId
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      summary: Explicit bounded scan; does not import sources
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "./v2_local_permission.schema.json#/$defs/ScanRequest" }
+      responses:
+        "200": { description: Runtime envelope with ScanResult data. }
+        "403": { description: Permission missing, revoked or outside workspace/root. }
+        "413": { description: Scan limit exceeded; no partial success. }
+        "422": { description: Unsupported file or platform. }
+  /v1/knowledge/permissions/{permissionRootId}/imports:
+    parameters:
+      - name: permissionRootId
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      summary: Explicit import of selected opaque scan file IDs
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string, minLength: 8, maxLength: 160 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "./v2_local_permission.schema.json#/$defs/ImportRequest" }
+      responses:
+        "202": { description: Runtime envelope with sources, operations and idempotentReplay. }
+        "403": { description: Permission missing, revoked or outside workspace/root. }
+        "409": { description: File changed or idempotency key reused for a different request. }
+        "413": { description: Import size limit exceeded. }
+        "422": { description: Unsupported file or invalid UTF-8. }
   /v1/knowledge/sources/{sourceId}/forget:
     post:
       summary: Forget one source and verify absence from Library, Ask, Graph and Trace
       operationId: forgetKnowledgeSource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "./v2_local_permission.schema.json#/$defs/ForgetInput" }
       parameters:
         - name: sourceId
           in: path
@@ -142,6 +206,10 @@ paths:
           schema: { type: string }
       responses:
         "202":
-          description: Forget and verification operation queued.
+          description: Runtime envelope with forgetRequest, verification and operation. Absence is reread on all four surfaces; operation is succeeded only when all are absent, degraded on residuals, failed on verification errors. A false absence flag means absence is not proven. No deletion rollback on verification failure. Confirmation records express explicit request intent, not a trusted browser gesture.
+        "400":
+          description: REQUEST_INVALID with details.reason invalid_request; no state mutation for missing or invalid confirmation.
+        "404":
+          description: ARTIFACT_NOT_FOUND for a valid confirmation referencing a missing source.
 components:
   securitySchemes: {}

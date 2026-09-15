@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "v2-px-5-automated-gates/v1",
+  "generatedAt": "2026-09-08T10:42:54.052Z",
+  "automatedCandidatePassed": true,
+  "gateResults": {
+    "G1_entry": true,
+    "G2_route": true,
+    "G3_lifecycle": true,
+    "G4_architecture": true,
+    "G5_status": true,
+    "G6_ux_accessibility": true,
+    "G7_evidence": true
+  },
+  "humanReviewStatus": "pending",
+  "finalReportPassed": false,
+  "sourceReport": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/report.json",
+    "sha256": "4d0de888843bdf0bda5fb62edd491f725dc9c01a8534684328af7adebb65b859"
+  },
+  "counts": {
+    "schemas": 9,
+    "schemaInstances": 82,
+    "sources": 12,
+    "scenarios": 39,
+    "screenshots": 39,
+    "executionObservations": 39,
+    "architectureFiles": 26,
+    "architectureViolations": 0
+  },
+  "issues": []
+}

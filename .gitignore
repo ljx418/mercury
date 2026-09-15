@@ -26,3 +26,15 @@ chrome-mv3-unpacked/
 navia-v1-*-unpacked/
 .claude/
 .cursor/
+
+# Local upstream research checkout; keep it outside the Navia repository history.
+/bilinote/
+
+# Generated browser and document-rendering state.
+/docs/active/project/evidence/v2_memory_personal_knowledge_base/.chrome-profile/
+/docs/active/project/evidence/v2_memory_personal_knowledge_base/.render/
+
+# Large generated V2-PX evidence remains local. Track its manifests and audits,
+# but do not commit reproducible run workspaces or packaged evidence archives.
+/docs/active/project/evidence/v2_external_brain_productization/**/runs/
+/docs/active/project/evidence/v2_external_brain_productization/**/*.tar.gz

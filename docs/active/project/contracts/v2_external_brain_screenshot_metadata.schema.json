@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_screenshot_metadata.schema.json",
+  "title": "V2-PX Screenshot Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "scenarioId", "capturedAt", "evidenceClass", "executionMode", "browser",
+    "viewport", "imagePath", "imageSha256", "captureVariantId", "captureMode",
+    "captureSurface", "capturePhase", "containerEvidence", "entryPoint",
+    "routeIntent", "resolvedPath", "routeRecoveryResult", "openOutcome",
+    "observedIds", "statusObservation"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "v2-external-brain-screenshot-metadata/v6"},
+    "scenarioId": {"type": "string", "minLength": 1},
+    "capturedAt": {"type": "string", "format": "date-time"},
+    "evidenceClass": {"enum": ["contract_fixture", "production_acceptance"]},
+    "executionMode": {"enum": ["contract_fixture", "headless_real_chrome", "visible_real_chrome"]},
+    "browser": {"const": "chrome"},
+    "viewport": {
+      "type": "object", "additionalProperties": false, "required": ["width", "height", "deviceScaleFactor"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 320},
+        "height": {"type": "integer", "minimum": 568},
+        "deviceScaleFactor": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "imagePath": {"type": "string", "minLength": 1},
+    "imageSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "captureVariantId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{2,63}$"},
+    "captureMode": {"enum": ["product_surface", "composite_review_only"]},
+    "captureSurface": {"enum": ["host_page", "side_panel", "workspace_page", "route_error", "composite_review"]},
+    "capturePhase": {"enum": ["entry", "route_ready", "before_action", "after_action", "error_recovery", "after_forget"]},
+    "containerEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["hostPageVisible", "sidePanelVisible", "workspaceVisible"],
+      "properties": {
+        "hostPageVisible": {"type": "boolean"},
+        "sidePanelVisible": {"type": "boolean"},
+        "workspaceVisible": {"type": "boolean"}
+      }
+    },
+    "entryPoint": {"enum": ["view_source", "open_workspace", "open_in_workspace", "direct_route", "status_recovery", "permission", "forget"]},
+    "routeIntent": {"enum": ["source_detail", "source_library", "ask", "graph", "permissions"]},
+    "resolvedPath": {"type": "string", "pattern": "^#/knowledge/"},
+    "routeRecoveryResult": {
+      "enum": [
+        "not_applicable", "restored_direct_open", "restored_after_reload",
+        "restored_after_back", "recovered_to_library", "blocked_with_recovery_action"
+      ]
+    },
+    "openOutcome": {"enum": ["focused_existing", "created_new", "direct_open_restored", "recovered", "blocked", "not_applicable"]},
+    "observedIds": {"$ref": "v2_external_brain_report.schema.json#/$defs/ObservedIds"},
+    "statusObservation": {"$ref": "v2_external_brain_report.schema.json#/$defs/StatusObservation"},
+    "errorCode": {"$ref": "v2_external_brain_workspace_contracts.schema.json#/$defs/WorkspaceErrorCode"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"evidenceClass": {"const": "contract_fixture"}}, "required": ["evidenceClass"]},
+      "then": {"properties": {"executionMode": {"const": "contract_fixture"}}}
+    },
+    {
+      "if": {"properties": {"evidenceClass": {"const": "production_acceptance"}}, "required": ["evidenceClass"]},
+      "then": {
+        "properties": {
+          "executionMode": {"enum": ["headless_real_chrome", "visible_real_chrome"]},
+          "imagePath": {"not": {"pattern": "^virtual/"}}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"routeRecoveryResult": {"enum": ["recovered_to_library", "blocked_with_recovery_action"]}}, "required": ["routeRecoveryResult"]},
+      "then": {"required": ["errorCode"]}
+    },
+    {
+      "if": {"properties": {"captureMode": {"const": "composite_review_only"}}, "required": ["captureMode"]},
+      "then": {"properties": {"captureSurface": {"const": "composite_review"}}}
+    },
+    {
+      "if": {"properties": {"captureMode": {"const": "product_surface"}}, "required": ["captureMode"]},
+      "then": {"properties": {"captureSurface": {"not": {"const": "composite_review"}}}}
+    },
+    {
+      "if": {"properties": {"captureSurface": {"const": "host_page"}}, "required": ["captureSurface"]},
+      "then": {"properties": {"containerEvidence": {"properties": {"hostPageVisible": {"const": true}, "sidePanelVisible": {"const": false}, "workspaceVisible": {"const": false}}}}}
+    },
+    {
+      "if": {"properties": {"captureSurface": {"const": "side_panel"}}, "required": ["captureSurface"]},
+      "then": {"properties": {"containerEvidence": {"properties": {"sidePanelVisible": {"const": true}, "workspaceVisible": {"const": false}}}}}
+    },
+    {
+      "if": {"properties": {"captureSurface": {"enum": ["workspace_page", "route_error"]}}, "required": ["captureSurface"]},
+      "then": {"properties": {"containerEvidence": {"properties": {"hostPageVisible": {"const": false}, "sidePanelVisible": {"const": false}, "workspaceVisible": {"const": true}}}}}
+    },
+    {
+      "if": {"properties": {"captureVariantId": {"const": "viewport_sidepanel_360"}}, "required": ["captureVariantId"]},
+      "then": {"properties": {"viewport": {"properties": {"width": {"const": 360}}}, "captureMode": {"const": "product_surface"}, "captureSurface": {"const": "side_panel"}}}
+    },
+    {
+      "if": {"properties": {"captureVariantId": {"const": "viewport_sidepanel_420"}}, "required": ["captureVariantId"]},
+      "then": {"properties": {"viewport": {"properties": {"width": {"const": 420}}}, "captureMode": {"const": "product_surface"}, "captureSurface": {"const": "side_panel"}}}
+    },
+    {
+      "if": {"properties": {"captureVariantId": {"const": "viewport_workspace_768"}}, "required": ["captureVariantId"]},
+      "then": {"properties": {"viewport": {"properties": {"width": {"const": 768}}}, "captureMode": {"const": "product_surface"}, "captureSurface": {"const": "workspace_page"}}}
+    },
+    {
+      "if": {"properties": {"captureVariantId": {"const": "viewport_workspace_1280"}}, "required": ["captureVariantId"]},
+      "then": {"properties": {"viewport": {"properties": {"width": {"const": 1280}}}, "captureMode": {"const": "product_surface"}, "captureSurface": {"const": "workspace_page"}}}
+    }
+  ]
+}

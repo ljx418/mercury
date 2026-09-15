@@ -1,0 +1,39 @@
+# bilibili_learning 自己的 .gitignore
+# 不让脚本产物 / 下载的 mp4 / cookies 进 git
+
+# 用户敏感信息 (B 站登录态)
+cookies/
+*.json
+!bv_list.txt
+
+# 密钥管理 (.env 真值, .env.example 占位符可入 git)
+secrets/.env
+.env
+.env.local
+*.key
+*.pem
+
+# 下载的视频文件
+*.mp4
+*.m4s
+*.flv
+*.mkv
+metadata.json
+
+# 视频分析产物
+_analysis/
+keyframes/
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+
+# 临时日志
+*.log
+*.pid
+*.tmp
+
+# 系统
+.DS_Store
+Thumbs.db

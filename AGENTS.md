@@ -40,6 +40,12 @@ docs/active/project/V1_2_AGENT_WORKPACKS.md
 
 Then read the matching module package under `docs/active/modules/`. Implementation directories keep only code, fixtures, tests, and short README pointers.
 
+For any external ChatGPT document audit, also follow:
+
+```text
+docs/active/project/EXTERNAL_AUDIT_PACKAGE_PROCESS.md
+```
+
 ## Hard Rules
 
 - Do not change another module's implementation directory.
@@ -51,6 +57,8 @@ Then read the matching module package under `docs/active/modules/`. Implementati
 - `piAgentProvider` cannot be implemented for real until repo, version or commit, license, runtime, and tool invocation model are locked.
 - piAgent or any CoreProvider must not write `ArtifactRecord`, SSE, EventStore, Trace, or UI directly.
 - No V1.2 work may introduce RAG, long-term memory, multi-agent orchestration, browser automation, default local file access, network search, voice, desktop pet, deep research, or PPT generation.
+- Before every external ChatGPT audit, clear `docs/active/project/external-audit-package/` and repopulate it only with the current audit's files. Never mix files from different audit rounds.
+- The external ChatGPT audit directory must be flat and contain at most 20 files total, including `AUDIT_MANIFEST.md`. Select only the highest-priority current files; do not create batch subdirectories.
 
 ## Handoff Requirements
 

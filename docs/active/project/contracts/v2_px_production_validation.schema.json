@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_px_production_validation.schema.json",
+  "title": "Navia V2 PX Production Validation v1",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "validationRunId", "sourceRunId", "validatedAt", "inputs", "ruleResults", "gateResults", "contractRegression", "productionMutationResults", "machinePassed", "humanReviewStatus", "finalPassed", "issues"],
+  "properties": {
+    "schemaVersion": {"const": "v2-px-production-validation/v1"},
+    "profile": {"enum": ["contract_fixture", "production_candidate", "production_final"]},
+    "validationRunId": {"type": "string", "minLength": 1}, "sourceRunId": {"type": "string", "minLength": 1},
+    "validatedAt": {"type": "string", "format": "date-time"},
+    "inputs": {"type": "object", "additionalProperties": false, "required": ["raw", "derived", "validator", "semanticSpec", "registry", "fixtureSuite"], "properties": {"raw": {"$ref": "#/$defs/ArtifactRef"}, "derived": {"$ref": "#/$defs/ArtifactRef"}, "validator": {"$ref": "#/$defs/ArtifactRef"}, "semanticSpec": {"$ref": "#/$defs/ArtifactRef"}, "registry": {"$ref": "#/$defs/ArtifactRef"}, "fixtureSuite": {"$ref": "#/$defs/ArtifactRef"}}},
+    "ruleResults": {"type": "array", "minItems": 63, "maxItems": 63, "items": {"$ref": "#/$defs/RuleResult"}},
+    "gateResults": {"type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4", "G5", "G6", "G7"], "properties": {"G1": {"$ref": "#/$defs/Status"}, "G2": {"$ref": "#/$defs/Status"}, "G3": {"$ref": "#/$defs/Status"}, "G4": {"$ref": "#/$defs/Status"}, "G5": {"$ref": "#/$defs/Status"}, "G6": {"$ref": "#/$defs/Status"}, "G7": {"$ref": "#/$defs/Status"}}},
+    "contractRegression": {"$ref": "#/$defs/SuiteResult"}, "productionMutationResults": {"$ref": "#/$defs/SuiteResult"},
+    "machinePassed": {"type": "boolean"}, "humanReviewStatus": {"enum": ["pending", "passed", "failed"]}, "finalPassed": {"type": "boolean"},
+    "issues": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  },
+  "$defs": {
+    "ArtifactRef": {"type": "object", "additionalProperties": false, "required": ["artifactRoot", "path", "sha256", "byteLength", "mediaType"], "properties": {"artifactRoot": {"enum": ["source_run", "validation_run", "repository_snapshot"]}, "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$))(?!virtual/)[^\\u0000]+$"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "byteLength": {"type": "integer", "minimum": 0}, "mediaType": {"type": "string", "minLength": 1}}},
+    "Status": {"enum": ["passed", "failed", "pending"]},
+    "RuleResult": {"type": "object", "additionalProperties": false, "required": ["ruleId", "enforcementLayer", "status", "failureCode", "evidenceRefs", "notes"], "properties": {"ruleId": {"type": "string", "pattern": "^PX_RULE_[A-Z0-9_]+$"}, "enforcementLayer": {"enum": ["schema", "semantic"]}, "status": {"enum": ["passed", "failed", "pending", "not_applicable"]}, "failureCode": {"type": ["string", "null"], "pattern": "^(?:SCHEMA_VALIDATION_FAILED|PX_[A-Z0-9_]+)$"}, "evidenceRefs": {"type": "array", "items": {"$ref": "#/$defs/ArtifactRef"}}, "notes": {"type": "string"}}},
+    "SuiteResult": {"type": "object", "additionalProperties": false, "required": ["suiteId", "total", "passed", "failed", "resultArtifact"], "properties": {"suiteId": {"type": "string", "minLength": 1}, "total": {"type": "integer", "minimum": 1}, "passed": {"type": "integer", "minimum": 0}, "failed": {"type": "integer", "minimum": 0}, "resultArtifact": {"$ref": "#/$defs/ArtifactRef"}}}
+  }
+}

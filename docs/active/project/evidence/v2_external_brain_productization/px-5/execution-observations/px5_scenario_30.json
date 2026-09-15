@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "v2-external-brain-execution-observation/v6",
+  "scenarioId": "px5_scenario_30",
+  "capturedAt": "2026-09-08T10:39:50.416Z",
+  "evidenceClass": "production_acceptance",
+  "entryContext": {
+    "status": "not_applicable"
+  },
+  "attempts": [
+    {
+      "sequence": 1,
+      "entryAction": {
+        "eventType": "forget",
+        "actor": "browser_navigation",
+        "trustedUserGesture": true,
+        "requestId": "px5_px5_scenario_30",
+        "origin": "forget",
+        "routeIntent": "source_detail",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "operationId": "op_00000000000000000000010011",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      "backgroundResult": {
+        "outcome": "not_applicable",
+        "requestId": "px5_px5_scenario_30",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      }
+    }
+  ],
+  "routeEvents": [
+    {
+      "kind": "push",
+      "resolvedPath": "#/knowledge/sources/src_00000000000000000000010010?workspaceId=ws_default",
+      "routeIntent": "source_detail",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000010010",
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "containerObservations": [
+    {
+      "container": "side_panel",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "background",
+      "ids": {
+        "status": "not_applicable"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    },
+    {
+      "container": "workspace_page",
+      "ids": {
+        "status": "observed",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "operationId": "op_00000000000000000000010011"
+      },
+      "observedAt": "2026-09-08T10:39:50.416Z"
+    }
+  ],
+  "runtimeObservation": {
+    "transportOutcome": "response",
+    "observedAt": "2026-09-08T10:39:50.416Z",
+    "ids": {
+      "status": "observed",
+      "workspaceId": "ws_default",
+      "sourceId": "src_00000000000000000000010010",
+      "operationId": "op_00000000000000000000010011"
+    },
+    "responseFingerprint": "98fc4a2101868e92bb8b39a2c4ec5c265bc1c47fd2d866d1b8fb88ba00e64f6e",
+    "transportEvidence": {
+      "path": "docs/active/project/evidence/v2_external_brain_productization/px-5/px-5-raw-e2e.json",
+      "sha256": "98fc4a2101868e92bb8b39a2c4ec5c265bc1c47fd2d866d1b8fb88ba00e64f6e"
+    }
+  },
+  "ingestCounters": {
+    "before": 0,
+    "after": 0
+  },
+  "forgetLifecycle": {
+    "workspaceId": "ws_default",
+    "sourceId": "src_00000000000000000000010010",
+    "statusBefore": {
+      "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+      "observedAt": "2026-09-08T10:39:50.416Z",
+      "frontendInferredRuntimeStatus": "online",
+      "runtimeStatus": "online",
+      "adapterStatus": "ready",
+      "dataServiceStatus": "unchecked",
+      "sourceBuildStatus": "trace_ready",
+      "capabilities": {
+        "workspace": true,
+        "sourceImport": true,
+        "buildStatus": true,
+        "query": true,
+        "graph": true,
+        "sourceTrace": true,
+        "forgetVerification": true
+      },
+      "userAction": "none",
+      "message": "Observed by PX-5 real Chrome automation.",
+      "redactionApplied": true
+    },
+    "statusAfter": {
+      "schemaVersion": "v2-knowledge-status-draft-2026-07-10",
+      "observedAt": "2026-09-08T10:39:50.416Z",
+      "frontendInferredRuntimeStatus": "online",
+      "runtimeStatus": "online",
+      "adapterStatus": "ready",
+      "dataServiceStatus": "unchecked",
+      "sourceBuildStatus": "forgotten",
+      "capabilities": {
+        "workspace": true,
+        "sourceImport": true,
+        "buildStatus": true,
+        "query": true,
+        "graph": true,
+        "sourceTrace": true,
+        "forgetVerification": true
+      },
+      "userAction": "none",
+      "message": "Observed by PX-5 real Chrome automation.",
+      "redactionApplied": true
+    },
+    "reopenChecks": [
+      {
+        "mode": "direct_open",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "outcome": "recovered",
+        "errorCode": "SOURCE_NOT_FOUND",
+        "routeRecoveryResult": "recovered_to_library",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      {
+        "mode": "reload",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "outcome": "recovered",
+        "errorCode": "SOURCE_NOT_FOUND",
+        "routeRecoveryResult": "recovered_to_library",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      {
+        "mode": "back",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "outcome": "recovered",
+        "errorCode": "SOURCE_NOT_FOUND",
+        "routeRecoveryResult": "recovered_to_library",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      },
+      {
+        "mode": "reopen",
+        "workspaceId": "ws_default",
+        "sourceId": "src_00000000000000000000010010",
+        "outcome": "recovered",
+        "errorCode": "SOURCE_NOT_FOUND",
+        "routeRecoveryResult": "recovered_to_library",
+        "observedAt": "2026-09-08T10:39:50.416Z"
+      }
+    ]
+  }
+}

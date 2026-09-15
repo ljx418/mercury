@@ -1,5 +1,11 @@
 # Navia / 伴航 V1 PRD
 
+> 2026-09-15 V2-PX 状态：T04.1 全新隔离重放与真实 Chrome 复验已取得独立实现出门 `LIMITED PASS`（Fatal 0 / Major 0 / Minor 0），候选为 `t04-r4-resolved-invocation-20260914t145648z`。PX6-0..5 的 machine-only 候选 `px6-machine-exit-20260914t164500z` 已通过独立实施出门审计（Fatal 0 / Major 0 / Minor 0），仅取得机器阶段 `LIMITED PASS`：A01..A14 passed、A15/A16 pending。真实人类仍须在可见 Chrome 完成 H01..H07，自动化不得代签。PX6-7 还需先冻结“FinalizationCandidate -> 独立终审 -> FinalDisposition”两步握手，当前 production finalizer fail-closed。Human Review、G7、`finalPassed` 仍为 pending/pending/false，因此 PX-5 仍 FAIL/REOPENED，PX-6 尚未通过，V2/RKM 均不得宣称完成。
+
+> 2026-09-09 V2-RKM 文档增量：本机双服务的真实知识库、指定对话记忆与可逆维护目标见第17.3节。当前只批准文档，不批准代码/模型调用；PX-5仍FAIL、PX-6仍BLOCKED。无费用硬上限，仅用量与估算；永久Forget仍人工确认。
+
+> 2026-09-09 PX-5 修复增量（历史立项基线，当前执行状态见 17.1）：用户批准Runtime显式路径授权、手动扫描/导入、撤销后阻止新扫描/导入，并采用隔离Git验收快照。新增接口/限制/并发语义以 [修复执行合同](design/v2-px-5-repair-execution-contract.md) 与 `contracts/v2_local_permission.schema.json` 为准。该增量当时要求先经实现前审计；当前 T01..T02.2 已取得各自限定结论，但 PX-5 仍 REOPENED、PX-6 仍 BLOCKED，不改变V1历史结论或承诺真实data_service/RAG。
+
 版本：V1.0 PRD Baseline
 日期：2026-05-31
 产品名：Navia / 伴航
@@ -1787,7 +1793,7 @@ V2 当前门禁口径：
 ```text
 Go for V2 Memory / Personal Knowledge Base documentation and implementation-baseline synchronization.
 V2-1..V2-6 mock-first / controlled-boundary baseline recorded.
-Go for V2 planning-aligned local knowledge acceptance claim after V2-7 evidence passes; No-Go for V2 ready / RAG ready claims.
+V2-7 evidence passed; the active allowed claim is V2 planning-aligned local knowledge acceptance only. No-Go for V2 ready / RAG ready claims.
 ```
 
 V2-0 P0 产物当前作为实现基线输入，后续任何真实 data_service 产品化前仍必须重新复核：
@@ -1797,9 +1803,9 @@ V2-0 P0 产物当前作为实现基线输入，后续任何真实 data_service �
 - data_service 锁定与 Adapter spike：仓库路径、commit / version、license、auth mode、API snapshot、capability matrix、Navia mapping、unsupported list、fallback route。
 - 原型同步：补齐 ServiceStatusBanner、DataServiceStatusCard、KnowledgeBuildStatus；保存流程改为单次点击后异步轮询 / 状态订阅；移除过期的“尚无 stage gate / drawio / 验收门槛”文案。
 - Workspace 承载形态：冻结 Side Panel 与独立 Knowledge Workspace 的职责边界和路由形态。
-- 生命周期 ADR：冻结 source revision、dedup / idempotency、operation_id、retry / cancel / resume、permission revoke、forget cascade、credential redaction、audit log。
+- 生命周期 ADR：冻结 source revision、dedup / idempotency、operation_id、用户主动 retry、当前不支持 cancel / resume、permission revoke、forget cascade、credential redaction、audit log。
 
-V2-7 真实数据验收必须补齐：
+V2-7 真实数据验收已经补齐并通过，冻结证据包括：
 
 ```text
 docs/active/project/evidence/v2_memory_personal_knowledge_base/sample-manifest.json
@@ -1808,7 +1814,7 @@ docs/active/project/evidence/v2_memory_personal_knowledge_base/acceptance-report
 docs/active/project/evidence/v2_memory_personal_knowledge_base/screenshots/
 ```
 
-V2-7 通过前不得声明；当前 V2-7 证据已允许声明：
+V2-7 已通过，当前仅允许声明：
 
 ```text
 V2 Memory / Personal Knowledge Base passed planning-aligned local knowledge acceptance.
@@ -1835,11 +1841,303 @@ Extension Workspace Page:
   DataServiceStatusCard
 ```
 
-如果未来 V2-0 选择 localhost Web Workspace 或其他承载形态，必须更新 PRD、架构、drawio、原型和验收计划后才能进入 V2-1。
+V2-PX 当前已选择路线 A：`Extension Workspace Page`。`localhost Web Workspace` 仅保留为路线 A 在 PX-1 entrypoint spike 中被技术事实阻塞后的回退路线；切换前必须打回 PX-0，并同步 PRD、架构、drawio、原型、合同和验收计划。权威决策见 `design/v2-external-brain-workspace-hosting-adr.md`。
+
+### 17.1 V2-PX 外脑双容器产品化
+
+V2-7 已证明 planning-aligned local knowledge acceptance，但当前完整 Knowledge 管理面仍主要承载在窄 Side Panel 中，尚未形成用户可从网页伴读入口自然进入的独立宽屏管理工作台。下一阶段固定为 `V2-PX External Brain Productization`，只补齐 Side Panel 快捷面、Extension Workspace Page、入口、路由、跨容器状态恢复和真实 Chrome 产品化证据，不改写已通过的 V2-7 合同与后端能力结论。
+
+阶段目标体验：
+
+```text
+普通网页
+-> Navia Launcher / Side Panel
+-> 读取并由用户主动保存当前页
+-> trace_ready 后点击“查看来源”
+-> Extension Workspace Page 新标签页打开对应 Source Detail
+-> 用户在宽屏 Workspace 管理 Sources / Ask / Graph / Permissions / Forget
+-> 原网页与 Side Panel 保留，用户可继续伴读
+```
+
+用户入口必须至少包含：
+
+- `查看来源`：当前 source 达到 `trace_ready` 后出现，打开对应 `workspaceId + sourceId` 的 Source Detail。
+- `打开工作台`：Side Panel 快捷动作，打开当前 Workspace 的 Source Library。
+- `在工作台中打开`：Side Panel Knowledge 视图顶部入口，打开与当前上下文一致的 Workspace route。
+
+双容器职责：
+
+| 容器 | 承担 | 不承担 |
+|---|---|---|
+| Side Panel Quick Surface | 保存当前页、服务状态摘要、当前 source build / trace、Ask current workspace 快捷入口、Trace 和 Workspace 入口 | 长期来源管理、宽图谱、权限和删除审计主界面 |
+| Extension Workspace Page | Workspace 切换、Source Library / Detail、Ask with Sources、Knowledge Graph、PermissionRoot、Forget、服务诊断 | 自动读取宿主网页、直接控制宿主 DOM、绕过 Runtime 生成知识事实 |
+
+两个容器只能传递和恢复稳定标识：`workspaceId`、`sourceId`、`operationId`、route intent。不得通过 URL、Chrome message 或前端缓存复制大块网页正文、答案或图谱事实；Workspace Page 打开后必须通过共享 `runtimeClient.ts` 重新读取 Runtime 权威状态。
+
+目标路由语义：
+
+```text
+workspace.html#/knowledge/sources?workspaceId=:workspaceId
+workspace.html#/knowledge/sources/:sourceId?workspaceId=:workspaceId
+workspace.html#/knowledge/ask?workspaceId=:workspaceId
+workspace.html#/knowledge/graph?workspaceId=:workspaceId
+workspace.html#/knowledge/settings/permissions?workspaceId=:workspaceId
+```
+
+`Source Library` 与 `Source Detail` 是两个独立 route intent；前者只要求 `workspaceId`，后者必须同时具备 `workspaceId + sourceId`。Route A 的公开产物名冻结为 `workspace.html`，WXT entrypoint 配置必须生成该文件；若 PX-1 spike 证明无法在不扩大权限或破坏 CSP 的前提下生成，必须停止并返回 PX-0 评审，不得在实现中临时改名。route intent、直接打开、刷新、重开、Back、无效 ID 恢复和同一 Workspace / Source 身份不得改变。重复点击入口应优先聚焦已存在的 Workspace 标签页；无法复用时才创建新标签页，且不得触发 source 重复导入。
+
+路线 A 的 PX-1 spike 只有在以下条件同时成立时才通过：构建产物中存在可由 `chrome.runtime.getURL` 解析的 Workspace 页面；生产入口可打开或聚焦它；直接打开、刷新、Back 和重开不丢失 route；CSP / extension permission 不要求扩大到远端脚本或宽泛 host permission；Runtime offline 时页面仍能打开并显示本地推导的诊断状态。任一条件被不可修复的 WXT / Manifest V3 / CSP 技术事实阻塞时，PX-1 必须停止并回到 PX-0 评审路线 B，不能在实现中静默切换宿主形态。
+
+阶段拆分：
+
+```text
+PX-0 文档、原型、合同和审计门禁
+PX-0.1 外部挑战审计闭环：同步 V2-7 完成态；修复 canonical route、direct-open/reload/Back、可恢复错误、Forget 四面状态；收紧合同、截图 metadata、生命周期决策和负向夹具
+PX-0.1b 可执行合同与审计包闭环：统一 Manifest v5 / Report v12 / Screenshot Metadata v6 / Execution Observation v6 / Human Review v3 / Validation Contracts 合同、63 条 RuleId、109 个 RFC 6902 正负夹具、G1-G7 推导算法、自包含原型审计件和哈希清单
+PX-0.2 验收工具实现：只有 PX-0.1b 外部或等价独立复审无 fatal / major 后，才允许实现 semantic validator 和负向测试；不含产品功能
+PX-1 Extension Workspace entrypoint 与 router
+PX-2 Side Panel Quick Surface 与三个生产入口
+PX-3 Background OpenWorkspaceAction、稳定 ID 交接、poll / reconnect
+PX-4 Workspace 组件产品化拆分与宽屏 UX
+PX-5 真实 Chrome E2E、报告和截图证据
+PX-6 PRD / 架构 / false-green / 人工产品体验出门审计
+```
+
+PX-5 修复执行在 2026-09-14 的当前状态：T01、T02 系列、T03 和 T04 均已取得各自限定 PASS；T02.5 是唯一 production-positive R2 输入。T03 以 T02.5 单一 sealed run 重算生产候选，T04 再用 R4-P/R4-E 两条隔离泳道完成确定性重放和全新真实 Chrome 复验。上述限定结论仍不等于 PX-5、PX-6 或 V2 通过。
+
+T03/R3 的产品责任不是新增用户功能，而是从 T02.5 原始事件重算既有体验是否真实发生。它采用以下单向证据链：
+
+```text
+T02.5 sealed raw / artifacts / Git snapshot
+-> ArtifactReader
+-> DerivedFacts（逐字段 eventId / artifact / Git blob provenance）
+-> shared Schema / semantic / TypeScript AST validation
+-> ProductionValidation
+-> pending Human Review
+-> pure Report JSON / HTML
+-> ProductionPackage
+-> InvocationRecord
+```
+
+T03 已把保存后查看来源、三个入口、五类 route 的 direct-open/reload/Back/reopen、无效 route 回库、Durable Forget、四类故障和四视口可访问性映射到原始证据；缺观察时仍只能输出失败 diagnostic 并退出非零，不得补写事实、跨 run 拼接、复制合同结果或自动签署 Human Review。T04.1 已用新全量 run 关闭 artifactRoot Minor 并取得 LIMITED PASS；PX6-0..5 只读该候选生成 machine-only review package 后必须停止。只有真实人类完成 H01..H07、提交有效 ReviewSubmission，且两步独立终审握手完成合同冻结后，PX6-7 才能重算 G7/final。
+
+V2-PX 出门后最多允许声明：
+
+```text
+V2-PX External Brain Productization passed dual-container real-Chrome acceptance.
+```
+
+该声明只表示 Side Panel 与 Extension Workspace 的入口、路由、生命周期、共享状态和真实浏览器路径通过；不得扩大为 `V2 ready`、完整外脑产品、最终 Monica-like UX、自动化知识维护或 RAG ready。
+
+V2-PX 不包含：
+
+- 自动遗忘、后台“做梦”、自动文件整理或自动摘要刷新。
+- 默认读取或移动本地文件。
+- data_service Console 作为 Navia UI。
+- Web Research、PPT、Deep Research、多 Agent、产品浏览器自动操作、语音、桌宠或媒体内容理解。
+
+V2-PX 文档门禁入口：
+
+```text
+docs/active/project/stage-gates/v2-external-brain-productization.md
+docs/active/project/design/v2-external-brain-productization-development-acceptance-plan.md
+docs/active/project/design/v2-external-brain-productization-readiness-audit.md
+docs/active/project/design/v2-external-brain-workspace-hosting-adr.md
+docs/active/project/design/v2-external-brain-productization-prototype-review/index.html
+docs/active/project/design/v2-external-brain-productization-prototype-review/AUDIT_PACKAGE.md
+docs/active/project/design/v2-external-brain-productization-prototype-review/audit-package-manifest.json
+docs/active/project/design/v2-memory-personal-knowledge-base-gap.md
+docs/active/project/design/v2-memory-personal-knowledge-base-gap.drawio
+docs/active/project/contracts/v2_external_brain_workspace_contracts.schema.json
+docs/active/project/contracts/v2_external_brain_acceptance_manifest.schema.json
+docs/active/project/contracts/v2_external_brain_report.schema.json
+docs/active/project/contracts/v2_external_brain_screenshot_metadata.schema.json
+docs/active/project/contracts/v2_external_brain_execution_observation.schema.json
+docs/active/project/contracts/v2_external_brain_human_review.schema.json
+docs/active/project/contracts/v2_external_brain_validation_contracts.schema.json
+docs/active/project/contracts/fixtures/v2_external_brain/px-0.1b-positive-evidence-payload.json
+docs/active/project/contracts/fixtures/v2_external_brain/px-0.1b-positive-instances.json
+docs/active/project/contracts/fixtures/v2_external_brain/px-0.1-contract-fixtures.json
+docs/active/project/design/v2-external-brain-productization-semantic-validator.md
+```
+
+PX-0.1 冻结的 route/action 语义：
+
+- `open_workspace -> source_library`，不得携带 `sourceId`。
+- `view_source -> source_detail`，必须携带刚保存或当前选中的真实 `sourceId`。
+- `open_in_workspace` 保留当前 Knowledge route intent；当前上下文无有效 route 时回到 Source Library。
+- Route A 成功 URL 必须是 extension origin；localhost/http(s) 只能在路线 B 重新通过 PX-0 后出现。
+- direct-open、reload、Back、invalid/forbidden ID 必须在 Router 与真实 Chrome 中分别验证。
+
+PX-0.1b 冻结的证据语义：
+
+- 每一层 ID observation 必须显式标记 `observed / not_applicable / unavailable`；direct route 不得伪造 Side Panel / Background 参与，Runtime timeout / connection refused 不得伪造 response fingerprint。
+- `open_in_workspace` 必须记录进入前的 Knowledge route；有效上下文保持原 route，无效上下文回到 Source Library。
+- Forget 后，既有 source 在 direct-open、reload、Back 和 reopen 时均必须保持 `SOURCE_NOT_FOUND`；每个验收场景必须对同一 `workspaceId + sourceId` 记录 Forget 前 `trace_ready`、Forget 后 `forgotten` 和四次有序恢复结果。审查原型允许用 `localStorage` tombstone 模拟跨重载效果，但生产 Workspace 必须重新查询 Runtime 权威状态，严禁把前端 tombstone 当作真实删除证明。
+- tab reuse 必须在一次 observation 中记录至少两次有序 attempt：首次创建、再次聚焦同一 tab，且 ingest counter 不增加。
+- G4 使用 dependency-boundary 与 forbidden-call scan 两类结构化零违规结果；每个结果必须绑定验收 commit、source tree、`entrypoints/sidepanel`、`entrypoints/workspace`、`src/modules/knowledge_workspace` 三项 scan root、tracked path index、ruleset 和 allowlist hash。Contract fixture 从 Architecture Scan Manifest v2 的 `trackedPaths[].inlineSource` 读取源码，production 从冻结 commit 的 Git blob 读取源码；两种路径都必须由 validator 执行 AST import 与 Call/New/endpoint normalization 扫描。只记录 scannedFiles/violations 或信任 `violations=0` 不构成通过证据。
+- G6 使用 axe、keyboard 和 420/360/1280/768 四视口结构化结果；`viewport_sidepanel_360/420` 必须是 Side Panel 单面，`viewport_workspace_768/1280` 必须是 Workspace 单面，Manifest、Screenshot Metadata 与图片实际解码尺寸三方一致；`composite_review_only` 不计入产品证据。G7 的 Human Review 证据必须带 path + SHA-256。
+- semantic-positive 合同夹具必须由至少 29 个场景满足冻结的 G1-G7 算法；schema-positive 只能证明 shape，不得冒充产品 pass。Validation Contracts 固定 63 条 RuleId、41 条 semantic RuleId，以及 109 条带 `requirementId + requirementKey + rule/layer/primaryFailure` 的 mandatory requirement；109 个负例只允许完整根实例和 RFC 6902 patch，registry 与 case 必须逐字段相等。SemanticResult 必须绑定 semantic spec、实际 validator implementation（PX-0.2）和排除自引用 Report 的 positive raw payload 原始文件 hash。
+- 五类 Knowledge route 的成功恢复矩阵必须同时覆盖 direct-open、reload、Browser Back 和 reopen；Forget 后的失败恢复链不能替代一般成功 route 的 Back/reopen 证据。所有恢复都必须保持 canonical route、`workspaceId` 与可选 `sourceId` 一致。
+- Contract fixture 的虚拟 artifact 必须逐路径绑定一次解析的 UTF-8 或冻结 canonical JSON 原始字节及 SHA-256，不得对 `\\n` 等字符串进行第二次反转义。每个 passed scenario 的 Report `screenshotPaths[i]` 必须与 paired Screenshot Metadata `imagePath` 完全相同并解析到同一图片字节。Human Review 必须携带与 Report 相同的 evidenceClass；contract fixture 只能签署“非产品验收”的 fixture 声明。
+- G4 必须由 `Architecture Scan Manifest v2` 冻结 repository commit、tracked path/mode/blob、三项 scan root、排序与行格式、source tree/path index、ruleset/allowlist artifact 和封闭排除项；排除项不得覆盖目标源码目录。
+- 合同夹具必须标记 `evidenceClass=contract_fixture`，使用真实解码尺寸的虚拟 PNG 和不同 source 原始字节；PX-5 产品证据必须使用 `production_acceptance + real_chrome_dual_container`，不得引用 `virtual/*`、审查原型或合同夹具。
+- requestId 相等、valid/invalid prior context 因果、route event 身份、attempt 顺序/时间、durable Forget 同 workspace/source 等跨对象要求属于 semantic rule，不能因为各对象分别通过 JSON Schema 就判定通过。
+- `sourceSampleId` 与 Runtime `sourceId` 属于不同命名空间；真实截图必须验证 magic、可解码性和实际像素尺寸，不能用文本文件改名 `.png` 或只靠 SHA-256 冒充截图。
+
+PX-0.1 / PX-0.1b 只修订文档合同、审计包和原型，不是生产实现或 PX 完成证据。旧原型 `qa-summary.json` 的 54/54 仅为修订前视觉基线，不得支持当前 route、Forget 或 accessibility PASS。PX-0.1b 未经完整包独立复审前，PX-0.2 和 PX-1 均为 No-Go。
+
+### 17.2 V2.x 自动化知识维护、遗忘与“做梦”机制探索
+
+当前 V2 Forget Source 的权威基线仍是**用户主动发起**：用户选择 source，查看影响范围，完成二次确认，再由系统通过 Source Library、Ask with Sources、Knowledge Graph 和 Source Trace 的 before / after 结果证明遗忘生效。该基线不得被后台任务、模型判断或“做梦”机制绕过。
+
+当前机制仍有较大优化空间。后续 V2.x 可研究一种低优先级、可暂停、可审计的后台知识维护循环，暂称 `Knowledge Dream Cycle`。这里的“做梦”是产品与工程隐喻，指系统在空闲、用户预约或用户手动触发时，对**用户已经保存的 source、主动创建的笔记和显式授权目录中的资料**进行反思、整理、去重和总结刷新；它不代表自主意识，也不授权系统联网搜索、自动浏览网页或扫描未授权本地文件。
+
+未来探索目标：
+
+- 自动化文件与知识整理：识别重复 source、旧 revision、标签缺失、workspace 归类不合理、低价值内容和相互矛盾的摘要，生成标签、虚拟目录、workspace 调整、合并或归档建议。
+- 高质量总结刷新：基于原始 source revision 和 `EvidenceRef` 重新生成或修订摘要，保留冲突观点、不确定性和 degraded reason，避免“摘要再总结”造成事实漂移。
+- 自动化遗忘辅助：根据用户配置的保留期限、访问频率、来源状态、重复度和证据价值生成 archive / forget candidate，但默认只提出建议，不直接永久删除。
+- 知识压缩与反思：把多条相近事实合并为有来源支持的高层总结，同时保留原始 source、revision、证据和可回溯关系，不能用压缩结果替换或伪造原始证据。
+- 安静运行：维护任务默认后台运行，不抢占浏览器焦点、不发出声音；用户可暂停、取消、查看进度和审计记录。
+
+建议生命周期：
+
+```text
+active
+-> stale_candidate
+-> consolidate_candidate
+-> archived
+-> forget_candidate
+-> quarantine
+-> forgotten
+```
+
+状态语义：
+
+- `consolidate_candidate` 只表示建议去重或生成 canonical summary，不删除原始 source。
+- `archived` 只降低默认展示和检索优先级，仍允许恢复和显式查询。
+- `forget_candidate` 只表示待用户审查的遗忘建议，不得写成已删除。
+- `quarantine` 是可撤销隔离期；系统必须记录恢复截止时间、受影响的 KnowledgeItem / graph edge / trace 和回滚信息。
+- `forgotten` 才是最终遗忘终态。默认仍要求用户确认；未来即使提供自动遗忘，也必须是用户显式开启的策略，并受 scope、retention window、confidence threshold、quarantine window、审计日志和 before / after 验证约束。
+- 共享 `KnowledgeItem` 仍被其他 source 支撑时，只允许移除目标 source 的贡献并重新计算派生关系，不得把共享事实一并静默删除。
+
+`Knowledge Dream Cycle` 候选流程：
+
+```text
+空闲 / 定时 / 用户手动触发
+-> 快照 workspace、source revision、PermissionRoot 和当前策略
+-> 检测重复、陈旧、低价值、冲突摘要、标签缺失和弱证据
+-> 生成整理、摘要刷新、归档和遗忘候选
+-> 用原始 source revision 与 EvidenceRef 做 grounding 校验
+-> 写入 Knowledge Maintenance Inbox
+-> 用户接受 / 拒绝 / 编辑，或按已授权的可逆策略自动应用
+-> 记录 MaintenanceRun、变更前后状态、证据、回滚和审计结果
+```
+
+目标前端体验应新增 `Knowledge Maintenance Inbox`（名称可在后续原型阶段调整）：
+
+- 每张建议卡展示建议动作、原因、置信度、受影响 source / evidence、可逆性和预计影响。
+- 用户可接受、拒绝、编辑、批量处理或选择“以后不再建议此类动作”。
+- 自动整理只允许优先修改 Navia metadata、标签、虚拟目录和 workspace membership；默认不得移动、重命名或删除宿主文件。
+- 未来如允许物理文件移动或重命名，必须按 PermissionRoot 单独授权，提供执行预览、冲突处理、回滚和路径脱敏审计；永久删除仍属于高风险动作。
+- 服务状态必须区分 `idle / running / paused / degraded / review_required / failed`，并能定位到具体 `MaintenanceRun`，不得合并成泛化“后端正常”。
+
+未来实现前应冻结的候选合同包括：
+
+```text
+KnowledgeMaintenancePolicy
+MaintenanceRun
+OrganizationProposal
+SummaryRevision
+ForgetCandidate
+QuarantineRecord
+MaintenanceAuditRecord
+```
+
+这些名称当前只用于规划，不是已发布 Runtime public contract。任何字段、枚举、状态迁移、幂等、并发、回滚和错误码必须在独立 V2.x stage gate 中冻结后才能进入实现。
+
+开源方案与研究候选仅作为技术调研输入，不代表已经选型或集成：
+
+| 候选 | 可借鉴能力 | Navia 需要额外治理的部分 |
+|---|---|---|
+| [Letta](https://github.com/letta-ai/letta) / memory blocks 与 archival memory | 分层记忆、可附加 / 分离的记忆块、后台 memory learning；其相关项目也把 sleep-time compute 描述为 dreaming | 不直接替代 Navia `KnowledgeSource` / `EvidenceRef` / Forget cascade；必须评估本地部署、数据边界、成本、并发覆盖和删除语义 |
+| [Generative Agents](https://arxiv.org/abs/2304.03442) | 从经历记录中周期性形成高层 reflection，可作为“做梦 / 反思”循环的概念参考 | 论文目标不是个人知识治理；Navia 必须增加来源 grounding、权限、可撤销和 false-forget 防线 |
+| [Paperless-ngx](https://docs.paperless-ngx.com/advanced_usage/) | 基于内容匹配自动分配标签、文档类型和 storage path，可参考文件整理与规则 / 模型结合方式 | Navia 默认只做虚拟整理；不得未经授权移动宿主文件，且需要处理 source revision、EvidenceRef 和 workspace 语义 |
+| [Mem0](https://github.com/mem0ai/mem0) | 可参考记忆抽取、实体关联、多信号检索和时间语义 | 当前新算法强调累积式 ADD，不等同于可验证遗忘；Navia 仍需独立设计 archive、quarantine、forget cascade 和恢复验证 |
+| [Memory Sandbox](https://arxiv.org/abs/2308.01542) | 把 memory 作为用户可查看、编辑、总结和共享的数据对象，可参考维护收件箱与用户控制体验 | 需要进一步落到 Navia source / graph / trace 四面的权限与删除一致性 |
+
+未来验收必须同时覆盖质量、可逆性和安全性，至少记录：
+
+```text
+groundedClaimRate
+summaryRevisionAcceptanceRate
+duplicateReductionRate
+organizationProposalAcceptanceRate
+forgetCandidateFalsePositiveRate
+quarantineRestoreSuccessRate
+forgetCascadeVerificationRate
+unauthorizedFileOperationCount
+```
+
+其中 `unauthorizedFileOperationCount` 必须为 `0`；其他指标的 numerator、denominator、operator 和 threshold 必须由后续 stage gate 基于真实数据冻结，不能在当前规划中用未经验证的阈值制造 false-green。
+
+本规划的门禁边界：
+
+- 当前 V2-7 通过结论不包含自动化遗忘、自动文件整理、后台“做梦”或高质量总结刷新完成声明。
+- 当前不得声明 `automated memory governance complete`、`autonomous forgetting complete`、`file organizer complete` 或 `dreaming mechanism implemented`。
+- 实质开发前必须新增独立 PRD / 目标架构 / stage gate / 合同 schema / 语义校验器 / 真实数据验收矩阵 / 隐私与安全审计。
+- `suggest-only` 必须是默认模式；自动应用只能覆盖用户明确授权且可逆的整理动作。
+- 永久自动遗忘默认关闭。若未来开放，必须作为高风险流程单独审计，并保留隔离期、撤销入口、审计记录和用户可见解释。
+- 不得借该规划引入默认本地文件读取、产品级浏览器自动操作、Web Research、多 Agent、语音、桌宠、PPT 或 Deep Research。
+- 本路线不属于 `V2-PX External Brain Productization` 的开发或出门范围；PX 报告不得把整理建议卡、自动摘要或自动遗忘写成已实现。
+
+### 17.3 V2-RKM 真实知识库与可逆记忆维护
+
+2026-09-10 `DOC-Closure` 门禁口径：当前只允许修订 D01..D09 的需求、合同设计与验收义务，不表示 T05/RKM-0 已开始。唯一实施顺序为 `T01 -> T02 -> T03 -> T04/PX-6 -> T05 -> T06 -> T07 -> T08 -> T09 -> T10`；T05 只有在 T01..T04/PX-6 通过、用户再次明确批准代码且 T05 实施前审计为 Fatal=0/Major=0 后才能开始。RKM 顶层验收分母固定为 39 条：S01..S14、S-01..S-16、RC-01a/RC-01b/RC-02a/RC-02b/RC-03/RC-04、IR-01..IR-03；`failed/pending/deferred` 均不得缩小分母或转写为通过。
+
+本轮独立审查补充：同scope/provider/purpose重授权须显式替代旧决定，不被历史拒绝永久锁死；更广workspace许可仍不覆盖source拒绝。普通维护暂停区分本地pending与DS run级ack，不影响无关Ask；策略范围/授权改变后旧run对账终结再建新run。见RKM合同3.7/3.9、验收8.1。新增详细实施工作包见开发6、逐阶段验收执行卡见验收9，当前均非已执行交付。
+
+2026-09-10风险再核查：维护默认关闭时不生成新建议/应用，开启suggest_only后才生成；运行完成和建议待审分开，重启暂停、不补跑错过日程。指定会话只提取开启后开始且完成的turn，完成消息与内部outbox同事务，关闭重开不回填。服务离线仍保留已认证的本地关闭/撤销入口，确认状态不得伪成功；永久Forget优先于旧建议/备份恢复，并清除相关派生快照。完整行为见RKM合同3.5..3.8、验收8；均为文档设计，未实现。
+
+2026-09-10复审补强：RKM新数据路由不因文件功能关闭而免认证；Runtime缺凭据拒绝访问，DS使用独立X-API-Key。撤销中RKM operation区分aborting/aborted（非旧build取消）；共享支持贡献与云外发权限分开。用量、截图、gold、图谱及宿主保护的可观测要求见验收第6节；S-1..S-16处置见[修订记录](evidence/v2_real_knowledge_maintenance/rkm-doc-review-remediation-2026-09-10.md)。原PX必须先出门，随后才实施RKM；仍仅文档，不放行代码。
+
+本节将已认可目标落为独立文档阶段，不把17.1的PX范围扩大，也不将17.2研究方案写成已实现。旧17.2关于后台“不联网”的约束，在RKM中仅放宽为用户明确授权scope/purpose/provider后的云模型调用；网络搜索、网页自动采集和未授权资料外发仍禁止。
+
+当前事实：独立workspace.html、入口和组件已存在，不能继续描述为未开发；R1后端F-1..6限定修复通过，PX-5 FAIL / REOPENED、PX-6 BLOCKED。默认 Runtime 仍保持 Mock 供合同测试；2026-09-15 已新增显式 `NAVIA_KNOWLEDGE_ADAPTER=data_service` 的 H01-RDS 实现候选，并用真实 `data_service` 完成 Runtime 级 source import/build/trace、重复保存和重启读取。该候选不等于 H01 真实 Chrome 三入口通过，也不等于 Query/Graph/Forget、完整 RAG 或 RKM 已集成。
+
+| 需求ID | 用户可见目标与约束 |
+|---|---|
+| RKM-REQ-01 | 三入口与双容器独立认证保持；403不冒充离线，token不共享或持久存储 |
+| RKM-REQ-02 | 真实网页/授权md、txt/笔记单次保存；跨双服务重启保留同source/版本/内容，幂等不重复 |
+| RKM-REQ-03 | 旧五route和维护/任务详情/知识策略新route支持direct/reload/Back/reopen，稳定ID由Runtime重读 |
+| RKM-REQ-04 | 明确显示Runtime、Adapter、data_service、source状态与下一步；真实服务失败不静默换Mock |
+| RKM-REQ-05 | 真实跨来源问答展示可回读证据、拒答无证据问题、保留冲突，fallback不算生成质量通过 |
+| RKM-REQ-06 | 知识图谱来自服务source/unit/relation；不可前端造事实或混用workspace |
+| RKM-REQ-07 | 引用精确跳回原文或诚实fallback/blocked；本地原件变化不更改已导入快照 |
+| RKM-REQ-08 | 文件读取、云处理、对话记忆分别授权；本地撤销立即阻止新操作/应用，远程以DS持久屏障ack为完成点；未确认显示revoking，明确已出站不可撤回范围 |
+| RKM-REQ-09 | 人工永久Forget覆盖知识副本及派生贡献，四面/重开/重启不复活；原始聊天和宿主原件不在删除范围 |
+| RKM-REQ-10 | 指定会话默认关闭；只提取开启后开始且完成的turn，记忆带消息出处且可遗忘；已提交事件可靠交接，不自动回填历史 |
+| RKM-REQ-11 | 默认关闭且mode=suggest_only；明确开启后可逆摘要/标签/虚拟归档；Inbox可接受/拒绝/恢复，旧revision不覆盖新内容、永久Forget不被restore撤销 |
+| RKM-REQ-12 | 云调用无金额硬上限；按真实调用量/usage估算费用，未知为null；安全暂停与服务限流仍生效 |
+| RKM-REQ-13 | 真实Side Panel360/420与Workspace768/1280可操作，焦点/键盘/截图/状态一致，维护不抢占焦点 |
+| RKM-REQ-14 | 双仓隔离源码与证据可追溯；机器/独立复审通过后人工签署，文档/原型不能代替产品验收 |
+
+部署主线为本机Runtime + data_service，扩展独立加载；Docker、外部Agent公共接口、站点自动采集、物理文件整理、自动永久删除、V3不计本轮目标。可逆维护仅修改产品自有知识记录。data_service只经Navia治理HTTP边界接入，必要公共API修复需独立分支及复审，不接管其现有私人workspace。
+
+执行顺序：原R1(T01)->R2(T02)->R3(T03)->R4/PX-6(T04)，之后RKM-0合同/原型冻结(T05)->RKM-1真实API适配(T06)->RKM-2持久知识与问答(T07)->RKM-3对话记忆(T08)->RKM-4可逆维护(T09)->RKM-5全量人工出门(T10)。代码批准和逐阶段预审计仍是硬前置，不存在从文档阶段直接分叉进入RKM实现的第二条实施线。
+
+权威文件：[架构](design/v2-real-knowledge-maintenance-architecture.md)、[合同](design/v2-real-knowledge-maintenance-contracts.md)、[开发](design/v2-real-knowledge-maintenance-development-plan.md)、[验收](design/v2-real-knowledge-maintenance-acceptance-plan.md)、[ADR](design/v2-real-knowledge-maintenance-risk-adr.md)、[八页图纸索引](design/v2-real-knowledge-maintenance-gap.md)、[Stage Gate](stage-gates/v2-real-knowledge-maintenance.md)。所有需求到实体/任务/场景的映射见图纸索引。
+
+这些是目标而非结果。当前不得声明RKM、RAG、完整外脑或自动维护已完成；将来通过也只允许冻结语料和授权范围内的有限声明，具体指标见S01..14。RKM-0机器合同与RKM-1真实spike尚未完成，当前不声称全部自动化开发输入完备。
+
+本轮验收细化不新增产品范围：REQ05有答案题必须核验gold必要结论完整覆盖，完整回答率>=0.9，固定六道跨来源题6/6实质使用双方必要证据，不只验证检索命中；REQ13增加用户输入时后台维护完成/失败不抢焦点S13-A。阶段必需分母事前冻结，deferred不能缩分母放行。维护重启只保证恢复后本地零新提交、DS pauseAck后旧epoch零新发送/发布；通知到达前已出站如实记录，不承诺远程瞬时停机。
 
 ## 18. V3 Media Companion 规划目标
 
-`V3 Media Companion` 是 V1 当前网页伴读和 V2 个人知识资产之后的媒体伴随体验阶段。它面向 YouTube、B站等视频网站，把 Navia 从“读网页正文”扩展到“陪用户看视频、理解字幕 / 转录 / 时间轴、生成视频概览和可反跳证据”。本阶段当前只做文档开发和目标体验规划，不进入实际代码开发，也不改写 V1 complete 或 post-V1 hardening 基线。
+> 权威性说明（2026-09-15）：本节中早期的 YouTube+B站并行、24 页联合出门以及“ASR 全部延后到 V3.x”描述仅保留为历史规划背景。当前可执行范围以 §18.1 为准：B站优先、12 页固定分母、字幕优先，并仅在用户显式授权当前标签页音频后使用本地 ASR fallback。YouTube 在 B站出门后复用同一合同；VLM、OCR、视频帧语义理解和云端媒体理解仍属于 V3.x。
+
+`V3 Media Companion` 是 V1 当前网页伴读和 V2 个人知识资产之后的媒体伴随体验阶段。长期目标覆盖 B站、YouTube 等视频网站；当前可执行首批范围只面向 B站视频详情页，把 Navia 从“读网页正文”扩展到“陪用户看视频、理解字幕 / 本地转录 / 时间轴、生成视频概览和可反跳证据”。YouTube 只能在 B站固定矩阵出门后复用同一合同。本阶段当前只做文档开发和目标体验规划，不进入 V3 媒体代码开发，也不改写 V1 complete 或 post-V1 hardening 基线。
 
 V3 目标体验应接近 Monica 在 YouTube 的视频伴随体验，并参考 B站 AI 视频总结生态中用户已经熟悉的能力：视频省流总结、章节大纲、视频导图、字幕搜索、继续追问、时间戳跳转、截图证据和可复制 / 分享摘要。参考竞品包括 Monica Video Summarizer、AI课代表、BibiGPT、NoteGPT Bilibili Summarizer、Eightify、HARPA、YouTube conversational AI，以及 Gemini Video Understanding 的真实多模态能力路线。
 
@@ -1850,7 +2148,7 @@ V3.0 Transcript-first Video Companion
   基于标题、简介、字幕 / 转录、章节、评论、弹幕 / 互动文本、页面 metadata、当前播放时间和浏览器截图证据。
 
 V3.x Multimodal Media Understanding
-  规划 ASR、VLM、OCR、video frame sampling、Gemini Video / Live API、直播 rolling transcript 和多模态证据治理。
+  规划通用/云端 ASR、VLM、OCR、video frame sampling、Gemini Video / Live API、直播 rolling transcript 和多模态证据治理；不包含 §18.1 已限定的“显式当前标签页音频 -> 本地 ASR”路径。
 ```
 
 V3.0 目标用户路径：
@@ -1884,7 +2182,7 @@ V3.0 不得声明：
 完整 Monica-like YouTube parity complete。
 真实视频画面 / 音频已被理解。
 直播实时理解 ready。
-ASR / VLM / OCR / Gemini Video ready。
+通用/云端 ASR、VLM、OCR、Gemini Video ready；§18.1 限定的本地 ASR fallback 除外。
 跨视频知识库 / RAG ready。
 自动下载、提取或处理受版权保护的视频流。
 默认本地文件读取。
@@ -1902,7 +2200,47 @@ V3.x 多模态路线必须先冻结：
 V3 文档开发出门条件：
 
 - PRD、目标架构、开发计划、验收计划、stage gate、gap companion 和 drawio 使用同一阶段名：`V3 Media Companion`。
-- drawio 不超过 8 页，必须包含目标体验、当前架构与目标架构差异、YouTube/B站输入链路、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、出门条件和 No-Go。
+- drawio 不超过 8 页，必须包含目标体验、当前架构与目标架构差异、B站字幕/本地 ASR 双输入链路、YouTube 后续映射边界、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、出门条件和 No-Go。
 - 文档必须明确 V3.0 和 V3.x 的交付边界，避免把多模态未来路线写成本阶段承诺。
 - 文档必须明确视频截图证据在 V3.0 只表示时间点可见帧证据；理解截图内容必须进入 V3.x。
 - 文档必须明确无字幕 / 无转录 / 无可见文本的视频必须 degraded 或 blocked，不得伪装成内容理解成功。
+
+### 18.1 2026-09-15 B站优先修订
+
+V3 的平台顺序调整为：先完成 B站视频详情页，再扩展 YouTube。首个锚点样本固定为：
+
+```text
+https://www.bilibili.com/video/BV1ZpYd66ELP
+```
+
+该样本在 2026-09-15 的公开能力探测中为单 P、约 792 秒且无公开字幕。它暴露了原 `Transcript-first` 规划的关键缺口：如果 ASR 完全延后，V3.0 对该样本只能正确降级，不能达成用户期望的图文大纲。因此 V3.0 改为：
+
+```text
+B站页内 / 公开字幕优先
+-> 字幕缺失时提示用户显式启动当前标签页音频采集
+-> 音频只进入本机 Runtime 的 LocalAsrAdapter
+-> 生成带时间戳和来源 hash 的 MediaTranscript
+-> 同一 VideoOutline 派生图文大纲、章节时间轴和 Media Mindmap
+```
+
+V3.0 的本地 ASR 是限定 fallback，不代表通用音频理解、云端语音服务或 VLM 已就绪。必须满足：
+
+- 只在用户点击后使用 Chrome 当前标签页音频捕获，不自动下载 B站媒体流。
+- 不在后台复用 cookie 获取音视频 URL，不绕过登录、地区、会员或风控限制。
+- 原始音频默认不持久化、不上传；取消、页面关闭或撤销后必须停止并清理临时数据。
+- 字幕和 ASR 都不可用时返回 `degraded/blocked`，不能由标题、简介、评论或模型常识生成伪大纲。
+- 图文笔记与 Media Mindmap 必须由同一个强类型 `VideoOutline` 派生，不能用模型 marker 正则作为事实权威。
+
+目标 B站用户路径：
+
+```text
+打开 BV1ZpYd66ELP
+-> Navia 识别 bvid/cid/单P/时长并显示“无公开字幕”
+-> 用户点击“开始本地转写”并确认只处理当前标签页音频
+-> UI 显示 capturing / transcribing / summarizing 进度，可取消
+-> 完成后展示图文大纲、章节时间轴、Media Mindmap 和证据覆盖
+-> 点击章节跳转播放器时间点
+-> 用户主动保存后，结果经 Runtime 写入真实 data_service
+```
+
+V3 实施前置增加 `H01-RDS`：真实 `data_service` 必须 connected，真实页面来源可持久化并在 Runtime 重启后重读。2026-09-15 Runtime 级候选已实现并用指定 B站页面元数据快照复验；H01 的 Side Panel、Workspace Library、Source Detail 三入口真实 Chrome 证据仍待执行，故 H01/PX-6 不得声明通过。BiliNote 路线研究与采纳/拒绝决定见 `design/v3-bilinote-bilibili-route-study.md`。

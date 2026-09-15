@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "stage": "V2-PX-6-automated-exit-audit",
+  "status": "WAITING_FOR_HUMAN_REVIEW",
+  "humanReviewStatus": "pending",
+  "finalReportPassed": false,
+  "drawioPages": 8,
+  "evidenceIndex": {
+    "path": "docs/active/project/evidence/v2_external_brain_productization/px-6/evidence-index.json",
+    "sha256": "fa7f85ecec64624dbfa626a248a351bc8d2e9a7dd1ebccb79e2ca2d3b7ac4c2b"
+  },
+  "issues": []
+}

@@ -1,0 +1,1932 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v2_external_brain_report.schema.json",
+  "title": "V2-PX Acceptance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "evidenceClass",
+    "acceptanceMode",
+    "claim",
+    "passed",
+    "humanReview",
+    "summary",
+    "gateResults",
+    "scenarioResults",
+    "testCommands",
+    "auditArtifacts",
+    "fatalIssues",
+    "majorIssues",
+    "warnings"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "v2-external-brain-report/v12"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evidenceClass": {
+      "enum": [
+        "contract_fixture",
+        "production_acceptance"
+      ]
+    },
+    "acceptanceMode": {
+      "enum": [
+        "contract_fixture",
+        "real_chrome_dual_container"
+      ]
+    },
+    "claim": {
+      "enum": [
+        "V2-PX External Brain Productization passed dual-container real-Chrome acceptance.",
+        "V2-PX contract fixture satisfied the frozen semantic rules; not product acceptance evidence.",
+        "V2-PX External Brain Productization acceptance did not pass."
+      ]
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "humanReview": {
+      "$ref": "#/$defs/HumanReviewRef"
+    },
+    "summary": {
+      "$ref": "#/$defs/Summary"
+    },
+    "gateResults": {
+      "$ref": "#/$defs/GateResults"
+    },
+    "scenarioResults": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "$ref": "#/$defs/ScenarioResult"
+      }
+    },
+    "testCommands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/TestCommand"
+      }
+    },
+    "auditArtifacts": {
+      "$ref": "#/$defs/AuditArtifacts"
+    },
+    "fatalIssues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "majorIssues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidenceClass": {
+            "const": "contract_fixture"
+          }
+        },
+        "required": [
+          "evidenceClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "humanReview": {
+            "properties": {
+              "evidenceClass": {
+                "const": "contract_fixture"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidenceClass": {
+            "const": "production_acceptance"
+          }
+        },
+        "required": [
+          "evidenceClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "humanReview": {
+            "properties": {
+              "evidenceClass": {
+                "const": "production_acceptance"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidenceClass": {
+            "const": "contract_fixture"
+          }
+        },
+        "required": [
+          "evidenceClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "acceptanceMode": {
+            "const": "contract_fixture"
+          },
+          "claim": {
+            "const": "V2-PX contract fixture satisfied the frozen semantic rules; not product acceptance evidence."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidenceClass": {
+            "const": "production_acceptance"
+          }
+        },
+        "required": [
+          "evidenceClass"
+        ]
+      },
+      "then": {
+        "properties": {
+          "acceptanceMode": {
+            "const": "real_chrome_dual_container"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "passed": {
+            "const": true
+          }
+        },
+        "required": [
+          "passed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "enum": [
+              "V2-PX External Brain Productization passed dual-container real-Chrome acceptance.",
+              "V2-PX contract fixture satisfied the frozen semantic rules; not product acceptance evidence."
+            ]
+          },
+          "humanReview": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/HumanReviewRef"
+              },
+              {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              }
+            ]
+          },
+          "fatalIssues": {
+            "maxItems": 0
+          },
+          "majorIssues": {
+            "maxItems": 0
+          },
+          "gateResults": {
+            "$ref": "#/$defs/PassedGateResults"
+          },
+          "scenarioResults": {
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/ScenarioResult"
+                },
+                {
+                  "properties": {
+                    "passed": {
+                      "const": true
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "testCommands": {
+            "items": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/TestCommand"
+                },
+                {
+                  "properties": {
+                    "passed": {
+                      "const": true
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "passed": {
+            "const": false
+          }
+        },
+        "required": [
+          "passed"
+        ]
+      },
+      "then": {
+        "properties": {
+          "claim": {
+            "const": "V2-PX External Brain Productization acceptance did not pass."
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "RouteIntent": {
+      "enum": [
+        "source_detail",
+        "source_library",
+        "ask",
+        "graph",
+        "permissions"
+      ]
+    },
+    "WorkspaceErrorCode": {
+      "enum": [
+        "WORKSPACE_NOT_FOUND",
+        "SOURCE_NOT_FOUND",
+        "FORBIDDEN",
+        "INVALID_ROUTE",
+        "RUNTIME_OFFLINE",
+        "OPEN_WORKSPACE_FAILED",
+        "UNSUPPORTED_HOST_STRATEGY"
+      ]
+    },
+    "Summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceCorpusTotal",
+        "uniqueRealWebSources",
+        "uniqueExplicitLocalDocumentSources",
+        "uniqueNoteMarkdownSources",
+        "scenariosTotal",
+        "scenariosPassed",
+        "entryPointsCovered",
+        "routesCovered",
+        "routeDirectOpenReloadPairs",
+        "invalidOrForbiddenRecoverySamples",
+        "idConsistencySamples",
+        "statusFaultsCovered",
+        "permissionSamples",
+        "forgetSamples",
+        "v2RegressionPassed"
+      ],
+      "properties": {
+        "sourceCorpusTotal": {
+          "type": "integer",
+          "minimum": 12
+        },
+        "uniqueRealWebSources": {
+          "type": "integer",
+          "minimum": 6
+        },
+        "uniqueExplicitLocalDocumentSources": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "uniqueNoteMarkdownSources": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "scenariosTotal": {
+          "type": "integer",
+          "minimum": 12
+        },
+        "scenariosPassed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "entryPointsCovered": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "routesCovered": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "routeDirectOpenReloadPairs": {
+          "type": "integer",
+          "minimum": 5
+        },
+        "invalidOrForbiddenRecoverySamples": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "idConsistencySamples": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "statusFaultsCovered": {
+          "type": "integer",
+          "minimum": 4
+        },
+        "permissionSamples": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "forgetSamples": {
+          "type": "integer",
+          "minimum": 3
+        },
+        "v2RegressionPassed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GateResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "G1_entry",
+        "G2_route",
+        "G3_lifecycle",
+        "G4_architecture",
+        "G5_status",
+        "G6_ux_accessibility",
+        "G7_evidence"
+      ],
+      "properties": {
+        "G1_entry": {
+          "type": "boolean"
+        },
+        "G2_route": {
+          "type": "boolean"
+        },
+        "G3_lifecycle": {
+          "type": "boolean"
+        },
+        "G4_architecture": {
+          "type": "boolean"
+        },
+        "G5_status": {
+          "type": "boolean"
+        },
+        "G6_ux_accessibility": {
+          "type": "boolean"
+        },
+        "G7_evidence": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PassedGateResults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "G1_entry",
+        "G2_route",
+        "G3_lifecycle",
+        "G4_architecture",
+        "G5_status",
+        "G6_ux_accessibility",
+        "G7_evidence"
+      ],
+      "properties": {
+        "G1_entry": {
+          "const": true
+        },
+        "G2_route": {
+          "const": true
+        },
+        "G3_lifecycle": {
+          "const": true
+        },
+        "G4_architecture": {
+          "const": true
+        },
+        "G5_status": {
+          "const": true
+        },
+        "G6_ux_accessibility": {
+          "const": true
+        },
+        "G7_evidence": {
+          "const": true
+        }
+      }
+    },
+    "ObservedIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sidePanel",
+        "background",
+        "runtime",
+        "workspace"
+      ],
+      "properties": {
+        "sidePanel": {
+          "$ref": "#/$defs/ObservedContainerIds"
+        },
+        "background": {
+          "$ref": "#/$defs/ObservedContainerIds"
+        },
+        "runtime": {
+          "$ref": "#/$defs/ObservedContainerIds"
+        },
+        "workspace": {
+          "$ref": "#/$defs/ObservedContainerIds"
+        }
+      }
+    },
+    "ObservedContainerIds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "observed",
+            "not_applicable",
+            "unavailable"
+          ]
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "observed"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "workspaceId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "not_applicable",
+                  "unavailable"
+                ]
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "workspaceId"
+                  ]
+                },
+                {
+                  "required": [
+                    "sourceId"
+                  ]
+                },
+                {
+                  "required": [
+                    "operationId"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "StatusObservation": {
+      "description": "A complete snapshot of the canonical Knowledge Status contract. Reusing the source contract prevents report and screenshot evidence from inventing a Runtime response while Runtime is offline.",
+      "$ref": "v2_knowledge_status.schema.json"
+    },
+    "PermissionVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "beforeState",
+        "afterState",
+        "newScanStopped",
+        "retainedImportedSources"
+      ],
+      "properties": {
+        "beforeState": {
+          "const": "granted"
+        },
+        "afterState": {
+          "const": "revoked"
+        },
+        "newScanStopped": {
+          "const": true
+        },
+        "retainedImportedSources": {
+          "const": true
+        }
+      }
+    },
+    "ForgetVerification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaceId",
+        "sourceId",
+        "before",
+        "after",
+        "statusBefore",
+        "statusAfter",
+        "reopenChecks",
+        "sharedItemRecomputed",
+        "supportingSourceIds"
+      ],
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "before": {
+          "$ref": "#/$defs/ForgetBefore"
+        },
+        "after": {
+          "$ref": "#/$defs/ForgetAfter"
+        },
+        "statusBefore": {
+          "allOf": [
+            {
+              "$ref": "v2_knowledge_status.schema.json"
+            },
+            {
+              "properties": {
+                "sourceBuildStatus": {
+                  "const": "trace_ready"
+                }
+              }
+            }
+          ]
+        },
+        "statusAfter": {
+          "allOf": [
+            {
+              "$ref": "v2_knowledge_status.schema.json"
+            },
+            {
+              "properties": {
+                "sourceBuildStatus": {
+                  "const": "forgotten"
+                }
+              }
+            }
+          ]
+        },
+        "reopenChecks": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "$ref": "v2_external_brain_execution_observation.schema.json#/$defs/ForgetReopenCheck"
+          },
+          "allOf": [
+            {
+              "contains": {
+                "properties": {
+                  "mode": {
+                    "const": "direct_open"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "mode": {
+                    "const": "reload"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "mode": {
+                    "const": "back"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "properties": {
+                  "mode": {
+                    "const": "reopen"
+                  }
+                },
+                "required": [
+                  "mode"
+                ]
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        },
+        "sharedItemRecomputed": {
+          "type": "boolean"
+        },
+        "supportingSourceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "sharedItemRecomputed": {
+                "const": true
+              }
+            },
+            "required": [
+              "sharedItemRecomputed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "supportingSourceIds": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "sharedItemRecomputed": {
+                "const": false
+              }
+            },
+            "required": [
+              "sharedItemRecomputed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "supportingSourceIds": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ForgetBefore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "libraryPresent",
+        "askPresent",
+        "graphPresent",
+        "tracePresent"
+      ],
+      "properties": {
+        "libraryPresent": {
+          "const": true
+        },
+        "askPresent": {
+          "const": true
+        },
+        "graphPresent": {
+          "const": true
+        },
+        "tracePresent": {
+          "const": true
+        }
+      }
+    },
+    "ForgetAfter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "libraryAbsent",
+        "askAbsent",
+        "graphAbsent",
+        "traceAbsent"
+      ],
+      "properties": {
+        "libraryAbsent": {
+          "const": true
+        },
+        "askAbsent": {
+          "const": true
+        },
+        "graphAbsent": {
+          "const": true
+        },
+        "traceAbsent": {
+          "const": true
+        }
+      }
+    },
+    "ScenarioResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenarioId",
+        "sourceSampleIds",
+        "sourceKinds",
+        "passed",
+        "dataMode",
+        "entryPoint",
+        "routeIntent",
+        "resolvedPath",
+        "routeRecoveryResult",
+        "openOutcome",
+        "executionMode",
+        "coverageTags",
+        "successfulRecoveryModes",
+        "workspaceId",
+        "observedIds",
+        "duplicateIngestDetected",
+        "faultInjection",
+        "statusObservation",
+        "executionObservationPath",
+        "executionObservationSha256",
+        "screenshotPaths",
+        "screenshotMetadataPaths",
+        "logArtifacts",
+        "conclusion"
+      ],
+      "properties": {
+        "scenarioId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceSampleIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sourceKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "real_web",
+              "explicit_local_document",
+              "note_markdown"
+            ]
+          }
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "dataMode": {
+          "const": "real"
+        },
+        "entryPoint": {
+          "enum": [
+            "view_source",
+            "open_workspace",
+            "open_in_workspace",
+            "direct_route",
+            "status_recovery",
+            "permission",
+            "forget"
+          ]
+        },
+        "routeIntent": {
+          "$ref": "#/$defs/RouteIntent"
+        },
+        "resolvedPath": {
+          "type": "string",
+          "pattern": "^#/knowledge/"
+        },
+        "routeRecoveryResult": {
+          "enum": [
+            "not_applicable",
+            "restored_direct_open",
+            "restored_after_reload",
+            "restored_after_back",
+            "restored_after_reopen",
+            "recovered_to_library",
+            "blocked_with_recovery_action"
+          ]
+        },
+        "openOutcome": {
+          "enum": [
+            "focused_existing",
+            "created_new",
+            "direct_open_restored",
+            "recovered",
+            "blocked",
+            "not_applicable"
+          ]
+        },
+        "executionMode": {
+          "enum": [
+            "contract_fixture",
+            "headless_real_chrome",
+            "visible_real_chrome"
+          ]
+        },
+        "coverageTags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "successfulRecoveryModes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "direct_open",
+              "reload",
+              "back",
+              "reopen"
+            ]
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operationId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedIds": {
+          "$ref": "#/$defs/ObservedIds"
+        },
+        "duplicateIngestDetected": {
+          "type": "boolean"
+        },
+        "faultInjection": {
+          "enum": [
+            "none",
+            "runtime_offline",
+            "adapter_blocked",
+            "data_service_unreachable",
+            "source_failed",
+            "source_degraded"
+          ]
+        },
+        "statusObservation": {
+          "$ref": "#/$defs/StatusObservation"
+        },
+        "errorCode": {
+          "$ref": "#/$defs/WorkspaceErrorCode"
+        },
+        "permissionVerification": {
+          "$ref": "#/$defs/PermissionVerification"
+        },
+        "forgetVerification": {
+          "$ref": "#/$defs/ForgetVerification"
+        },
+        "executionObservationPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "executionObservationSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "screenshotPaths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "screenshotMetadataPaths": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "logArtifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ArtifactRef"
+          }
+        },
+        "conclusion": {
+          "enum": [
+            "passed",
+            "failed",
+            "degraded",
+            "blocked"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "passed": {
+                "const": true
+              }
+            },
+            "required": [
+              "passed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "duplicateIngestDetected": {
+                "const": false
+              },
+              "conclusion": {
+                "const": "passed"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "passed": {
+                "const": false
+              }
+            },
+            "required": [
+              "passed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "conclusion": {
+                "enum": [
+                  "failed",
+                  "degraded",
+                  "blocked"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "routeRecoveryResult": {
+                "enum": [
+                  "recovered_to_library",
+                  "blocked_with_recovery_action"
+                ]
+              }
+            },
+            "required": [
+              "routeRecoveryResult"
+            ]
+          },
+          "then": {
+            "required": [
+              "errorCode"
+            ]
+          }
+        }
+      ]
+    },
+    "TestCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "testKind",
+        "checkId",
+        "command",
+        "passed",
+        "exitCode",
+        "signal",
+        "logArtifact",
+        "result"
+      ],
+      "properties": {
+        "testKind": {
+          "enum": [
+            "schema",
+            "semantic",
+            "architecture_boundary",
+            "axe",
+            "keyboard",
+            "viewport",
+            "chrome_e2e",
+            "v2_regression"
+          ]
+        },
+        "checkId": {
+          "enum": [
+            "schema_meta_validation",
+            "schema_fixture_validation",
+            "semantic_validator",
+            "architecture_dependency_boundary",
+            "architecture_forbidden_call_scan",
+            "axe_accessibility",
+            "keyboard_accessibility",
+            "viewport_sidepanel_420",
+            "viewport_sidepanel_360",
+            "viewport_workspace_1280",
+            "viewport_workspace_768",
+            "chrome_e2e",
+            "v2_regression"
+          ]
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "exitCode": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "signal": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "logArtifact": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "result": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SchemaResult"
+            },
+            {
+              "$ref": "#/$defs/SemanticResult"
+            },
+            {
+              "$ref": "#/$defs/ArchitectureResult"
+            },
+            {
+              "$ref": "#/$defs/AxeResult"
+            },
+            {
+              "$ref": "#/$defs/KeyboardResult"
+            },
+            {
+              "$ref": "#/$defs/ViewportResult"
+            },
+            {
+              "$ref": "#/$defs/SuiteResult"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "passed": {
+                "const": true
+              }
+            },
+            "required": [
+              "passed"
+            ]
+          },
+          "then": {
+            "properties": {
+              "exitCode": {
+                "const": 0
+              },
+              "signal": {
+                "const": null
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "schema_meta_validation",
+                  "schema_fixture_validation"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "schema"
+              },
+              "result": {
+                "$ref": "#/$defs/SchemaResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "const": "semantic_validator"
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "semantic"
+              },
+              "result": {
+                "$ref": "#/$defs/SemanticResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "architecture_dependency_boundary",
+                  "architecture_forbidden_call_scan"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "architecture_boundary"
+              },
+              "result": {
+                "$ref": "#/$defs/ArchitectureResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "const": "axe_accessibility"
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "axe"
+              },
+              "result": {
+                "$ref": "#/$defs/AxeResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "const": "keyboard_accessibility"
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "keyboard"
+              },
+              "result": {
+                "$ref": "#/$defs/KeyboardResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "enum": [
+                  "viewport_sidepanel_420",
+                  "viewport_sidepanel_360",
+                  "viewport_workspace_1280",
+                  "viewport_workspace_768"
+                ]
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "viewport"
+              },
+              "result": {
+                "$ref": "#/$defs/ViewportResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "const": "chrome_e2e"
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "chrome_e2e"
+              },
+              "result": {
+                "$ref": "#/$defs/SuiteResult"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "checkId": {
+                "const": "v2_regression"
+              }
+            },
+            "required": [
+              "checkId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "testKind": {
+                "const": "v2_regression"
+              },
+              "result": {
+                "$ref": "#/$defs/SuiteResult"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SchemaResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "validationScope",
+        "schemaIds",
+        "schemasChecked",
+        "instancesChecked",
+        "failures"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "schema"
+        },
+        "validationScope": {
+          "enum": [
+            "schema_meta",
+            "fixture_instances"
+          ]
+        },
+        "schemaIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "v2_knowledge_status",
+              "v2_external_brain_workspace_contracts",
+              "v2_external_brain_acceptance_manifest",
+              "v2_external_brain_report",
+              "v2_external_brain_screenshot_metadata",
+              "v2_external_brain_execution_observation",
+              "v2_external_brain_human_review",
+              "v2_external_brain_validation_contracts",
+              "v2_external_brain_architecture_scan_manifest"
+            ]
+          }
+        },
+        "schemasChecked": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "instancesChecked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "positiveInstanceSetId": {
+          "const": "v2-external-brain-px-0.1b-positive-instances/v10"
+        },
+        "positiveInstanceIndexSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "positiveInstanceIdsChecked": {
+          "type": "array",
+          "minItems": 65,
+          "maxItems": 65,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fixtureSuiteId": {
+          "const": "v2-external-brain-px-0.1b-fixtures/v10"
+        },
+        "fixtureSuiteSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fixtureRequirementIdsChecked": {
+          "type": "array",
+          "minItems": 109,
+          "maxItems": 109,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "v2_external_brain_validation_contracts.schema.json#/$defs/RequirementId"
+          }
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "validationScope": {
+                "const": "fixture_instances"
+              }
+            },
+            "required": [
+              "validationScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "positiveInstanceSetId",
+              "positiveInstanceIndexSha256",
+              "positiveInstanceIdsChecked",
+              "fixtureSuiteId",
+              "fixtureSuiteSha256",
+              "fixtureRequirementIdsChecked"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "validationScope": {
+                "const": "schema_meta"
+              }
+            },
+            "required": [
+              "validationScope"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "positiveInstanceSetId"
+                  ]
+                },
+                {
+                  "required": [
+                    "fixtureSuiteId"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "SemanticResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "ruleSetId",
+        "ruleSetSha256",
+        "checkedRuleIds",
+        "rulesChecked",
+        "semanticRuleIdsCovered",
+        "positiveInstanceSetId",
+        "positiveInstanceIndexSha256",
+        "positiveInstanceIdsChecked",
+        "fixtureSuiteId",
+        "fixtureSuiteSha256",
+        "fixtureRequirementIdsChecked",
+        "semanticSpecArtifact",
+        "validatorImplementationArtifact",
+        "positiveEvidencePayloadArtifact",
+        "failedRules"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "semantic"
+        },
+        "ruleSetId": {
+          "const": "v2-px-semantic-rules/v6"
+        },
+        "ruleSetSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "checkedRuleIds": {
+          "type": "array",
+          "minItems": 63,
+          "maxItems": 63,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "v2_external_brain_validation_contracts.schema.json#/$defs/RuleId"
+          }
+        },
+        "rulesChecked": {
+          "const": 63
+        },
+        "semanticRuleIdsCovered": {
+          "type": "array",
+          "minItems": 41,
+          "maxItems": 41,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "v2_external_brain_validation_contracts.schema.json#/$defs/RuleId"
+          }
+        },
+        "positiveInstanceSetId": {
+          "const": "v2-external-brain-px-0.1b-positive-instances/v10"
+        },
+        "positiveInstanceIndexSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "positiveInstanceIdsChecked": {
+          "type": "array",
+          "minItems": 65,
+          "maxItems": 65,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fixtureSuiteId": {
+          "const": "v2-external-brain-px-0.1b-fixtures/v10"
+        },
+        "fixtureSuiteSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fixtureRequirementIdsChecked": {
+          "type": "array",
+          "minItems": 109,
+          "maxItems": 109,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "v2_external_brain_validation_contracts.schema.json#/$defs/RequirementId"
+          }
+        },
+        "semanticSpecArtifact": {
+          "$ref": "v2_external_brain_report.schema.json#/$defs/ArtifactRef"
+        },
+        "validatorImplementationArtifact": {
+          "$ref": "v2_external_brain_report.schema.json#/$defs/ArtifactRef"
+        },
+        "positiveEvidencePayloadArtifact": {
+          "$ref": "v2_external_brain_report.schema.json#/$defs/ArtifactRef"
+        },
+        "failedRules": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "v2_external_brain_validation_contracts.schema.json#/$defs/FailureCode"
+          }
+        }
+      }
+    },
+    "ArchitectureResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "repositoryCommit",
+        "sourceTreeSha256",
+        "scanRoots",
+        "scannedPathIndexSha256",
+        "rulesetId",
+        "rulesetSha256",
+        "allowlistSha256",
+        "scanManifestArtifact",
+        "excludedPaths",
+        "scannedFiles",
+        "violations"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "architecture"
+        },
+        "repositoryCommit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}([a-f0-9]{24})?$"
+        },
+        "sourceTreeSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scanRoots": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "apps/chrome-extension/entrypoints/sidepanel",
+              "apps/chrome-extension/entrypoints/workspace",
+              "apps/chrome-extension/src/modules/knowledge_workspace"
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "const": "apps/chrome-extension/entrypoints/sidepanel"
+              }
+            },
+            {
+              "contains": {
+                "const": "apps/chrome-extension/entrypoints/workspace"
+              }
+            },
+            {
+              "contains": {
+                "const": "apps/chrome-extension/src/modules/knowledge_workspace"
+              }
+            }
+          ]
+        },
+        "scannedPathIndexSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "rulesetId": {
+          "const": "v2-px-architecture-boundary/v2"
+        },
+        "rulesetSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "allowlistSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "scanManifestArtifact": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "excludedPaths": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scannedFiles": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "violations": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "AxeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "serious",
+        "critical"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "axe"
+        },
+        "serious": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "KeyboardResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "assertionsTotal",
+        "assertionsPassed",
+        "focusReturnPassed",
+        "escapePassed",
+        "reducedMotionPassed"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "keyboard"
+        },
+        "assertionsTotal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assertionsPassed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "focusReturnPassed": {
+          "type": "boolean"
+        },
+        "escapePassed": {
+          "type": "boolean"
+        },
+        "reducedMotionPassed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ViewportResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "width",
+        "height",
+        "documentScrollWidth",
+        "containerScrollWidth",
+        "overflowBlockers",
+        "overlapBlockers"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "viewport"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 320
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 568
+        },
+        "documentScrollWidth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "containerScrollWidth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overflowBlockers": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overlapBlockers": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "SuiteResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultType",
+        "assertionsTotal",
+        "assertionsPassed"
+      ],
+      "properties": {
+        "resultType": {
+          "const": "suite"
+        },
+        "assertionsTotal": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assertionsPassed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "AuditArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acceptanceHtml",
+        "prdReview",
+        "architectureReview",
+        "falseGreenAudit",
+        "semanticValidatorLog"
+      ],
+      "properties": {
+        "acceptanceHtml": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "prdReview": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "architectureReview": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "falseGreenAudit": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "semanticValidatorLog": {
+          "$ref": "#/$defs/ArtifactRef"
+        }
+      }
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "HumanReviewRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "evidenceClass",
+        "recordPath",
+        "recordSha256"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "evidenceClass": {
+          "enum": [
+            "contract_fixture",
+            "production_acceptance"
+          ]
+        },
+        "recordPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    }
+  }
+}

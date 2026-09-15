@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V2-PX 验收撤回与修复审查</title>
+<style>body{margin:0;font:16px/1.65 system-ui;color:#202922;background:#fff}main{max-width:960px;margin:auto;padding:24px}h1{font-size:26px}.status{border-left:4px solid #b42318;background:#fff1f0;padding:16px}li{margin:10px 0}a{color:#126749}img{max-width:360px;width:100%;height:auto}figure{margin:24px 0}code{overflow-wrap:anywhere}</style>
+<main><h1>PX-5 验收已重新打开</h1>
+<p class="status">2026-09-09：FAIL / REOPENED。PX-6 因 5 组 Major 阻塞。上轮“机器验收通过、仅待人工签署”结论撤回。</p>
+<p>本轮复核了生成器、校验器和现有原始记录，未重新运行 Chrome。原始文件保留供追溯，不能据此宣布当前产品验收全绿。</p>
+<ol><li>39 份执行观察中38份使用整个 E2E 报告哈希作为 Runtime 响应指纹；14次可信手势没有对应原始可信事件记录。</li>
+<li>生成后的 Source Detail ID 与入口消息 ID 不一致；普通标签页打开侧栏页面没有证明宿主网页的实际侧栏保存路径。</li>
+<li>Permission、Forget 四面结果和部分 UX 指标被写成固定成功值。</li>
+<li>生产校验器未执行完整冻结语义，另写了较弱的架构扫描。</li>
+<li>生产报告复制合同夹具成功结果，原独立审计零问题结论不足以成立。</li></ol>
+<p>原始记录包含77项断言且未记录失败。这是现有 runner 的记录，不能替代缺失的证据与规则执行。</p>
+<figure><img src="screenshots/sidepanel-360.png" alt="原始侧栏页面截图，显示Page unknown、保存不可用以及Trace ready与尚未保存并列"><figcaption>旧截图仅作问题复核：不能证明当前网页已通过用户主动保存。</figcaption></figure>
+<p><a href="resumption-evidence-audit-2026-09-09.md">完整证据复核与代码位置</a> · <a href="acceptance-disposition.json">当前机器可读处置状态</a> · <a href="../../../design/v2-px-5-evidence-repair-plan.md">限定修复与验收计划</a></p>
+<p>下一步：确认限定修复处置后，完成采集、生成、校验与负向测试闭环，重新执行真实路径验收。机器 Major 关闭后才进入人工产品签署。</p>
+</main></html>

@@ -1,0 +1,11 @@
+{
+  "path": "screenshots/02-workspace-source-detail.png",
+  "sha256": "99cfd94c153877892bb59ad06701bbae230c9ef183d8a7199adf4d33463e4d70",
+  "url": "chrome-extension://glccknpjolojooiljfdfodehfhngedmi/workspace.html#/knowledge/sources/src_00000000000000000000000003?workspaceId=ws_default",
+  "surface": "workspace_page",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "capturedAt": "2026-09-11T16:47:04.486Z"
+}

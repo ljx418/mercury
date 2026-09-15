@@ -102,8 +102,14 @@ def test_v2_knowledge_save_requires_idempotency_key() -> None:
     assert body["error"]["code"] == "REQUEST_INVALID"
 
 
-def test_v2_permission_and_forget_are_auditable() -> None:
+def test_v2_permission_and_forget_are_auditable(tmp_path, monkeypatch) -> None:
+    token = "test-only-local-files-token-0123456789"
+    monkeypatch.setenv("NAVIA_LOCAL_FILES_TOKEN", token)
+    monkeypatch.setenv("NAVIA_LOCAL_FILES_EXTENSION_ID", "a" * 32)
     client = TestClient(app)
+    client.headers["Authorization"] = "Bearer " + token
+    document = tmp_path / "prd.md"
+    document.write_bytes((ROOT / "docs/active/project/01-prd.md").read_bytes())
     created = client.post(
         "/v1/knowledge/sources",
         json={**candidate(), "candidateId": "cand_forget_001", "title": "Forget source"},
@@ -111,7 +117,7 @@ def test_v2_permission_and_forget_are_auditable() -> None:
     ).json()["data"]
     source_id = created["source"]["sourceId"]
 
-    permission = client.post("/v1/knowledge/permissions", json={"displayName": "One file", "scope": "single_file"}).json()["data"]
+    permission = client.post("/v1/knowledge/permissions", json={"workspaceId": "ws_default", "displayName": "One file", "scope": "single_file", "path": str(document)}).json()["data"]
     permission_root_id = permission["permissionRoot"]["permissionRootId"]
     assert permission["permissionRoot"]["state"] == "granted"
 
@@ -123,6 +129,9 @@ def test_v2_permission_and_forget_are_auditable() -> None:
     assert forgotten["verification"]["askAbsent"] is True
     assert forgotten["verification"]["graphAbsent"] is True
     assert forgotten["verification"]["traceAbsent"] is True
+
+    sources_after_forget = client.get("/v1/knowledge/sources?workspaceId=ws_default").json()["data"]["sources"]
+    assert source_id not in {source["sourceId"] for source in sources_after_forget}
 
     trace = client.get(f"/v1/knowledge/source/{source_id}/trace").json()
     assert trace["data"]["status"] == "blocked"

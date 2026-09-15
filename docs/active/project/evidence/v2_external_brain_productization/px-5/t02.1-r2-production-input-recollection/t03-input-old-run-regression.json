@@ -1,0 +1,95 @@
+{
+  "allowedUse": "fail_closed_input_and_regression_only",
+  "fatal": 0,
+  "gaps": [
+    {
+      "id": "T03-IN-01",
+      "observed": {
+        "open_in_workspace": 2,
+        "open_workspace": 2,
+        "view_source": 2
+      },
+      "requirement": "trusted entries: view_source >= 3; other origins >= 2",
+      "severity": "major"
+    },
+    {
+      "id": "T03-IN-02",
+      "observed": {
+        "artifactAndRuntimeLinkage": false,
+        "registeredKinds": {},
+        "registeredSamples": 0,
+        "runtimeSourceTypes": {
+          "authorized_local_document": 3,
+          "web_page": 1
+        },
+        "uniqueRuntimeSources": 4
+      },
+      "requirement": "single-run source corpus = 6 web + 3 explicit local + 3 note/markdown with raw-byte/runtime linkage",
+      "severity": "major"
+    },
+    {
+      "id": "T03-IN-03",
+      "observed": {
+        "errorCodes": [],
+        "pairedRecoveries": []
+      },
+      "requirement": "invalid/forbidden route error plus trusted recovery samples >= 2",
+      "severity": "major"
+    },
+    {
+      "id": "T03-IN-04",
+      "observed": {
+        "axeValid": false,
+        "keyboardValid": false,
+        "typedResultTypes": {}
+      },
+      "requirement": "typed passing AxeResult + KeyboardResult",
+      "severity": "major"
+    }
+  ],
+  "major": 4,
+  "observed": {
+    "completeRouteRecoveryIntents": [
+      "ask",
+      "graph",
+      "permissions",
+      "source_detail",
+      "source_library"
+    ],
+    "entryOrigins": {
+      "open_in_workspace": 2,
+      "open_workspace": 2,
+      "view_source": 2
+    },
+    "invalidOrForbiddenRouteRecoveries": [],
+    "registeredSourceCorpus": {
+      "artifactAndRuntimeLinkage": false,
+      "kinds": {},
+      "samples": 0
+    },
+    "routeRecoveryIntentCount": 5,
+    "runtimeSourceTypes": {
+      "authorized_local_document": 3,
+      "web_page": 1
+    },
+    "screenshotWidths": {
+      "1280": 1,
+      "360": 1,
+      "420": 1,
+      "768": 1
+    },
+    "screenshotsBySurface": {
+      "side_panel": 2,
+      "workspace_page": 6
+    },
+    "screenshotsWithoutProductViewport": 4,
+    "typedCommandResultTypes": {},
+    "uniqueRuntimeSources": 4
+  },
+  "readOnly": true,
+  "readyForPositiveProductionValidation": false,
+  "schemaVersion": "v2-px-t03-input-readiness/v1",
+  "sourceRawSeal": "725fb2eedb6902900744b67577f55d5434987adba91be05cb376a7b216aa40f7",
+  "sourceRunId": "t02-r2-raw-20260911T143100",
+  "sourceSnapshotCommit": "c2409206e4a337314b2995665780da1ca86c7a8d"
+}

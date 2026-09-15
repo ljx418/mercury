@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "v2-px-1-build-spike/v1",
+  "generatedAt": "2026-09-08T08:41:33.856Z",
+  "repositoryCommit": "ae28b627eb0aba91ff0e9f950066a688d8d13d13",
+  "entrypoint": {
+    "path": "apps/chrome-extension/chrome-mv3-unpacked/workspace.html",
+    "sha256": "c6fb4ee57e987ac76b216fc2e62f7fd07e173f504c5c321b5e07a578130514ea",
+    "bytes": 645
+  },
+  "manifest": {
+    "path": "apps/chrome-extension/chrome-mv3-unpacked/manifest.json",
+    "sha256": "01e58d7686fe58f9c67ca04e09f12c4ccb10a08dea47294edcace02b8f31e500",
+    "bytes": 885
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "storage",
+    "tabs"
+  ],
+  "hostPermissions": [
+    "<all_urls>",
+    "http://127.0.0.1:17861/*",
+    "http://localhost:17861/*"
+  ],
+  "remoteScriptCspRelaxed": false,
+  "workspacePublicUrlShape": "chrome-extension://<extension-id>/workspace.html#/knowledge/...",
+  "passed": true
+}

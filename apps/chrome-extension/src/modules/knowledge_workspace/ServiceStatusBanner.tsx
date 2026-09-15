@@ -16,7 +16,7 @@ export function ServiceStatusBanner({ runtimeStatus, status, loading = false, er
     <section className={`knowledge-service-banner knowledge-service-banner-${runtimeStatus}`} aria-label="V2 knowledge service status">
       <div>
         <strong>Knowledge service</strong>
-        <span>{error ?? status?.message ?? "V2 mock adapter status is shown separately from Runtime status."}</span>
+        <span>{error ?? status?.message ?? "Runtime、Adapter 与 data_service 状态分别显示。"}</span>
       </div>
       <div className="knowledge-status-pills">
         <span>{runtimeLabel}</span>

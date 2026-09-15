@@ -1,5 +1,17 @@
 # Navia / 伴航 V1 目标验收文档
 
+> 2026-09-15 V2-PX PX-6 验收状态：T04.1 `LIMITED PASS` 保持；固定机器审计候选 `px6-machine-exit-20260914t164500z` 已重算真实 T04.1 raw/facts/AST、执行 20/20 PX6 negatives，并通过独立实施出门审计（Fatal 0 / Major 0 / Minor 0），因此 PX6-0..5 为 `LIMITED PASS`。A01..A14 passed，A15/A16 与 H01..H07 仍 pending；G7/Human/final 继续 pending/pending/false。PX6-7 production finalizer 因最终独立审计握手尚未机器绑定而 fail-closed，不得提前生成成功声明。
+
+> 2026-09-10 RKM防假绿补强：新增认证矩阵、独立dispatch用量分母、本run截图捕获链、gold独立审签、API图谱集合对照、确定性撤销屏障、宿主文件/聊天保护及PX/RKM证据隔离，见 [RKM验收6/7](design/v2-real-knowledge-maintenance-acceptance-plan.md)。未实现fixture不能计通过，历史PNG同hash不单独决定新鲜度。
+
+> 2026-09-09 V2-RKM验收增量：原PX G1-G7不降级，新增真实语料/真实模型/持久恢复/授权对话/可逆维护S01..14，逐场景前置、操作、阈值和证据见 [RKM验收计划](design/v2-real-knowledge-maintenance-acceptance-plan.md)。当前仅S00文档审计，不是产品验收。费用仅统计估算，不设金额硬门槛；未授权外发/物理文件写入/自动永久删除必须为0。
+
+> 2026-09-10风险再核查：RKM验收第8节增加RC-01a/b、RC-02a/b、RC-03、RC-04六条生命周期断言，包含实际操作、故障时点、出门阈值和首次适用阶段。旧PX范围与109负例不变；这些新断言尚未机器化或执行，不能列为PASS。
+
+> 本轮独立复审补强：RKM验收8.1增加IR-01..03，9增加AC01..10。顶层必需断言精确固定为39条（S01..14、S-01..16、RC-01a/b、RC-02a/b、RC-03/04、IR-01..03），failed/pending/deferred不能缩分母；G-1..G-7由详细验收9.3逐项关闭。DS能力只能标记observed_supported/requires_ds_public_api/requires_navia_adapter/not_observed/prd_blocker，缺失PRD必需能力必须阻塞，不得以“降级子集”放行。旧PX出门不前移这些RKM要求。
+
+> 2026-09-09 PX-5追加门槛：授权后不自动扫描/导入；真实文件scan/import受workspace/root控制；撤销后拒绝新任务且阻止旧任务提交，保留已有source。G1-G7必须从同run原始事件/字节/截图/实测命令重算；隔离验收commit同时绑定产品构建和G4扫描。具体正负矩阵见 [修复执行合同](design/v2-px-5-repair-execution-contract.md)，此条不表示当前已通过。
+
 版本：V1.0 Acceptance Plan Baseline
 日期：2026-05-31
 
@@ -1745,7 +1757,7 @@ No-Go：
 - [ ] Web Research / PPT / Deep Research ready。
 - [ ] 新增顶级页面、默认本地文件读取、产品浏览器自动操作、多 Agent、语音、桌宠、OCR/VLM/ASR 或媒体流理解。
 
-### 8.19 V2 Memory / Personal Knowledge Base 文档与未来验收计划
+### 8.19 V2 Memory / Personal Knowledge Base 已完成验收基线
 
 当前验收目标是证明 V2 目标体验、目标架构、开发计划、验收计划、stage gate、原型审查页、drawio 与 V2-7 独立证据包已同步到最新实现事实：V2-1..V2-6 已形成 mock-first / controlled-boundary 实现基线，V2-7 planning-aligned local knowledge acceptance 已通过。验收计划不得把候选 data_service 能力、原型图、mock-first 实现或 V2-7 规划对齐验收误写成 V2 ready。
 
@@ -1753,28 +1765,28 @@ No-Go：
 
 ```text
 Go for V2 Memory / Personal Knowledge Base implementation-baseline record through V2-6.
-Go for V2 planning-aligned local knowledge acceptance claim after V2-7 evidence passes; No-Go for V2 ready / RAG ready claims.
+V2-7 evidence passed; the active allowed claim is V2 planning-aligned local knowledge acceptance only. No-Go for V2 ready / RAG ready claims.
 ```
 
-文档门禁必须通过：
+下列文档门禁已由 V2-7 独立证据包核验通过，并继续作为 PX 回归基线：
 
-- [ ] PRD、目标架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名：`V2 Memory / Personal Knowledge Base`。
-- [ ] 文档明确 V2 是本地备忘、个人知识库、标签化总结和类 RAG 蒸馏方向；当前实现基线不声明 V2 implemented 或 V2 ready。
-- [ ] 文档引用原型审查页 `docs/active/project/design/v2-memory-personal-knowledge-prototype-review/index.html`，并明确它是设计输入，不是实现截图或通过证据。
-- [ ] 文档必须覆盖保存当前网页、Knowledge Workspace、Source Library、Ask with Sources、Evidence Trace、Knowledge Graph、Permission Root、Forget Source。
-- [ ] 文档必须覆盖前端后端服务状态感知：Side Panel / Knowledge Workspace / SaveToKnowledgeCard / Debug / Settings 中能够区分 Navia Runtime、V2 Adapter / Governance、data_service 候选服务和单个 source build / trace / forget 状态。
-- [ ] 文档必须明确 `/mnt/c/workspace/data_service` 只是候选 Local Knowledge Governance Service；Navia 只能通过 V2 Adapter / Governance 调用 HTTP / MCP / CLI 边界。
-- [ ] 文档必须明确不得直接读写 data_service 内部 workspace，不得把 data_service console 当作 Navia 产品 UI。
-- [ ] 文档必须明确默认不读取本地文件；本地文件 / 目录导入必须由用户显式授权。
-- [ ] 文档必须明确删除 / 遗忘必须有 before / after query 验证，不能只隐藏 UI 卡片。
-- [ ] drawio 不超过 8 页，中文书写，并包含目标体验、当前架构与目标架构差异、分层代码实体、data_service 边界、前端组件、权限 / 删除 / 证据链、开发及验收计划、出门条件和 No-Go。
-- [ ] drawio 架构页必须出现具体实体：`pageContext.ts`、`contentBridge.ts`、B `chat_renderer`、B `mindmap_renderer`、A Page Reading、C Mindmap、D Agent Loop / Adapter、V2 Adapter / Governance、Memory Plane contracts、Knowledge Workspace、data_service 和 V2 evidence package。
-- [ ] drawio 必须用架构平面展示 P0 Browser Host、P1 Extension Shell、P2 Side Panel UI、P3 Runtime Client、P4 Local Runtime API、P5 V2 Adapter / Governance、P6 data_service Candidate、P7 Evidence 的关系。
-- [ ] drawio 必须用代码实体修改地图说明哪些文件已实现保持、哪些已实现需验收、哪些待补齐、哪些属于外部候选且不在 Navia 仓直接修改。
-- [ ] drawio 必须展示服务状态链路：`ServiceStatusBanner` / `DataServiceStatusCard` / `KnowledgeBuildStatus` -> `runtimeClient.ts` V2 knowledge section -> `/v1/knowledge/status` -> V2 Adapter status aggregator -> data_service health probe。
-- [ ] 文档必须明确 Runtime offline 由前端 transport failure 推导；Runtime 离线时 `/v1/knowledge/status` 不可能返回成功响应。
-- [ ] 文档必须列出 V2-0 P0 产物：合同 schema、OpenAPI、错误码、sample manifest schema、report schema、semantic validator、data_service spike、生命周期 ADR、原型同步和 Workspace 承载形态决策。
-- [ ] 文档必须引用 V2-1..V2-6 子阶段 evidence 和 V2-7 独立证据包；`v2-7-acceptance-blocked-audit.md` 仅作为过期阻塞记录保留。
+- [x] PRD、目标架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名：`V2 Memory / Personal Knowledge Base`。
+- [x] 文档明确 V2 是本地备忘、个人知识库、标签化总结和类 RAG 蒸馏方向；当前实现基线不声明 V2 implemented 或 V2 ready。
+- [x] 文档引用原型审查页 `docs/active/project/design/v2-memory-personal-knowledge-prototype-review/index.html`，并明确它是设计输入，不是实现截图或通过证据。
+- [x] 文档覆盖保存当前网页、Knowledge Workspace、Source Library、Ask with Sources、Evidence Trace、Knowledge Graph、Permission Root、Forget Source。
+- [x] 文档覆盖前端后端服务状态感知：Side Panel / Knowledge Workspace / SaveToKnowledgeCard / Debug / Settings 中区分 Navia Runtime、V2 Adapter / Governance、data_service 候选服务和单个 source build / trace / forget 状态。
+- [x] 文档明确 `/mnt/c/workspace/data_service` 只是候选 Local Knowledge Governance Service；Navia 只能通过 V2 Adapter / Governance 调用 HTTP / MCP / CLI 边界。
+- [x] 文档明确不得直接读写 data_service 内部 workspace，不得把 data_service console 当作 Navia 产品 UI。
+- [x] 文档明确默认不读取本地文件；本地文件 / 目录导入必须由用户显式授权。
+- [x] 文档明确删除 / 遗忘必须有 before / after query 验证，不能只隐藏 UI 卡片。
+- [x] drawio 不超过 8 页，中文书写，并包含目标体验、当前架构与目标架构差异、分层代码实体、data_service 边界、前端组件、权限 / 删除 / 证据链、开发及验收计划、出门条件和 No-Go。
+- [x] drawio 架构页出现具体实体：`pageContext.ts`、`contentBridge.ts`、B `chat_renderer`、B `mindmap_renderer`、A Page Reading、C Mindmap、D Agent Loop / Adapter、V2 Adapter / Governance、Memory Plane contracts、Knowledge Workspace、data_service 和 V2 evidence package。
+- [x] drawio 用架构平面展示 P0 Browser Host、P1 Extension Shell、P2 Side Panel UI、P3 Runtime Client、P4 Local Runtime API、P5 V2 Adapter / Governance、P6 data_service Candidate、P7 Evidence 的关系。
+- [x] drawio 用代码实体修改地图说明哪些文件已实现保持、哪些已实现需验收、哪些待补齐、哪些属于外部候选且不在 Navia 仓直接修改。
+- [x] drawio 展示服务状态链路：`ServiceStatusBanner` / `DataServiceStatusCard` / `KnowledgeBuildStatus` -> `runtimeClient.ts` V2 knowledge section -> `/v1/knowledge/status` -> V2 Adapter status aggregator -> data_service health probe。
+- [x] 文档明确 Runtime offline 由前端 transport failure 推导；Runtime 离线时 `/v1/knowledge/status` 不可能返回成功响应。
+- [x] 文档列出 V2-0 P0 产物：合同 schema、OpenAPI、错误码、sample manifest schema、report schema、semantic validator、data_service spike、生命周期 ADR、原型同步和 Workspace 承载形态决策。
+- [x] 文档引用 V2-1..V2-6 子阶段 evidence 和 V2-7 独立证据包；`v2-7-acceptance-blocked-audit.md` 仅作为过期阻塞记录保留。
 
 当前已落盘的 V2 子阶段 evidence 和 V2-7 独立证据包必须作为事实输入：
 
@@ -1789,33 +1801,33 @@ docs/active/project/evidence/v2_memory_personal_knowledge_base/v2-6-false-green-
 docs/active/project/evidence/v2_memory_personal_knowledge_base/v2-7-acceptance-blocked-audit.md
 ```
 
-V2-7 真实数据验收矩阵：
+V2-7 真实数据验收矩阵已完成：
 
-- [ ] Source corpus 最少 24 个 source：12 个真实网页、6 个显式授权本地文档、6 个 notes / markdown / other supported sources。
-- [ ] Source corpus 覆盖新闻 / 门户、技术文档、产品调研、长文博客、PDF 或文档型资料、用户手动笔记。
-- [ ] Query and operation scenarios 与 source corpus 分开统计：至少 6 个 mixed-workspace queries、12 个 Ask with Sources、8 个 Graph / Trace、6 个 Permission grant / revoke、6 个 Forget before / after、4 个 service status scenarios。
-- [ ] 至少 20/24 source 完成 ingest / build / trace 或明确 degraded / blocked。
-- [ ] 至少覆盖 4 类服务状态样本：Runtime offline、Adapter degraded 或 blocked、data_service auth_required / unreachable / version_mismatch 之一、source build failed 或 degraded。
-- [ ] 至少 12 个样本完成 Ask with Sources，回答包含 evidence refs。
-- [ ] 至少 8 个样本展示 Knowledge Graph 节点和 source trace。
-- [ ] 至少 6 个样本覆盖 PermissionRoot 授权 / 撤销。
-- [ ] 至少 6 个样本覆盖 ForgetSource 删除 / 遗忘和再次查询验证。
-- [ ] 每个样本必须记录 `workspace_id`、`source_id`、`source_type`、`runtime_status`、`adapter_status`、`data_service_status`、`ingest_status`、`build_status`、`trace_status`、`evidence_refs`、`permission_state`、`forget_state`、`query_result`、`degraded_reason` 和截图路径。
-- [ ] `v2_memory_sample_manifest.schema.json`、`v2_memory_report.schema.json` 和 semantic validator 必须通过；不能只检查字段是否存在。
-- [ ] V2-7 必须生成 `sample-manifest.json`、`report.json`、`acceptance-report.html` 和 `screenshots/`；缺任一项不得声明通过。
+- [x] Source corpus 为 24 个 source：12 个真实网页、6 个显式授权本地文档、6 个 notes / markdown / other supported sources。
+- [x] Source corpus 覆盖新闻 / 门户、技术文档、产品调研、长文博客、PDF 或文档型资料、用户手动笔记。
+- [x] Query and operation scenarios 与 source corpus 分开统计：包含 mixed-workspace queries、Ask with Sources、Graph / Trace、Permission grant / revoke、Forget before / after 和 4 个 service status scenarios。
+- [x] 24/24 source 完成 ingest / build / trace 或明确 degraded / blocked，超过 20/24 门槛。
+- [x] 覆盖 4 类服务状态样本：Runtime offline、Adapter degraded 或 blocked、data_service auth_required / unreachable / version_mismatch 之一、source build failed 或 degraded。
+- [x] 至少 12 个样本完成 Ask with Sources，回答包含 evidence refs。
+- [x] 至少 8 个样本展示 Knowledge Graph 节点和 source trace。
+- [x] 至少 6 个样本覆盖 PermissionRoot 授权 / 撤销。
+- [x] 6 个样本覆盖 ForgetSource 删除 / 遗忘和再次查询验证。
+- [x] 每个样本记录 `workspace_id`、`source_id`、`source_type`、`runtime_status`、`adapter_status`、`data_service_status`、`ingest_status`、`build_status`、`trace_status`、`evidence_refs`、`permission_state`、`forget_state`、`query_result`、`degraded_reason` 和截图路径。
+- [x] `v2_memory_sample_manifest.schema.json`、`v2_memory_report.schema.json` 和 semantic validator 已通过；不是只检查字段存在。
+- [x] V2-7 已生成 `sample-manifest.json`、`report.json`、`acceptance-report.html` 和 `screenshots/`；这些证据继续作为 PX 回归基线，缺任一项时必须撤回该基线声明。
 
-V2-7 每页 / 每 source pass 质量阈值：
+V2-7 每页 / 每 source pass 质量阈值已作为冻结回归条件通过：
 
-- [ ] 保存入口必须由用户主动触发，不得自动保存当前页或自动扫描本地目录。
-- [ ] 前端不得只显示“后端正常 / 异常”的泛化状态；Runtime offline、Adapter blocked、data_service unreachable、source build failed 必须有不同 UI 文案、状态色和下一步动作。
-- [ ] B 前端不得直接探测 data_service health；服务状态必须来自 Navia Runtime `/v1/knowledge/status` 或同等受控 Adapter 聚合响应。
-- [ ] Runtime offline 必须由 `runtimeClient.ts` V2 knowledge section 的 transport failure / timeout 本地推导，不得写成 Runtime 在线返回的 status 成功响应。
-- [ ] 跨来源回答必须引用 `EvidenceRef`、source trace 或明确 degraded。
-- [ ] evidence refs 必须语义支撑回答；只验证数组非空不得计为 pass。
-- [ ] Knowledge Graph 顶层节点必须来自服务侧 source / unit / relation 数据，不得由前端凭空生成事实。
-- [ ] Source Trace 必须区分 located、fallback_shown、blocked；UI、JSON、HTML 报告和截图 metadata 必须一致。
-- [ ] 本地授权 root 必须可撤销；撤销后不得继续扫描或新增 source。
-- [ ] 删除 / 遗忘成功后，被删除 source 不得继续出现在 Source Library、Ask with Sources、Knowledge Graph 或 Source Trace 中。
+- [x] 保存入口由用户主动触发，不自动保存当前页或自动扫描本地目录。
+- [x] 前端区分 Runtime offline、Adapter blocked、data_service unreachable、source build failed 的 UI 文案、状态色和下一步动作。
+- [x] B 前端不直接探测 data_service health；服务状态来自 Navia Runtime `/v1/knowledge/status` 或同等受控 Adapter 聚合响应。
+- [x] Runtime offline 由 `runtimeClient.ts` V2 knowledge section 的 transport failure / timeout 本地推导，不写成 Runtime 在线返回的成功响应。
+- [x] 跨来源回答引用 `EvidenceRef`、source trace 或明确 degraded。
+- [x] evidence refs 语义支撑回答，不以数组非空冒充通过。
+- [x] Knowledge Graph 顶层节点来自服务侧 source / unit / relation 数据，不由前端生成事实。
+- [x] Source Trace 区分 located、fallback_shown、blocked；UI、JSON、HTML 报告和截图 metadata 一致。
+- [x] 本地授权 root 可撤销；撤销后不继续扫描或新增 source。
+- [x] 删除 / 遗忘成功后，被删除 source 不再出现在 Source Library、Ask with Sources、Knowledge Graph 或 Source Trace 中。
 
 允许声明：
 
@@ -1842,6 +1854,174 @@ No-Go：
 - [ ] Web Research / PPT / Deep Research ready。
 - [ ] 多 Agent、产品浏览器自动操作、语音、桌宠或媒体理解 ready。
 
+### 8.19.1 V2-PX External Brain Productization 验收计划
+
+固定验收门禁顺序为：
+
+```text
+PX-0 -> PX-0.1 -> PX-0.1b -> PX-0.2 -> PX-1 -> PX-2 -> PX-3 -> PX-4 -> PX-5 -> PX-6
+```
+
+`PX-0.1b` 已通过独立复审（Fatal 0 / Major 0 / Minor 0）。`PX-0.2` executable validator 已于 2026-09-01 经第五轮独立复审达到 Fatal 0 / Major 0 / Minor 0 并通过；`PX-1` 仅在其单独开发计划、验收计划和实现前审计闭环后 Conditional Go，`PX-2+` 继续受前序阶段门禁约束。PX-0.2 通过只证明合同夹具验收工具，不是产品或 real-Chrome 验收证据。
+
+当前 PX-5 修复顺序为 `T01 -> T02.x -> T03 -> T04 -> T04.1 -> PX-6`。T02.5 是唯一 production-positive R2 输入；T03/T04/T04.1 已取得限定独立通过。PX6-0..5 已获用户授权并实现本地候选，禁止改写旧候选或跨泳道/跨 run 拼接；PX6-6 仍必须由真实人类执行，PX6-7 必须先冻结独立终审两步握手。PX-6 合同固定 A01..A16、H01..H07、N001..N020、单一候选绑定和机器/人工状态机。
+
+T03 固定 T03-A01..A14。任一 failed、pending 或 deferred 阻止 T03 PASS；三个 profile 的 N/A 固定为 0。Production candidate 必须保持 61 条 machine rule 可判定、2 条 human rule pending、G1-G6 passed、G7 pending、Report/Package final=false。109 个 contract fixtures 与 42 个 production raw/byte/causality mutations 必须调用同一 Schema/Semantic/TypeScript-AST core。缺 observation 只能生成 CollectionDiagnostic 并退出 2；从仓库根、脚本目录和临时目录运行必须等价。
+
+T04 固定 T04-A01..A14 与 T04-N-001..025。R4-P 必须在 detached local acceptance commit 中实际执行 T03 四步，十项产物逐字节相等，InvocationRecord 只允许删除 `/recordedAt` 后 canonical JSON 相等。R4-E 必须从同一快照新建 build/profile/Runtime/database/raw/seal，并完整通过 T02 与 T03 分母。T04 输出 SnapshotInputManifest v1、SnapshotRevalidation v1 和 unsigned ExitManifest v1；Human Review、G7、final 始终 pending/pending/false。
+
+T04.1 固定 T04.1-A01..A14 与 N01..N08；Replay InvocationRecord 外层和所有 step ArtifactRef 必须统一为 `replay_validation`，且完整执行新的 R4-P/R4-E/T02/T03/T04。PX-6 固定 PX6-A01..A16、H01..H07 和 PX6-N-001..020；17 scenario、12 source、20 route cell、12 Forget chain 等必须分别重算。PX6-0..5 成功只能输出 `waiting_for_human_review`，不能写 reviewer、Human passed、G7 passed、finalPassed=true 或成功 claim。
+
+V2-PX 必须生成独立证据包，不能复用 V2-7 planning-aligned 报告代替新的用户入口、Extension Workspace、路由恢复和双容器一致性证据：
+
+```text
+docs/active/project/evidence/v2_external_brain_productization/
+  acceptance-manifest.json
+  report.json
+  acceptance-report.html
+  screenshots/
+  screenshot-metadata/
+  execution-observations/
+  logs/
+  prd-review.md
+  architecture-review.md
+  false-green-audit.md
+  human-review.json
+```
+
+机器合同：
+
+- [ ] `acceptance-manifest.json` 通过 `v2_external_brain_acceptance_manifest.schema.json` v5；每个 fingerprint artifact 可按 raw bytes 重算，expected outcome/open/recovery/error 与 report 一致。
+- [ ] `report.json` 通过 `v2_external_brain_report.schema.json` v12；包含 route recovery、open outcome、scenario-aware layer observation、durable Forget、结构化 test result、完整 rule/fixture/instance coverage 和 artifact hash。
+- [ ] `OpenWorkspaceAction`、route state 和 open result fixtures 通过 `v2_external_brain_workspace_contracts.schema.json` 对应 `$defs` 校验。
+- [ ] 每个 screenshot metadata 通过 `v2_external_brain_screenshot_metadata.schema.json` v6，并与图片 hash、scenarioId、Manifest viewport 宽高、route、capture surface/mode/phase、scenario-aware IDs 和状态一致；`composite_review_only` 不计入产品证据。
+- [ ] 每个 execution observation 通过 `v2_external_brain_execution_observation.schema.json` v6，并证明 prior route、多次 attempt、user action、background result、route event、参与层 ID、Runtime transport 证据、ingest counter、成功 Back/reopen 与 durable Forget 重开链。
+- [ ] `human-review.json` 通过 `v2_external_brain_human_review.schema.json` v3；`evidenceClass` 必须与 Report 一致，success 必须有 reviewer、reviewedAt、G1-G7 path+SHA-256 证据、空 blockingIssues 和同等级签署声明；contract fixture 禁止签署产品 real-Chrome pass。
+- [ ] `architecture-scan-manifest.json` 通过 `v2_external_brain_architecture_scan_manifest.schema.json` v2；tracked paths、blob hash、mode、排序、路径分隔符、排除项、ruleset 与 allowlist 原始字节必须可重算。
+- [ ] G4 ruleset 必须是 canonical JSON，并冻结 `typescript_ast_import_specifier_literal_v2` 与 `typescript_ast_call_new_expression_and_endpoint_normalization_v2` 两种 AST 扫描算法；production 从验收 commit 的 Git blob 读取源码并禁止内嵌源码，contract fixture 从 Architecture Scan Manifest v2 的 `trackedPaths[].inlineSource` 读取逐路径原始字节；两者都必须重算 blob/source-tree hash。Validator 必须自行扫描，不能信任 `violations=0`；PX-N-104..109 必须证明静态 import、dynamic import、空白变体 fetch、KnowledgeItem、EvidenceRef 与 graph relation 均被拒绝，且 allowlist 不得覆盖三类 `nonOverridableRules`。
+- [ ] 109 个 RFC 6902 fixture 通过 `v2_external_brain_validation_contracts.schema.json` `$defs/FixtureSuite`；所有 RuleId、FailureCode、`requirementId + requirementKey` 必须来自封闭 rule/requirement registry，且 rule/layer/primary failure 逐项一致。
+- [ ] semantic validator 重算场景分布、summary、G1-G7、稳定 ID、截图/日志/审计路径、状态、Permission/Forget before-after、旧 V2-7 回归和声明边界，不能只做 JSON shape validation。
+- [ ] PX-0.1b 使用完整根实例 + RFC 6902 patch；109 个 case 均携带唯一 `requirementId + requirementKey + ruleIdUnderTest`，41 个 semantic RuleId 均至少由一个 semantic case 覆盖；真实图片尺寸、Report screenshot path 与 metadata imagePath 同一性、viewport/surface、requestId、prior context、route/Forget identity、attempt 时序、源码级架构违规、fixture 提升、failed child result、证据缺失和 partial rule execution 均被拒绝。
+- [ ] 合同正例必须明确 `evidenceClass=contract_fixture`，使用真实尺寸虚拟 PNG 和不同 source bytes；PX-5 产品验收必须为 `production_acceptance`，禁止 `virtual/*`、contract fixture 或审查原型被提升为产品证据。
+
+真实数据和真实浏览器矩阵必须把 source corpus 与操作场景分开统计：
+
+- [ ] T04.1/PX-6 Source corpus 精确为 12 个唯一真实 source：6 个真实网页、3 个显式授权本地文档、3 个 notes / markdown；同一 source 的重复 route 或故障测试不得重复计入 corpus。
+- [ ] T04.1/PX-6 production scenario records 精确为 17 条，每条通过 `sourceSampleIds` 引用 corpus，并用 `coverageTags` 记录入口、路由、恢复、身份、状态、Permission 或 Forget 覆盖；20 route cells 和 12 Forget chains 单独计数，不得折算为 scenario。
+- [ ] 三个生产入口每个至少 2 个成功样本；`查看来源` 必须至少覆盖 3 个 `trace_ready` source。
+- [ ] Source Detail、Source Library、Ask、Graph、Permissions 五类 route 均有 direct-open、reload、Browser Back 和 reopen 成功恢复证据；至少 2 个无效 / 无权限 ID 恢复样本。
+- [ ] 至少 4 个跨容器 ID 一致性样本，证明 Side Panel 与 Workspace 的 `workspaceId / sourceId / operationId` 一致且没有重复 ingest。
+- [ ] 至少覆盖 Runtime offline、Adapter blocked、data_service unreachable、source failed / degraded 四类故障；可使用确定性 fault fixture 注入 transport / service 状态，但 source 内容和用户路径必须来自真实样本。
+- [ ] 至少 3 个 Permission grant / revoke 样本和 3 个 Forget before / after 样本；每个 Forget 必须覆盖 Library / Ask / Graph / Trace 四面验证，并对同一 source 完成 direct-open / reload / Back / reopen 四种 `SOURCE_NOT_FOUND` 重开验证。
+- [ ] 旧 V2-7 的 schema validator、semantic validator 和核心 Runtime / frontend 测试必须作为回归输入继续通过。
+
+Gate：
+
+| Gate | 通过条件 |
+|---|---|
+| G1 入口 | 三个入口是真实生产按钮；至少覆盖两类真实 source；按钮实际打开或聚焦 Extension Workspace 新标签页 |
+| G2 路由 | 五类 route 均有 direct-open、reload、Back、reopen 成功恢复；无效 ID 进入 recoverable error |
+| G3 生命周期 | `not_saved -> trace_ready` 与 Forget 四面验证在两个容器中一致；failed / degraded 不冒充成功 |
+| G4 架构 | 两个容器只经共享 `runtimeClient -> Runtime -> Adapter` 取数；B 不直连 data_service 或生成事实 |
+| G5 状态 | Runtime / Adapter / data_service / source 状态不合并为 generic error，且给出不同下一步动作 |
+| G6 UX / Accessibility | Side Panel 420 / 360px、Workspace 1280 / 768px 各有结构化 ViewportResult 和同尺寸 Screenshot Metadata；无严重遮挡；焦点、Escape、dialog、reduced-motion 可验收 |
+| G7 证据 | 九份 Schema、63 条 RuleId、65 个 positive instance ID、109 个 fixture requirement ID、HTML、JSON、route metadata、截图及审计 artifact 全量可重算，人工清单已生成 |
+
+每个场景必须记录：
+
+```text
+scenarioId
+sourceSampleIds
+sourceKinds
+dataMode
+entryPoint
+routeIntent
+executionMode
+coverageTags
+workspaceId
+sourceId
+operationId
+observedIds.sidePanel.status + observed IDs when status=observed
+observedIds.background.status + observed IDs when status=observed
+observedIds.runtime.status + observed IDs when status=observed
+observedIds.workspace.status + observed IDs when status=observed
+statusObservation.runtimeStatus
+statusObservation.adapterStatus
+statusObservation.dataServiceStatus
+statusObservation.sourceBuildStatus
+routeRecoveryResult
+successfulRecoveryModes[]
+openOutcome
+errorCode
+duplicateIngestDetected
+faultInjection
+executionObservationPath
+executionObservationSha256
+permissionVerification
+forgetVerification.before
+forgetVerification.after
+forgetVerification.sharedItemRecomputed
+forgetVerification.supportingSourceIds
+forgetVerification.statusBefore
+forgetVerification.statusAfter
+forgetVerification.reopenChecks[]
+screenshotPaths
+screenshotMetadataPaths
+logArtifacts[].path
+logArtifacts[].sha256
+conclusion
+```
+
+最终 `report.json` 还必须记录 G1-G7 gateResults、PRD / architecture / false-green 审计产物的 path/hash，以及通过 `v2_external_brain_human_review.schema.json` 验证的 `humanReview` 记录引用。`passed=true` 与成功 claim 只允许在人类核查状态为 `passed` 且 G1-G7 全部由底层证据重算为 true 时出现；自动化先通过但人工仍 pending 时必须使用 not-passed claim。
+
+PX-0.1b 冻结的机器推导输入与算法：
+
+| Gate | 必需原始输入 | 确定性计算与阈值 | 失败码 | 人工要求 |
+|---|---|---|---|---|
+| G1 入口 | 通过 Execution Observation schema 的 `entryAction`、background result、route event；截图 metadata | 三个生产 entryPoint 各至少 2 个；`view_source/open_workspace/open_in_workspace` 必须 `actor=user + trustedUserGesture=true`，requestId 与 background result 一致；不得读取 `userEntryObserved` 自报字段 | `PX_ENTRY_ACTION_OBSERVATION_INVALID` / `PX_REQUEST_ID_CORRELATION_INVALID` / `PX_ENTRY_COVERAGE_FAILED` | 人工确认按钮可发现、文案可理解 |
+| G2 路由 | manifest expected、execution prior context / routeEvents、report route/open/recovery/error、截图 metadata | 五类 route 均有 direct-open + reload；Back/reopen 可恢复；canonical path 内 ID 与参与层 observed IDs 一致；valid prior context 保持原 route，invalid prior context 只回 Source Library；未保存或 forgotten source 必须 `SOURCE_NOT_FOUND`；invalid/forbidden 至少 2 个并提供恢复动作 | `PX_ROUTE_COVERAGE_FAILED` / `PX_ROUTE_PATH_ID_MISMATCH` / `PX_ROUTE_ERROR_CODE_MISMATCH` / `PX_OPEN_IN_WORKSPACE_CAUSALITY_INVALID` / `PX_ROUTE_EVENT_IDENTITY_INVALID` | 人工确认 Back 与错误恢复不会迷失 |
+| G3 生命周期 | scenario-aware layer IDs、Runtime observation、attempts、ingest counters、Permission / Forget before-after | attempt sequence 唯一递增且时间不倒序；成功参与层 ID 一致；tab reuse 首次创建、再次聚焦同一 tab 且 `after-before=0`；Permission 至少 3 个；Forget 至少 3 个且四面 after 全 absent；同一 forgotten source 在 direct-open/reload/Back/reopen 均返回 `SOURCE_NOT_FOUND + recovered_to_library`，状态从 `trace_ready` 变为 `forgotten` | `PX_IDENTITY_OR_IDEMPOTENCY_FAILED` / `PX_ATTEMPT_SEQUENCE_INVALID` / `PX_TAB_REUSE_SEQUENCE_INVALID` / `PX_GOVERNANCE_COVERAGE_FAILED` / `PX_FORGET_FOUR_SURFACE_INVALID` / `PX_FORGET_DURABLE_RECOVERY_INVALID` / `PX_FORGET_DURABLE_IDENTITY_INVALID` | 人工确认高风险 Forget 文案、二次确认与重开后不复活 |
+| G4 架构 | `architecture_dependency_boundary` 与 `architecture_forbidden_call_scan` 的结构化 ArchitectureResult、architecture review artifact | 固定扫描 `entrypoints/sidepanel`、`entrypoints/workspace`、`src/modules/knowledge_workspace`：repositoryCommit 等于验收 commit；source tree、tracked path index、ruleset、allowlist hash 可重算；两类检查均存在、scannedFiles >= 1、violations=0、exitCode=0、log hash 匹配 | `PX_ARCHITECTURE_CHECK_COVERAGE_MISSING` / `PX_ARCHITECTURE_SCAN_SCOPE_INVALID` / `PX_ARCHITECTURE_BOUNDARY_FAILED` | 人工只审查边界解释，不覆盖机器失败 |
+| G5 状态 | Execution Runtime observation、report/status screenshot metadata | 四类故障各至少 1；Runtime offline 必须映射 `frontendInferredRuntimeStatus=offline`、`runtimeStatus=null`、Adapter/data_service=`unchecked`、source=`unknown`；四域不得合并 generic success/error | `PX_STATUS_COVERAGE_FAILED` / `PX_RUNTIME_OFFLINE_AUTHORITY_VIOLATION` | 人工确认状态文案与下一步动作可理解 |
+| G6 UX / Accessibility | AxeResult、KeyboardResult、四类 ViewportResult，420/360/1280/768 Manifest 场景、截图和 metadata | axe serious/critical=0；键盘 assertions 全过且 focus-return/Escape/reduced-motion=true；`viewport_sidepanel_360/420` 必须为 Side Panel 单面证据，`viewport_workspace_768/1280` 必须为 Workspace 单面证据；Manifest/metadata/图片实际解码尺寸三方相等；scrollWidth 合法、overflow/overlap blockers=0；review-only composite 不计入 | `PX_UX_ACCESSIBILITY_FAILED` / `PX_SCREENSHOT_METADATA_MISMATCH` / `PX_SCREENSHOT_DECODED_DIMENSION_MISMATCH` / `PX_VIEWPORT_SURFACE_MAPPING_INVALID` | 必须人工体验四个 viewport 和危险操作；review-only composite 不计入 |
+| G7 证据 | 九份 schema、全部 artifact/hash、SemanticResult v6、V2-7 regression result、Human Review v3 | meta 结果覆盖九份 Schema且检查 9 项；fixture 结果逐项覆盖 65 个 positive ID、109 个 requirement ID 和集合 hash，`instancesChecked=175`；SemanticResult 的 63 个 RuleId、41 个 semantic RuleId、65 个 positive ID、109 个 requirement ID 与 registry/fixture 完全相等；semantic spec、validator implementation、positive raw payload 和 fixture 原始文件 hash 均可重算；failedRules 为空；Human Review 无 blocker | `PX_SCHEMA_CHECK_SET_MISMATCH` / `PX_ARTIFACT_PATH_OR_HASH_INVALID` / `PX_HUMAN_REVIEW_EVIDENCE_INVALID` / `PX_FINAL_GATE_OR_HUMAN_REVIEW_FAILED` / `PX_V2_REGRESSION_FAILED` | 必须由人类签署，自动化不得代签；PX-0.1b 的 virtual implementation hash 仅验证 shape |
+
+PX-0.1b 合同 runner 的 semantic-positive 基线必须自身满足上述全部阈值。当前固定基线为 29 个 scenario、29 个 Execution Observation 和 29 个 Screenshot Metadata 根实例；四个宽度必须出现在 Manifest 场景并逐项匹配 Screenshot Metadata。每个 Forget 场景必须有 5 次有序 attempt（Forget + 四类重开）和 4 个同源失败结果。任何只通过 JSON Schema、伪造 metadata 尺寸、只列 RuleId 或自报 G1-G7=true 的 fixture，均判为 `PX_SEMANTIC_POSITIVE_BASE_INVALID`。
+
+出门声明只允许：
+
+```text
+V2-PX External Brain Productization passed dual-container real-Chrome acceptance.
+```
+
+No-Go：
+
+- [ ] 只能手工输入 `workspace.html` 开发 URL，用户入口不可用。
+- [ ] “打开工作台”仍只切换 Side Panel 内 `activeView`。
+- [ ] 打开 Workspace 时重复导入 source，或两个容器使用不同 `sourceId / workspaceId`。
+- [ ] route 刷新丢失状态后静默加载 fixture 或虚构默认 source。
+- [ ] 未保存或已 forgotten 的 source 仍能通过 direct-open / reload / Back 打开，或 Graph 只删除任意第一个 source 节点。
+- [ ] `open_workspace` 进入 Source Detail/Graph，或 Route A 成功 URL 指向 localhost/http(s)。
+- [ ] Runtime offline 场景仍记录 Adapter ready、data_service connected 或 source trace_ready。
+- [ ] Forget 只显示成功 toast，没有 Library / Ask / Graph / Trace 四面 before/after 结构化证据。
+- [ ] `passed=true` 但任一 scenario/test command 失败、summary 无法重算或 artifact/log 路径不存在。
+- [ ] 用原型截图、旧 V2-7 场景卡或 data_service Console 冒充产品化截图。
+- [ ] 自动遗忘、Knowledge Dream Cycle、自动文件整理或高质量总结刷新被计入 PX 通过能力。
+- [ ] 声明 V2 ready、完整外脑产品、最终 Monica-like UX 或 RAG ready。
+
+### 8.19.2 V2.x 自动化知识维护未来验收边界
+
+该路线当前没有实现放行。未来独立 stage gate 至少必须验证：
+
+- `suggest-only` 默认开启，永久自动遗忘和宿主文件物理操作默认关闭。
+- 每个 Organization / Summary / Archive / Forget proposal 有原始 source revision、EvidenceRef、理由、置信度、可逆性和受影响范围。
+- `quarantine -> restore` 可恢复 Library / Ask / Graph / Trace，`quarantineRestoreSuccessRate` 达到后续门禁冻结的阈值。
+- `forgetCandidateFalsePositiveRate`、`groundedClaimRate`、`summaryRevisionAcceptanceRate` 等指标记录 numerator / denominator / operator / threshold。
+- `unauthorizedFileOperationCount = 0`，任何未授权路径读取、移动、重命名或删除均为 fatal。
+- 后台维护不抢占焦点、不发声、可暂停 / 取消，并生成 `MaintenanceAuditRecord`。
+
+在新的 schema、semantic validator、真实数据矩阵、安全审计和人类高风险审批完成前，该路线一律 No-Go，不得借 V2-PX 报告声明实现。
+
 ### 8.20 V3 Media Companion 文档与未来验收计划
 
 当前验收目标是证明 V3 目标体验、目标架构、开发计划、验收计划、stage gate 和 drawio 已经被完整规划，且不会把未来多模态能力误写成本阶段或 V3.0 的交付承诺。本阶段不进入代码实现。
@@ -1849,21 +2029,21 @@ No-Go：
 文档门禁必须通过：
 
 - [ ] PRD、目标架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名：`V3 Media Companion`。
-- [ ] 文档明确 V3.0 是 `Transcript-first Video Companion`，V3.x 才是 `Multimodal Media Understanding`。
+- [ ] 文档明确 V3.0 是 `B站字幕优先 + 用户显式本地 ASR fallback`，V3.x 才承接通用/云端 ASR、VLM、OCR、视频帧语义理解和 Live Media。
 - [ ] 文档明确 V3 目标体验参考 Monica YouTube 视频助手、B站 AI 视频总结账号 / 工具、AI课代表、BibiGPT、NoteGPT、Eightify、HARPA、YouTube conversational AI 和 Gemini Video Understanding。
-- [ ] 文档必须覆盖 YouTube 和 B站两类首批平台；直播平台只能作为 V3.x 或后续路线，不得作为 V3.0 必须交付。
+- [ ] 当前首批平台只验收 B站；YouTube 必须在 B站 12 页出门后复用同一合同，直播平台只能作为 V3.x 或后续路线。
 - [ ] 文档必须规划视频概览卡、章节时间轴、Media Mindmap / 视频概览图、字幕 / 转录问答、截图证据卡、timestamp jumpback、fallback / blocked。
 - [ ] 文档必须明确视频截图证据在 V3.0 中只证明某个时间点的可见帧；不得声称截图内容已被 VLM 理解。
 - [ ] 无字幕、无转录、无简介、无评论 / 弹幕、无可见 metadata 或平台限制的视频必须 degraded / blocked，不得计入 understood pass。
-- [ ] drawio 不超过 8 页，中文书写，并包含目标体验、当前架构与目标架构差异、YouTube/B站输入链路、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、里程碑和 No-Go。
+- [ ] drawio 不超过 8 页，中文书写，并包含目标体验、当前架构与目标架构差异、B站字幕/本地 ASR 双输入链路、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、里程碑和 No-Go。
 - [ ] drawio 架构页必须出现具体实体：Content Script Media Collector、MediaPageContext、A Media Page Perception、D Adapter / Governance / Trace、C Media Mindmap、B Media Companion Renderer、VideoFrameEvidenceRef、MediaJumpbackTarget 和 V3 evidence package。
 
 未来 V3.0 实现验收矩阵：
 
-- [ ] 最少 24 个真实视频页样本：YouTube 12 个，B站 12 个。
+- [ ] 当前固定 12 个真实 B站视频详情页；类别和指定锚点按 §8.20.2，不得临时缩分母。
 - [ ] 覆盖课程 / 知识、新闻评论、影视解说、游戏 / 赛事、长视频、短视频、字幕可用、字幕不可用、评论丰富、评论贫乏。
-- [ ] 至少 20/24 页面可生成可审计视频概览或明确 degraded / blocked。
-- [ ] 至少 16/24 页面具备章节 / 时间轴或等价片段结构。
+- [ ] 12/12 均须得到可审计成功、degraded 或 blocked 终态；其中 6 个字幕样本和 3 个本地 ASR 样本必须成功，不能用 degraded/blocked 抵扣。
+- [ ] 至少 10/12 页面具备章节 / 时间轴或等价片段结构；允许正确 blocked 的 1 页和正确 degraded 的 1 页不具备内容时间轴，不能用它们抵扣 6 个字幕、3 个本地 ASR 和 1 个多 P 成功样本。
 - [ ] 至少 12 个样本包含视频截图证据卡。
 - [ ] 至少 12 个样本完成 timestamp jumpback 或清晰 fallback / blocked。
 - [ ] 每个样本必须记录 `platform`、`url`、`title`、`duration`、`transcriptAvailability`、`timelineSources`、`overviewQuality`、`mindmapTopNodes`、`screenshotEvidence`、`jumpbackResult`、`degradedReason` 和截图路径。
@@ -1879,7 +2059,7 @@ No-Go：
 
 V3.x 多模态规划验收：
 
-- [ ] ASR、VLM、OCR、Gemini Video / Live API、直播 rolling transcript 只能作为候选路线，不能写成 V3.0 实现项。
+- [ ] 通用/云端 ASR、VLM、OCR、Gemini Video / Live API、直播 rolling transcript 只能作为候选路线；唯一例外是 §8.20.1 规定的用户显式当前标签页音频本地 ASR fallback。
 - [ ] 每条多模态路线必须记录用户授权、隐私边界、采样策略、缓存 / 删除、延迟预算、成本预算、confidence、source provenance、EventStore / Trace 回放和 false-green 防线。
 - [ ] 未完成上述规划，不得声明真实视频画面 / 音频理解 ready。
 
@@ -1892,7 +2072,7 @@ V3 Media Companion planning baseline ready for review.
 未来 V3.0 通过后最多允许声明：
 
 ```text
-V3.0 transcript-first video companion passed YouTube and Bilibili planning-aligned acceptance.
+V3.0 Bilibili-first video companion passed the frozen 12-page production acceptance.
 ```
 
 No-Go：
@@ -1902,8 +2082,34 @@ No-Go：
 - [ ] 把 B站第三方 AI 总结账号内容或站外摘要冒充 Navia 自己理解。
 - [ ] 无字幕 / 无转录 / 无截图证据时声称理解视频内容。
 - [ ] timestamp fallback 冒充精准反跳。
-- [ ] ASR / VLM / OCR / Gemini Video ready。
+- [ ] 通用/云端 ASR / VLM / OCR / Gemini Video ready；显式本地 ASR fallback 除外。
 - [ ] 直播实时理解 ready。
 - [ ] 自动下载、提取或处理受版权保护的视频流。
 - [ ] 绕过平台访问限制或把登录态自动化作为产品浏览器自动操作。
 - [ ] 跨视频知识库 / RAG ready。
+
+#### 8.20.1 B站优先锚点验收
+
+首个必测页面固定为 `https://www.bilibili.com/video/BV1ZpYd66ELP`。机器和人工必须同时验证：
+
+- [ ] `bvid=BV1ZpYd66ELP`、`cid=41828944992`、单 P、时长观测约 792 秒；若平台内容变化必须记录新观测而非硬改 fixture。
+- [ ] 未授权时准确显示公开字幕不可用，不生成视频内容大纲。
+- [ ] 用户点击后才允许当前标签页音频 capture；授权对象、tabId、开始/结束和清理状态可审计。
+- [ ] ASR 原始分段带 timestamp/confidence/hash；标题、简介或模型常识不能填充缺失 transcript。
+- [ ] 由一个 `VideoOutline` 派生图文大纲和 Media Mindmap，章节顺序及 evidence IDs 一致。
+- [ ] 至少 8 个关键节点绑定字幕或 ASR segment；证据覆盖率不得通过复制同一 segment 凑数。
+- [ ] 至少 5 个章节或证据点击完成真实播放器 seek，误差不超过 2 秒；失败只能 fallback/blocked。
+- [ ] 网络日志不得出现后台媒体流下载、cookie 导出或绕过平台限制的请求。
+- [ ] 取消、关闭标签页和 Runtime 离线三种故障均停止采集且临时音频残留为 0。
+
+#### 8.20.2 B站真实矩阵
+
+V3-B6 固定 12 个 B站详情页：6 个公开/页内字幕可用、3 个无字幕需本地 ASR、1 个多 P、1 个登录或风控降级、1 个低信号。`BV1ZpYd66ELP` 必须属于“无字幕需本地 ASR”，不能被换成更容易的样本。12 个样本均需真实 Chrome 页面、capture/source hash、结构化结果和截图；production pass 不接受录制 fixture 或站外摘要。
+
+#### 8.20.3 H01-RDS 前置
+
+V3-B0 前先执行 `design/v2-px-6-h01-real-data-service-unblock-plan.md` 的 RDS-01..07。H01 的升级前置为 Runtime online、`adapterStatus=ready`、`dataServiceStatus=connected`，且至少一条真实来源由 data_service build 到 `trace_ready`。看到 `mock` 或 `unchecked` 必须停止，不得继续填写 passed。
+
+该前置只关闭真实持久化入口；Ask、Graph、Forget、自动维护、完整 RAG 和 V3 仍需各自门禁。
+
+2026-09-15 Runtime 服务级候选已证明真实 import/build/trace、重复保存和重启恢复；人类仍须在重新加载后的真实扩展中完成 Side Panel、Workspace Library、Source Detail 三入口，并回填同一 `workspaceId/sourceId`。只有服务级证据与三入口证据同属本轮 real-mode H01，RDS-03/04 才可签署 PASS。

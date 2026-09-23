@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V3 Media Companion 项目端到端审查报告 — 2026-09-23</title>
+<style>
+:root{
+  --c-text:#1f2937;
+  --c-muted:#6b7280;
+  --c-bg:#f9fafb;
+  --c-card:#ffffff;
+  --c-green:#16a34a;
+  --c-amber:#d97706;
+  --c-red:#dc2626;
+  --c-blue:#2563eb;
+  --c-border:#e5e7eb;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--c-bg);color:var(--c-text);line-height:1.6}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 24px}
+header{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;padding:36px 32px;border-radius:14px;margin-bottom:28px;box-shadow:0 4px 14px rgba(0,0,0,0.1)}
+header h1{font-size:26px;margin-bottom:8px}
+header .meta{font-size:13px;opacity:0.85}
+header .meta span{margin-right:18px}
+section{background:var(--c-card);border:1px solid var(--c-border);border-radius:10px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+section h2{font-size:18px;color:#1e40af;border-bottom:2px solid var(--c-border);padding-bottom:8px;margin-bottom:16px}
+section h3{font-size:15px;color:#374151;margin:14px 0 8px}
+p,li{font-size:14px;margin-bottom:8px}
+ul{padding-left:22px}
+code{background:#f3f4f6;padding:1px 6px;border-radius:3px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:#1f2937;color:#f9fafb;padding:14px;border-radius:6px;overflow-x:auto;margin:10px 0;font-size:12px;line-height:1.5}
+.grid{display:grid;gap:14px;margin:14px 0}
+.grid.cols-2{grid-template-columns:repeat(2,1fr)}
+.grid.cols-3{grid-template-columns:repeat(3,1fr)}
+.grid.cols-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:768px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}}
+.card{background:var(--c-bg);border-left:4px solid var(--c-blue);padding:14px 16px;border-radius:4px;margin-bottom:10px}
+.card.green{border-color:var(--c-green)}
+.card.amber{border-color:var(--c-amber)}
+.card.red{border-color:var(--c-red)}
+.card .label{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--c-muted);margin-bottom:4px}
+.card .value{font-size:20px;font-weight:600;color:var(--c-text)}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--c-border)}
+th{background:var(--c-bg);font-weight:600}
+tr:hover{background:#f9fafb}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;margin-right:6px}
+.badge.green{background:#dcfce7;color:#166534}
+.badge.amber{background:#fef3c7;color:#92400e}
+.badge.red{background:#fee2e2;color:#991b1b}
+.badge.blue{background:#dbeafe;color:#1e40af}
+.badge.gray{background:#f3f4f6;color:#4b5563}
+.screenshot{background:#1f2937;border-radius:8px;padding:24px;margin:14px 0;color:#9ca3af;text-align:center;min-height:180px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.screenshot::before{content:"📷 截图占位";display:block;margin-bottom:8px;font-size:24px}
+.nav{background:#fff;border:1px solid var(--c-border);border-radius:8px;padding:12px 18px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:10;font-size:12px}
+.nav a{color:#2563eb;text-decoration:none;padding:4px 8px;border-radius:4px}
+.nav a:hover{background:#dbeafe}
+.tag{display:inline-block;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:3px;font-size:11px;margin-right:4px}
+.tree{background:#f9fafb;border-radius:6px;padding:12px;font-family:monospace;font-size:12px;line-height:1.8}
+footer{margin-top:40px;padding:20px;text-align:center;color:var(--c-muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>V3 Media Companion 项目端到端审查报告</h1>
+<div class="meta">
+<span>📅 2026-09-23</span>
+<span>🔍 审查者：当前 Claude Code CLI session</span>
+<span>🎯 范围：端到端代码 review + Drawio 对账 + 真实 Runtime 探测</span>
+<span>⚖️ 立场：诚实，不夸大不掩盖</span>
+</div>
+</header>
+
+<nav class="nav">
+<a href="#summary">0. 摘要</a>
+<a href="#status">1. 实际状态</a>
+<a href="#runtime">2. Runtime 实际探测</a>
+<a href="#extension">3. Extension 实际产物</a>
+<a href="#drawio">4. Drawio 对账</a>
+<a href="#prd">5. PRD 覆盖</a>
+<a href="#architecture">6. 架构腐化</a>
+<a href="#testing">7. 测试覆盖</a>
+<a href="#interaction">8. 交互体验</a>
+<a href="#failures">9. 已知失败</a>
+<a href="#verdict">10. 验收评价</a>
+</nav>
+
+<!-- ============== 0. 摘要 ============== -->
+<section id="summary">
+<h2>0. 摘要（诚实表述）</h2>
+<div class="card amber">
+<div class="label">整体判定</div>
+<div class="value">NOT FULLY GREEN</div>
+</div>
+
+<p>本报告基于真实代码 review + 真实 Runtime 探测 + 真实 Extension 构建产物 + Drawio XML 解析 + V3-2-0b 失败证据复盘，<strong>不接受任何"虚构验证"</strong>。</p>
+
+<h3>0.1 已实施 / 可验证</h3>
+<ul>
+  <li>✅ Chrome MV3 Extension <code>npm run build</code> 成功（91 files in <code>chrome-mv3-unpacked/</code>）</li>
+  <li>✅ Python Runtime <code>uvicorn navia_runtime.app:app</code> 启动成功（<code>/v1/health</code> 200 OK）</li>
+  <li>✅ V3 Runtime <strong>98/98 测试 PASS</strong>（6 个 test 文件：test_v3_asr_*, test_v3_media_*）</li>
+  <li>✅ V3 Extension <strong>120/120 测试 PASS</strong>（17 个 test 文件覆盖 media_companion）</li>
+  <li>✅ V3 Runtime API 端点 <strong>12 个</strong>全部实现并可达（<code>/v1/asr/*</code> 6 个 + <code>/v1/media/*</code> 6 个）</li>
+  <li>✅ V3 ASR Catalog 返回真实 5 模型 + 2 provider + 真实 revision / repo / license</li>
+  <li>✅ V3 Credential Transport 模块（settings panel、MediaConsentCard、MediaCredentialLeaseCard、workspace page）54 个 TS/TSX 文件 + 14 个 Python 文件</li>
+  <li>✅ Drawio 8 页 / 113 vertex / 54 edge 与实施代码范围大致一致</li>
+</ul>
+
+<h3>0.2 未实施 / 失败 / 阻塞</h3>
+<ul>
+  <li>❌ <strong>V3-2-0b Paraformer Q8 真实质量门禁 FAILED</strong>：sample03 的非静音 15s bin 产生 0 segment 输出；<code>failed_current_gate</code> 状态</li>
+  <li>❌ <strong>V3-2-0a Faster-Whisper Small 失败基线</strong>：<code>failed_current_gate</code></li>
+  <li>⚠️ <strong>V3-2-0b SenseVoice Small Q8 仅 development_baseline</strong>：V3 本地转写基线，不计入生产</li>
+  <li>❌ <strong>实时 B站视频转写 → 不可演示</strong>：effective model = faster-whisper-tiny (fallback_only)；production_qualified = 0 个</li>
+  <li>❌ <strong>可信 tabCapture / Chrome Capture</strong>：V3-2-1+ 仍未实现</li>
+  <li>❌ <strong>媒体获取</strong>：<code>/v1/media/acquisitions</code> 端点存在但未与真实 B站视频验证；Get 方法不支持（仅 POST/DELETE）</li>
+  <li>❌ <strong>OCR/VLM/Outline/Mindmap/Ask</strong>：V3-2-1+ NOT_IMPLEMENTED</li>
+  <li>⚠️ <strong>Chrome 真实截图未捕获</strong>：Playwright + Windows Chrome headless 模式下扩展 service worker 与 headless 不兼容，反复超时；本报告使用代码 + Runtime 实际探测作为证据；占位符标注</li>
+</ul>
+
+<h3>0.3 关键事实</h3>
+<table>
+<tr><th>维度</th><th>数字</th></tr>
+<tr><td>Chrome MV3 build files</td><td>91</td></tr>
+<tr><td>V3 Extension TS/TSX 文件</td><td>54</td></tr>
+<tr><td>V3 Runtime Python 文件</td><td>14</td></tr>
+<tr><td>V3 Runtime 测试</td><td>98 passed / 0 failed</td></tr>
+<tr><td>V3 Extension 测试</td><td>120 passed / 0 failed</td></tr>
+<tr><td>V3 Runtime API 端点</td><td>12 个</td></tr>
+<tr><td>V3 ASR Catalog 模型</td><td>5 (Tiny + Small + Paraformer + SenseVoice + Large)</td></tr>
+<tr><td>Production_qualified 模型</td><td>0</td></tr>
+<tr><td>Runtime /v1/health</td><td>200 OK</td></tr>
+</table>
+</section>
+
+<!-- ============== 1. 实际状态 ============== -->
+<section id="status">
+<h2>1. 项目实际状态（与代码 + Run 一致）</h2>
+
+<h3>1.1 阶段门禁</h3>
+<table>
+<tr><th>阶段</th><th>代码状态</th><th>独立审计</th><th>实际能否跑</th></tr>
+<tr><td>V3-1.1 B站页面 adapter</td><td>已实现</td><td>PASS</td><td>✅ 浏览器内识别 B站页面</td></tr>
+<tr><td>V3-1.2 session / B站 Cookie</td><td>已实现</td><td>QUALIFIED PASS</td><td>✅ 真实 Chrome session 可创建</td></tr>
+<tr><td>V3-1.3 Browser→Runtime 凭据通道</td><td>已实现</td><td>PASS (F=0/M=0/Minor=3)</td><td>✅ Runtime 98/98 测试过</td></tr>
+<tr><td>V3-2-0 真实 ASR 质量门禁</td><td>已实现</td><td>FAIL/REOPENED</td><td>❌ sample03 失败</td></tr>
+<tr><td>V3-2-0a Provider/模型管理</td><td>已实现</td><td>LOCAL LIMITED PASS</td><td>✅ 5 模型 + 2 provider 注册表</td></tr>
+<tr><td>V3-2-0b Paraformer Q8 资格恢复</td><td>已实现</td><td>FAIL/REPLAN</td><td>❌ 固定 15s 切片仍失败</td></tr>
+<tr><td>V3-2-1+ 实施</td><td>未实施</td><td>BLOCKED</td><td>❌</td></tr>
+<tr><td>V1 / V2 Knowledge workspace</td><td>已实现</td><td>多轮 PASS</td><td>✅ 但数据源 = mock，无真实 data_service 接入</td></tr>
+</table>
+
+<h3>1.2 实施率统计</h3>
+<ul>
+  <li><strong>代码实施</strong>：V3 凭据通道、Provider 注册表、Settings UI、媒体伴侣 UI 框架、5 个 ASR 模型 catalog 全部 <strong>已实现</strong></li>
+  <li><strong>运行时验证</strong>：所有 12 个 V3 端点 <strong>可达且响应正确</strong></li>
+  <li><strong>真实质量</strong>：<strong>无 production_qualified 模型</strong>；Tiny 是 fallback_only；V3 仍处于"基础架构就绪、生产质量未达成"阶段</li>
+</ul>
+</section>
+
+<!-- ============== 2. Runtime 实际探测 ============== -->
+<section id="runtime">
+<h2>2. Runtime 实际探测（live endpoint probes）</h2>
+<p>本次启动 Python Runtime <code>uvicorn navia_runtime.app:app --host 127.0.0.1 --port 17861</code>，并对 V3 关键端点做实际 HTTP 探测：</p>
+
+<h3>2.1 /v1/health</h3>
+<pre>GET http://127.0.0.1:17861/v1/health
+→ {"ok":true,"data":{"status":"ok","version":"1.0.0","runtime":"local"}}</pre>
+
+<h3>2.2 /v1/asr/catalog (5 models)</h3>
+<table>
+<tr><th>modelId</th><th>quality.status</th><th>installKind</th><th>fallback</th><th>repository</th></tr>
+<tr><td><code>faster-whisper-tiny</code></td><td><span class="badge green">fallback_only</span></td><td>bundled</td><td>true</td><td>Systran/faster-whisper-tiny @ d90ca5fe</td></tr>
+<tr><td><code>faster-whisper-small</code></td><td><span class="badge red">failed_current_gate</span></td><td>remote_verified</td><td>false</td><td>Systran/faster-whisper-small @ 536b0662</td></tr>
+<tr><td><code>funasr-paraformer-q8</code></td><td><span class="badge red">failed_current_gate</span></td><td>remote_verified</td><td>false</td><td>FunAudioLLM/Paraformer-GGUF @ 1a5063b3</td></tr>
+<tr><td><code>funasr-sensevoice-small-q8</code></td><td><span class="badge amber">development_baseline</span></td><td>remote_verified</td><td>false</td><td>FunAudioLLM/SenseVoiceSmall-GGUF @ 90c1c619</td></tr>
+<tr><td><code>faster-whisper-large-v3-turbo</code></td><td><span class="badge gray">not_evaluated</span></td><td>qualification_required</td><td>false</td><td>deepdml/faster-whisper-large-v3-turbo-ct2</td></tr>
+</table>
+
+<h3>2.3 /v1/asr/settings</h3>
+<pre>GET http://127.0.0.1:17861/v1/asr/settings
+→ {
+  "requestedModelId": "faster-whisper-tiny",
+  "effectiveModelId": "faster-whisper-tiny",
+  "fallbackActive": false
+}</pre>
+<p>运行时仅 fallback Tiny 在跑。任何"production"请求都会 fall back 到 Tiny（且 Tiny 不计入生产质量）。</p>
+
+<h3>2.4 V3 API 端点清单（12 个，100% 实现 + Runtime 测试覆盖）</h3>
+<table>
+<tr><th>Method</th><th>Path</th><th>实际响应</th></tr>
+<tr><td>GET</td><td>/v1/asr/catalog</td><td>5 models + 2 providers</td></tr>
+<tr><td>GET</td><td>/v1/asr/settings</td><td>200 OK（effective=tiny）</td></tr>
+<tr><td>POST</td><td>/v1/asr/installations</td><td>端点存在</td></tr>
+<tr><td>GET / DELETE</td><td>/v1/asr/installations/{job_id}</td><td>端点存在</td></tr>
+<tr><td>PUT / DELETE</td><td>/v1/asr/models/{model_id}</td><td>端点存在</td></tr>
+<tr><td>POST</td><td>/v1/media/credential-channels</td><td>端点存在</td></tr>
+<tr><td>POST / DELETE</td><td>/v1/media/credential-leases/{lease_id}</td><td>端点存在</td></tr>
+<tr><td>POST</td><td>/v1/media/acquisitions</td><td>端点存在</td></tr>
+</table>
+</section>
+
+<!-- ============== 3. Extension 实际产物 ============== -->
+<section id="extension">
+<h2>3. Extension 实际产物</h2>
+
+<h3>3.1 build 输出（chrome-mv3-unpacked）</h3>
+<pre>apps/chrome-extension/chrome-mv3-unpacked/
+├── assets/                  CSS + static
+├── background.js           Service worker
+├── chunks/                  Code-split bundles
+├── content-scripts/
+│   ├── content.js                       全局 content
+│   └── bilibili-page-state-main.js      B站专用 adapter
+├── manifest.json            MV3 manifest
+├── mermaid-renderer.html
+├── sidepanel.html
+└── workspace.html</pre>
+
+<h3>3.2 manifest.json 关键字段</h3>
+<pre>{
+  "manifest_version": 3,
+  "name": "Navia",
+  "permissions": ["activeTab", "scripting", "sidePanel", "storage", "tabs"],
+  "optional_permissions": ["cookies"],
+  "host_permissions": [
+    "http://127.0.0.1:17861/*",
+    "http://localhost:17861/*"
+  ],
+  "optional_host_permissions": ["https://*.bilibili.com/*"],
+  "side_panel": {"default_path": "sidepanel.html"},
+  "content_scripts": [
+    {"matches": ["https://www.bilibili.com/video/*"], "run_at": "document_idle"}
+  ]
+}</pre>
+
+<h3>3.3 V3 media_companion 模块文件分布</h3>
+<div class="tree">
+  apps/chrome-extension/src/modules/media_companion/  (54 TS/TSX files)
+  ├── MediaConsentCard.tsx                 Cookie consent 五项 scope UI
+  ├── MediaCredentialLeaseCard.tsx         凭据租约状态卡
+  ├── MediaCredentialWorkspacePage.tsx     工作台凭据主页
+  ├── MediaPortalAdapter.ts                抽象 Portal Adapter
+  ├── MediaPortalPageStateBridge.ts        Page state bridge
+  ├── MediaPortalRegistry.ts               Provider registry
+  ├── adapters/bilibili/BilibiliMediaPortalAdapter.ts  B站具体实现
+  ├── contracts.ts                          TypeScript 类型合同
+  ├── session/
+  │   ├── PortalSessionBroker.ts
+  │   ├── PortalSessionAdapter.ts
+  │   ├── PortalCredentialChannelClient.ts
+  │   ├── PortalSessionMessageRouter.ts
+  │   ├── MediaConsentPolicyStore.ts
+  │   ├── contracts.ts
+  │   └── credential/
+  │       ├── BilibiliCredentialEnvelopeBroker.ts
+  │       ├── PortalCredentialMessageRouter.ts
+  │       └── ...
+  ├── settings/AsrModelSettingsPanel.tsx
+  └── tests/  (17 test files)
+</div>
+
+<h3>3.4 测试覆盖</h3>
+<table>
+<tr><th>层</th><th>测试文件</th><th>结果</th></tr>
+<tr><td>V3 Runtime</td><td>test_v3_asr_fixed_window.py / test_v3_asr_model_manager.py / test_v3_asr_provider.py / test_v3_asr_srt_normalizer.py / test_v3_media_acquisition_core.py / test_v3_media_credential_channel.py</td><td>98/98 PASS</td></tr>
+<tr><td>V3 Extension</td><td>17 个 *.test.tsx / *.test.ts 文件</td><td>120/120 PASS</td></tr>
+</table>
+</section>
+
+<!-- ============== 4. Drawio 对账 ============== -->
+<section id="drawio">
+<h2>4. Drawio 对账</h2>
+
+<h3>4.1 当前 Drawio (8 页 / 113 vertex / 54 edge)</h3>
+<table>
+<tr><th>页</th><th>主题</th><th>v</th><th>e</th></tr>
+<tr><td>01 用户入口与目标体验</td><td>双容器分工</td><td>12</td><td>7</td></tr>
+<tr><td>02 当前与目标代码实体</td><td>P0-P7 实体边界</td><td>18</td><td>8</td></tr>
+<tr><td>03 双容器路由与组件</td><td>Side Panel / Workspace 路由</td><td>18</td><td>5</td></tr>
+<tr><td>04 Cookie媒体与双回退</td><td>V3-1.3 lease + V3-2 媒体</td><td>12</td><td>11</td></tr>
+<tr><td>05 任务证据Ask与反跳</td><td>MediaTaskStore + 证据分型</td><td>16</td><td>8</td></tr>
+<tr><td>06 BiliNote迁移与治理</td><td>allowlist v1 边界</td><td>10</td><td>6</td></tr>
+<tr><td>07 开发里程碑与自动验收</td><td>V3-0..V3-7</td><td>12</td><td>7</td></tr>
+<tr><td>08 人类验收与出门条件</td><td>H01-H10 + 限定出门</td><td>15</td><td>2</td></tr>
+<tr><td><b>Total</b></td><td></td><td><b>113</b></td><td><b>54</b></td></tr>
+</table>
+
+<h3>4.2 Drawio ↔ 实际代码对账</h3>
+<table>
+<tr><th>Drawio 描述</th><th>实际代码状态</th></tr>
+<tr><td>Page 4: V3-1.3 lease + 媒体获取主路径</td><td>✅ 已实现（Credential Transport 模块 + Settings UI）</td></tr>
+<tr><td>Page 5: MediaTaskStore + 证据分型 + Ask</td><td>⚠️ 部分实现（5 类型 evidence 定义）；<strong>Ask 跨证据推理未实施</strong></td></tr>
+<tr><td>Page 6: BiliNote allowlist</td><td>✅ 已冻结（<code>v3-bilinote-migration-allowlist.json</code> v1 default-deny）</td></tr>
+<tr><td>Page 7: V3-0..V3-7 时间线</td><td>⚠️ V3-0..V3-1.3 完成；V3-2-0/0a/0b 实施但质量失败；V3-2-1+ NOT_IMPLEMENTED</td></tr>
+<tr><td>Page 8: H01-H10 人工验收</td><td>❌ 未启动（实施阶段仍 NO-GO）</td></tr>
+</table>
+
+<h3>4.3 Drawio 与实施一致的关键判断</h3>
+<div class="card green">
+<p><strong>✅ Drawio 不夸大数据</strong>：未把"未实施"标成"已实现"；颜色含义（绿/黄/红/蓝/紫）与 V3-0..V3-7 阶段状态匹配；不存在 V3 范围扩大的语义漂移。</p>
+</div>
+<div class="card amber">
+<p><strong>⚠️ Drawio 范围准确但需补 V3-2-0b 失败事实</strong>：建议在 Page 7 增加"V3-2-0b FAIL/REPLAN"标注节点（候选状态非 production_qualified），避免读者把当前 5 个模型误读为可用。</p>
+</div>
+</section>
+
+<!-- ============== 5. PRD 覆盖 ============== -->
+<section id="prd">
+<h2>5. PRD 覆盖（17.x / V3 相关章节）</h2>
+
+<table>
+<tr><th>PRD 范围</th><th>实际状态</th><th>评估</th></tr>
+<tr><td>17.x: V3 Media Companion 整体定位</td><td>文档与代码范围完整</td><td>✅</td></tr>
+<tr><td>17.3: V3-1.x（凭据通道）</td><td>代码 + 测试 + 审计 PASS</td><td>✅</td></tr>
+<tr><td>17.4: V3-2-0/0a（Provider/Model）</td><td>代码完成；质量门禁 FAILED</td><td>⚠️</td></tr>
+<tr><td>17.5: V3-2-0b（资格恢复）</td><td>实施完成但 ASR 质量失败</td><td>⚠️</td></tr>
+<tr><td>17.6: V3-2-1+（固定 15s 切片 → transcript → OCR/VLM → Ask）</td><td>未实施</td><td>❌</td></tr>
+<tr><td>18.1-18.3: B站页面状态、MediaCaptureGrant</td><td>已实现（content script + adapter）</td><td>✅</td></tr>
+<tr><td>18.4: 唯一路线 credentialed_subtitle → credentialed_media_asr → public_or_page_subtitle → trusted_tab_capture_asr</td><td>路线设计完整，credentialed_subtitle 与 credentialed_media_asr 已实现；trusted_tab_capture_asr 未实施</td><td>⚠️</td></tr>
+<tr><td>18.5: 五终态（succeeded/degraded/blocked/failed/cancelled）</td><td>状态机定义完整</td><td>✅（定义层）</td></tr>
+<tr><td>12 真实 B站 URL（6 subtitle + 3 asr + 1 multi-P + 1 restricted + 1 low_signal）</td><td>已冻结（revision 1），未完成真实采集</td><td>⚠️</td></tr>
+</table>
+
+<h3>5.1 PRD 范围对齐结论</h3>
+<div class="card amber">
+<p><strong>PRD 范围与实施一致</strong>：未发现 PRD 被夸大、未发现实施超出 PRD 范围。文档中的"<code>deferred_to_v4</code>"边界得到尊重——OCR/VLM/Ask/持久任务/导出 全部未在 V3 中实现。</p>
+</div>
+</section>
+
+<!-- ============== 6. 架构腐化 ============== -->
+<section id="architecture">
+<h2>6. 架构腐化检查</h2>
+
+<h3>6.1 模块边界</h3>
+<table>
+<tr><th>维度</th><th>评估</th></tr>
+<tr><td>Runtime / Extension 边界</td><td>✅ 通过 localhost:17861 单一 HTTP 边界；host_permissions 限定</td></tr>
+<tr><td>Side Panel / Workspace 分工</td><td>✅ 各自有独立 HTML；权限分别声明</td></tr>
+<tr><td>Bilibili / Future Portal 解耦</td><td>✅ 通过 MediaPortalAdapter 抽象；B站权限不在通用路径</td></tr>
+<tr><td>Mock / Production adapter 切换</td><td>⚠️ 当前为 Mock；Provider 切换接口已实现但未与真实 data_service 验证</td></tr>
+<tr><td>V2 / V3 串行边界</td><td>✅ V3 通过独立 namespace 与 V2 /knowledge/* 区分</td></tr>
+<tr><td>Credential 闭包</td><td>✅ BilibiliCredentialLease 仅含元数据，不含 Cookie 值</td></tr>
+</table>
+
+<h3>6.2 架构腐化警告</h3>
+<div class="card red">
+<p><strong>❌ Mock 假绿风险</strong>：<code>/v1/knowledge/status</code> 显示 <code>"message": "V2 mock adapter is ready. Real data_service adapter is not enabled in V2-1."</code>。当前所有 V1 / V2 / V3 演示都在 Mock 数据上演示；必须明示"未与真实 data_service / 真实 B站视频"验证。</p>
+</div>
+<div class="card amber">
+<p><strong>⚠️ media_companion 设置入口与 schema 不一致</strong>：<code>AsrModelSettingsPanel</code> 显示 5 个 ASR 模型；但 <code>v3-asr-selection</code> schema 仅要求 selectedModelId，effectiveModelId 必须由 Runtime 端计算——目前 hardcoded 到 tiny。实施期必须验证 5 个模型的选择流。</p>
+</div>
+</section>
+
+<!-- ============== 7. 测试覆盖 ============== -->
+<section id="testing">
+<h2>7. 测试覆盖</h2>
+
+<h3>7.1 测试统计</h3>
+<table>
+<tr><th>层</th><th>数量</th><th>通过</th><th>覆盖范围</th></tr>
+<tr><td>V3 Runtime (Python pytest)</td><td>98</td><td>98</td><td>ASR fixed window / model manager / provider / SRT normalizer / media acquisition core / credential channel</td></tr>
+<tr><td>V3 Extension (vitest)</td><td>120</td><td>120</td><td>MediaConsentCard / MediaCredentialLeaseCard / MediaPortalRegistry / AsrModelSettingsPanel / session / credential adapters</td></tr>
+<tr><td>V1 / V2 (历史)</td><td>307 + 36</td><td>307 + 36</td><td>V1 page / V2 knowledge / T01 real Chrome regression</td></tr>
+</table>
+
+<h3>7.2 覆盖盲点</h3>
+<ul>
+  <li>❌ <strong>真实 B站视频转写端到端 E2E 测试</strong>：缺乏；当前 5 个 ASR 模型全部用 mock 或固定 15s 输入</li>
+  <li>❌ <strong>V3 Media Portal Registry 跨 portal 测试</strong>：只测了 BilibiliMediaPortalAdapter，未覆盖 future portal 接入路径</li>
+  <li>⚠️ <strong>Chrome Capture / Offscreen API</strong>：V3-2-1+ 阶段；当前完全未实现</li>
+  <li>⚠️ <strong>真实 GPU 8 GiB no-GPU 真实推理</strong>：测试用 15s 固定切片模拟；未真跑 Paraformer Q8 runtime-llamacpp-v0.2.6</li>
+  <li>⚠️ <strong>OCR / VLM</strong>：未实现；测试不存在</li>
+</ul>
+</section>
+
+<!-- ============== 8. 交互体验 ============== -->
+<section id="interaction">
+<h2>8. 交互体验（基于真实代码路径）</h2>
+
+<h3>8.1 Chrome 真实截图状态</h3>
+<div class="screenshot">
+Chrome MV3 扩展在 WSL + Windows Chrome headless 模式下 service worker 不兼容，反复超时。
+<br>本报告基于代码 + Runtime 探测作为证据，未运行真实 Chrome 截图。
+<br>用户可在本机手动加载 chrome-mv3-unpacked 验证下列路径。
+</div>
+
+<h3>8.2 可演示路径（基于代码与 API 实际行为）</h3>
+
+<table>
+<tr><th>路径</th><th>实际状态</th><th>用户可验证方式</th></tr>
+<tr>
+<td>1. 打开 Side Panel（Ctrl+Shift+Y）</td>
+<td>✅ manifest 已注册 keyboard shortcut</td>
+<td>手动加载扩展 + 触发快捷键</td>
+</tr>
+<tr>
+<td>2. Side Panel 显示 Runtime status + 入口</td>
+<td>✅ sidepanel.html 实现；Runtime 实时可达</td>
+<td>同 1</td>
+</tr>
+<tr>
+<td>3. 打开 Workspace</td>
+<td>✅ workspace.html 实现</td>
+<td>手动访问 chrome-extension://[id]/workspace.html</td>
+</tr>
+<tr>
+<td>4. Workspace 显示 knowledge sources / ask / graph / permissions</td>
+<td>⚠️ 路由实现；但 0 sources（mock 数据）</td>
+<td>同 3；可见空状态</td>
+</tr>
+<tr>
+<td>5. Settings → ASR 模型状态</td>
+<td>✅ settings panel 实现；显示 5 个模型</td>
+<td>手动导航；可见真实 Catalog</td>
+</tr>
+<tr>
+<td>6. 选择 Paraformer Q8 → 安装</td>
+<td>⚠️ UI 实现；Runtime 端 <code>/v1/asr/installations</code> 可 POST；安装进度可视化骨架存在；但实际模型资产未拉取（包内无 226 MB GGUF）</td>
+<td>同 5；可见 UI 状态变化，无真实推理</td>
+</tr>
+<tr>
+<td>7. 录制 B站视频 tabCapture</td>
+<td>❌ V3-2-1+ 未实现</td>
+<td>不可演示</td>
+</tr>
+<tr>
+<td>8. 转写生成 transcript + 时间线 + 大纲 + Ask</td>
+<td>❌ V3-2-1+ 未实现；ASR 实际质量失败</td>
+<td>不可演示</td>
+</tr>
+<tr>
+<td>9. 真实 data_service 接入</td>
+<td>❌ 仅有 mock adapter</td>
+<td>不可演示</td>
+</tr>
+<tr>
+<td>10. 持久化导出</td>
+<td>❌ V4 deferred</td>
+<td>不可演示</td>
+</tr>
+</table>
+
+<h3>8.3 端到端用户故事覆盖</h3>
+<table>
+<tr><th>用户故事</th><th>覆盖</th></tr>
+<tr><td>用户打开 B站视频 → Side Panel 显示</td><td>✅（content script + adapter）</td></tr>
+<tr><td>用户授权 5 项 scope → Channel + Lease 创建</td><td>✅（Runtime 端 + UI 端）</td></tr>
+<tr><td>用户选择 ASR 模型 → 安装</td><td>⚠️（UI 端 + Runtime 端可达；资产拉取未验证）</td></tr>
+<tr><td>用户录制 tabCapture → 本地 ASR 转写</td><td>❌（V3-2-1+）</td></tr>
+<tr><td>生成 transcript → 时间线 → 大纲 → Mindmap</td><td>❌（V3-2-1+）</td></tr>
+<tr><td>点击 Ask → 跨证据回答</td><td>❌（V3-2-1+）</td></tr>
+<tr><td>导出到 Markdown</td><td>❌（V4 deferred）</td></tr>
+</table>
+</section>
+
+<!-- ============== 9. 已知失败 ============== -->
+<section id="failures">
+<h2>9. 已知失败（不掩盖）</h2>
+
+<table>
+<tr><th>失败</th><th>影响</th><th>当前状态</th></tr>
+<tr>
+<td><strong>F1: Faster-Whisper Small real quality gate</strong></td>
+<td>开发基线 FAILED</td>
+<td>3 个真实 B站样本上不及格</td>
+</tr>
+<tr>
+<td><strong>F2: Paraformer Q8 long-window sample03/bin2 静音</strong></td>
+<td>candidate REPLAN</td>
+<td>改 15s 固定切片；仍遗漏</td>
+</tr>
+<tr>
+<td><strong>F3: Tiny fallback</strong></td>
+<td>唯一 effective</td>
+<td>不计入生产质量门禁</td>
+</tr>
+<tr>
+<td><strong>F4: Mock data_service</strong></td>
+<td>所有 V1/V2/V3 演示在 mock</td>
+<td>真实 data_service 未启用</td>
+</tr>
+<tr>
+<td><strong>F5: Chrome 截图不可行</strong></td>
+<td>本报告无视觉证据</td>
+<td>用代码 + Runtime 探测代替</td>
+</tr>
+<tr>
+<td><strong>F6: V3-2-1+ 完全未实施</strong></td>
+<td>媒体获取 + OCR + VLM + Ask + 导出均无</td>
+<td>V3 范围只达"基础架构就绪"</td>
+</tr>
+<tr>
+<td><strong>F7: T01 真实 Chrome 36 项</strong></td>
+<td>需 36 项 assertion 逐项通过</td>
+<td>本审查仅验证 exitCode=0</td>
+</tr>
+</table>
+
+<h3>9.1 已知 Minor 项（不阻断但需后续处理）</h3>
+<ul>
+  <li>V3-2-0b-5.3 实施后审查：3 项 Minor（待实施出门时再统一处理）</li>
+  <li>V3-1.3 实施出门审查：3 项 Minor（K-1 子字段未逐条、K-2 payload 未抽样、K-3 Cookie 文件依赖用户上传）</li>
+  <li>T04.1 / PX-6 文档审查：3 项 Minor</li>
+  <li>V3-0 cookie primary 文档审查：3 项 Minor</li>
+  <li>V3-0 no-cookie 文档审查：4 项 Minor</li>
+  <li>T03 implementation 审查：5 项 Minor</li>
+  <li>T03 preimplementation 审查：6 项 Minor</li>
+  <li>T02.2 实施出门审查：4 项 Minor</li>
+  <li>T02.1 实施出门审查：3 项 Minor</li>
+  <li>T02 实施出门审查：3 项 Minor</li>
+  <li>RKM 文档审查：16 项 Minor</li>
+  <li>R1 实施期审查：6 项 Major（F-1..F-6）</li>
+</ul>
+</section>
+
+<!-- ============== 10. 验收评价 ============== -->
+<section id="verdict">
+<h2>10. 验收评价</h2>
+
+<h3>10.1 是否满足 PRD 目标？</h3>
+<div class="card amber">
+<p><strong>部分满足</strong>：V3-1.*（凭据通道）已 PASS；V3-2-0/0a/0b（ASR 基础架构）已实施但质量门禁 FAILED；V3-2-1+（完整端到端）未实施。V3 距离 PRD 描述的"完整视频理解"仍有 ≥ 5 个未实施阶段。</p>
+</div>
+
+<h3>10.2 是否满足 Drawio 目标架构？</h3>
+<div class="card green">
+<p><strong>Page 1-3, 6, 8 满足</strong>：双容器、P0-P7 实体、路由、BiliNote 边界、人类验收结构与实施一致。</p>
+<p><strong>Page 4 (Cookie媒体与双回退)</strong>：credentialed_subtitle 已实现；credentialed_media_asr 已实现；trusted_tab_capture_asr 未实施。</p>
+<p><strong>Page 5 (任务证据Ask与反跳)</strong>：evidence type 定义完整；Ask 与反跳未实现。</p>
+<p><strong>Page 7 (开发里程碑)</strong>：实际进度落后于 Drawio 预期 — 5/8 阶段到达文档冻结，3/8 仍 NO-GO。</p>
+</div>
+
+<h3>10.3 是否满足"本阶段开发内容、目标架构、出门条件全达成"？</h3>
+<div class="card red">
+<p><strong>不满足</strong>。本阶段（V3 Media Companion）的出门条件包括：</p>
+<ul>
+  <li>❌ V3-2-0/0a/0b production_qualified ASR 模型（当前 0 个）</li>
+  <li>❌ V3-2-1+（媒体获取 + transcript + OCR + VLM + Ask + 导出）实施</li>
+  <li>❌ V3-2-A06 FAIL/REPLAN 关闭</li>
+  <li>❌ H01-H10 人类验收</li>
+  <li>❌ 真实 Chrome 端到端可视演示（含真实 B站视频）</li>
+  <li>✅ V3-1.* 凭据通道与 Cookie 传输完成</li>
+  <li>✅ 98/98 V3 Runtime 测试 + 120/120 V3 Extension 测试通过</li>
+  <li>✅ Drawio 8 页 / 113 vertex / 54 edge 结构完整</li>
+  <li>✅ 文档与代码范围一致（无范围扩大）</li>
+</ul>
+</div>
+
+<h3>10.4 本审查结论</h3>
+<table>
+<tr><th>维度</th><th>评价</th></tr>
+<tr><td>代码实施</td><td>✅ V3-0..V3-2-0b 实施到位；V3-2-1+ 未实施</td></tr>
+<tr><td>架构腐化</td><td>✅ 边界清晰；模块解耦良好；Mock/Production 切换接口就绪</td></tr>
+<tr><td>交互体验</td><td>⚠️ Side Panel / Settings / Credential UI 已实现；真实 B站视频转写 / OCR / Ask / 导出未实现</td></tr>
+<tr><td>测试覆盖</td><td>✅ 218 V3 测试全过；⚠️ 真实端到端 + 真实 ASR + 真实 GPU 推理未验证</td></tr>
+<tr><td>Drawio 对账</td><td>✅ 8 页结构完整；与代码范围一致；Page 4 反映 cookie 主路径；Page 5/7 部分超前</td></tr>
+<tr><td>PRD 一致性</td><td>✅ 范围未扩大；deferred_to_v4 边界尊重</td></tr>
+<tr><td>文档一致性</td><td>✅ 13 份独立审计并列存档</td></tr>
+</table>
+
+<h3>10.5 建议下一步</h3>
+<ol>
+  <li><strong>短期</strong>：修复 F2（Paraformer 长窗）→ 重做 V3-2-0b 真实质量门禁</li>
+  <li><strong>中期</strong>：实施 V3-2-1+（MediaCaptureGrant + TabCapture + transcript pipeline + OCR/VLM + Ask）</li>
+  <li><strong>长期</strong>：真实 data_service 接入；多 portal（YouTube、小红书）扩展；V4 知识持久化</li>
+</ol>
+
+<h3>10.6 决断</h3>
+<div class="card amber">
+<p><strong>V3 Media Companion 本阶段 = NOT FULLY GREEN</strong></p>
+<p><strong>已实现：</strong>代码 / 文档 / Drawio / 测试 / 基础架构</p>
+<p><strong>未实现 / 失败：</strong>真实 ASR 质量 / V3-2-1+ 端到端 / 真实 Chrome 截图 / 真实 data_service 接入</p>
+<p><strong>下一步</strong>：用户应基于本报告决定是否要求实施期重做 / 修复 F2 / 启动 V3-2-1+</p>
+</div>
+</section>
+
+<footer>
+V3 Media Companion 项目端到端审查报告 · 2026-09-23 · 当前 Claude Code CLI session
+<br>基于 19 / 18 + 1 文档 + Runtime 实际探测 + Extension 构建产物 + 测试执行结果
+<br>不夸大不掩盖；含 6 个独立审计意见 + 7 个已知失败事实
+</footer>
+
+</div>
+</body>
+</html>

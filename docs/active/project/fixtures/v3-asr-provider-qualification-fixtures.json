@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "v3-asr-provider-qualification-fixtures/v1",
+  "stage": "V3-2-0b",
+  "positiveInstances": [
+    {
+      "instanceId": "V3-2-0B-P01",
+      "source": "contracts/v3-asr-provider-qualification-candidate-manifest.json",
+      "expectedSchemaResult": "pass",
+      "evidenceClass": "document_candidate_not_qualified"
+    }
+  ],
+  "negativeCases": [
+    {"caseId":"V3-2-0B-N01","requirementId":"V3-2-0B-R01","requirementKey":"schema_meta","failureCode":"V3_ASR_QUAL_SCHEMA_INVALID","target":"schema","mutation":"remove_$schema","expected":"reject"},
+    {"caseId":"V3-2-0B-N02","requirementId":"V3-2-0B-R02","requirementKey":"closed_candidate_manifest","failureCode":"V3_ASR_QUAL_MANIFEST_OPEN_WORLD","target":"candidate_manifest","mutation":"add_unknown_provider_field","expected":"reject"},
+    {"caseId":"V3-2-0B-N03","requirementId":"V3-2-0B-R03","requirementKey":"runtime_asset_identity","failureCode":"V3_ASR_QUAL_RUNTIME_IDENTITY_MISMATCH","target":"candidate_manifest","mutation":"replace_runtime_sha256","expected":"reject"},
+    {"caseId":"V3-2-0B-N04","requirementId":"V3-2-0B-R04","requirementKey":"model_asset_identity","failureCode":"V3_ASR_QUAL_MODEL_IDENTITY_MISMATCH","target":"candidate_manifest","mutation":"replace_model_revision","expected":"reject"},
+    {"caseId":"V3-2-0B-N05","requirementId":"V3-2-0B-R05","requirementKey":"license_provenance","failureCode":"V3_ASR_QUAL_LICENSE_UNRESOLVED","target":"candidate_manifest","mutation":"set_license_unknown","expected":"reject"},
+    {"caseId":"V3-2-0B-N06","requirementId":"V3-2-0B-R06","requirementKey":"remote_code_disabled","failureCode":"V3_ASR_QUAL_REMOTE_CODE_FORBIDDEN","target":"candidate_manifest","mutation":"set_remoteCodeAllowed_true","expected":"reject"},
+    {"caseId":"V3-2-0B-N07","requirementId":"V3-2-0B-R07","requirementKey":"low_resource_baseline","failureCode":"V3_ASR_QUAL_RESOURCE_BASELINE_EXCEEDED","target":"qualification_run","mutation":"set_peakRss_above_8GiB","expected":"reject"},
+    {"caseId":"V3-2-0B-N08","requirementId":"V3-2-0B-R08","requirementKey":"provider_adapter_boundary","failureCode":"V3_ASR_QUAL_PROVIDER_BOUNDARY_BYPASSED","target":"architecture_manifest","mutation":"frontend_calls_native_binary","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N09","requirementId":"V3-2-0B-R09","requirementKey":"timestamped_transcript","failureCode":"V3_ASR_QUAL_TIMESTAMP_CONTRACT_FAILED","target":"qualification_run","mutation":"reverse_segment_time","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N10","requirementId":"V3-2-0B-R10","requirementKey":"fixed_real_samples","failureCode":"V3_ASR_QUAL_SAMPLE_DENOMINATOR_CHANGED","target":"qualification_run","mutation":"remove_one_sample","expected":"reject"},
+    {"caseId":"V3-2-0B-N11","requirementId":"V3-2-0B-R11","requirementKey":"fixed_window_and_bins","failureCode":"V3_ASR_QUAL_WINDOW_OR_BIN_DRIFT","target":"comparison_bundle","mutation":"change_window_start","expected":"reject"},
+    {"caseId":"V3-2-0B-N12","requirementId":"V3-2-0B-R12","requirementKey":"blind_label_separation","failureCode":"V3_ASR_QUAL_LABEL_LEAK","target":"review_page","mutation":"render_provider_name","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N13","requirementId":"V3-2-0B-R13","requirementKey":"two_independent_reviews","failureCode":"V3_ASR_QUAL_REVIEW_DENOMINATOR_NOT_MET","target":"adjudication","mutation":"duplicate_reviewer_id","expected":"reject"},
+    {"caseId":"V3-2-0B-N14","requirementId":"V3-2-0B-R14","requirementKey":"quality_threshold","failureCode":"V3_ASR_QUAL_QUALITY_GATE_FAILED","target":"adjudication","mutation":"set_critical_error_one_with_pass_true","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N15","requirementId":"V3-2-0B-R15","requirementKey":"cleanup_and_secret_scan","failureCode":"V3_ASR_QUAL_PRIVATE_DATA_RETAINED","target":"qualification_run","mutation":"set_audioDeleted_false","expected":"reject"},
+    {"caseId":"V3-2-0B-N16","requirementId":"V3-2-0B-R16","requirementKey":"settings_resource_disclosure","failureCode":"V3_ASR_QUAL_RESOURCE_COPY_MISMATCH","target":"ui_observation","mutation":"show_gpu_required","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N17","requirementId":"V3-2-0B-R17","requirementKey":"real_runtime_ui_chain","failureCode":"V3_ASR_QUAL_UI_RUNTIME_CHAIN_UNPROVEN","target":"chrome_run","mutation":"replace_runtime_transport_with_intercept","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-N18","requirementId":"V3-2-0B-R18","requirementKey":"independent_exit_audit","failureCode":"V3_ASR_QUAL_INDEPENDENT_AUDIT_NOT_PASSED","target":"stage_gate","mutation":"promote_without_independent_audit","expected":"semantic_reject"}
+  ]
+}

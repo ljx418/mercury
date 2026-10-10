@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "v3-asr-provider-qualification-candidate-manifest/v1",
+  "candidateId": "funasr-paraformer-q8-cpu-v1",
+  "stage": "V3-2-0b",
+  "status": "document_candidate_not_qualified",
+  "provider": {
+    "providerId": "funasr_edge_local",
+    "engine": "funasr-llamacpp",
+    "engineVersion": "runtime-llamacpp-v0.2.6",
+    "sourceRepository": "modelscope/FunASR",
+    "sourceUrl": "https://github.com/modelscope/FunASR/releases/tag/runtime-llamacpp-v0.2.6",
+    "license": "MIT",
+    "runtimeKind": "native_process",
+    "remoteCodeAllowed": false
+  },
+  "runtimeAssets": [
+    {
+      "platform": "linux-x64-portable",
+      "fileName": "funasr-llamacpp-linux-x64.tar.gz",
+      "byteLength": 8014474,
+      "sha256": "779967de1c528c2be966bcc47f246e7d3e6fcdb748d9491263062f4120f35e52",
+      "sourceUrl": "https://github.com/modelscope/FunASR/releases/download/runtime-llamacpp-v0.2.6/funasr-llamacpp-linux-x64.tar.gz"
+    },
+    {
+      "platform": "windows-x64-portable",
+      "fileName": "funasr-llamacpp-windows-x64.zip",
+      "byteLength": 4967457,
+      "sha256": "f6a73a548413ba9fbaf2145263ea66ec53cbdad1fb11790dbeeee493e339492e",
+      "sourceUrl": "https://github.com/modelscope/FunASR/releases/download/runtime-llamacpp-v0.2.6/funasr-llamacpp-windows-x64.zip"
+    }
+  ],
+  "modelAssets": [
+    {
+      "role": "asr_model",
+      "repository": "FunAudioLLM/Paraformer-GGUF",
+      "revision": "1a5063b305a2b4e418ccffaf7be2c02a3cac6c89",
+      "fileName": "paraformer-q8.gguf",
+      "byteLength": 236929024,
+      "sha256": "42bf76ea1575a336aaca4c1b7c01a82b79113e6d04d0d6b799561bfcf07ee011",
+      "license": "Apache-2.0",
+      "sourceUrl": "https://huggingface.co/FunAudioLLM/Paraformer-GGUF/resolve/1a5063b305a2b4e418ccffaf7be2c02a3cac6c89/paraformer-q8.gguf?download=true"
+    },
+    {
+      "role": "vad_model",
+      "repository": "FunAudioLLM/fsmn-vad-GGUF",
+      "revision": "6840bae4c5c92ee8c04faaf4db23dd0105098d7f",
+      "fileName": "fsmn-vad.gguf",
+      "byteLength": 1720512,
+      "sha256": "1270f2559c495f4e7b6e739541151027d360761a3fda43fc147034f5719f5479",
+      "license": "Apache-2.0",
+      "sourceUrl": "https://huggingface.co/FunAudioLLM/fsmn-vad-GGUF/resolve/6840bae4c5c92ee8c04faaf4db23dd0105098d7f/fsmn-vad.gguf?download=true"
+    }
+  ],
+  "capabilities": {
+    "localOnly": true,
+    "requiresGpu": false,
+    "languages": ["zh", "en"],
+    "timestamps": "fsmn_vad_srt_segments",
+    "input": "pcm_s16le_mono_16000hz",
+    "networkDuringInference": false
+  },
+  "lowResourceBaseline": {
+    "cpuCores": 8,
+    "addressSpaceBytes": 8589934592,
+    "gpuAllowed": false,
+    "qualificationThreads": 8
+  },
+  "resourceDisclosure": {
+    "linuxDownloadBytes": 246664010,
+    "windowsDownloadBytes": 243616993,
+    "installedDiskCeilingBytes": 536870912,
+    "installationFreeSpaceRequiredBytes": 1073741824,
+    "peakRssCeilingBytes": 8589934592,
+    "gpuVramBytes": 0,
+    "measurementStatus": "policy_ceiling_pending_real_measurement"
+  },
+  "comparison": {
+    "baselineCandidateId": "faster-whisper-small-failed-20260921",
+    "sampleIds": ["v3-asr-comparison-01", "v3-asr-comparison-02", "v3-asr-comparison-03"],
+    "windowStartMs": 30000,
+    "windowEndMs": 150000,
+    "binDurationMs": 15000,
+    "binsPerSample": 8,
+    "reviewerCount": 2,
+    "minimumMeaningPreserved": 44,
+    "minimumPerSample": 15,
+    "maximumCriticalMeaningErrors": 0,
+    "maximumNeitherAcceptable": 0
+  },
+  "notes": [
+    "This manifest freezes a documentation candidate only; no Navia production qualification has run.",
+    "Bundled faster-whisper-tiny remains the default fallback and is outside the production quality numerator.",
+    "Any upstream byte, license, revision, capability or redirect change requires a new manifest revision."
+  ]
+}

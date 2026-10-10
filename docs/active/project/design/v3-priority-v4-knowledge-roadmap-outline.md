@@ -1,8 +1,10 @@
-# V3 优先与 V4 知识能力迁移开发大纲
+# V3 Chat + Know 优先 / V4 智能知识 / V5 Agent 开发大纲
 
-状态：`APPROVED DIRECTION / OUTLINE ONLY`  
-日期：2026-09-15  
+状态：`SUPERSEDED IN PART / OUTLINE ONLY`
+日期：2026-09-17
 范围：阶段优先级、开发顺序与边界；不是细化开发计划、实施授权或完成声明。
+
+> 2026-10-07 更新：V3 不再只是 Media Companion。B站媒体能力作为 Chat 的 `MediaPortalAdapter` 保留；V3 同时必须完成普通网页识读、KnowledgeDraft 和 Know 真实管理基线。Query、Graph、记忆、自动维护和 Durable Forget 仍由 V4 承接；Agent 整体移入 V5+。当前权威详见 `v3-chat-know-product-convergence.md`。
 
 ## 1. 阶段决策
 
@@ -11,7 +13,7 @@
 | 阶段 | 当前状态 | 后续定位 |
 |---|---|---|
 | V2 Memory / External Brain / PX-6 / RKM | `PAUSED / INCOMPLETE` | 保留现有代码、合同、run、审计和限定 PASS；不继续 H01..H07、G7/final、Query、Graph、Durable Forget 与 RKM 实施，不宣称 V2/RAG ready |
-| V3 Media Companion | `ACTIVE PRIORITY / DOCUMENT MIGRATION PENDING` | 先完成 B站视频页的采集、转写、结构化理解、图文大纲、时间轴、Media Mindmap 与时间反跳 |
+| V3 Media Companion | `ACTIVE PRIORITY / V3-1.3 PASS / V3-2-1 LIMITED PASS / V3-2-2 IMPLEMENTATION NO-GO` | 页面识别、授权/会话、一次性凭据通道、SenseVoice 开发基线和 Runtime acquisition core 已实现；B站字幕/当前分 P 获取及其后的转写、视觉、图文大纲、时间轴、Media Mindmap 与时间反跳仍待实现。当前唯一 V3-2-2 Major 是授权 Cookie 失效 |
 | V4 Personal Knowledge and Agent Workspace | `PLANNED SUCCESSOR` | 承接真实记忆、查询、Knowledge Graph、Durable Forget、RKM，以及后续个人秘书/研究任务能力；进入实现前重新冻结范围与合同 |
 
 本决策只改变后续优先级，不追溯修改 V2 已封存证据的事实、哈希、结论或阶段名称。
@@ -23,7 +25,8 @@ V3 首个目标体验固定为 B站视频页：
 ```text
 用户打开受支持的 B站视频
 -> Navia 识别视频、分P、播放器与可用字幕
--> 用户主动开始分析；无字幕时可主动授权本地音频转写
+-> 用户一次性授权 B站会话访问和任务期临时媒体处理
+-> 用户主动开始分析；主路径使用短期 Cookie 租约，平台拒绝时回退公开字幕或可信标签页采集
 -> 同一份带时间戳证据生成图文大纲、章节时间轴和 Media Mindmap
 -> 用户点击章节、节点或证据回到视频对应时间
 -> 用户可取消任务、查看失败原因并导出本地结果
@@ -39,7 +42,8 @@ V3 沿用 Navia 的 Chrome Extension + Local Runtime 主栈，新增独立媒体
 B站页面与播放器
 -> Extension Media Bridge（页面身份、字幕、播放器控制）
 -> Runtime Media API（任务、取消、进度与产物）
--> Transcript Pipeline（公开字幕优先；用户授权后本地 ASR 回退）
+-> Session / Acquisition Pipeline（受控 Cookie 主路径；公开字幕与 tabCapture 回退）
+-> Transcript Pipeline（凭据字幕或临时音频；本地 ASR）
 -> Media Understanding（章节、摘要、关键证据与可视化模型）
 -> Side Panel / Media Workspace（大纲、时间轴、Mindmap、反跳、导出）
 -> V3 本地 MediaTaskStore
@@ -48,7 +52,7 @@ V4 Knowledge Adapter（未来）
 <- 仅接收用户主动选择的 V3 结构化产物
 ```
 
-BiliNote 采用“固定上游 commit + 许可证审查 + 选择性迁移 + Navia 防腐层”的路线。可复用其字幕/ASR/LLM 编排与 Markdown 生成思路，不整仓嵌入其应用壳、账号体系、数据库、下载策略或部署拓扑，也不后台复用用户 cookie 下载受限媒体。
+BiliNote 采用“固定上游 commit + 许可证审查 + 选择性迁移 + Navia 防腐层”的路线。可复用其字幕/ASR/yt-dlp/抽帧/LLM 编排思路，不整仓嵌入其应用壳、账号体系、数据库或部署拓扑。Cookie 能力改造为浏览器权威、同任务短租约、值不落盘、临时媒体强制清理；不得复用其明文 Cookie 配置。
 
 ## 4. 推荐开发顺序
 
@@ -58,15 +62,16 @@ BiliNote 采用“固定上游 commit + 许可证审查 + 选择性迁移 + Navi
 - 冻结 B站首发范围、媒体任务状态、证据模型、隐私/版权边界、BiliNote 上游 commit 与允许迁移清单。
 - 移除 V3 对 PX-6/H01 完成态的阻塞依赖，同时保留“不得用 mock 证明真实持久知识”的边界。
 
-### V3-1 B站页面与字幕基线
+### V3-1 B站页面、会话与能力基线
 
-- 建立 B站 URL、BV/CID、分P、标题、UP 主、时长、播放器和公开字幕的稳定采集路径。
+- 建立 B站 URL、BV/CID、分P、标题、UP 主、时长、播放器、公开字幕和当前会话能力的稳定采集路径。
+- 实现通用 `MediaPortalAdapter/MediaPortalRegistry`、首个 `BilibiliMediaPortalAdapter`、`BilibiliSessionBroker` 与短期 `PortalCredentialLease(adapterId=bilibili)`；Cookie 值不得进入持久存储或证据，未来门户不得继承 B站权限。
 - 以指定 B站视频作为首个真实样本，明确登录态、无字幕、分P变化和页面结构变化的降级行为。
 
-### V3-2 用户授权的本地音频转写
+### V3-2 受控媒体获取与本地转写
 
-- 通过受信任用户操作启动标签页音频采集，仅发送本机 Runtime。
-- 建立本地 ASR、进度、取消、临时文件清理、重试与不可用状态；禁止自动下载媒体流或绕过平台限制。
+- 用户点击开始后优先通过短期租约获取字幕、临时音频和必要视频；只允许处理当前会话本来有权访问的内容。
+- 建立本地 ASR、进度、取消、cookiefile/临时媒体清理、重试与不可用状态；Cookie 或平台路径失败时保留公开字幕和可信 `tabCapture` 回退。
 
 ### V3-3 媒体任务与生成管线
 
@@ -80,9 +85,9 @@ BiliNote 采用“固定上游 commit + 许可证审查 + 选择性迁移 + Navi
 - 在宽屏 Media Workspace 提供图文大纲、时间轴、Mindmap、证据详情和任务历史。
 - 章节、节点和证据均支持时间反跳；定位失败时显示可解释的 fallback/blocked 状态。
 
-### V3-5 画面理解增量
+### V3-5 画面理解与证据
 
-- 在用户明确授权和采样预算内增加关键帧、OCR 与可选 VLM 分析。
+- 在持久产品授权和采样预算内完成关键帧、本地 OCR 与真实云端 VLM 分析；它们属于首版固定出门范围，不是可选增量。
 - 将画面证据与字幕证据分开标识；没有画面证据时不得把字幕推断表述为已理解画面。
 
 ### V3-6 真实数据自动验收
@@ -111,7 +116,7 @@ BiliNote 采用“固定上游 commit + 许可证审查 + 选择性迁移 + Navi
 
 V3 进入实现前：V3-0 的 PRD、架构、合同、Draw.io、开发/验收门禁和 BiliNote 迁移边界必须完成内部审计及独立文档审查，Fatal=0、Major=0，并取得用户实施授权。
 
-V3 完成时：指定真实 B站样本及扩展样本能够从字幕或用户授权的本地 ASR 生成一致的大纲、时间轴和 Mindmap，支持可验证时间反跳、取消、清理、错误恢复、可访问性与人工质量签署。
+V3 完成时：指定真实 B站样本及扩展样本能够从受控 Cookie 会话、公开/页内字幕或可信标签页采集获得完整输入，经本地 ASR、关键帧、本地 OCR 和授权云端 VLM 生成一致的大纲、时间轴和 Mindmap；支持 Ask 引用、可验证时间反跳、取消、凭据/临时媒体清理、错误恢复、可访问性与人工质量签署。
 
 V4 进入实现前：V2 遗留实现只能作为候选资产，不能沿用旧限定 PASS 代替 V4 的真实数据、迁移、权限、删除和恢复验收。
 

@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-asr-comparison-contracts/v1",
+  "title": "Navia V3-2 ASR Blind Comparison Contracts",
+  "oneOf": [
+    { "$ref": "#/$defs/ComparisonBundle" },
+    { "$ref": "#/$defs/IndependentReview" },
+    { "$ref": "#/$defs/Adjudication" }
+  ],
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "Bvid": { "enum": ["BV1sMNtzJE5B", "BV1xz4y1S7yF", "BV1Bb411w741"] },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pathClass", "sha256"],
+      "properties": {
+        "pathClass": { "enum": ["private_run_relative", "public_evidence_relative"] },
+        "sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ModelRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["modelId", "repository", "revision", "fileSetSha256", "engine", "engineVersion", "device", "computeType", "decodeProfile"],
+      "properties": {
+        "modelId": { "enum": ["production_small", "independent_base"] },
+        "repository": { "enum": ["Systran/faster-whisper-small", "Systran/faster-whisper-base"] },
+        "revision": { "type": "string", "pattern": "^[a-f0-9]{40}$" },
+        "fileSetSha256": { "$ref": "#/$defs/Sha256" },
+        "engine": { "const": "faster-whisper" },
+        "engineVersion": { "const": "1.2.1" },
+        "device": { "const": "cpu" },
+        "computeType": { "const": "int8" },
+        "decodeProfile": { "const": "beam1-vad500-no-context-v1" }
+      }
+    },
+    "CandidateOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "textSha256", "segmentIds"],
+      "properties": {
+        "text": { "type": "string" },
+        "textSha256": { "$ref": "#/$defs/Sha256" },
+        "segmentIds": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^seg_[0-9]{3}$" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "ComparisonBin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binIndex", "absoluteStartMs", "absoluteEndMs", "deepLink", "candidateA", "candidateB"],
+      "properties": {
+        "binIndex": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "absoluteStartMs": { "type": "integer", "minimum": 30000, "maximum": 135000 },
+        "absoluteEndMs": { "type": "integer", "minimum": 45000, "maximum": 150000 },
+        "deepLink": { "type": "string", "pattern": "^https://www\\.bilibili\\.com/video/BV[A-Za-z0-9]+/?.*[?&]t=[0-9]+" },
+        "candidateA": { "$ref": "#/$defs/CandidateOutput" },
+        "candidateB": { "$ref": "#/$defs/CandidateOutput" }
+      }
+    },
+    "ComparisonSample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sampleId", "bvid", "cid", "partIndex", "title", "sourceSha256", "audioWindowSha256", "labelMap", "detectedLanguage", "bins"],
+      "properties": {
+        "sampleId": { "enum": ["v3-asr-comparison-01", "v3-asr-comparison-02", "v3-asr-comparison-03"] },
+        "bvid": { "$ref": "#/$defs/Bvid" },
+        "cid": { "type": "string", "pattern": "^[0-9]+$" },
+        "partIndex": { "const": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "sourceSha256": { "$ref": "#/$defs/Sha256" },
+        "audioWindowSha256": { "$ref": "#/$defs/Sha256" },
+        "labelMap": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["candidateA", "candidateB"],
+          "properties": {
+            "candidateA": { "enum": ["production_small", "independent_base"] },
+            "candidateB": { "enum": ["production_small", "independent_base"] }
+          }
+        },
+        "detectedLanguage": { "type": "string", "minLength": 2 },
+        "bins": {
+          "type": "array",
+          "minItems": 8,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/ComparisonBin" }
+        }
+      }
+    },
+    "ComparisonBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "runId", "createdAt", "window", "models", "samples", "cleanup", "secretScan"],
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-comparison-bundle/v1" },
+        "runId": { "type": "string", "pattern": "^v3-2-asr-comparison-[0-9]{8}T[0-9]{6}Z$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["startMs", "endMs", "durationMs", "binDurationMs", "binCount"],
+          "properties": {
+            "startMs": { "const": 30000 },
+            "endMs": { "const": 150000 },
+            "durationMs": { "const": 120000 },
+            "binDurationMs": { "const": 15000 },
+            "binCount": { "const": 8 }
+          }
+        },
+        "models": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["production", "baseline"],
+          "properties": {
+            "production": { "$ref": "#/$defs/ModelRef" },
+            "baseline": { "$ref": "#/$defs/ModelRef" }
+          }
+        },
+        "samples": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/ComparisonSample" }
+        },
+        "cleanup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cookieFileDeleted", "sourceMediaDeleted", "audioWindowDeleted", "privateWorkDeleted"],
+          "properties": {
+            "cookieFileDeleted": { "const": true },
+            "sourceMediaDeleted": { "const": true },
+            "audioWindowDeleted": { "const": true },
+            "privateWorkDeleted": { "const": true }
+          }
+        },
+        "secretScan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hitCount", "passed"],
+          "properties": {
+            "hitCount": { "const": 0 },
+            "passed": { "const": true }
+          }
+        }
+      }
+    },
+    "ErrorCode": {
+      "enum": ["omission", "hallucination", "named_entity", "number", "wrong_language", "timestamp", "other"]
+    },
+    "Judgment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bvid", "binIndex", "choice", "candidateAMeaningPreserved", "candidateBMeaningPreserved", "candidateAErrors", "candidateBErrors", "criticalMeaningError", "note"],
+      "properties": {
+        "bvid": { "$ref": "#/$defs/Bvid" },
+        "binIndex": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "choice": { "enum": ["candidate_a_better", "candidate_b_better", "equivalent", "neither_acceptable"] },
+        "candidateAMeaningPreserved": { "type": "boolean" },
+        "candidateBMeaningPreserved": { "type": "boolean" },
+        "candidateAErrors": { "type": "array", "items": { "$ref": "#/$defs/ErrorCode" }, "uniqueItems": true },
+        "candidateBErrors": { "type": "array", "items": { "$ref": "#/$defs/ErrorCode" }, "uniqueItems": true },
+        "criticalMeaningError": { "type": "boolean" },
+        "note": { "type": "string", "maxLength": 160 }
+      }
+    },
+    "IndependentReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "bundleSha256", "reviewerId", "reviewerRole", "submittedAt", "judgments"],
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-independent-comparison-review/v1" },
+        "bundleSha256": { "$ref": "#/$defs/Sha256" },
+        "reviewerId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$" },
+        "reviewerRole": { "const": "independent_human_listener" },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "judgments": {
+          "type": "array",
+          "minItems": 24,
+          "maxItems": 24,
+          "items": { "$ref": "#/$defs/Judgment" }
+        }
+      }
+    },
+    "Adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "bundleSha256", "reviewerIds", "adjudicatorId", "submittedAt", "resolvedJudgments", "summary", "passed"],
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-comparison-adjudication/v1" },
+        "bundleSha256": { "$ref": "#/$defs/Sha256" },
+        "reviewerIds": { "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$" } },
+        "adjudicatorId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$" },
+        "submittedAt": { "type": "string", "format": "date-time" },
+        "resolvedJudgments": { "type": "array", "minItems": 24, "maxItems": 24, "items": { "$ref": "#/$defs/Judgment" } },
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["totalIndependentJudgments", "productionMeaningPreservedCount", "productionMeaningPreservedRate", "perSampleMinimumCount", "criticalMeaningErrorCount", "neitherAcceptableCount"],
+          "properties": {
+            "totalIndependentJudgments": { "const": 48 },
+            "productionMeaningPreservedCount": { "type": "integer", "minimum": 0, "maximum": 48 },
+            "productionMeaningPreservedRate": { "type": "number", "minimum": 0, "maximum": 1 },
+            "perSampleMinimumCount": { "type": "integer", "minimum": 0, "maximum": 16 },
+            "criticalMeaningErrorCount": { "type": "integer", "minimum": 0, "maximum": 48 },
+            "neitherAcceptableCount": { "type": "integer", "minimum": 0, "maximum": 48 }
+          }
+        },
+        "passed": { "type": "boolean" }
+      }
+    }
+  }
+}

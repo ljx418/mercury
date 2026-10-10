@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "v3-stage-implementation-authorization/v1",
+  "authorizationId": "v3-2-implementation-20260918T194523+0800",
+  "userId": "workspace_user",
+  "signedAt": "2026-09-18T19:45:23+08:00",
+  "sourceQuote": "已完成审查 确认可以继续开发。",
+  "sourceQuoteSha256": "8f3aab6f0915fe511352a474e697a033b8f0428a65c3bf913678d9861a871431",
+  "scope": [
+    "V3-2-0",
+    "V3-2-1",
+    "V3-2-2",
+    "V3-2-3",
+    "V3-2-4",
+    "V3-2-5",
+    "V3-2-6",
+    "V3-2-7"
+  ],
+  "conditions": [
+    "Each substage requires a written development plan, acceptance plan, and Fatal=0/Major=0 preimplementation audit.",
+    "Each substage must use real data for production claims and return to planning on acceptance failure.",
+    "High-risk permission expansion, protected-media bypass, cloud ASR, secret publication, or denominator reduction requires new user authorization."
+  ],
+  "excludedScope": [
+    "V3-3+ keyframe/OCR/VLM/outline/mindmap implementation",
+    "YouTube or Xiaohongshu production adapters",
+    "V4 memory/query/external-brain implementation",
+    "DRM or paid-content bypass"
+  ],
+  "prerequisiteAudit": {
+    "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-independent-document-audit.md",
+    "sha256": "e7e792c6749af1cd071cee5fcb26bcfb80202e818ef0d4d6e40662930ee4462a",
+    "decision": "V3-2 DOCUMENT CONDITIONAL GO FOR EXPLICIT USER AUTHORIZATION",
+    "fatal": 0,
+    "major": 0,
+    "minor": 3
+  },
+  "auditRequest": {
+    "path": "docs/active/project/external-audit-package/01-audit-request.md",
+    "sha256": "90964d9f942f126f87638d9153332da271016dc592383e468b1967035f8cd259"
+  }
+}

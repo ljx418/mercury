@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
+import secrets
+import signal
+import time
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 
 from navia_runtime import __version__
@@ -19,6 +23,59 @@ from navia_runtime.modules.memory.data_service_adapter import KnowledgeAdapterEr
 from navia_runtime.modules.memory.data_service_client import DataServiceClientError
 from navia_runtime.modules.memory.permissions import PermissionFailure, PermissionService
 from navia_runtime.modules.memory.guards import reject_local_candidate, validate_forget_input
+from navia_runtime.modules.knowledge_v3 import KnowledgeV3Error, KnowledgeV3Store
+from navia_runtime.modules.media_companion.credential_transport import (
+    CredentialChannelStore,
+    CredentialLeaseStore,
+    MAX_ENVELOPE_BODY_BYTES,
+    MediaCredentialAuthenticator,
+    MediaCredentialFailure,
+)
+from navia_runtime.modules.companion import CompanionFailure, CompanionSessionBroker
+from navia_runtime.modules.media_companion.bilibili_policy import (
+    BILIBILI_CREDENTIAL_ENVELOPE_POLICY,
+    BILIBILI_CREDENTIAL_TRANSPORT_POLICY,
+)
+from navia_runtime.modules.media_companion.asr import (
+    AsrModelManager,
+    AsrModelManagerError,
+    AsrProviderError,
+    FunAsrLlamaCppProviderAdapter,
+    V3_BASELINE_ASR_MODEL_ID,
+)
+from navia_runtime.modules.media_companion.asr.model_manager import MAX_OFFLINE_PACKAGE_BYTES
+from navia_runtime.modules.media_companion.acquisition import (
+    MediaAcquisitionCoordinator,
+    MediaAcquisitionError,
+    AcquisitionAudioRef,
+    SenseVoiceTranscriptService,
+    TaskAudioStager,
+    TranscriptTask,
+    ArtifactRef,
+    TaskArtifactError,
+    TaskArtifactSandbox,
+    CaptureSinkFailure,
+    MediaCaptureFailure,
+    MediaCaptureGrantService,
+    RuntimeCaptureSink,
+)
+from navia_runtime.modules.media_companion.acquisition.coordinator import request_from_payload
+from navia_runtime.modules.media_companion.acquisition.bilibili import BilibiliMediaAcquirer
+from navia_runtime.modules.media_companion.acquisition.downloaders import YtDlpMediaDownloader
+from navia_runtime.modules.media_companion.transcript_projection import MediaTranscriptProjectionService
+from navia_runtime.modules.media_companion.task_store import MediaTaskStore, MediaTaskStoreError
+from navia_runtime.modules.media_companion.product_materializer import MediaProductMaterializer
+from navia_runtime.modules.media_companion.product_services import MediaAskService, MediaExportService
+from navia_runtime.modules.media_companion.comprehension import MediaComprehensionService
+from navia_runtime.modules.adapters.media_vision import VisionConsentStore
+from navia_runtime.modules.media_companion.vision import (
+    SecretStoreError,
+    UnavailableSecretStore,
+    VisionProviderError,
+    VisionProviderAdapterRegistry,
+    VisionProviderStore,
+    create_system_secret_store,
+)
 from starlette.concurrency import run_in_threadpool
 from navia_runtime.modules.page_reading.runtime import build_high_signal_page_perception
 from navia_runtime.provider_settings import (
@@ -42,6 +99,8 @@ from navia_runtime.v2.runtime_evidence import run_controlled_runtime_evidence
 from navia_runtime.v2.schemas import SchemaValidationError
 from navia_runtime.v2.workbench import build_workbench
 
+logger = logging.getLogger(__name__)
+
 
 ALLOWED_ORIGINS = {
     "http://localhost:5173",
@@ -58,23 +117,177 @@ def default_db_path() -> Path:
     return Path(__file__).resolve().parents[3] / ".navia/navia.sqlite3"
 
 
+def default_asr_bundled_root() -> Path:
+    configured = os.environ.get("NAVIA_BUNDLED_ASR_ROOT")
+    if configured:
+        return Path(configured)
+    return default_db_path().parent / "bundled-asr"
+
+
+def default_asr_root() -> Path:
+    configured = os.environ.get("NAVIA_ASR_ROOT")
+    if configured:
+        return Path(configured)
+    return default_db_path().parent / "asr"
+
+
+def default_media_task_root() -> Path:
+    configured = os.environ.get("NAVIA_MEDIA_TASK_ROOT")
+    if configured:
+        return Path(configured)
+    return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "navia/media-tasks"
+
+
+def default_media_asr_task_root() -> Path:
+    configured = os.environ.get("NAVIA_MEDIA_ASR_TASK_ROOT")
+    if configured:
+        return Path(configured)
+    return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "navia/media-asr-tasks"
+
+
 event_store = SQLiteEventStore(default_db_path())
 event_stream = InMemoryEventStream()
 session_store = SQLiteSessionStore(default_db_path())
 settings_store = SettingsStore(default_db_path())
 provider_registry = ProviderRegistry(settings_store)
+try:
+    vision_secret_store = create_system_secret_store()
+except SecretStoreError:
+    vision_secret_store = UnavailableSecretStore()
+vision_provider_store = VisionProviderStore(
+    Path(os.environ.get("NAVIA_VISION_PROVIDER_DB_PATH", default_db_path())),
+    vision_secret_store,
+)
+vision_provider_adapter = VisionProviderAdapterRegistry()
 pi_sidecar_client = PiSidecarClient()
 v2_artifact_store = V2ArtifactStore(default_db_path())
 knowledge_adapter = build_knowledge_adapter_from_env()
-permission_service = PermissionService(knowledge_adapter)
+knowledge_v3_store = KnowledgeV3Store(default_db_path())
+companion_session_broker = CompanionSessionBroker()
+permission_service = PermissionService(knowledge_adapter, companion_session_broker.accepts)
+media_credential_authenticator = MediaCredentialAuthenticator(companion_session_broker.accepts)
+media_credential_channel_store = CredentialChannelStore(
+    policies=(BILIBILI_CREDENTIAL_TRANSPORT_POLICY,),
+)
+media_credential_lease_store = CredentialLeaseStore(
+    policies=(BILIBILI_CREDENTIAL_ENVELOPE_POLICY,),
+)
+asr_model_manager = AsrModelManager(
+    default_asr_root(),
+    bundled_root=default_asr_bundled_root(),
+)
+media_acquisition_coordinator = MediaAcquisitionCoordinator(TaskArtifactSandbox(default_media_task_root()))
+media_outline_task_store = MediaTaskStore(default_db_path())
+media_capture_grant_service = MediaCaptureGrantService()
+runtime_capture_sink = RuntimeCaptureSink(media_acquisition_coordinator.sandbox)
+
+V3_YT_DLP_SHA256 = "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6"
+V3_FFMPEG_SHA256 = "ed16af623947494a72e284b6eb8ff225f2da22b38b5d5069c2fd4b4ba3384e41"
+
+
+def build_media_downloader(
+    sandbox: TaskArtifactSandbox,
+    *,
+    yt_dlp_path: Path | None = None,
+):
+    """Build the frozen local downloader for a private task sandbox."""
+    yt_dlp = yt_dlp_path or Path(
+        os.environ.get("NAVIA_MEDIA_YT_DLP_PATH", default_db_path().parent / "tools/yt-dlp")
+    )
+    ffmpeg = Path(os.environ.get("NAVIA_MEDIA_FFMPEG_PATH", "/usr/bin/ffmpeg"))
+    if yt_dlp.is_file() and ffmpeg.is_file():
+        try:
+            return YtDlpMediaDownloader(
+                sandbox,
+                yt_dlp=yt_dlp,
+                yt_dlp_sha256=V3_YT_DLP_SHA256,
+                ffmpeg=ffmpeg,
+                ffmpeg_sha256=V3_FFMPEG_SHA256,
+            )
+        except (OSError, MediaAcquisitionError):
+            return None
+    return None
+
+
+def build_media_acquirers() -> dict[str, Any]:
+    """Build only audited local adapters; missing tools preserve the capture fallback."""
+    return {"bilibili": BilibiliMediaAcquirer(downloader=build_media_downloader(media_acquisition_coordinator.sandbox))}
+
+
+def create_sensevoice_provider():
+    model_root = asr_model_manager.model_path(V3_BASELINE_ASR_MODEL_ID)
+    if model_root is None:
+        raise AsrProviderError("V3_MEDIA_TRANSCRIPT_MODEL_MISMATCH", "Frozen SenseVoice model is not installed and verified.")
+    return FunAsrLlamaCppProviderAdapter(
+        model_root,
+        default_media_asr_task_root(),
+        model_id=V3_BASELINE_ASR_MODEL_ID,
+    )
+
+
+media_transcript_service = SenseVoiceTranscriptService(
+    TaskAudioStager(media_acquisition_coordinator.sandbox, default_media_asr_task_root()),
+    create_sensevoice_provider,
+    media_acquisition_coordinator.complete,
+)
+media_transcript_projection_service = MediaTranscriptProjectionService(
+    media_acquisition_coordinator,
+    media_transcript_service,
+)
+media_visual_sandbox = TaskArtifactSandbox(default_media_task_root() / "visual-products")
+media_vision_consent_store = VisionConsentStore(default_db_path())
+media_product_materializer = MediaProductMaterializer(
+    media_outline_task_store,
+    media_transcript_projection_service,
+    default_media_task_root() / "product-evidence",
+    lease_store=media_credential_lease_store,
+    visual_sandbox=media_visual_sandbox,
+    visual_downloader=build_media_downloader(
+        media_visual_sandbox,
+        yt_dlp_path=Path(
+            os.environ.get(
+                "NAVIA_MEDIA_VISUAL_YT_DLP_PATH",
+                os.environ.get("NAVIA_MEDIA_YT_DLP_PATH", default_db_path().parent / "tools/yt-dlp"),
+            )
+        ),
+    ),
+    vision_consent=media_vision_consent_store,
+    vision_providers=vision_provider_store,
+    vision_adapters=vision_provider_adapter,
+)
+media_ask_service = MediaAskService(
+    media_outline_task_store,
+    default_media_task_root() / "product-evidence",
+)
+media_comprehension_service = MediaComprehensionService(
+    media_outline_task_store,
+    default_media_task_root() / "product-evidence",
+)
+media_export_service = MediaExportService(
+    media_outline_task_store,
+    media_ask_service,
+    default_media_task_root() / "product-exports",
+    comprehension=media_comprehension_service,
+)
 runtime_projection = {"state": "waiting_user"}
 
 
 @app.middleware("http")
 async def origin_allowlist(request: Request, call_next):
     origin = request.headers.get("origin")
-    allowed_origin = is_allowed_origin(origin)
+    privileged_media_path = request.url.path.startswith("/v1/media/credential-") or request.url.path.startswith("/v1/media/capture-grants")
+    privileged_companion_path = request.url.path.startswith("/v1/companion/")
+    privileged_vision_path = request.url.path.startswith("/v1/vision/")
+    allowed_origin = media_credential_authenticator.is_exact_origin(origin) if privileged_media_path or privileged_companion_path or privileged_vision_path else is_allowed_origin(origin)
     if origin and not allowed_origin:
+        if privileged_media_path:
+            return media_credential_error_response(
+                MediaCredentialFailure("V3_MEDIA_RUNTIME_ORIGIN_MISMATCH", 403)
+            )
+        if privileged_companion_path or privileged_vision_path:
+            return companion_error_response(
+                CompanionFailure("V3_COMPANION_ORIGIN_MISMATCH", 403), origin
+            )
         return JSONResponse(
             status_code=403,
             content=failure(
@@ -105,12 +318,34 @@ async def origin_allowlist(request: Request, call_next):
         response.headers["Access-Control-Allow-Headers"] = "Content-Type,X-Request-Id,Authorization,Idempotency-Key"
         response.headers["Access-Control-Max-Age"] = "600"
         response.headers["Vary"] = "Origin"
+    if privileged_vision_path:
+        response.headers["Cache-Control"] = "no-store"
     return response
 
 
 @app.exception_handler(PermissionFailure)
 async def permission_exception_handler(request: Request, error: PermissionFailure):
     return permission_error_response(request, error)
+
+
+def vision_error_response(error: VisionProviderError, request: Request) -> JSONResponse:
+    return JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {"code": error.code, "message": str(error)},
+            "requestId": request.headers.get("x-request-id"),
+        },
+    )
+
+
+def authenticate_vision_request(request: Request) -> JSONResponse | None:
+    try:
+        companion_session_broker.authenticate(request.headers.get("authorization"), request.headers.get("origin"))
+    except CompanionFailure as error:
+        return companion_error_response(error, request.headers.get("origin"))
+    return None
 
 
 @app.exception_handler(DataServiceClientError)
@@ -139,11 +374,100 @@ async def knowledge_adapter_exception_handler(request: Request, error: Knowledge
     )
 
 
+@app.exception_handler(KnowledgeV3Error)
+async def knowledge_v3_exception_handler(request: Request, error: KnowledgeV3Error):
+    return JSONResponse(
+        status_code=error.status,
+        content={"ok": False, "data": None, "error": {"code": error.code, "message": str(error)},
+                 "requestId": request.headers.get("x-request-id")},
+    )
+
+
 def permission_error_response(request: Request, error: PermissionFailure):
     return JSONResponse(status_code=error.status, content=failure(
         error.code, "Local file access could not be completed.",
         request_id=request.headers.get("x-request-id"), details={"reason": error.reason},
     ))
+
+
+def media_credential_error_response(error: MediaCredentialFailure):
+    response = JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False,
+            "error": {
+                "code": error.code,
+                "message": "Media credential request was rejected.",
+            },
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+def media_acquisition_error_response(error: MediaAcquisitionError, request: Request):
+    response = JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {
+                "code": error.code,
+                "message": str(error),
+                "recoverable": error.status < 500,
+            },
+            "request_id": request.headers.get("x-request-id"),
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+def media_outline_error_response(error: MediaTaskStoreError, request: Request):
+    response = JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {"code": error.code, "message": str(error), "recoverable": error.status < 500},
+            "request_id": request.headers.get("x-request-id"),
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+def media_transcript_error_response(error: AsrProviderError, request: Request):
+    status = 404 if error.code == "V3_MEDIA_TRANSCRIPT_TASK_INVALID" else 409
+    response = JSONResponse(
+        status_code=status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {
+                "code": error.code if error.code.startswith("V3_MEDIA_TRANSCRIPT_") else "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED",
+                "message": "Local media transcription request could not be completed.",
+                "recoverable": True,
+            },
+            "request_id": request.headers.get("x-request-id"),
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+def media_capture_error_response(error: MediaCaptureFailure | CaptureSinkFailure):
+    status = error.status if isinstance(error, MediaCaptureFailure) else 409
+    response = JSONResponse(
+        status_code=status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {"code": error.code, "message": "Media capture request was rejected."},
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 def is_allowed_origin(origin: str | None) -> bool:
@@ -180,17 +504,988 @@ def health(request: Request):
     )
 
 
+def companion_error_response(error: CompanionFailure, origin: str | None = None) -> JSONResponse:
+    import hashlib
+    expected = companion_session_broker.configured_origin() or ""
+    details = {
+        "observedOriginSha256": hashlib.sha256((origin or "").encode("utf-8")).hexdigest(),
+        "expectedOriginSha256": hashlib.sha256(expected.encode("utf-8")).hexdigest(),
+    } if error.code == "V3_COMPANION_ORIGIN_MISMATCH" else {}
+    response = JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {"code": error.code, "message": "Companion Runtime request was rejected.", "details": details},
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.get("/v1/companion/status")
+def companion_status(request: Request):
+    if not companion_session_broker.is_exact_origin(request.headers.get("origin")):
+        return companion_error_response(CompanionFailure("V3_COMPANION_ORIGIN_MISMATCH", 403), request.headers.get("origin"))
+    response = JSONResponse(content={"ok": True, "data": companion_session_broker.status(), "error": None})
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.post("/v1/companion/sessions", status_code=201)
+def create_companion_session(request: Request):
+    try:
+        session = companion_session_broker.issue(request.headers.get("origin"))
+        response = JSONResponse(status_code=201, content={"ok": True, "data": session, "error": None})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except CompanionFailure as error:
+        return companion_error_response(error, request.headers.get("origin"))
+
+
+@app.delete("/v1/companion/sessions/current")
+def revoke_companion_session(request: Request):
+    try:
+        session = companion_session_broker.revoke(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        response = JSONResponse(content={"ok": True, "data": {"session": session}, "error": None})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except CompanionFailure as error:
+        return companion_error_response(error)
+
+
+def companion_shutdown_callback() -> None:
+    os.kill(os.getpid(), signal.SIGTERM)
+
+
+@app.post("/v1/companion/stop", status_code=202)
+def stop_companion(request: Request):
+    try:
+        if os.environ.get("NAVIA_COMPANION_ALLOW_STOP") != "1":
+            raise CompanionFailure("V3_COMPANION_STOP_REJECTED", 409)
+        stop = companion_session_broker.begin_stop(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        from threading import Timer
+        Timer(0.2, companion_shutdown_callback).start()
+        response = JSONResponse(status_code=202, content={"ok": True, "data": stop, "error": None})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except CompanionFailure as error:
+        return companion_error_response(error)
+
+
+@app.get("/v1/vision/providers")
+def list_vision_providers(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        return success(
+            {
+                "providers": vision_provider_store.list(),
+                "catalog": vision_provider_store.catalog(),
+                "selectedProviderId": vision_provider_store.selected_provider_id(),
+            },
+            request_id=request.headers.get("x-request-id"),
+        )
+    except VisionProviderError as error:
+        return vision_error_response(error, request)
+
+
+@app.put("/v1/vision/providers/{provider_id}")
+async def upsert_vision_provider(provider_id: str, request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        try:
+            body = await request.json()
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise VisionProviderError("VISION_PROVIDER_INVALID", "视觉 Provider 请求 JSON 无效。") from None
+        if not isinstance(body, dict):
+            raise VisionProviderError("VISION_PROVIDER_INVALID", "视觉 Provider 请求必须是对象。")
+        provider = vision_provider_store.upsert(provider_id, body)
+        return success({"provider": provider}, request_id=request.headers.get("x-request-id"))
+    except VisionProviderError as error:
+        return vision_error_response(error, request)
+
+
+@app.post("/v1/vision/providers/{provider_id}/test")
+def test_vision_provider(provider_id: str, request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        provider = vision_provider_store.get(provider_id, include_secret=True)
+        if provider is None:
+            raise VisionProviderError("VISION_PROVIDER_MISSING", "视觉 Provider 不存在。", 404)
+        result = vision_provider_adapter.test(provider)
+        visible = vision_provider_store.update_test_status(provider_id, result)
+        return success({"result": result, "provider": visible}, request_id=request.headers.get("x-request-id"))
+    except VisionProviderError as error:
+        return vision_error_response(error, request)
+
+
+@app.patch("/v1/vision/providers/{provider_id}/select")
+def select_vision_provider(provider_id: str, request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        provider = vision_provider_store.select(provider_id)
+        return success({"provider": provider, "selectedProviderId": provider_id}, request_id=request.headers.get("x-request-id"))
+    except VisionProviderError as error:
+        return vision_error_response(error, request)
+
+
+@app.delete("/v1/vision/providers/{provider_id}")
+def delete_vision_provider(provider_id: str, request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        vision_provider_store.delete(provider_id)
+        return success({"deleted": True, "providerId": provider_id}, request_id=request.headers.get("x-request-id"))
+    except VisionProviderError as error:
+        return vision_error_response(error, request)
+
+
+@app.post("/v1/media/credential-channels", status_code=201)
+async def create_media_credential_channel(request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"),
+            request.headers.get("origin"),
+        )
+        raw = await request.body()
+        if len(raw) > 4096:
+            raise MediaCredentialFailure("V3_MEDIA_CHANNEL_INVALID", 400)
+        try:
+            body = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise MediaCredentialFailure("V3_MEDIA_CHANNEL_INVALID", 400) from None
+        channel_token, channel = media_credential_channel_store.issue(
+            body,
+            request.headers["origin"],
+        )
+        response = JSONResponse(
+            status_code=201,
+            content={"ok": True, "data": {"channelToken": channel_token, "channel": channel}},
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+
+
+@app.post("/v1/media/credential-leases", status_code=201)
+async def create_media_credential_lease(request: Request):
+    try:
+        authorization = request.headers.get("authorization", "")
+        prefix = "Navia-Media-Channel "
+        if not authorization.startswith(prefix) or len(authorization) <= len(prefix):
+            raise MediaCredentialFailure("V3_MEDIA_CHANNEL_INVALID", 401)
+        channel = media_credential_channel_store.consume(authorization.removeprefix(prefix))
+        raw = await request.body()
+        if len(raw) > MAX_ENVELOPE_BODY_BYTES:
+            raise MediaCredentialFailure("V3_MEDIA_ENVELOPE_TOO_LARGE", 413)
+        try:
+            envelope = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise MediaCredentialFailure("V3_MEDIA_ENVELOPE_INVALID", 400) from None
+        revocation_token, lease = media_credential_lease_store.issue(channel, envelope)
+        response = JSONResponse(
+            status_code=201,
+            content={
+                "ok": True,
+                "data": {"lease": lease, "revocationToken": revocation_token},
+            },
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+
+
+@app.delete("/v1/media/credential-leases/{lease_id}")
+async def revoke_media_credential_lease(lease_id: str, request: Request):
+    try:
+        authorization = request.headers.get("authorization", "")
+        prefix = "Navia-Media-Revoke "
+        if not authorization.startswith(prefix) or len(authorization) <= len(prefix):
+            raise MediaCredentialFailure("V3_MEDIA_LEASE_REVOKED", 403)
+        lease = media_credential_lease_store.revoke(
+            lease_id,
+            authorization.removeprefix(prefix),
+        )
+        response = JSONResponse(status_code=200, content={"ok": True, "data": {"lease": lease}})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+
+
+CAPTURE_GRANT_REQUEST_FIELDS = {
+    "taskId", "adapterId", "pageIdentitySha256", "tabId", "tabIdSha256", "surface",
+}
+
+
+@app.post("/v1/media/capture-grants", status_code=201)
+async def create_media_capture_grant(request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        raw = await request.body()
+        if len(raw) > 4096:
+            raise MediaCaptureFailure("V3_MEDIA_CAPTURE_BINDING_INVALID", 413)
+        try:
+            body = json.loads(raw)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            raise MediaCaptureFailure("V3_MEDIA_CAPTURE_BINDING_INVALID", 400) from None
+        if not isinstance(body, dict) or set(body) != CAPTURE_GRANT_REQUEST_FIELDS:
+            raise MediaCaptureFailure("V3_MEDIA_CAPTURE_BINDING_INVALID", 400)
+        eligibility = media_acquisition_coordinator.capture_eligibility(body["taskId"])
+        if not eligibility["captureFallbackEligible"]:
+            raise MediaCaptureFailure("V3_MEDIA_CAPTURE_NOT_ELIGIBLE", 409)
+        ticket, grant = media_capture_grant_service.issue(body)
+        media_acquisition_coordinator.bind_capture_grant(body["taskId"], grant["grantId"])
+        response = JSONResponse(status_code=201, content={"ok": True, "data": {"grant": grant, "ticket": ticket}})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaCaptureFailure as error:
+        return media_capture_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_capture_error_response(MediaCaptureFailure(error.code, error.status))
+
+
+@app.get("/v1/media/capture-grants/{grant_id}")
+def get_media_capture_grant(grant_id: str):
+    grant = media_capture_grant_service.public_record(grant_id)
+    if grant is None:
+        return media_capture_error_response(MediaCaptureFailure("V3_MEDIA_CAPTURE_GRANT_INVALID", 404))
+    response = JSONResponse(content={"ok": True, "data": {"grant": grant}})
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.delete("/v1/media/capture-grants/{grant_id}")
+def revoke_media_capture_grant(grant_id: str):
+    try:
+        grant = media_capture_grant_service.revoke(grant_id)
+        cleanup = runtime_capture_sink.abort()
+        response = JSONResponse(content={"ok": True, "data": {"grant": grant, "cleanup": cleanup}})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCaptureFailure as error:
+        return media_capture_error_response(error)
+
+
+CAPTURE_START_FIELDS = {
+    "type", "ticket", "taskId", "adapterId", "pageIdentitySha256", "tabId", "tabIdSha256",
+    "surface", "sourceIdentity", "acquisitionRecordId", "sampleRateHz", "channels", "sampleWidthBytes",
+}
+
+
+@app.websocket("/v1/media/capture-stream")
+async def media_capture_stream(websocket: WebSocket):
+    origin = websocket.headers.get("origin")
+    if not media_credential_authenticator.is_exact_origin(origin):
+        await websocket.close(code=4403, reason="V3_MEDIA_CAPTURE_ORIGIN_MISMATCH")
+        return
+    await websocket.accept()
+    terminal = False
+    try:
+        start = await websocket.receive_json()
+        if not isinstance(start, dict) or set(start) != CAPTURE_START_FIELDS or start.get("type") != "start":
+            raise MediaCaptureFailure("V3_MEDIA_CAPTURE_BINDING_INVALID", 400)
+        binding = {key: start[key] for key in CAPTURE_GRANT_REQUEST_FIELDS}
+        grant = media_capture_grant_service.consume(start["ticket"], binding)
+        runtime_capture_sink.begin(
+            task_id=start["taskId"],
+            source_identity=start["sourceIdentity"],
+            acquisition_record_id=start["acquisitionRecordId"],
+            grant=grant,
+            sample_rate_hz=start["sampleRateHz"],
+            channels=start["channels"],
+            sample_width_bytes=start["sampleWidthBytes"],
+        )
+        await websocket.send_json({"type": "started", "grant": grant})
+        sequence = 0
+        while True:
+            message = await websocket.receive()
+            if message.get("bytes") is not None:
+                observation = runtime_capture_sink.write(sequence, message["bytes"])
+                await websocket.send_json({"type": "chunkAccepted", "observation": observation})
+                sequence += 1
+                continue
+            text = message.get("text")
+            if text is None:
+                raise CaptureSinkFailure("V3_MEDIA_CAPTURE_STREAM_INVALID")
+            try:
+                command = json.loads(text)
+            except json.JSONDecodeError:
+                raise CaptureSinkFailure("V3_MEDIA_CAPTURE_STREAM_INVALID") from None
+            if command == {"type": "stop", "reason": "completed"}:
+                reference, capture = runtime_capture_sink.finalize()
+                logger.warning(
+                    "V3 capture finalized task=%s capturedMs=%s chunks=%s nonZeroSamples=%s peakAbsSample=%s",
+                    start["taskId"], capture["capturedMs"], capture["chunkCount"],
+                    capture["nonZeroSampleCount"], capture["peakAbsSample"],
+                )
+                terminal = True
+                transcript = media_transcript_service.create(TranscriptTask(reference))
+                transcript = await run_in_threadpool(media_transcript_service.start, transcript["taskId"])
+                await websocket.send_json({
+                    "type": "completed",
+                    "capture": capture,
+                    "transcript": transcript,
+                    "stop": {
+                        "reason": "completed", "terminalStatus": "succeeded",
+                        "tracksStopped": True, "socketClosed": True, "offscreenClosed": True,
+                        "sinkClosed": True, "activeCaptureCount": 0, "residualRawAudioCount": 0,
+                        "stoppedAt": utc_now(), "failureCode": None,
+                    },
+                })
+                await websocket.close(code=1000)
+                return
+            if command.get("type") == "stop" and command.get("reason") in {
+                "cancelled", "navigation", "tab_closed", "consent_revoked", "runtime_disconnected", "timeout", "failed"
+            } and set(command) == {"type", "reason"}:
+                cleanup = runtime_capture_sink.abort()
+                terminal = True
+                await websocket.send_json({"type": "cancelled", "reason": command["reason"], "cleanup": cleanup})
+                await websocket.close(code=1000)
+                return
+            raise CaptureSinkFailure("V3_MEDIA_CAPTURE_STREAM_INVALID")
+    except WebSocketDisconnect:
+        pass
+    except (MediaCaptureFailure, CaptureSinkFailure) as error:
+        try:
+            await websocket.send_json({"type": "failed", "failureCode": error.code})
+            await websocket.close(code=4409)
+        except RuntimeError:
+            pass
+    finally:
+        if not terminal:
+            runtime_capture_sink.abort()
+
+
 @app.get("/v1/models/status")
 def models_status(request: Request):
+    asr_settings = asr_model_manager.settings()
     return success(
         {
             "intent": {"status": "ready", "mode": "rule_based", "provider": "rule-based"},
             "mindmap": {"status": "ready", "mode": "deterministic", "provider": "deterministic-fallback"},
             "llm": {"status": "ready", "mode": "deterministic", "provider": "deterministic-reading-tools"},
-            "asr": {"status": "unavailable", "mode": "funasr", "endpoint": "local"},
+            "asr": {
+                "status": "ready" if asr_settings["effectiveModelId"] else "unavailable",
+                "mode": "local_provider_catalog",
+                "endpoint": "local",
+                "requestedModelId": asr_settings["requestedModelId"],
+                "effectiveModelId": asr_settings["effectiveModelId"],
+                "fallbackActive": asr_settings["fallbackActive"],
+                "fallbackReason": asr_settings["fallbackReason"],
+            },
         },
         request_id=request.headers.get("x-request-id"),
     )
+
+
+MEDIA_ACQUISITION_REQUEST_FIELDS = {
+    "taskId", "sourceIdentity", "adapterId", "mediaId", "playbackUnitId", "partId",
+    "consentPolicyId", "consentPolicyRevision",
+}
+
+
+@app.post("/v1/media/acquisitions", status_code=201)
+async def create_media_acquisition(request: Request):
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != MEDIA_ACQUISITION_REQUEST_FIELDS:
+            raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media acquisition request fields do not match the frozen contract.")
+        task = media_acquisition_coordinator.create(request_from_payload(body))
+        response = JSONResponse(status_code=201, content=success({"task": task}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except (KeyError, TypeError, ValueError):
+        return media_acquisition_error_response(MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media acquisition request is invalid."), request)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.get("/v1/media/acquisitions/{task_id}")
+def get_media_acquisition(task_id: str, request: Request):
+    try:
+        response = JSONResponse(content=success({"task": media_acquisition_coordinator.get(task_id)}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.post("/v1/media/acquisitions/{task_id}/execute")
+async def execute_media_acquisition(task_id: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        if await request.body():
+            raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Execute does not accept a request body.")
+        result = await run_in_threadpool(
+            media_acquisition_coordinator.acquire_input,
+            task_id,
+            lease_store=media_credential_lease_store,
+            acquirers=build_media_acquirers(),
+            preserve_expected_failures=True,
+        )
+        if result.get("outcome") == "awaiting_public_subtitle":
+            outcome = result
+        else:
+            transcript = None
+            if result.get("route") == "credentialed_media_asr":
+                reference = media_acquisition_coordinator.audio_reference(task_id)
+                transcript = media_transcript_service.create(TranscriptTask(reference))
+                transcript = media_transcript_service.start(transcript["taskId"])
+            elif result.get("route") == "credentialed_subtitle":
+                media_acquisition_coordinator.complete(task_id)
+            outcome = {
+                "outcome": "input_acquired",
+                "input": result,
+                "failures": media_acquisition_coordinator.capture_eligibility(task_id)["failures"],
+                "transcript": transcript,
+            }
+        response = JSONResponse(content={"ok": True, "data": {"task": media_acquisition_coordinator.get(task_id), **outcome}})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except TaskArtifactError as error:
+        return media_acquisition_error_response(
+            MediaAcquisitionError(error.code, str(error), status=500), request
+        )
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.get("/v1/media/task-projections")
+def get_latest_media_task_projection(sourceIdentity: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        projection = media_transcript_projection_service.latest_for_source(sourceIdentity)
+        response = JSONResponse(content=success({"projection": projection}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.get("/v1/media/task-projections/{task_id}")
+def get_media_task_projection(task_id: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        projection = media_transcript_projection_service.get(task_id)
+        response = JSONResponse(content=success({"projection": projection}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.delete("/v1/media/task-projections/{task_id}")
+def cancel_media_task_projection(task_id: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        try:
+            transcript = media_transcript_service.get(task_id)
+        except AsrProviderError:
+            transcript = None
+        if transcript is not None and transcript["state"] not in {"succeeded", "failed", "cancelled"}:
+            media_transcript_service.cancel(task_id)
+        elif media_acquisition_coordinator.get(task_id)["state"] not in {
+            "succeeded", "degraded", "blocked", "failed", "cancelled"
+        }:
+            media_acquisition_coordinator.cancel(task_id)
+        projection = media_transcript_projection_service.get(task_id)
+        response = JSONResponse(content=success({"projection": projection}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+def authenticate_media_outline_request(request: Request) -> JSONResponse | None:
+    try:
+        companion_session_broker.authenticate(request.headers.get("authorization"), request.headers.get("origin"))
+    except CompanionFailure as error:
+        return companion_error_response(error, request.headers.get("origin"))
+    return None
+
+
+@app.post("/v1/media/outline-tasks", status_code=201)
+async def create_media_outline_task(request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"sourceIdentity"} or not isinstance(body.get("sourceIdentity"), str):
+            raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Only sourceIdentity may be submitted.")
+        task_id = f"media_task_{secrets.token_hex(16)}"
+        task = media_outline_task_store.create(task_id, body["sourceIdentity"])
+        response = JSONResponse(status_code=201, content=success({"task": task}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/outline-tasks")
+def get_media_outline_tasks(request: Request, sourceIdentity: str | None = None, limit: int = 50):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        data = (
+            {"task": media_outline_task_store.latest_for_source(sourceIdentity)}
+            if sourceIdentity is not None
+            else {"tasks": media_outline_task_store.list_tasks(limit=limit)}
+        )
+        response = JSONResponse(content=success(data, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/outline-tasks/{task_id}")
+def get_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        response = JSONResponse(content=success({"task": media_outline_task_store.get(task_id)}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/tasks/{task_id}/comprehension")
+def get_media_workspace_comprehension(task_id: str, request: Request, revision: int | None = None):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        projection = media_comprehension_service.get(task_id, revision)
+        response = JSONResponse(content=success({"projection": projection}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/tasks/{task_id}/evidence/{evidence_id}/thumbnail")
+def get_media_workspace_thumbnail(task_id: str, evidence_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        thumbnail = media_comprehension_service.thumbnail(task_id, evidence_id)
+        response = Response(content=thumbnail.read_bytes(), media_type="image/png")
+        response.headers["Cache-Control"] = "private, no-store"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/materialize")
+async def materialize_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        if await request.body():
+            raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Materialize does not accept a request body.")
+        task = await run_in_threadpool(media_product_materializer.materialize, task_id)
+        response = JSONResponse(content=success({"task": task}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except (MediaTaskStoreError, MediaAcquisitionError) as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/materialize-visual")
+async def materialize_visual_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"credentialLeaseId"} or not isinstance(body.get("credentialLeaseId"), str):
+            raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "A task-bound credential lease is required.")
+        task = await run_in_threadpool(
+            media_product_materializer.materialize_visual,
+            task_id,
+            body["credentialLeaseId"],
+        )
+        response = JSONResponse(content=success({"task": task}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except (MediaTaskStoreError, MediaAcquisitionError) as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/ask")
+async def ask_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"expectedRevision", "question"} or type(body.get("expectedRevision")) is not int:
+            raise MediaTaskStoreError("ASK_QUESTION_INVALID", "expectedRevision and question are required.")
+        result = await run_in_threadpool(
+            media_ask_service.ask,
+            task_id,
+            body["expectedRevision"],
+            body.get("question"),
+        )
+        response = JSONResponse(content=success({"result": result}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/outline-tasks/{task_id}/asks")
+def get_media_outline_task_asks(task_id: str, request: Request, revision: int):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        task = media_outline_task_store.get(task_id)
+        if task["revision"] != revision:
+            raise MediaTaskStoreError("TASK_REVISION_CONFLICT", "Task revision changed.", status=409)
+        results = media_ask_service.list_results(task_id, revision)
+        response = JSONResponse(content=success({"results": results}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/exports")
+async def export_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"expectedRevision", "format"} or type(body.get("expectedRevision")) is not int:
+            raise MediaTaskStoreError("EXPORT_FORMAT_INVALID", "expectedRevision and format are required.")
+        manifest = await run_in_threadpool(
+            media_export_service.create,
+            task_id,
+            body["expectedRevision"],
+            body.get("format"),
+        )
+        response = JSONResponse(content=success({"manifest": manifest}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.get("/v1/media/outline-tasks/{task_id}/exports/{export_id}")
+def download_media_outline_export(task_id: str, export_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        artifact, media_type = media_export_service.artifact(task_id, export_id)
+        response = Response(content=artifact.read_bytes(), media_type=media_type)
+        response.headers["Content-Disposition"] = f'attachment; filename="{artifact.name}"'
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/cancel")
+async def cancel_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"expectedRevision"} or type(body.get("expectedRevision")) is not int:
+            raise MediaTaskStoreError("TASK_REVISION_CONFLICT", "expectedRevision is required.")
+        task = media_outline_task_store.cancel(task_id, body["expectedRevision"])
+        return success({"task": task}, request_id=request.headers.get("x-request-id"))
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.post("/v1/media/outline-tasks/{task_id}/retry")
+async def retry_media_outline_task(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"expectedRevision"} or type(body.get("expectedRevision")) is not int:
+            raise MediaTaskStoreError("TASK_REVISION_CONFLICT", "expectedRevision is required.")
+        task = media_outline_task_store.retry(task_id, body["expectedRevision"])
+        return success({"task": task}, request_id=request.headers.get("x-request-id"))
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
+
+
+@app.delete("/v1/media/acquisitions/{task_id}")
+def cancel_media_acquisition(task_id: str, request: Request):
+    try:
+        response = JSONResponse(content=success({"task": media_acquisition_coordinator.cancel(task_id)}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.post("/v1/media/capture-eligibility/{task_id}/failures")
+async def record_media_capture_route_failure(task_id: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        body = await request_json_or_empty(request)
+        if set(body) != {"route", "failureCode"}:
+            raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Route failure fields do not match the contract.")
+        if body["route"] != "public_or_page_subtitle":
+            raise MediaAcquisitionError(
+                "V3_MEDIA_ROUTE_ORDER_INVALID",
+                "Credentialed route failures are authored only by Runtime execution.",
+                status=403,
+            )
+        result = media_acquisition_coordinator.record_route_failure(task_id, body["route"], body["failureCode"])
+        response = JSONResponse(content={"ok": True, "data": result})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except (KeyError, TypeError, ValueError):
+        return media_acquisition_error_response(MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Route failure is invalid."), request)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.get("/v1/media/capture-eligibility/{task_id}")
+def get_media_capture_eligibility(task_id: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        response = JSONResponse(content={"ok": True, "data": media_acquisition_coordinator.capture_eligibility(task_id)})
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+MEDIA_TRANSCRIPT_REQUEST_FIELDS = {
+    "taskId", "sourceIdentity", "acquisitionRecordId", "artifact", "durationMs",
+    "sampleRateHz", "channels", "sampleWidthBytes",
+}
+MEDIA_TRANSCRIPT_ARTIFACT_FIELDS = {"artifactId", "kind", "byteLength", "sha256"}
+
+
+@app.post("/v1/media/transcripts", status_code=202)
+async def create_media_transcript(request: Request):
+    try:
+        body = await request_json_or_empty(request)
+        artifact = body.get("artifact")
+        if set(body) != MEDIA_TRANSCRIPT_REQUEST_FIELDS or not isinstance(artifact, dict) or set(artifact) != MEDIA_TRANSCRIPT_ARTIFACT_FIELDS:
+            raise AsrProviderError("V3_MEDIA_TRANSCRIPT_TASK_INVALID", "Transcript request fields do not match the frozen contract.")
+        reference = AcquisitionAudioRef(
+            task_id=body["taskId"],
+            source_identity=body["sourceIdentity"],
+            acquisition_record_id=body["acquisitionRecordId"],
+            artifact=ArtifactRef(
+                task_id=body["taskId"],
+                artifact_id=artifact["artifactId"],
+                kind=artifact["kind"],
+                byte_length=artifact["byteLength"],
+                sha256=artifact["sha256"],
+            ),
+            duration_ms=body["durationMs"],
+            sample_rate_hz=body["sampleRateHz"],
+            channels=body["channels"],
+            sample_width_bytes=body["sampleWidthBytes"],
+        )
+        task = media_transcript_service.create(TranscriptTask(reference))
+        task = media_transcript_service.start(task["taskId"])
+        response = JSONResponse(status_code=202, content=success({"task": task}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except (KeyError, TypeError, ValueError):
+        return media_transcript_error_response(AsrProviderError("V3_MEDIA_TRANSCRIPT_TASK_INVALID", "Transcript request is invalid."), request)
+    except AsrProviderError as error:
+        return media_transcript_error_response(error, request)
+
+
+@app.get("/v1/media/transcripts/{task_id}")
+def get_media_transcript(task_id: str, request: Request):
+    try:
+        task = media_transcript_service.get(task_id)
+        data: dict[str, Any] = {"task": task}
+        if task["state"] == "succeeded":
+            data["segments"] = media_transcript_service.private_segments(task_id)
+        response = JSONResponse(content=success(data, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except AsrProviderError as error:
+        return media_transcript_error_response(error, request)
+
+
+@app.delete("/v1/media/transcripts/{task_id}")
+def cancel_media_transcript(task_id: str, request: Request):
+    try:
+        response = JSONResponse(content=success({"task": media_transcript_service.cancel(task_id)}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except AsrProviderError as error:
+        return media_transcript_error_response(error, request)
+
+
+@app.get("/v1/asr/catalog")
+def get_asr_catalog(request: Request):
+    return success(asr_model_manager.catalog(), request_id=request.headers.get("x-request-id"))
+
+
+@app.get("/v1/asr/settings")
+def get_asr_settings(request: Request):
+    return success(asr_model_manager.settings(), request_id=request.headers.get("x-request-id"))
+
+
+@app.patch("/v1/asr/settings")
+async def patch_asr_settings(request: Request):
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"requestedModelId"}:
+            raise AsrModelManagerError("V3_ASR_REQUEST_INVALID", "Only requestedModelId may be changed.")
+        return success(asr_model_manager.patch_settings(body), request_id=request.headers.get("x-request-id"))
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+
+@app.post("/v1/asr/installations", status_code=202)
+async def create_asr_installation(request: Request):
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"modelId"}:
+            raise AsrModelManagerError("V3_ASR_REQUEST_INVALID", "Only an allowlisted modelId may be submitted.")
+        model_id = body.get("modelId")
+        if not isinstance(model_id, str) or not model_id:
+            raise AsrModelManagerError("V3_ASR_MODEL_REQUIRED", "modelId is required.")
+        job = asr_model_manager.start_install(model_id)
+        return JSONResponse(status_code=202, content=success({"job": job}, request_id=request.headers.get("x-request-id")))
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+
+@app.get("/v1/asr/installations/{job_id}")
+def get_asr_installation(job_id: str, request: Request):
+    try:
+        return success({"job": asr_model_manager.get_job(job_id)}, request_id=request.headers.get("x-request-id"))
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+
+@app.get("/v1/asr/installations/{job_id}/events")
+def stream_asr_installation(job_id: str, request: Request):
+    try:
+        asr_model_manager.get_job(job_id)
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+    def events():
+        last_sequence = -1
+        while True:
+            job = asr_model_manager.get_job(job_id)
+            sequence = int(job.get("sequence", 0))
+            if sequence != last_sequence:
+                yield f"event: installation\ndata: {json.dumps(job, separators=(',', ':'))}\n\n"
+                last_sequence = sequence
+            if job.get("state") in {"ready", "failed", "corrupt", "cancelled"}:
+                break
+            time.sleep(0.2)
+
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-store"})
+
+
+@app.delete("/v1/asr/installations/{job_id}")
+def cancel_asr_installation(job_id: str, request: Request):
+    try:
+        return success({"job": asr_model_manager.cancel_job(job_id)}, request_id=request.headers.get("x-request-id"))
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+
+@app.delete("/v1/asr/models/{model_id}")
+def uninstall_asr_model(model_id: str, request: Request):
+    try:
+        return success(asr_model_manager.uninstall(model_id), request_id=request.headers.get("x-request-id"))
+    except AsrModelManagerError as error:
+        return asr_model_error_response(error, request)
+
+
+@app.put("/v1/asr/models/import/{model_id}", status_code=202)
+async def import_asr_model(model_id: str, request: Request):
+    package_path: Path | None = None
+    try:
+        _, package_path = asr_model_manager.create_import_path(model_id)
+        received = 0
+        with package_path.open("xb") as output:
+            try:
+                package_path.chmod(0o600)
+            except OSError:
+                pass
+            async for chunk in request.stream():
+                received += len(chunk)
+                if received > MAX_OFFLINE_PACKAGE_BYTES:
+                    raise AsrModelManagerError("V3_ASR_PACKAGE_TOO_LARGE", "Offline ASR package exceeds the size limit.", status=413)
+                output.write(chunk)
+        if received == 0:
+            raise AsrModelManagerError("V3_ASR_PACKAGE_INVALID", "Offline ASR package is empty.")
+        job = asr_model_manager.start_import(model_id, package_path)
+        return JSONResponse(status_code=202, content=success({"job": job}, request_id=request.headers.get("x-request-id")))
+    except AsrModelManagerError as error:
+        if package_path:
+            package_path.unlink(missing_ok=True)
+        return asr_model_error_response(error, request)
 
 
 @app.get("/v1/pi/sidecar/health")
@@ -823,6 +2118,81 @@ async def knowledge_forget_source(sourceId: str, request: Request):
     return JSONResponse(status_code=202, content=success(result, request_id=request.headers.get("x-request-id")))
 
 
+@app.post("/v3/knowledge/drafts")
+async def v3_knowledge_create_draft(request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    draft = knowledge_v3_store.create_draft(await request_json_or_empty(request))
+    return JSONResponse(status_code=201, content=success({"draft": draft}, request_id=request.headers.get("x-request-id")))
+
+
+@app.get("/v3/knowledge/drafts/{draftId}")
+def v3_knowledge_get_draft(draftId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success({"draft": knowledge_v3_store.get_draft(draftId)}, request_id=request.headers.get("x-request-id"))
+
+
+@app.patch("/v3/knowledge/drafts/{draftId}")
+async def v3_knowledge_update_draft(draftId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    draft = knowledge_v3_store.update_draft(draftId, await request_json_or_empty(request))
+    return success({"draft": draft}, request_id=request.headers.get("x-request-id"))
+
+
+@app.post("/v3/knowledge/drafts/{draftId}/cancel")
+def v3_knowledge_cancel_draft(draftId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success({"draft": knowledge_v3_store.cancel_draft(draftId)}, request_id=request.headers.get("x-request-id"))
+
+
+@app.post("/v3/knowledge/drafts/{draftId}/save")
+def v3_knowledge_save_draft(draftId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success(knowledge_v3_store.save_draft(draftId), request_id=request.headers.get("x-request-id"))
+
+
+@app.get("/v3/knowledge/items")
+def v3_knowledge_list_items(request: Request, sort: str = "updated_desc"):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success({"items": knowledge_v3_store.list_items(sort=sort)}, request_id=request.headers.get("x-request-id"))
+
+
+@app.get("/v3/knowledge/items/{itemId}")
+def v3_knowledge_get_item(itemId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success({"item": knowledge_v3_store.get_item(itemId)}, request_id=request.headers.get("x-request-id"))
+
+
+@app.patch("/v3/knowledge/items/{itemId}")
+async def v3_knowledge_update_item(itemId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    item = knowledge_v3_store.update_item(itemId, await request_json_or_empty(request))
+    return success({"item": item}, request_id=request.headers.get("x-request-id"))
+
+
+@app.delete("/v3/knowledge/items/{itemId}")
+def v3_knowledge_delete_item(itemId: str, request: Request):
+    auth_error = authenticate_vision_request(request)
+    if auth_error is not None:
+        return auth_error
+    return success(knowledge_v3_store.delete_item(itemId), request_id=request.headers.get("x-request-id"))
+
+
 @app.post("/v2/runtime/evidence")
 async def v2_runtime_evidence(request: Request):
     body = await request.json()
@@ -920,6 +2290,23 @@ def provider_failure_response(exc: ProviderSettingsError, request: Request) -> J
             recoverable=exc.recoverable,
             details={"code": exc.code},
         ),
+    )
+
+
+def asr_model_error_response(exc: AsrModelManagerError, request: Request) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {
+                "code": exc.code,
+                "message": str(exc),
+                "recoverable": exc.status < 500,
+                "details": {},
+            },
+            "request_id": request.headers.get("x-request-id") or new_id("req_"),
+        },
     )
 
 

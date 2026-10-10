@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "v3-5-implementation-authorization/v1",
+  "authorizedBy": "user",
+  "authorizedAt": "2026-10-08T11:30:00+08:00",
+  "scope": "V3-5-0..V3-5-7 implementation",
+  "authorizationText": "approved V3-5-0..7 implementation",
+  "documentAudit": {
+    "path": "docs/active/project/evidence/v3_media_companion/v3-5-independent-document-audit.md",
+    "sha256": "6a8538b1ddafd16af5a6b9861f16f675a3ddc85d92c0042172c66986cf4f5664",
+    "fatal": 0,
+    "major": 0
+  },
+  "constraints": {
+    "humanReviewBeforeA01A18": false,
+    "knowledgeImport": "deferred_to_v4",
+    "agentScope": "excluded",
+    "freshBuildScreenshotsRequired": true
+  }
+}

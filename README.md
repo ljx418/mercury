@@ -1,6 +1,6 @@
 # Navia / 伴航
 
-> 当前执行状态（2026-09-14）：T02.5 是 V2-PX 唯一 production-positive R2 输入；T03 R3 pipeline 与 T04 R4 隔离快照复验均已取得独立实现出门 LIMITED PASS。T04 外审为 Fatal 0/Major 0/Minor 1；T04.1 全量重跑修复和 PX-6 machine/human/final 两阶段工作包已进入文档审查，尚无代码授权。Human Review、G7、final 仍 pending/pending/false；PX-5 仍 REOPENED，PX-6 BLOCKED，RKM 未实施。最新状态见 `docs/active/project/stage-gates/v2-external-brain-productization.md`。
+> 当前执行状态（2026-09-22）：V2/PX-6/RKM 已暂停并保留未完成事实，V3 Media Companion 优先。V3-1.1 B站页面 adapter 保留历史外部限定 PASS；V3-1.2 通用 session/B站 Cookie 候选产品链为 `QUALIFIED PASS`；V3-1.3 Browser→Runtime 凭据通道独立实施出门审查 `PASS`。V3-2-0 的真实 ASR 质量门禁失败并保持 reopened；V3-2-0a Provider/模型管理获独立 `LOCAL LIMITED PASS`。V3-2-0b 已完成 Paraformer Q8 资产、Provider、Settings 与低资源真实推理，但在固定 sample 03 的非静音 bin 产生完整遗漏，当前为 `FAIL / REPLAN`；5.1a 失败证据可审计化与 5.1b 产品状态传播已分别出门，但不改变质量失败。0b-6/0b-7 与 V3-2-1+ 均 NO-GO。媒体获取、可信 tabCapture、生产 transcript、OCR/VLM 仍未实现。最新状态见 `docs/active/project/stage-gates/v3-media-companion.md`。
 
 Navia is a Chrome companion-reading MVP with a local headless runtime. V1 frontend interaction follows `docs/active/project/interaction-prd/窗口交互_PRD.md`: an in-page floating ball opens an embedded dual-track AI panel that can read the current page, summarize it, answer page-grounded questions, and generate Mermaid mindmaps with traceable runtime events.
 
@@ -219,4 +219,6 @@ Read-only static reviews and isolated diagnostic reproductions are archived unde
 
 2026-09-15 当前外部审计包已切换为 PX6-0..5 机器出门候选（19 个载荷 + 1 个 manifest）：`docs/active/project/external-audit-package/`。独立实施审计位于 `docs/active/project/evidence/v2_external_brain_productization/px-6/implementation/independent-implementation-exit-audit.md`，结论为 PX6-0..5 LIMITED PASS（Fatal 0 / Major 0 / Minor 0）；PX6-6 人类 H01..H07、PX6-7 两步终审握手以及 PX-6/PX-5/V2 最终通过均未完成。
 
-2026-09-15 H01 的 mock-only 阻塞已有真实 `data_service` 实现候选和 Runtime 级持久化复验；真实 Chrome 三入口仍待人类验收，不能升级为 H01/PX-6 PASS。V3 已冻结 B站优先路线与首个样本 `BV1ZpYd66ELP`，字幕采集、本地 ASR、`VideoOutline`、Media Mindmap 和时间反跳仍为 `NOT_IMPLEMENTED`。入口见 `docs/active/project/design/v3-media-companion-development-acceptance-plan.md`。
+2026-09-22 当前优先级为 V3 Media Companion；V2/PX-6 与 RKM 保持封存且未完成，知识导入、Query、Graph、Durable Forget 转入 V4。V3-1.3 已完成 Browser-to-Runtime 一次性凭据通道并独立出门 `PASS`。V3-2-0 的 ASR 人类质量结论仍 `FAIL / REPLAN`；V3-2-0a 已获独立 `LOCAL LIMITED PASS`。V3-2-0b 的官方 FunASR llama.cpp + Paraformer Q8 + FSMN-VAD 已完成固定资产安装、Provider/Settings 与低资源真实推理；15 秒 VAD 重跑在 sample 03 / bin 2 产生非静音完整遗漏，机器 preflight 已 fail closed，未进入人工盲评。BiliNote 仍仅作 `reference_only` 研究；其默认 Faster-Whisper Tiny 已由 Navia 作为 fallback-only 提供，不能计生产质量。字幕正文获取、媒体下载/可信 tabCapture、生产 transcript、关键帧、本地 OCR、授权云端 VLM、`VideoOutline`、Media Mindmap、Ask 和时间反跳仍为 `NOT_IMPLEMENTED`。
+
+V3-2-0b 交互审查入口为 `docs/active/project/design/v3-media-companion-prototype-review/v3-2-0b-asr-qualification.html`；当前失败与重规划入口为 `docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0b-provider-qualification/v3-2-0b-replan-decision-2026-09-22.md`。推荐的固定 15 秒预切片路线会改变 candidate manifest 与生产推理合同，必须重新完成详细文档、内外审和用户授权；V3-2-1..7 继续 NO-GO。

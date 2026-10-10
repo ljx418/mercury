@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-human-review/v1",
+  "title": "Navia V3-5 H01-H10 independent human review submission",
+  "type": "object",
+  "required": ["schemaVersion", "bundleSha256", "runId", "buildTreeSha256", "reviewerId", "reviewerRole", "submittedAt", "judgments", "overallDecision"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-human-review/v1" },
+    "bundleSha256": { "$ref": "#/$defs/Sha256" },
+    "runId": { "type": "string", "pattern": "^v3-5-product-[0-9]{8}T[0-9]{6}Z$" },
+    "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+    "reviewerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewerRole": { "const": "independent_human_reviewer" },
+    "submittedAt": { "type": "string", "format": "date-time" },
+    "judgments": { "type": "array", "minItems": 10, "maxItems": 10, "items": { "$ref": "#/$defs/Judgment" } },
+    "overallDecision": { "enum": ["PASS", "FAIL", "BLOCKED"] }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "overallDecision": { "const": "PASS" } }, "required": ["overallDecision"] },
+      "then": { "properties": { "judgments": { "items": { "allOf": [{ "$ref": "#/$defs/Judgment" }, { "properties": { "decision": { "const": "PASS" } } }] } } } }
+    },
+    {
+      "if": { "properties": { "overallDecision": { "const": "FAIL" } }, "required": ["overallDecision"] },
+      "then": {
+        "properties": {
+          "judgments": {
+            "contains": { "properties": { "decision": { "const": "FAIL" } }, "required": ["decision"] },
+            "minContains": 1,
+            "not": { "contains": { "properties": { "decision": { "const": "BLOCKED" } }, "required": ["decision"] } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "overallDecision": { "const": "BLOCKED" } }, "required": ["overallDecision"] },
+      "then": { "properties": { "judgments": { "contains": { "properties": { "decision": { "const": "BLOCKED" } }, "required": ["decision"] }, "minContains": 1 } } }
+    }
+  ],
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "Judgment": {
+      "type": "object",
+      "required": ["requirementId", "decision", "screenshotRefs", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": { "type": "string", "pattern": "^H(?:0[1-9]|10)$" },
+        "decision": { "enum": ["PASS", "FAIL", "BLOCKED"] },
+        "screenshotRefs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^screenshots/[A-Za-z0-9._/-]+\\.png$" } },
+        "note": { "type": "string", "maxLength": 2000 }
+      }
+    }
+  }
+}

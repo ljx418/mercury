@@ -1,0 +1,187 @@
+{
+  "ready": {
+    "schemaVersion": "v3-media-outline-taskstore/v2",
+    "task": {
+      "taskId": "media_task_11111111111111111111111111111111",
+      "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:part-1",
+      "state": "ready",
+      "revision": 2,
+      "createdAt": "2026-10-08T10:00:00Z",
+      "updatedAt": "2026-10-08T10:01:00Z",
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    "evidenceCatalog": [
+      {
+        "evidenceId": "mtr_11111111111111111111111111111111",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "kind": "transcript",
+        "timestampStartMs": 0,
+        "timestampEndMs": 60000,
+        "contentSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "relativeArtifactRef": "evidence/transcript-0001.json"
+      },
+      {
+        "evidenceId": "mev_11111111111111111111111111111111",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "kind": "vision_caption",
+        "timestampStartMs": 10000,
+        "timestampEndMs": 10001,
+        "contentSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "relativeArtifactRef": "evidence/vision-0001.json"
+      }
+    ],
+    "outline": {
+      "outlineId": "outline_11111111111111111111111111111111",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "taskRevision": 2,
+      "title": "真实证据大纲",
+      "summary": "由同一任务的转写和画面证据生成。",
+      "sections": [
+        {
+          "sectionId": "section_1111111111111111",
+          "title": "第一章",
+          "summary": "章节内容引用转写与画面证据。",
+          "startMs": 0,
+          "endMs": 60000,
+          "evidenceIds": ["mtr_11111111111111111111111111111111", "mev_11111111111111111111111111111111"]
+        }
+      ],
+      "contentSha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "timeline": [
+      {
+        "segmentId": "timeline_1111111111111111",
+        "outlineId": "outline_11111111111111111111111111111111",
+        "sectionId": "section_1111111111111111",
+        "sequence": 0,
+        "startMs": 0,
+        "endMs": 60000,
+        "evidenceIds": ["mtr_11111111111111111111111111111111", "mev_11111111111111111111111111111111"]
+      }
+    ],
+    "mindmap": {
+      "projectionId": "mindmap_11111111111111111111111111111111",
+      "outlineId": "outline_11111111111111111111111111111111",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "nodes": [
+        {"nodeId": "node_1111111111111111", "parentNodeId": null, "sectionId": null, "label": "真实证据大纲", "evidenceIds": []},
+        {"nodeId": "node_1111111111111112", "parentNodeId": "node_1111111111111111", "sectionId": "section_1111111111111111", "label": "第一章", "evidenceIds": ["mtr_11111111111111111111111111111111", "mev_11111111111111111111111111111111"]}
+      ],
+      "contentSha256": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "transactionReceipt": {
+      "transactionId": "mtx_11111111111111111111111111111111",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "expectedRevision": 1,
+      "committedRevision": 2,
+      "aggregateCommitted": true,
+      "eventCommitted": true,
+      "outboxCommitted": true,
+      "outlinePublished": true,
+      "projectionPublished": true,
+      "terminalFailureCode": null,
+      "duplicateWriteCount": 0,
+      "unresolvedEvidenceReferenceCount": 0,
+      "crossTaskEvidenceReferenceCount": 0,
+      "projectionEvidenceClosurePassed": true,
+      "committedAt": "2026-10-08T10:01:00Z"
+    }
+  },
+  "degraded": {
+    "schemaVersion": "v3-media-outline-taskstore/v2",
+    "task": {
+      "taskId": "media_task_22222222222222222222222222222222",
+      "sourceIdentity": "portal:bilibili:BV1goA2zrEEq:low-signal:part-1",
+      "state": "degraded",
+      "revision": 2,
+      "createdAt": "2026-10-08T10:00:00Z",
+      "updatedAt": "2026-10-08T10:01:00Z",
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    "evidenceCatalog": [
+      {
+        "evidenceId": "mtr_22222222222222222222222222222222",
+        "taskId": "media_task_22222222222222222222222222222222",
+        "kind": "transcript",
+        "timestampStartMs": 0,
+        "timestampEndMs": 10000,
+        "contentSha256": "5555555555555555555555555555555555555555555555555555555555555555",
+        "relativeArtifactRef": "evidence/transcript-0001.json"
+      }
+    ],
+    "outline": {
+      "outlineId": "outline_22222222222222222222222222222222",
+      "taskId": "media_task_22222222222222222222222222222222",
+      "taskRevision": 2,
+      "title": "低信号结果",
+      "summary": "内容有限，结果已明确标记为降级。",
+      "sections": [
+        {"sectionId": "section_2222222222222222", "title": "可识别片段", "summary": "仅展示可验证内容。", "startMs": 0, "endMs": 10000, "evidenceIds": ["mtr_22222222222222222222222222222222"]}
+      ],
+      "contentSha256": "6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    "timeline": [
+      {"segmentId": "timeline_2222222222222222", "outlineId": "outline_22222222222222222222222222222222", "sectionId": "section_2222222222222222", "sequence": 0, "startMs": 0, "endMs": 10000, "evidenceIds": ["mtr_22222222222222222222222222222222"]}
+    ],
+    "mindmap": {
+      "projectionId": "mindmap_22222222222222222222222222222222",
+      "outlineId": "outline_22222222222222222222222222222222",
+      "taskId": "media_task_22222222222222222222222222222222",
+      "nodes": [
+        {"nodeId": "node_2222222222222221", "parentNodeId": null, "sectionId": null, "label": "低信号结果", "evidenceIds": []},
+        {"nodeId": "node_2222222222222222", "parentNodeId": "node_2222222222222221", "sectionId": "section_2222222222222222", "label": "可识别片段", "evidenceIds": ["mtr_22222222222222222222222222222222"]}
+      ],
+      "contentSha256": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    "transactionReceipt": {
+      "transactionId": "mtx_22222222222222222222222222222222",
+      "taskId": "media_task_22222222222222222222222222222222",
+      "expectedRevision": 1,
+      "committedRevision": 2,
+      "aggregateCommitted": true,
+      "eventCommitted": true,
+      "outboxCommitted": true,
+      "outlinePublished": true,
+      "projectionPublished": true,
+      "terminalFailureCode": "LOW_SIGNAL_CONTENT",
+      "duplicateWriteCount": 0,
+      "unresolvedEvidenceReferenceCount": 0,
+      "crossTaskEvidenceReferenceCount": 0,
+      "projectionEvidenceClosurePassed": true,
+      "committedAt": "2026-10-08T10:01:00Z"
+    }
+  },
+  "blocked": {
+    "schemaVersion": "v3-media-outline-taskstore/v2",
+    "task": {
+      "taskId": "media_task_33333333333333333333333333333333",
+      "sourceIdentity": "portal:bilibili:BV1vt1sBgEzc:restricted:part-1",
+      "state": "blocked",
+      "revision": 2,
+      "createdAt": "2026-10-08T10:00:00Z",
+      "updatedAt": "2026-10-08T10:00:05Z",
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    "evidenceCatalog": [],
+    "outline": null,
+    "timeline": [],
+    "mindmap": null,
+    "transactionReceipt": {
+      "transactionId": "mtx_33333333333333333333333333333333",
+      "taskId": "media_task_33333333333333333333333333333333",
+      "expectedRevision": 1,
+      "committedRevision": 2,
+      "aggregateCommitted": true,
+      "eventCommitted": true,
+      "outboxCommitted": true,
+      "outlinePublished": false,
+      "projectionPublished": false,
+      "terminalFailureCode": "MEDIA_ACCESS_RESTRICTED",
+      "duplicateWriteCount": 0,
+      "unresolvedEvidenceReferenceCount": 0,
+      "crossTaskEvidenceReferenceCount": 0,
+      "projectionEvidenceClosurePassed": false,
+      "committedAt": "2026-10-08T10:00:05Z"
+    }
+  }
+}

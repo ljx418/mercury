@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "v3-stage-implementation-authorization/v1",
+  "stage": "V3-2-0b-5.3",
+  "authorizedScope": "V3-2-0b-5.3-0..7 only",
+  "userInstruction": "approved V3-2-0b-5.3 implementation",
+  "userInstructionSha256": "c415c8460e608c378b999b9b34e44d519b131ba9ca5cc5784fd94b361f3db6ec",
+  "authorizedAt": "2026-09-22T18:42:51+08:00",
+  "auditRequestSha256": "61832359e2555905b95dd9326751079cd7913acd5d28b974bd7c416f6ebd2f5a",
+  "independentDocumentAuditSha256": "56c83e444774107193fdf82712b677635c81cabb007f8faa062afc32b57b3000",
+  "auditedCandidateManifestSha256": "bfef1ace73df862acae98799ac758bd5a468542d43312562ec4f2d07ff1d4590",
+  "implementationCandidateManifestSha256": "40c599dcd0b30a228badb720912dea765a570424a94eb288c27285c523c79c5e",
+  "clarification": "The implementation candidate only adds exact source frame counts and a <=16-frame final-tail zero-padding rule; denominators and gates are unchanged.",
+  "prohibitedScope": [
+    "V3-2-1..7",
+    "provider replacement",
+    "latency or quality threshold reduction",
+    "portal permission or credential changes",
+    "cross-run artifact reuse"
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "schemaVersion": "v3-media-session-contract-fixtures/v1",
+  "targetSchema": "docs/active/project/contracts/v3_media_session_contracts.schema.json",
+  "baseInstance": "docs/active/project/fixtures/v3-media-session-contract-positive.json",
+  "requirements": [
+    {
+      "requirementId": "V3S-N-001",
+      "requirementKey": "cookie_value_property_forbidden",
+      "layer": "schema",
+      "failureCode": "SCHEMA_ADDITIONAL_PROPERTY"
+    },
+    {
+      "requirementId": "V3S-N-002",
+      "requirementKey": "server_validation_not_claimed",
+      "layer": "schema",
+      "failureCode": "SCHEMA_CONST_MISMATCH"
+    },
+    {
+      "requirementId": "V3S-N-003",
+      "requirementKey": "capability_status_closed_set",
+      "layer": "schema",
+      "failureCode": "SCHEMA_ENUM_MISMATCH"
+    },
+    {
+      "requirementId": "V3S-N-004",
+      "requirementKey": "policy_secret_property_forbidden",
+      "layer": "schema",
+      "failureCode": "SCHEMA_ADDITIONAL_PROPERTY"
+    },
+    {
+      "requirementId": "V3S-N-005",
+      "requirementKey": "consent_scope_set_exact",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_SCOPE_SET_INVALID"
+    },
+    {
+      "requirementId": "V3S-N-006",
+      "requirementKey": "available_requires_both_permissions",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    },
+    {
+      "requirementId": "V3S-N-007",
+      "requirementKey": "available_requires_credential_metadata",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    },
+    {
+      "requirementId": "V3S-N-008",
+      "requirementKey": "credential_name_set_hash_matches_policy",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_NAME_SET_INVALID"
+    },
+    {
+      "requirementId": "V3S-N-009",
+      "requirementKey": "capability_expiry_after_observation",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_OBSERVATION_EXPIRED"
+    },
+    {
+      "requirementId": "V3S-N-010",
+      "requirementKey": "policy_capability_adapter_match",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_ADAPTER_MISMATCH"
+    },
+    {
+      "requirementId": "V3S-N-011",
+      "requirementKey": "revoked_policy_cannot_be_available",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_REVOKED"
+    },
+    {
+      "requirementId": "V3S-N-012",
+      "requirementKey": "permission_required_exposes_no_credential_metadata",
+      "layer": "semantic",
+      "failureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "V3S-C-001",
+      "requirementId": "V3S-N-001",
+      "patch": {
+        "op": "add",
+        "path": "/capability/cookieValue",
+        "value": "fixture-only-secret"
+      },
+      "expectedSchemaValid": false,
+      "expectedFailureCode": "SCHEMA_ADDITIONAL_PROPERTY"
+    },
+    {
+      "caseId": "V3S-C-002",
+      "requirementId": "V3S-N-002",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/serverValidated",
+        "value": true
+      },
+      "expectedSchemaValid": false,
+      "expectedFailureCode": "SCHEMA_CONST_MISMATCH"
+    },
+    {
+      "caseId": "V3S-C-003",
+      "requirementId": "V3S-N-003",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/status",
+        "value": "authenticated"
+      },
+      "expectedSchemaValid": false,
+      "expectedFailureCode": "SCHEMA_ENUM_MISMATCH"
+    },
+    {
+      "caseId": "V3S-C-004",
+      "requirementId": "V3S-N-004",
+      "patch": {
+        "op": "add",
+        "path": "/policy/credentialValue",
+        "value": "fixture-only-secret"
+      },
+      "expectedSchemaValid": false,
+      "expectedFailureCode": "SCHEMA_ADDITIONAL_PROPERTY"
+    },
+    {
+      "caseId": "V3S-C-005",
+      "requirementId": "V3S-N-005",
+      "patch": {
+        "op": "remove",
+        "path": "/policy/scopeGrants/4"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_SCOPE_SET_INVALID"
+    },
+    {
+      "caseId": "V3S-C-006",
+      "requirementId": "V3S-N-006",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/permissionState/hostPermissionGranted",
+        "value": false
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    },
+    {
+      "caseId": "V3S-C-007",
+      "requirementId": "V3S-N-007",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/credentialCount",
+        "value": null
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    },
+    {
+      "caseId": "V3S-C-008",
+      "requirementId": "V3S-N-008",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/credentialNameSetSha256",
+        "value": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_NAME_SET_INVALID"
+    },
+    {
+      "caseId": "V3S-C-009",
+      "requirementId": "V3S-N-009",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/expiresAt",
+        "value": "2026-09-17T08:00:04Z"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_OBSERVATION_EXPIRED"
+    },
+    {
+      "caseId": "V3S-C-010",
+      "requirementId": "V3S-N-010",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/adapterId",
+        "value": "youtube"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_ADAPTER_MISMATCH"
+    },
+    {
+      "caseId": "V3S-C-011",
+      "requirementId": "V3S-N-011",
+      "patch": {
+        "op": "replace",
+        "path": "/policy/status",
+        "value": "revoked"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_REVOKED"
+    },
+    {
+      "caseId": "V3S-C-012",
+      "requirementId": "V3S-N-012",
+      "patch": {
+        "op": "replace",
+        "path": "/capability/status",
+        "value": "permission_required"
+      },
+      "expectedSchemaValid": true,
+      "expectedFailureCode": "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT"
+    }
+  ]
+}

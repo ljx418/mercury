@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navia V3 Media Companion 交互与验收原型</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17201e;
+      --muted: #596965;
+      --line: #d5dfdc;
+      --soft: #f3f6f5;
+      --paper: #ffffff;
+      --page: #edf2f0;
+      --forest: #182522;
+      --green: #0b765f;
+      --green-2: #075f52;
+      --mint: #dff2eb;
+      --mint-2: #a8ddcd;
+      --cyan: #1b8ca1;
+      --amber: #8c5c00;
+      --amber-bg: #fff5d9;
+      --red: #9f3d32;
+      --red-bg: #fae9e7;
+      --gray: #7a8581;
+      --shadow: 0 14px 34px rgba(18, 45, 38, .10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--page); font-family: Inter, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .48; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(11, 118, 95, .32); outline-offset: 2px; }
+    a { color: inherit; }
+    h1, h2, h3, p { margin-top: 0; }
+    img { display: block; max-width: 100%; }
+    .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px; padding: 0 28px; color: #fff; background: var(--forest); border-bottom: 1px solid #31413c; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 7px; color: #173d34; background: var(--mint-2); }
+    .brand small { display: block; color: #a9b9b4; font-weight: 500; }
+    .topnav { display: flex; gap: 4px; overflow-x: auto; }
+    .topnav a { padding: 9px 11px; color: #c7d4d0; text-decoration: none; border-radius: 6px; white-space: nowrap; }
+    .topnav a:hover { color: #fff; background: #263732; }
+    .status-pill { flex: none; padding: 6px 9px; color: #174a3e; background: var(--mint); border-radius: 4px; font-size: 12px; font-weight: 800; }
+    main { overflow: hidden; }
+    .band { padding: 64px 28px; border-bottom: 1px solid var(--line); background: var(--paper); }
+    .band.alt { background: var(--soft); }
+    .wrap { width: min(1320px, 100%); margin: 0 auto; }
+    .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 440px); gap: 40px; align-items: end; margin-bottom: 30px; }
+    .eyebrow { margin-bottom: 7px; color: var(--green); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    h1 { max-width: 900px; margin-bottom: 18px; font-size: 46px; line-height: 1.08; }
+    h2 { margin-bottom: 8px; font-size: 29px; }
+    h3 { margin-bottom: 8px; font-size: 17px; }
+    .lead { max-width: 820px; color: #43524e; font-size: 18px; line-height: 1.7; }
+    .section-note { color: var(--muted); line-height: 1.7; }
+    .notice { padding: 13px 16px; color: #5f4506; background: var(--amber-bg); border-left: 4px solid #c9931a; }
+    .hero-meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; margin-top: 30px; overflow: hidden; background: var(--line); border: 1px solid var(--line); border-radius: 8px; }
+    .hero-meta div { padding: 18px; background: #fff; }
+    .hero-meta span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+    .hero-meta strong { font-size: 15px; }
+    .baseline-grid, .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    figure img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; background: #dce6e2; }
+    figure figcaption { padding: 14px 16px; color: var(--muted); line-height: 1.55; border-top: 1px solid var(--line); }
+    .baseline-grid a { display: block; background: #eef3f1; }
+    .baseline-grid .baseline-tall { height: 620px; object-fit: contain; }
+    .design-sheet { min-height: 430px; padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+    .design-sheet > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .design-sheet > header span { padding: 4px 7px; color: #174a3e; background: var(--mint); border-radius: 4px; font-size: 11px; font-weight: 800; }
+    .design-canvas { min-height: 330px; padding: 14px; background: #edf2f0; border: 1px solid #cbd7d3; }
+    .sidepanel-blueprint { width: min(100%, 300px); margin: 0 auto; overflow: hidden; background: #fff; border: 1px solid #9eb2ac; border-radius: 6px; }
+    .blueprint-bar { display: flex; align-items: center; justify-content: space-between; min-height: 42px; padding: 0 12px; border-bottom: 1px solid var(--line); font-weight: 800; }
+    .blueprint-body { display: grid; gap: 9px; padding: 12px; }
+    .blueprint-block { padding: 10px; color: #365149; background: #f5f8f7; border: 1px solid #cfdbd7; border-left: 4px solid var(--green); font-size: 12px; line-height: 1.5; }
+    .blueprint-action { min-height: 38px; display: grid; place-items: center; color: #fff; background: var(--green); border-radius: 5px; font-size: 12px; font-weight: 800; }
+    .workspace-blueprint { min-height: 330px; display: grid; grid-template-columns: 112px 1fr; overflow: hidden; background: #fff; border: 1px solid #9eb2ac; border-radius: 6px; }
+    .workspace-blueprint aside { padding: 13px 9px; color: #dfe8e5; background: var(--forest); font-size: 11px; line-height: 2.6; }
+    .workspace-blueprint .blueprint-main { display: grid; grid-template-rows: 42px 1fr; overflow: hidden; }
+    .workspace-blueprint nav { display: flex; gap: 14px; align-items: center; padding: 0 12px; color: #53635e; border-bottom: 1px solid var(--line); font-size: 11px; }
+    .workspace-blueprint .blueprint-columns { display: grid; grid-template-columns: 1.3fr .7fr; gap: 10px; padding: 12px; }
+    .workspace-blueprint .blueprint-columns div { padding: 10px; background: #f5f8f7; border: 1px solid #cfdbd7; font-size: 11px; line-height: 1.7; }
+    .architecture { display: grid; grid-template-columns: repeat(7, minmax(120px, 1fr)); gap: 22px; align-items: stretch; }
+    .arch-node { position: relative; min-height: 146px; padding: 16px; background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--green); border-radius: 8px; }
+    .arch-node.new { border-top-color: #2b74b8; }
+    .arch-node.governed { border-top-color: #c28c13; }
+    .arch-node.future { border-top-color: #87918e; background: #f3f4f4; }
+    .arch-node:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -19px; width: 14px; border-top: 2px solid #7f918b; }
+    .arch-node span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; color: var(--muted); font-size: 12px; }
+    .legend i { display: inline-block; width: 11px; height: 11px; margin-right: 5px; border-radius: 2px; }
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; }
+    .segmented { display: inline-flex; padding: 3px; background: #e3eae7; border-radius: 7px; }
+    .segmented button { min-height: 38px; padding: 0 13px; color: #53635e; background: transparent; border: 0; border-radius: 5px; }
+    .segmented button.active { color: #fff; background: var(--green); }
+    .secondary, .primary, .danger, .icon-btn { min-height: 44px; padding: 0 15px; border-radius: 6px; font-weight: 750; }
+    .primary { color: #fff; background: var(--green); border: 1px solid var(--green); }
+    .secondary { color: #29413b; background: #fff; border: 1px solid #bdcbc6; }
+    .danger { color: #fff; background: var(--red); border: 1px solid var(--red); }
+    .icon-btn { display: inline-grid; place-items: center; width: 44px; padding: 0; color: #29413b; background: #fff; border: 1px solid #bdcbc6; }
+    .prototype-stage { min-height: 760px; display: grid; place-items: center; padding: 30px; background: #dfe7e4; border: 1px solid #cbd7d3; }
+    .device { width: min(100%, 420px); height: 760px; overflow: hidden; background: #f8fbfa; border: 1px solid #9eb2ac; border-radius: 8px; box-shadow: var(--shadow); }
+    .device.workspace { width: min(100%, 1280px); height: 760px; }
+    .sidepanel { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+    .sp-head { padding: 16px; background: #fff; border-bottom: 1px solid var(--line); }
+    .sp-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .sp-title strong { font-size: 18px; }
+    .runtime { color: var(--green); font-size: 12px; font-weight: 700; }
+    .sp-body { overflow-y: auto; padding: 16px; }
+    .source-accent { margin-bottom: 16px; padding: 12px 0 12px 12px; border-left: 4px solid var(--cyan); }
+    .source-accent small { color: var(--muted); }
+    .media-cover { display: grid; place-items: center; aspect-ratio: 16 / 8; margin: 10px 0 12px; color: #d7e8e2; background: #263a35; border-radius: 6px; }
+    .status-panel { padding: 15px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+    .state-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .state-badge { padding: 4px 7px; color: #155546; background: var(--mint); border-radius: 4px; font-size: 11px; font-weight: 800; }
+    .scope-list { display: grid; gap: 8px; margin: 14px 0; padding: 0; list-style: none; }
+    .scope-list li { display: flex; gap: 8px; align-items: center; color: #43534e; font-size: 13px; }
+    .scope-list i { color: var(--green); }
+    .full { width: 100%; }
+    .scenario-field { display: grid; gap: 6px; margin: 12px 0; color: #43534e; font-size: 12px; font-weight: 700; }
+    .scenario-field select { min-height: 40px; padding: 0 10px; color: var(--ink); background: #fff; border: 1px solid #bdcbc6; border-radius: 5px; }
+    .progress-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 15px 0; }
+    .progress-steps span { min-height: 5px; background: #d8e1de; border-radius: 2px; }
+    .progress-steps span.done { background: var(--green); }
+    .task-log { display: grid; gap: 7px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+    .quick-summary { margin-top: 14px; padding: 14px 0; border-top: 1px solid var(--line); line-height: 1.55; }
+    .sp-footer { display: flex; gap: 8px; padding: 12px 16px; background: #fff; border-top: 1px solid var(--line); }
+    .workspace-ui { height: 100%; display: grid; grid-template-columns: 220px minmax(0, 1fr); }
+    .ws-nav { display: flex; flex-direction: column; padding: 22px 15px; color: #dfe8e5; background: var(--forest); }
+    .ws-nav h3 { color: #fff; }
+    .ws-nav button { min-height: 42px; margin-bottom: 5px; padding: 0 11px; color: #bdcbc6; text-align: left; background: transparent; border: 1px solid transparent; border-radius: 6px; }
+    .ws-nav button.active { color: #fff; background: #2c403a; border-color: #40544e; }
+    .ws-nav small { margin-top: auto; color: #9fb0aa; line-height: 1.5; }
+    .ws-main { min-width: 0; overflow: hidden; background: #f4f6f5; }
+    .ws-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px; padding: 0 24px; background: #fff; border-bottom: 1px solid var(--line); }
+    .ws-header small { color: var(--muted); }
+    .ws-tabs { display: flex; gap: 2px; overflow-x: auto; padding: 0 20px; background: #fff; border-bottom: 1px solid var(--line); }
+    .ws-tabs button { min-height: 46px; padding: 0 13px; color: var(--muted); background: transparent; border: 0; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .ws-tabs button.active { color: var(--green); border-bottom-color: var(--green); font-weight: 800; }
+    .ws-content { height: calc(100% - 123px); overflow: auto; padding: 22px; }
+    .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); gap: 18px; }
+    .content-panel { min-width: 0; padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+    .outline-list { display: grid; border-top: 1px solid var(--line); }
+    .outline-row { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; min-height: 76px; padding: 10px 0; background: transparent; border: 0; border-bottom: 1px solid #e5ebe9; text-align: left; }
+    .outline-row:hover, .outline-row.selected { background: #f3faf7; }
+    .outline-row time { color: var(--green); font-weight: 800; }
+    .outline-row small { display: block; margin-top: 4px; color: var(--muted); }
+    .evidence-card { display: grid; gap: 10px; }
+    .evidence-frame { display: grid; place-items: center; aspect-ratio: 16 / 9; color: #d9e7e2; background: #324a43; border-radius: 6px; }
+    .evidence-type { width: fit-content; padding: 4px 7px; color: #165847; background: var(--mint); border-radius: 3px; font-size: 11px; font-weight: 800; }
+    .citation { padding: 10px; color: #365149; background: #eef4f2; border-left: 3px solid var(--green); }
+    .mindmap-canvas { min-height: 380px; display: grid; place-items: center; position: relative; background: #eef3f1; border: 1px solid var(--line); border-radius: 6px; }
+    .mind-root, .mind-node { position: absolute; min-width: 130px; padding: 11px; text-align: center; border-radius: 6px; }
+    .mind-root { color: #fff; background: var(--green); }
+    .mind-node { color: #21473d; background: #fff; border: 1px solid #bcd0ca; }
+    .mind-node.one { transform: translate(-190px, -105px); }
+    .mind-node.two { transform: translate(190px, -105px); }
+    .mind-node.three { transform: translate(-190px, 110px); }
+    .mind-node.four { transform: translate(190px, 110px); }
+    .ask-box { display: grid; gap: 12px; }
+    .ask-box textarea { min-height: 90px; padding: 12px; border: 1px solid #bfcfc9; border-radius: 6px; resize: vertical; }
+    .answer { display: none; padding: 16px; line-height: 1.65; border: 1px solid var(--line); border-left: 4px solid var(--green); }
+    .answer.show { display: block; }
+    .flow-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .journey-evidence { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+    .journey-evidence figure img { aspect-ratio: 16 / 9; object-fit: cover; object-position: top; }
+    .flow-shot { min-height: 286px; padding: 16px; background: #fff; border: 1px solid var(--line); border-radius: 8px; }
+    .flow-no { display: grid; place-items: center; width: 28px; height: 28px; margin-bottom: 18px; color: #fff; background: var(--green); border-radius: 50%; font-weight: 800; }
+    .mini-screen { min-height: 125px; margin: 12px 0; padding: 12px; background: #f5f8f7; border: 1px solid #cfdbd7; }
+    .mini-line { height: 7px; margin-bottom: 7px; background: #cddad6; border-radius: 2px; }
+    .mini-line.green { width: 70%; background: #76bbaa; }
+    .component-table, .feedback-table { width: 100%; border-collapse: collapse; background: #fff; }
+    .component-table th, .component-table td, .feedback-table th, .feedback-table td { padding: 12px; text-align: left; vertical-align: top; border: 1px solid var(--line); }
+    .component-table th, .feedback-table th { color: #365149; background: #eaf1ee; }
+    .feedback-table select, .feedback-table input { width: 100%; min-height: 38px; padding: 0 9px; border: 1px solid #bdcbc6; border-radius: 5px; }
+    .feedback-table textarea { width: 100%; min-height: 64px; padding: 9px; border: 1px solid #bdcbc6; border-radius: 5px; resize: vertical; }
+    .feedback-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+    .hidden { display: none !important; }
+    .toast { position: fixed; right: 24px; bottom: 24px; z-index: 50; display: none; max-width: 360px; padding: 13px 16px; color: #fff; background: var(--forest); border-radius: 6px; box-shadow: var(--shadow); }
+    .toast.show { display: block; }
+    footer { padding: 34px 28px; color: #b7c5c0; background: var(--forest); }
+    @media (max-width: 1060px) {
+      .architecture { grid-template-columns: repeat(2, 1fr); }
+      .arch-node::after { display: none; }
+      .flow-grid { grid-template-columns: repeat(2, 1fr); }
+      .journey-evidence { grid-template-columns: 1fr; }
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .topbar { align-items: flex-start; padding: 12px 16px; }
+      .topnav, .status-pill { display: none; }
+      .band { padding: 44px 16px; }
+      .section-head, .baseline-grid, .design-grid { grid-template-columns: 1fr; }
+      .hero-meta { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 34px; }
+      .prototype-stage { padding: 8px; }
+      .workspace-ui { grid-template-columns: 62px minmax(0, 1fr); }
+      .ws-nav { padding: 14px 7px; }
+      .ws-nav h3, .ws-nav button span, .ws-nav small { display: none; }
+      .ws-nav button { text-align: center; }
+      .flow-grid { grid-template-columns: 1fr; }
+      .feedback-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">N</span><span>Navia V3<small>Media Companion review prototype</small></span></div>
+    <nav class="topnav" aria-label="文档导航">
+      <a href="#baseline">当前基线</a><a href="#architecture">目标架构</a><a href="#references">总体设计</a><a href="#prototype">交互原型</a><a href="#journey">操作路线</a><a href="#components">组件</a><a href="#feedback">验收回填</a>
+    </nav>
+    <span class="status-pill">审查原型 · 非产品证据</span>
+  </header>
+  <main>
+    <section class="band">
+      <div class="wrap">
+        <div class="eyebrow">V3 Bilibili-first</div>
+        <h1>从“读网页”到“陪你理解视频”</h1>
+        <p class="lead">Side Panel 负责识别、会话授权、启动和采集路线；Media Workspace 把受控 Cookie 会话、公开字幕或标签页回退得到的转录，与关键帧、OCR、授权 VLM 汇成可引用的大纲、时间线、思维导图和问答，并支持跳回真实视频。</p>
+        <div class="notice">本页用于规格审查、自动开发指导和未来人类验收。所有生成内容与交互均为目标示例，不代表 V3 已实现。</div>
+        <div class="hero-meta">
+          <div><span>首发平台</span><strong>Bilibili 视频详情页</strong></div>
+          <div><span>固定锚点</span><strong>BV1ZpYd66ELP</strong></div>
+          <div><span>当前观测</span><strong>单 P · 792 秒 · 无公开字幕</strong></div>
+          <div><span>知识能力</span><strong>V4 承接，V3 本地导出</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="baseline">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">01 Current baseline</div><h2>当前真实实现基线</h2></div><p class="section-note">这些图片来自已落盘的真实 Chrome 证据，只证明现有普通网页读取、Side Panel 和 Workspace 外壳。它们不证明字幕、ASR、OCR、VLM 或 MediaTask 已实现。</p></div>
+        <div class="baseline-grid">
+          <figure><a href="assets/baseline-bilibili.png" target="_blank" rel="noreferrer"><img src="assets/baseline-bilibili.png" alt="当前 B站页面与 Navia 普通页面读取基线"></a><figcaption><strong>现有 B站页面基线</strong><br>Navia 能以普通网页方式读取页面，但没有媒体身份、字幕、播放器、任务或画面证据合同。</figcaption></figure>
+          <figure><a href="assets/baseline-sidepanel-mock-blocked.png" target="_blank" rel="noreferrer"><img class="baseline-tall" src="assets/baseline-sidepanel-mock-blocked.png" alt="当前 Navia Side Panel 仅显示 V2 mock adapter 的真实阻塞基线"></a><figcaption><strong>真实 Mock 阻塞基线</strong><br>2026-09-15 人工验收截图。界面明确显示“V2 mock adapter is ready，real data_service 未启用”；这说明 V2 知识能力不能作为 V3 输入或完成证据。SHA-256：<code>0b8b8c07…2ba</code>。</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="architecture">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">02 Architecture concept</div><h2>目标架构概念图</h2></div><p class="section-note">数据流单向通过 Runtime 与治理层。前端不直连 ASR、VLM、B站媒体接口或 V4 知识服务。</p></div>
+        <div class="architecture" role="img" aria-label="V3 目标架构数据流">
+          <div class="arch-node"><h3>B站页面</h3><span>播放器、bvid/cid、分P、字幕入口、当前时间</span></div>
+          <div class="arch-node new"><h3>Session / Media Bridge</h3><span>Collector、短期 Cookie 租约、可信 capture 回退、真实 seek</span></div>
+          <div class="arch-node new"><h3>Runtime Pipeline</h3><span>凭据/公开字幕、临时媒体、本地 ASR、关键帧、OCR</span></div>
+          <div class="arch-node governed"><h3>D Governance</h3><span>持久 scope、Provider capability、Trace</span></div>
+          <div class="arch-node new"><h3>VideoOutline</h3><span>时间线、证据 ID、质量和拒答</span></div>
+          <div class="arch-node new"><h3>双容器 UI</h3><span>Side Panel 快速面；Workspace 完整面</span></div>
+          <div class="arch-node future"><h3>V4 Adapter</h3><span>未来用户主动导入知识，不参与 V3 门禁</span></div>
+        </div>
+        <div class="legend"><span><i style="background:#0b765f"></i>现有保留</span><span><i style="background:#2b74b8"></i>V3 待新增</span><span><i style="background:#c28c13"></i>治理/需修改</span><span><i style="background:#87918e"></i>V4 延后</span></div>
+      </div>
+    </section>
+
+    <section class="band alt" id="references">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">03 Deterministic target design</div><h2>目标总体设计图</h2></div><p class="section-note">本节由确定性 HTML/CSS 生成，是可核查的设计结构。原 AI 样张因包含错误视频和 V3 范围外模块，已从规格页面移除；任何未来 AI 图也不得承担实体、文本或验收事实权威。</p></div>
+        <div class="design-grid">
+          <article class="design-sheet"><header><div><div class="eyebrow">Side Panel 360/420</div><h3>识别、授权、启动与快速结果</h3></div><span>快速面</span></header><div class="design-canvas"><div class="sidepanel-blueprint"><div class="blueprint-bar"><span>Navia 视频伴读</span><small>Runtime online</small></div><div class="blueprint-body"><div class="blueprint-block"><strong>当前 B站视频</strong><br>bvid/cid/分P/时长/字幕/会话能力</div><div class="blueprint-block"><strong>五项持久授权</strong><br>会话 · 临时媒体 · 本地音频 · 本地画面 · 选定帧云端视觉</div><div class="blueprint-block"><strong>采集路线</strong><br>短租约主路径 → 公开字幕 → 可信 tabCapture</div><div class="blueprint-action">开始分析 / 取消 / 打开工作台</div></div></div></div></article>
+          <article class="design-sheet"><header><div><div class="eyebrow">Workspace 768/1280</div><h3>大纲、证据、Ask 与反跳</h3></div><span>完整面</span></header><div class="design-canvas"><div class="workspace-blueprint"><aside>当前任务<br>任务历史<br>本地导出<br>媒体设置<br><br>V4 知识导入延后</aside><div class="blueprint-main"><nav>图文大纲　时间线　思维导图　问视频　历史</nav><div class="blueprint-columns"><div><strong>同一 VideoOutline</strong><br>00:00 开场与问题背景<br>02:18 观察维度与现场信息<br>06:42 核心观点与证据核对<br>10:08 限制、反例与结论</div><div><strong>证据检查器</strong><br>ASR / OCR / vision frame 分型<br>evidenceId 与时间范围<br>跳回真实播放器</div></div></div></div></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="prototype">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">04 Interactive authority</div><h2>可操作目标原型</h2></div><p class="section-note">这里是交互权威。可授予/撤销授权、启动/取消模拟任务、切换 Workspace 视图、选择章节、提问和模拟跳回。所有结果均标为目标示例。</p></div>
+        <div class="toolbar">
+          <div class="segmented" aria-label="目标视口">
+            <button data-width="360">360</button><button data-width="420" class="active">420</button><button data-width="768">768</button><button data-width="1280">1280</button>
+          </div>
+          <div><button class="secondary" id="resetDemo"><i data-lucide="rotate-ccw"></i> 重置目标流程</button></div>
+        </div>
+        <div class="prototype-stage">
+          <div class="device" id="device">
+            <div class="sidepanel" id="sidepanelDemo">
+              <header class="sp-head"><div class="sp-title"><strong>Navia 视频伴读</strong><span class="runtime">Runtime online</span></div></header>
+              <div class="sp-body">
+                <div class="source-accent"><small>BILIBILI · 当前视频</small><h3>勇哥教人开餐饮，自己的店水平到底如何？</h3><small>单 P · 13:12 · 无公开字幕</small></div>
+                <div class="media-cover"><i data-lucide="play-circle" width="46" height="46"></i></div>
+                <section class="status-panel" id="consentPanel">
+                  <div class="state-line"><strong>首次媒体授权</strong><span class="state-badge">未授权</span></div>
+                  <p class="section-note">授权持续到你主动撤销；每个任务只签发短期租约，Cookie 值不落盘。标签页捕获仅作为可信点击回退。</p>
+                  <ul class="scope-list"><li><i data-lucide="check" width="16"></i>读取当前 Chrome 的 B站会话</li><li><i data-lucide="check" width="16"></i>任务期临时媒体下载并强制清理</li><li><i data-lucide="check" width="16"></i>音频仅在本机转写</li><li><i data-lucide="check" width="16"></i>关键帧与 OCR 在本机处理</li><li><i data-lucide="check" width="16"></i>选定证据帧可发送到云端视觉模型</li></ul>
+                  <button class="primary full" id="grantConsent">同意并继续</button>
+                </section>
+                <section class="status-panel hidden" id="taskPanel" aria-live="polite">
+                  <div class="state-line"><strong id="taskTitle">可以开始</strong><span class="state-badge" id="taskBadge">ready</span></div>
+                  <p class="section-note" id="taskDescription">未检测到公开字幕。点击后先创建短期会话租约；平台拒绝时再提示标签页采集回退。</p>
+                  <label class="scenario-field" for="routeScenario">审查情景<select id="routeScenario"><option value="credentialed">Cookie 主路径成功</option><option value="public_subtitle">Cookie 失败，公开/页内字幕成功</option><option value="tab_capture">Cookie 与公开字幕失败，可信标签页采集</option></select></label>
+                  <div class="progress-steps"><span></span><span></span><span></span><span></span></div>
+                  <button class="primary full" id="startTask"><i data-lucide="play" width="16"></i> 开始分析</button>
+                  <button class="primary full hidden" id="trustedCapture"><i data-lucide="mic" width="16"></i> 可信点击：采集当前标签页</button>
+                  <button class="danger full hidden" id="cancelTask"><i data-lucide="square" width="16"></i> 取消任务</button>
+                  <div class="task-log" id="taskLog"><span>目标流程尚未启动</span></div>
+                  <div class="quick-summary hidden" id="quickSummary"><span class="state-badge">目标示例 · 非生产结果</span><h3>快速摘要已准备</h3><p>完整大纲、时间线、画面证据与问视频位于 Media Workspace。</p></div>
+                </section>
+              </div>
+              <footer class="sp-footer"><button class="secondary" id="revokeConsent"><i data-lucide="shield-off" width="16"></i> 撤销授权</button><button class="primary" id="openWorkspace" disabled>打开工作台</button></footer>
+            </div>
+
+            <div class="workspace-ui hidden" id="workspaceDemo">
+              <aside class="ws-nav"><h3>Navia Media</h3><button class="active"><i data-lucide="video" width="17"></i> <span>当前任务</span></button><button><i data-lucide="history" width="17"></i> <span>任务历史</span></button><button><i data-lucide="download" width="17"></i> <span>本地导出</span></button><button><i data-lucide="settings" width="17"></i> <span>媒体设置</span></button><small>本地 MediaTaskStore<br>知识导入由 V4 提供</small></aside>
+              <div class="ws-main">
+                <header class="ws-header"><div><strong>勇哥教人开餐饮，自己的店水平到底如何？</strong><small> BV1ZpYd66ELP · task_anchor_demo · 目标示例</small></div><button class="secondary" id="backPanel"><i data-lucide="panel-right" width="16"></i> Side Panel</button></header>
+                <nav class="ws-tabs" aria-label="媒体工作区视图"><button class="active" data-tab="outline">图文大纲</button><button data-tab="timeline">时间线</button><button data-tab="mindmap">思维导图</button><button data-tab="ask">问视频</button><button data-tab="history">历史</button></nav>
+                <div class="ws-content">
+                  <section data-view="outline" class="workspace-grid">
+                    <div class="content-panel"><div class="eyebrow">VideoOutline · 目标示例</div><h2>图文大纲</h2><p class="section-note">以下章节只用于演示组件和证据关系，不是对锚点视频的事实总结。</p><div class="outline-list" id="outlineList"></div></div>
+                    <aside class="content-panel evidence-card"><span class="evidence-type" id="evidenceType">ASR + 画面证据</span><div class="evidence-frame"><i data-lucide="image" width="42"></i></div><h3 id="evidenceTitle">选择一个章节</h3><p id="evidenceText" class="section-note">查看时间化证据和目标跳转行为。</p><div class="citation" id="citation">evidence_id 尚未选择</div><button class="primary" id="seekButton" disabled><i data-lucide="corner-down-left" width="16"></i> 跳回视频</button></aside>
+                  </section>
+                  <section data-view="timeline" class="content-panel hidden"><div class="eyebrow">Timeline</div><h2>同一大纲的时间线投影</h2><div class="outline-list" id="timelineList"></div></section>
+                  <section data-view="mindmap" class="content-panel hidden"><div class="eyebrow">MediaMindmapProjection</div><h2>思维导图</h2><div class="mindmap-canvas"><button class="mind-root">锚点视频</button><button class="mind-node one">开场背景</button><button class="mind-node two">观点梳理</button><button class="mind-node three">画面证据</button><button class="mind-node four">结论与限制</button></div><p class="section-note">节点只从同一个 VideoOutline 派生；点击后的实现必须打开相同 segment/evidence。</p></section>
+                  <section data-view="ask" class="content-panel hidden"><div class="eyebrow">Evidence-constrained Ask</div><h2>问视频</h2><div class="ask-box"><label for="askInput">问题</label><textarea id="askInput">示例章节的依据是什么？</textarea><button class="primary" id="askButton">基于证据回答</button><div class="answer" id="answer"><strong>目标示例答案</strong><p>回答只能基于当前任务的 ASR、OCR 或 VLM 证据。此处展示交互，不代表已分析锚点视频。</p><button class="secondary" id="askCitation">查看引用 · 06:42</button></div></div></section>
+                  <section data-view="history" class="content-panel hidden"><div class="eyebrow">MediaTaskStore</div><h2>本地任务历史</h2><table class="component-table"><tr><th>任务</th><th>状态</th><th>输出</th></tr><tr><td>task_anchor_demo<br><small>BV1ZpYd66ELP</small></td><td>目标示例 completed</td><td><button class="secondary" id="exportDemo"><i data-lucide="download" width="16"></i> 导出 JSON</button></td></tr></table><p class="notice" style="margin-top:14px">知识库导入由 V4 提供。本视图不得显示“已保存到知识库”。</p></section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="journey">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">05 User journey storyboard</div><h2>人类照图执行的四段路线</h2></div><p class="section-note">每段图示都对应未来真实 Chrome 验收。示例状态不能替代执行截图和结构化证据。</p></div>
+        <div class="flow-grid">
+          <article class="flow-shot"><span class="flow-no">1</span><h3>识别与一次授权</h3><div class="mini-screen"><div class="mini-line green"></div><div class="mini-line"></div><div class="mini-line"></div><button class="primary full">同意并继续</button></div><p>核对 bvid/cid/分P/时长、会话可用性和“无公开字幕”。五项授权后刷新不重复弹窗，设置可撤销。</p></article>
+          <article class="flow-shot"><span class="flow-no">2</span><h3>受控获取与回退</h3><div class="mini-screen"><div class="mini-line green"></div><div class="progress-steps"><span class="done"></span><span class="done"></span><span></span><span></span></div><button class="danger full">取消任务</button></div><p>点击后创建短期租约并获取任务期媒体；平台拒绝时明确回退公开字幕或可信标签页采集。取消后确认凭据文件和临时媒体均清理。</p></article>
+          <article class="flow-shot"><span class="flow-no">3</span><h3>审阅大纲与画面证据</h3><div class="mini-screen"><div class="mini-line green"></div><div class="mini-line"></div><div class="mini-line"></div><div class="citation">ASR · OCR · vision frame</div></div><p>抽查至少 8 个节点。字幕推断、OCR 和 VLM 描述必须分型并指向真实时间。</p></article>
+          <article class="flow-shot"><span class="flow-no">4</span><h3>Ask、跳回与导出</h3><div class="mini-screen"><div class="mini-line green"></div><button class="primary full">跳回 06:42</button><button class="secondary full" style="margin-top:8px">导出本地结果</button></div><p>有证据问题显示引用，无证据问题拒答；5 次跳转误差不超过 2 秒。</p></article>
+        </div>
+        <div class="journey-evidence" aria-label="原型操作截图指引">
+          <figure><a href="screenshots/01-sidepanel-420.png" target="_blank" rel="noreferrer"><img src="screenshots/01-sidepanel-420.png" alt="步骤一：420 宽 Side Panel 显示五项授权"></a><figcaption><strong>步骤 1 · 五项授权</strong><br>先核对当前视频和无公开字幕，再阅读五项 scope，点击“同意并继续”。</figcaption></figure>
+          <figure><a href="screenshots/06-tab-capture-fallback-420.png" target="_blank" rel="noreferrer"><img src="screenshots/06-tab-capture-fallback-420.png" alt="步骤二：Cookie 和公开字幕失败后等待可信标签页采集点击"></a><figcaption><strong>步骤 2 · 双回退</strong><br>选择标签页回退情景，确认系统停在 fallback，只有点击“可信点击：采集当前标签页”后才能继续。</figcaption></figure>
+          <figure><a href="screenshots/03-workspace-1280.png" target="_blank" rel="noreferrer"><img src="screenshots/03-workspace-1280.png" alt="步骤三：1280 宽 Media Workspace 图文大纲与证据"></a><figcaption><strong>步骤 3 · 审阅同源结果</strong><br>完成目标流程后打开 Workspace，逐项核对大纲、时间线、导图与证据 ID。</figcaption></figure>
+          <figure><a href="screenshots/04-workspace-768-ask.png" target="_blank" rel="noreferrer"><img src="screenshots/04-workspace-768-ask.png" alt="步骤四：768 宽 Workspace 问视频与引用"></a><figcaption><strong>步骤 4 · Ask 与跳回</strong><br>在问视频视图核对引用，再从章节或证据触发真实播放器时间跳转。</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="components">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">06 Component handoff</div><h2>组件与实现责任</h2></div><p class="section-note">所有组件通过 runtimeClient 消费同一 MediaTask。详细字段和事件见组件路由设计与 JSON Schema。</p></div>
+        <table class="component-table">
+          <thead><tr><th>组件</th><th>容器</th><th>核心交互</th><th>必须拒绝</th></tr></thead>
+          <tbody>
+            <tr><td>MediaQuickSurface</td><td>Side Panel</td><td>识别、启动、取消、打开 Workspace</td><td>用旧任务冒充当前页</td></tr>
+            <tr><td>MediaConsentPanel / MediaAcquisitionStatus</td><td>Side Panel / 设置</td><td>五项授权、短租约、回退原因、主动撤销</td><td>持久化 Cookie 值或把租约当永久凭据</td></tr>
+            <tr><td>MediaRunProgress</td><td>Side Panel</td><td>阶段、进度、清理、重试</td><td>取消后继续处理</td></tr>
+            <tr><td>VideoOutlineReader / Timeline / Mindmap</td><td>Workspace</td><td>同一 outline 的三种视图</td><td>三个视图各自生成事实</td></tr>
+            <tr><td>VisionEvidenceGallery / Drawer</td><td>Workspace</td><td>分型证据、打开引用、跳回</td><td>普通截图冒充 VLM 证据</td></tr>
+            <tr><td>AskVideoPanel</td><td>Workspace</td><td>证据约束问答和拒答</td><td>无引用 answered</td></tr>
+            <tr><td>MediaTaskHistory / Export</td><td>Workspace</td><td>本地历史、Markdown ZIP/JSON</td><td>声称已导入知识库</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band alt" id="feedback">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">07 Human acceptance feedback</div><h2>实际结果回填</h2></div><p class="section-note">数据保存在本浏览器 localStorage，可导出 JSON。默认均为“未执行”，不会自动产生 PASS。</p></div>
+        <table class="feedback-table">
+          <thead><tr><th>验收项</th><th>操作与预期</th><th>实际状态</th><th>截图/证据路径</th><th>实际结果与问题</th></tr></thead>
+          <tbody id="feedbackRows"></tbody>
+        </table>
+        <div class="feedback-actions"><button class="secondary" id="clearFeedback"><i data-lucide="trash-2" width="16"></i> 清空回填</button><button class="primary" id="exportFeedback"><i data-lucide="download" width="16"></i> 导出验收 JSON</button></div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap"><strong>Navia V3 Media Companion</strong><p>Document candidate. Product implementation is NOT AUTHORIZED by this artifact.</p></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/lucide-1.24.0.min.js"></script>
+  <script>
+    (() => {
+    const q = (selector, root = document) => root.querySelector(selector);
+    const qa = (selector, root = document) => [...root.querySelectorAll(selector)];
+    const toast = (message) => { const el = q('#toast'); el.textContent = message; el.classList.add('show'); clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => el.classList.remove('show'), 2600); };
+    const consentStorageKey = 'navia-v3-review-consent';
+    const state = { consent: localStorage.getItem(consentStorageKey) === 'granted', running: false, completed: false, timer: null, selected: null, pendingCapture: false };
+    const stages = [
+      ['acquiring_credentials', '正在建立受控 B站会话', '短期租约只绑定本任务，不记录 Cookie 值'],
+      ['downloading_media', '正在获取任务期媒体', '只处理当前会话有权访问的内容；失败时进入回退'],
+      ['transcribing', '正在本地转写', '原始音频只进入本机 Runtime'],
+      ['extracting_frames', '正在提取关键帧与 OCR', '非证据帧将在阶段结束后删除'],
+      ['vision_running', '正在分析选定证据帧', '仅持久授权范围内调用云端视觉 Provider'],
+      ['synthesizing', '正在生成同源产物', '大纲、时间线、导图和 Ask 共用证据索引']
+    ];
+    const chapters = [
+      { time: '00:00', title: '开场与问题背景', text: '目标示例章节，用于验证大纲行、时间与证据交互。', evidence: 'evidence_asr_demo_001', type: 'ASR segment' },
+      { time: '02:18', title: '观察维度与现场信息', text: '演示 OCR 和画面证据如何与转录并列，而不是互相替代。', evidence: 'evidence_ocr_demo_002', type: 'OCR + frame' },
+      { time: '06:42', title: '核心观点与证据核对', text: '演示受治理的 VLM 描述必须绑定选定帧和 Provider 响应。', evidence: 'evidence_vision_demo_003', type: 'Vision frame' },
+      { time: '10:08', title: '限制、反例与结论', text: '演示证据不足时的限定表达和拒答边界。', evidence: 'evidence_asr_demo_004', type: 'ASR segment' }
+    ];
+    const feedback = [
+      ['H01','打开锚点页；身份、单 P、时长、会话与无字幕状态正确'],['H02','首次授予五项 scope；刷新不重复弹窗；设置可撤销；不显示 Cookie 值'],['H03','点击后主路径使用短租约；平台拒绝时可信切换 tabCapture；进度与取消可理解'],['H04','抽查 8 个大纲/时间线节点与真实内容一致'],['H05','关键帧、OCR、VLM 分型且画面描述有依据'],['H06','Mindmap 与大纲同源且节点可追溯'],['H07','3 个有答案问题有引用，1 个无证据问题拒答'],['H08','5 次跳回真实播放器，误差不超过 2 秒'],['H09','取消和 Provider 不可用时 cookiefile、临时媒体、音频与非证据帧清理正确'],['H10','本地导出可用且无知识库/V4 完成声明']
+    ];
+    function renderConsent() {
+      q('#consentPanel').classList.toggle('hidden', state.consent);
+      q('#taskPanel').classList.toggle('hidden', !state.consent);
+      q('#revokeConsent').disabled = !state.consent;
+    }
+    function resetDemo() {
+      clearInterval(state.timer); Object.assign(state, { consent: false, running: false, completed: false, timer: null, selected: null, pendingCapture: false }); localStorage.removeItem(consentStorageKey);
+      q('#workspaceDemo').classList.add('hidden'); q('#sidepanelDemo').classList.remove('hidden'); q('#device').classList.remove('workspace');
+      q('#taskTitle').textContent = '可以开始'; q('#taskBadge').textContent = 'ready'; q('#taskDescription').textContent = '未检测到公开字幕。点击后先创建短期会话租约；平台拒绝时再提示标签页采集回退。';
+      q('#taskLog').innerHTML = '<span>目标流程尚未启动</span>'; q('.quick-summary').classList.add('hidden'); q('#startTask').classList.remove('hidden'); q('#startTask').textContent = '开始分析'; q('#trustedCapture').classList.add('hidden'); q('#cancelTask').classList.add('hidden'); q('#openWorkspace').disabled = true; q('#routeScenario').disabled = false;
+      qa('.progress-steps span', q('#taskPanel')).forEach(x => x.classList.remove('done')); renderConsent(); toast('目标流程已重置');
+    }
+    q('#grantConsent').addEventListener('click', () => { state.consent = true; localStorage.setItem(consentStorageKey, 'granted'); renderConsent(); toast('目标状态：五项授权已保存，尚未创建任务租约'); });
+    q('#revokeConsent').addEventListener('click', () => { if (state.running) return toast('请先取消当前任务并等待清理'); state.consent = false; state.completed = false; state.pendingCapture = false; localStorage.removeItem(consentStorageKey); q('#trustedCapture').classList.add('hidden'); q('#routeScenario').disabled = false; renderConsent(); q('#openWorkspace').disabled = true; toast('目标状态：授权已撤销，后续处理被阻止'); });
+    function finishTargetFlow() {
+      clearInterval(state.timer); state.running = false; state.completed = true; state.pendingCapture = false; q('#taskBadge').textContent = 'completed'; q('#taskTitle').textContent = '目标示例已准备'; q('#taskDescription').textContent = 'cookiefile、临时媒体、原始音频和非证据帧已按目标策略清理。'; q('#cancelTask').classList.add('hidden'); q('#trustedCapture').classList.add('hidden'); q('#startTask').classList.remove('hidden'); q('#startTask').textContent = '重新运行目标流程'; q('#routeScenario').disabled = false; q('#quickSummary').classList.remove('hidden'); q('#openWorkspace').disabled = false; toast('目标流程完成，可打开 Media Workspace');
+    }
+    function runRemainingStages(startIndex) {
+      let index = startIndex;
+      const advance = () => {
+        if (index < stages.length) {
+          const [badge, title, message] = stages[index]; q('#taskBadge').textContent = badge; q('#taskTitle').textContent = title; q('#taskDescription').textContent = message;
+          q('#taskLog').insertAdjacentHTML('beforeend', `<span>${index + 1}. ${message}</span>`); qa('.progress-steps span', q('#taskPanel')).slice(0, Math.min(4, index + 1)).forEach(x => x.classList.add('done')); index++;
+        } else finishTargetFlow();
+      }; advance(); state.timer = setInterval(advance, 720);
+    }
+    q('#startTask').addEventListener('click', () => {
+      if (!state.consent || state.running) return;
+      state.running = true; state.completed = false; q('#openWorkspace').disabled = true; q('#quickSummary').classList.add('hidden'); qa('.progress-steps span', q('#taskPanel')).forEach(x => x.classList.remove('done')); q('#routeScenario').disabled = true; q('#startTask').classList.add('hidden'); q('#cancelTask').classList.remove('hidden'); q('#taskLog').innerHTML = '';
+      const scenario = q('#routeScenario').value;
+      if (scenario === 'credentialed') return runRemainingStages(0);
+      q('#taskBadge').textContent = 'fallback'; q('#taskTitle').textContent = 'Cookie 主路径不可用'; q('#taskDescription').textContent = scenario === 'public_subtitle' ? '已记录平台拒绝；公开/页内字幕可用，继续本地处理。' : 'Cookie 与公开字幕均不可用；必须由可信点击启动当前标签页采集。';
+      q('#taskLog').innerHTML = '<span>1. 短期租约已创建，但平台拒绝媒体请求</span>';
+      if (scenario === 'public_subtitle') { q('#taskLog').insertAdjacentHTML('beforeend','<span>2. public_or_page_subtitle 回退成功</span>'); return runRemainingStages(3); }
+      state.pendingCapture = true; state.running = false; q('#cancelTask').classList.add('hidden'); q('#trustedCapture').classList.remove('hidden');
+    });
+    q('#trustedCapture').addEventListener('click', () => { if (!state.pendingCapture) return; state.pendingCapture = false; state.running = true; q('#trustedCapture').classList.add('hidden'); q('#cancelTask').classList.remove('hidden'); q('#taskLog').insertAdjacentHTML('beforeend','<span>3. trustedUserGesture=true，tab_capture grant 已创建</span>'); runRemainingStages(2); });
+    q('#cancelTask').addEventListener('click', () => { clearInterval(state.timer); state.running = false; state.pendingCapture = false; q('#taskBadge').textContent = 'cancelled'; q('#taskTitle').textContent = '任务已取消'; q('#taskDescription').textContent = '目标状态：凭据文件、临时媒体、音频和非证据帧清理完成。'; q('#cancelTask').classList.add('hidden'); q('#trustedCapture').classList.add('hidden'); q('#startTask').classList.remove('hidden'); q('#routeScenario').disabled = false; q('#taskLog').insertAdjacentHTML('beforeend','<span>取消 -> 清理 -> cancelled</span>'); toast('目标状态：取消完成，未保留凭据或临时媒体'); });
+    q('#openWorkspace').addEventListener('click', () => { if (!state.completed) return; q('#sidepanelDemo').classList.add('hidden'); q('#workspaceDemo').classList.remove('hidden'); q('#device').classList.add('workspace'); toast('已进入目标 Media Workspace'); });
+    q('#backPanel').addEventListener('click', () => { q('#workspaceDemo').classList.add('hidden'); q('#sidepanelDemo').classList.remove('hidden'); q('#device').classList.remove('workspace'); });
+    q('#resetDemo').addEventListener('click', resetDemo);
+    qa('[data-width]').forEach(button => button.addEventListener('click', () => { qa('[data-width]').forEach(x => x.classList.remove('active')); button.classList.add('active'); const width = Number(button.dataset.width); q('#device').style.width = `${width}px`; if (width >= 768 && state.completed) { q('#sidepanelDemo').classList.add('hidden'); q('#workspaceDemo').classList.remove('hidden'); q('#device').classList.add('workspace'); } else { q('#workspaceDemo').classList.add('hidden'); q('#sidepanelDemo').classList.remove('hidden'); q('#device').classList.remove('workspace'); } }));
+    function chapterButton(item, index) { return `<button class="outline-row" data-chapter="${index}"><time>${item.time}</time><span><strong>${item.title}</strong><small>${item.text}</small></span><i data-lucide="chevron-right" width="18"></i></button>`; }
+    q('#outlineList').innerHTML = chapters.map(chapterButton).join(''); q('#timelineList').innerHTML = chapters.map(chapterButton).join('');
+    qa('[data-chapter]').forEach(button => button.addEventListener('click', () => { const item = chapters[Number(button.dataset.chapter)]; state.selected = item; qa('[data-chapter]').forEach(x => x.classList.remove('selected')); qa(`[data-chapter="${button.dataset.chapter}"]`).forEach(x => x.classList.add('selected')); q('#evidenceType').textContent = item.type; q('#evidenceTitle').textContent = `${item.time} · ${item.title}`; q('#evidenceText').textContent = item.text; q('#citation').textContent = `${item.evidence} · 目标示例，非生产证据`; q('#seekButton').disabled = false; }));
+    q('#seekButton').addEventListener('click', () => toast(`目标交互：请求跳回 ${state.selected?.time || '所选时间'}；真实实现必须回读播放器 currentTime`));
+    qa('.ws-tabs button').forEach(button => button.addEventListener('click', () => { qa('.ws-tabs button').forEach(x => x.classList.remove('active')); button.classList.add('active'); qa('[data-view]').forEach(view => view.classList.toggle('hidden', view.dataset.view !== button.dataset.tab)); }));
+    q('#askButton').addEventListener('click', () => q('#answer').classList.add('show'));
+    q('#askCitation').addEventListener('click', () => toast('目标交互：打开 evidence_vision_demo_003 并允许跳回 06:42'));
+    function download(name, data) { const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href); }
+    q('#exportDemo').addEventListener('click', () => download('navia-v3-review-demo.json', {evidenceClass:'review_prototype', productEvidence:false, knowledgeImportStatus:'deferred_to_v4'}));
+    const feedbackBody = q('#feedbackRows');
+    const savedFeedback = JSON.parse(localStorage.getItem('navia-v3-review-feedback') || '{}');
+    feedbackBody.innerHTML = feedback.map(([id, desc]) => `<tr data-feedback="${id}"><td><strong>${id}</strong></td><td>${desc}</td><td><select aria-label="${id} 状态"><option>未执行</option><option>PASS</option><option>FAIL</option><option>BLOCKED</option></select></td><td><input aria-label="${id} 证据路径" placeholder="evidence/path.png"></td><td><textarea aria-label="${id} 实际结果" placeholder="填写实际观察，不复制预期"></textarea></td></tr>`).join('');
+    function restoreFeedback() { qa('[data-feedback]').forEach(row => { const data = savedFeedback[row.dataset.feedback]; if (!data) return; q('select',row).value=data.status; q('input',row).value=data.evidence; q('textarea',row).value=data.notes; }); }
+    function collectFeedback() { const result={schemaVersion:'v3-human-feedback/v1',evidenceClass:'human_review_pending',generatedAt:new Date().toISOString(),items:{}}; qa('[data-feedback]').forEach(row => result.items[row.dataset.feedback]={status:q('select',row).value,evidence:q('input',row).value,notes:q('textarea',row).value}); return result; }
+    feedbackBody.addEventListener('input', () => localStorage.setItem('navia-v3-review-feedback', JSON.stringify(collectFeedback().items)));
+    q('#clearFeedback').addEventListener('click', () => { localStorage.removeItem('navia-v3-review-feedback'); qa('[data-feedback] select').forEach(x=>x.value='未执行'); qa('[data-feedback] input, [data-feedback] textarea').forEach(x=>x.value=''); toast('验收回填已清空'); });
+    q('#exportFeedback').addEventListener('click', () => download('navia-v3-human-feedback-pending.json', collectFeedback()));
+    restoreFeedback(); renderConsent(); if (window.lucide) window.lucide.createIcons();
+    })();
+  </script>
+</body>
+</html>

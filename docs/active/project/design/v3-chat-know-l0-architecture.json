@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Navia V3 Chat + Know 零层架构",
+    "subtitle": "手动启动本机服务；Chat 负责当前上下文，Know 负责显式知识管理，Agent 延后",
+    "locale": "zh-CN",
+    "output": "docs/active/project/design/v3-chat-know-l0-architecture.html",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "viewBox": [
+      900,
+      570
+    ]
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "识读、保存、管理",
+      "pos": [
+        21,
+        182
+      ],
+      "size": [
+        78,
+        41
+      ]
+    },
+    {
+      "id": "launcher",
+      "type": "security",
+      "label": "本机伴侣启动器",
+      "sublabel": "桌面图标 / 手动启停 / 配对",
+      "tag": "V3 待新增",
+      "pos": [
+        130,
+        37
+      ],
+      "size": [
+        110,
+        48
+      ]
+    },
+    {
+      "id": "shell",
+      "type": "frontend",
+      "label": "Chrome 扩展壳",
+      "sublabel": "Chat / Know / 设置",
+      "tag": "V3 需修改",
+      "pos": [
+        130,
+        182
+      ],
+      "size": [
+        110,
+        48
+      ]
+    },
+    {
+      "id": "chat",
+      "type": "frontend",
+      "label": "Chat 工作区",
+      "sublabel": "问答、伴读、提纯与草稿",
+      "tag": "V3 主交付",
+      "pos": [
+        270,
+        148
+      ],
+      "size": [
+        114,
+        52
+      ]
+    },
+    {
+      "id": "know",
+      "type": "frontend",
+      "label": "Know 工作区",
+      "sublabel": "编辑、标签、排序与归档",
+      "tag": "V3 主交付",
+      "pos": [
+        270,
+        322
+      ],
+      "size": [
+        114,
+        52
+      ]
+    },
+    {
+      "id": "settings",
+      "type": "frontend",
+      "label": "设置与授权",
+      "sublabel": "Runtime / 站点 / 模型 / 配对",
+      "tag": "V3 需修改",
+      "pos": [
+        270,
+        37
+      ],
+      "size": [
+        114,
+        48
+      ]
+    },
+    {
+      "id": "context_adapters",
+      "type": "backend",
+      "label": "上下文适配器",
+      "sublabel": "网页 + 视频门户适配器",
+      "tag": "开放扩展点",
+      "pos": [
+        411,
+        148
+      ],
+      "size": [
+        120,
+        52
+      ]
+    },
+    {
+      "id": "runtime_api",
+      "type": "backend",
+      "label": "Local Runtime API",
+      "sublabel": "Loopback / 会话 / 业务接口",
+      "tag": "V3 需收敛",
+      "pos": [
+        555,
+        37
+      ],
+      "size": [
+        120,
+        52
+      ]
+    },
+    {
+      "id": "perception",
+      "type": "backend",
+      "label": "页面与媒体感知",
+      "sublabel": "正文 / 字幕 / ASR / 帧证据",
+      "tag": "已部分实现",
+      "pos": [
+        555,
+        148
+      ],
+      "size": [
+        120,
+        52
+      ]
+    },
+    {
+      "id": "extraction",
+      "type": "backend",
+      "label": "知识提取器",
+      "sublabel": "证据生成草稿；确认后保存",
+      "tag": "V3 待新增",
+      "pos": [
+        699,
+        148
+      ],
+      "size": [
+        120,
+        52
+      ]
+    },
+    {
+      "id": "knowledge_store",
+      "type": "database",
+      "label": "本地知识存储",
+      "sublabel": "来源 / 笔记 / 草稿 / 标签",
+      "tag": "V3 基线",
+      "pos": [
+        699,
+        322
+      ],
+      "size": [
+        120,
+        52
+      ]
+    },
+    {
+      "id": "future_agent",
+      "type": "external",
+      "label": "Agent 域",
+      "sublabel": "任务与文档输出",
+      "tag": "V5+ 远期",
+      "pos": [
+        551,
+        395
+      ],
+      "size": [
+        78,
+        48
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Chrome 扩展",
+      "wraps": [
+        "shell",
+        "chat",
+        "know",
+        "settings",
+        "context_adapters"
+      ],
+      "pad": 14
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-launch",
+      "from": "user",
+      "to": "launcher",
+      "variant": "security",
+      "label": "显式启动"
+    },
+    {
+      "id": "user-open",
+      "from": "user",
+      "to": "shell",
+      "variant": "emphasis"
+    },
+    {
+      "id": "launcher-settings",
+      "from": "launcher",
+      "to": "settings",
+      "variant": "security"
+    },
+    {
+      "id": "settings-runtime",
+      "from": "settings",
+      "to": "runtime_api",
+      "variant": "security",
+      "label": "短时会话"
+    },
+    {
+      "id": "runtime-perception",
+      "from": "runtime_api",
+      "to": "perception",
+      "variant": "security",
+      "label": "本地接口",
+      "labelAt": [
+        611,
+        102
+      ]
+    },
+    {
+      "id": "shell-chat",
+      "from": "shell",
+      "to": "chat"
+    },
+    {
+      "id": "shell-know",
+      "from": "shell",
+      "to": "know",
+      "label": "存量知识"
+    },
+    {
+      "id": "chat-context",
+      "from": "chat",
+      "to": "context_adapters",
+      "variant": "emphasis",
+      "label": "读取"
+    },
+    {
+      "id": "context-perception",
+      "from": "context_adapters",
+      "to": "perception",
+      "labelAt": [
+        541,
+        214
+      ]
+    },
+    {
+      "id": "perception-extraction",
+      "from": "perception",
+      "to": "extraction",
+      "labelAt": [
+        682,
+        214
+      ]
+    },
+    {
+      "id": "extraction-store",
+      "from": "extraction",
+      "to": "knowledge_store",
+      "label": "确认后保存",
+      "labelAt": [
+        824,
+        260
+      ]
+    },
+    {
+      "id": "know-store",
+      "from": "know",
+      "to": "knowledge_store",
+      "label": "显式管理"
+    },
+    {
+      "id": "future-agent-read",
+      "from": "knowledge_store",
+      "to": "future_agent",
+      "variant": "dashed"
+    }
+  ]
+}

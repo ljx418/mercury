@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-transcript-execution/v2",
+  "title": "Navia V3-2-3 SenseVoice transcript execution receipt",
+  "type": "object",
+  "required": ["schemaVersion", "taskId", "sourceIdentity", "acquisitionRecordId", "audioBinding", "modelProfile", "progress", "coverage", "result"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-transcript-execution/v2" },
+    "taskId": { "$ref": "#/$defs/TaskId" },
+    "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+    "acquisitionRecordId": { "type": "string", "pattern": "^mar_[a-f0-9]{32}$" },
+    "audioBinding": { "$ref": "#/$defs/AudioBinding" },
+    "modelProfile": { "$ref": "#/$defs/ModelProfile" },
+    "progress": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/ProgressObservation" } },
+    "coverage": { "$ref": "#/$defs/CoverageReceipt" },
+    "result": { "$ref": "#/$defs/Result" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "AudioBinding": {
+      "type": "object",
+      "required": ["taskId", "relativeArtifactRef", "artifactSha256", "durationMs", "sampleRateHz", "channels", "sampleWidthBytes", "currentPart"],
+      "additionalProperties": false,
+      "properties": {
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "relativeArtifactRef": { "type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+\\.wav$", "maxLength": 256 },
+        "artifactSha256": { "$ref": "#/$defs/Sha256" },
+        "durationMs": { "type": "integer", "minimum": 1000, "maximum": 86400000 },
+        "sampleRateHz": { "const": 16000 },
+        "channels": { "const": 1 },
+        "sampleWidthBytes": { "const": 2 },
+        "currentPart": { "const": true }
+      }
+    },
+    "ModelProfile": {
+      "type": "object",
+      "required": ["providerId", "engine", "engineVersion", "modelId", "modelRevision", "weightsSha256", "deviceClass", "computeType", "qualityStatus", "cloudUpload"],
+      "additionalProperties": false,
+      "properties": {
+        "providerId": { "const": "funasr_edge_local" },
+        "engine": { "const": "funasr-llamacpp" },
+        "engineVersion": { "const": "runtime-llamacpp-v0.2.6" },
+        "modelId": { "const": "funasr-sensevoice-small-q8" },
+        "modelRevision": { "const": "90c1c61912018b70ada0fcc024ea24aca62f2e63" },
+        "weightsSha256": { "const": "4ae45c94422de949b387e2e0fb10d7e14e4c42c69db30c3444ecc7d4b844b7c5" },
+        "deviceClass": { "const": "cpu" },
+        "computeType": { "const": "q8" },
+        "qualityStatus": { "const": "development_baseline" },
+        "cloudUpload": { "const": false }
+      }
+    },
+    "ProgressObservation": {
+      "type": "object",
+      "required": ["sequence", "phase", "completedMs", "totalMs", "percent", "observedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 0 },
+        "phase": { "enum": ["queued", "loading_model", "transcribing", "validating", "cleaning", "completed", "failed", "cancelled"] },
+        "completedMs": { "type": "integer", "minimum": 0 },
+        "totalMs": { "type": "integer", "minimum": 1 },
+        "percent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "observedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "CoverageReceipt": {
+      "type": "object",
+      "required": ["algorithm", "speechIntervalCount", "speechDurationMs", "coveredSpeechDurationMs", "coverageRatio", "passed"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": { "const": "speech_interval_overlap/v1" },
+        "speechIntervalCount": { "type": "integer", "minimum": 1 },
+        "speechDurationMs": { "type": "integer", "minimum": 1 },
+        "coveredSpeechDurationMs": { "type": "integer", "minimum": 0 },
+        "coverageRatio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "Result": {
+      "type": "object",
+      "required": ["status", "transcriptId", "segmentCount", "contentSha256", "failureCode", "terminalAt"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["succeeded", "failed", "cancelled"] },
+        "transcriptId": { "type": ["string", "null"], "pattern": "^mtr_[a-f0-9]{32}$" },
+        "segmentCount": { "type": "integer", "minimum": 0 },
+        "contentSha256": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Sha256" }] },
+        "failureCode": { "type": ["string", "null"], "maxLength": 96 },
+        "terminalAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

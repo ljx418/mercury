@@ -1,0 +1,86 @@
+{
+  "transcriptExecution": {
+    "schemaVersion": "v3-media-transcript-execution/v2",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:987654:part-1",
+    "acquisitionRecordId": "mar_22222222222222222222222222222222",
+    "audioBinding": {
+      "taskId": "media_task_11111111111111111111111111111111",
+      "relativeArtifactRef": "audio/current-part.wav",
+      "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "durationMs": 792000,
+      "sampleRateHz": 16000,
+      "channels": 1,
+      "sampleWidthBytes": 2,
+      "currentPart": true
+    },
+    "modelProfile": {
+      "providerId": "funasr_edge_local",
+      "engine": "funasr-llamacpp",
+      "engineVersion": "runtime-llamacpp-v0.2.6",
+      "modelId": "funasr-sensevoice-small-q8",
+      "modelRevision": "90c1c61912018b70ada0fcc024ea24aca62f2e63",
+      "weightsSha256": "4ae45c94422de949b387e2e0fb10d7e14e4c42c69db30c3444ecc7d4b844b7c5",
+      "deviceClass": "cpu",
+      "computeType": "q8",
+      "qualityStatus": "development_baseline",
+      "cloudUpload": false
+    },
+    "progress": [
+      { "sequence": 0, "phase": "queued", "completedMs": 0, "totalMs": 792000, "percent": 0, "observedAt": "2026-10-06T12:00:00Z" },
+      { "sequence": 1, "phase": "completed", "completedMs": 792000, "totalMs": 792000, "percent": 100, "observedAt": "2026-10-06T12:20:00Z" }
+    ],
+    "coverage": {
+      "algorithm": "speech_interval_overlap/v1",
+      "speechIntervalCount": 24,
+      "speechDurationMs": 700000,
+      "coveredSpeechDurationMs": 700000,
+      "coverageRatio": 1.0,
+      "passed": true
+    },
+    "result": {
+      "status": "succeeded",
+      "transcriptId": "mtr_33333333333333333333333333333333",
+      "segmentCount": 24,
+      "contentSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "failureCode": null,
+      "terminalAt": "2026-10-06T12:20:01Z"
+    }
+  },
+  "captureStream": {
+    "schemaVersion": "v3-media-capture-stream/v1",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "grant": {
+      "grantId": "mcg_44444444444444444444444444444444",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "adapterId": "bilibili",
+      "pageIdentitySha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "tabIdSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "surface": "side_panel",
+      "issuedAt": "2026-10-06T13:00:00Z",
+      "expiresAt": "2026-10-06T13:00:30Z",
+      "oneShot": true,
+      "persisted": false,
+      "state": "consumed"
+    },
+    "chunks": [
+      { "sequence": 0, "byteLength": 32000, "payloadSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "receivedAt": "2026-10-06T13:00:02Z" }
+    ],
+    "progress": [
+      { "sequence": 0, "phase": "grant_issued", "capturedMs": 0, "byteLength": 0, "observedAt": "2026-10-06T13:00:00Z" },
+      { "sequence": 1, "phase": "completed", "capturedMs": 1000, "byteLength": 32000, "observedAt": "2026-10-06T13:00:03Z" }
+    ],
+    "stop": {
+      "reason": "completed",
+      "terminalStatus": "succeeded",
+      "tracksStopped": true,
+      "socketClosed": true,
+      "offscreenClosed": true,
+      "sinkClosed": true,
+      "activeCaptureCount": 0,
+      "residualRawAudioCount": 0,
+      "stoppedAt": "2026-10-06T13:00:04Z",
+      "failureCode": null
+    }
+  }
+}

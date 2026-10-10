@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-transcript-projection/v1",
+  "title": "Navia V3 shared media transcript product projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "taskId", "sourceIdentity", "adapterId", "revision", "updatedAt",
+    "state", "route", "progressPercent", "failureCode", "terminal", "cleanupStatus",
+    "canCancel", "canRetry", "failures", "segments", "resources"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "v3-media-transcript-projection/v1" },
+    "taskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+    "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "state": {
+      "enum": ["created", "acquiring", "awaiting_trusted_capture", "capturing", "transcribing", "validating", "cleaning", "succeeded", "degraded", "blocked", "failed", "cancelled"]
+    },
+    "route": { "enum": ["credentialed_subtitle", "credentialed_media_asr", "public_or_page_subtitle", "trusted_tab_capture_asr", "none"] },
+    "progressPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "failureCode": { "type": ["string", "null"], "pattern": "^V3_MEDIA_[A-Z0-9_]{3,80}$" },
+    "terminal": { "type": "boolean" },
+    "cleanupStatus": { "enum": ["not_applicable", "pending", "complete"] },
+    "canCancel": { "type": "boolean" },
+    "canRetry": { "type": "boolean" },
+    "resources": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cpuCoreLimit", "memoryLimitBytes", "temporaryDiskPeakBytes", "gpuUsed"],
+          "properties": {
+            "acquisitionArtifactBytes": { "type": "integer", "minimum": 1 },
+            "cpuCoreLimit": { "type": "integer", "minimum": 1 },
+            "memoryLimitBytes": { "type": "integer", "minimum": 1 },
+            "temporaryDiskPeakBytes": { "type": "integer", "minimum": 1 },
+            "gpuUsed": { "type": "boolean" },
+            "elapsedMs": { "type": "integer", "minimum": 0 },
+            "peakRssBytes": { "type": "integer", "minimum": 1 }
+          }
+        }
+      ]
+    },
+    "failures": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["route", "failureCode"],
+        "properties": {
+          "route": { "enum": ["credentialed_subtitle", "credentialed_media_asr", "public_or_page_subtitle"] },
+          "failureCode": { "type": "string", "pattern": "^V3_MEDIA_[A-Z0-9_]{3,80}$" }
+        }
+      }
+    },
+    "segments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["segmentId", "startMs", "endMs", "text"],
+        "properties": {
+          "segmentId": { "type": "string", "minLength": 1, "maxLength": 96 },
+          "startMs": { "type": "integer", "minimum": 0 },
+          "endMs": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string", "minLength": 1, "maxLength": 12000 }
+        }
+      }
+    }
+  }
+}

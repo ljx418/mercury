@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-capture-stream/v1",
+  "title": "Navia V3-2-4 public capture stream observation and stop receipt",
+  "type": "object",
+  "required": ["schemaVersion", "taskId", "grant", "chunks", "progress", "stop"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-capture-stream/v1" },
+    "taskId": { "$ref": "#/$defs/TaskId" },
+    "grant": { "$ref": "#/$defs/PublicGrant" },
+    "chunks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ChunkObservation" } },
+    "progress": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/ProgressObservation" } },
+    "stop": { "$ref": "#/$defs/StopReceipt" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "PublicGrant": {
+      "type": "object",
+      "required": ["grantId", "taskId", "adapterId", "pageIdentitySha256", "tabIdSha256", "surface", "issuedAt", "expiresAt", "oneShot", "persisted", "state"],
+      "additionalProperties": false,
+      "properties": {
+        "grantId": { "type": "string", "pattern": "^mcg_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+        "pageIdentitySha256": { "$ref": "#/$defs/Sha256" },
+        "tabIdSha256": { "$ref": "#/$defs/Sha256" },
+        "surface": { "enum": ["side_panel", "workspace"] },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "oneShot": { "const": true },
+        "persisted": { "const": false },
+        "state": { "enum": ["issued", "consumed", "expired", "revoked", "failed"] }
+      }
+    },
+    "ChunkObservation": {
+      "type": "object",
+      "required": ["sequence", "byteLength", "payloadSha256", "receivedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 0 },
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 1048576 },
+        "payloadSha256": { "$ref": "#/$defs/Sha256" },
+        "receivedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ProgressObservation": {
+      "type": "object",
+      "required": ["sequence", "phase", "capturedMs", "byteLength", "observedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 0 },
+        "phase": { "enum": ["awaiting_user", "grant_issued", "capturing", "stopping", "cleaning", "completed", "failed", "cancelled"] },
+        "capturedMs": { "type": "integer", "minimum": 0, "maximum": 900000 },
+        "byteLength": { "type": "integer", "minimum": 0, "maximum": 536870912 },
+        "observedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "StopReceipt": {
+      "type": "object",
+      "required": ["reason", "terminalStatus", "tracksStopped", "socketClosed", "offscreenClosed", "sinkClosed", "activeCaptureCount", "residualRawAudioCount", "stoppedAt", "failureCode"],
+      "additionalProperties": false,
+      "properties": {
+        "reason": { "enum": ["completed", "cancelled", "navigation", "tab_closed", "consent_revoked", "runtime_disconnected", "timeout", "failed"] },
+        "terminalStatus": { "enum": ["succeeded", "failed", "cancelled"] },
+        "tracksStopped": { "const": true },
+        "socketClosed": { "const": true },
+        "offscreenClosed": { "const": true },
+        "sinkClosed": { "const": true },
+        "activeCaptureCount": { "const": 0 },
+        "residualRawAudioCount": { "const": 0 },
+        "stoppedAt": { "type": "string", "format": "date-time" },
+        "failureCode": { "type": ["string", "null"], "maxLength": 96 }
+      }
+    }
+  }
+}

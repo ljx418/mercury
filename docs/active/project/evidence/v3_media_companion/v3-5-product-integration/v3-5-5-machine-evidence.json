@@ -1,0 +1,267 @@
+{
+  "schemaVersion": "v3-5-machine-evidence/v1",
+  "runId": "v3-5-5-real-20261009T085637Z",
+  "checks": {
+    "startActionAccepted": true,
+    "realThreeRouteFailure": true,
+    "realDecodedAudio": true,
+    "realPlayback": true,
+    "extensionInvokedOnTarget": true,
+    "trustedCaptureStarted": true,
+    "playbackContinuedDuringCapture": true,
+    "senseVoiceTerminal": true,
+    "productMaterialized": true,
+    "resourceNoticeVisible": true,
+    "canonicalWorkspaceSameTask": true,
+    "visualDegradationDisclosed": true,
+    "noCookieOrPrivatePathVisible": true,
+    "typedVisualEvidence": true,
+    "visualLeaseRevoked": true,
+    "fiveOriginSeekLocated": true,
+    "groundedAsk": true,
+    "visualAsk": true,
+    "insufficientAsk": true,
+    "twoExportsVerified": true,
+    "wrongPageSeekBlocked": true,
+    "eightCanonicalRoutes": true,
+    "backForwardRestored": true,
+    "legacyRouteReplaced": true,
+    "invalidRouteRecovered": true,
+    "sidePanelReopenedSameTask": true,
+    "fourViewportsNoOverflow": true,
+    "fourScreenshotsExactSize": true,
+    "axeSeriousCriticalZero": true,
+    "keyboardMainPath": true,
+    "focusReturnPassed": true,
+    "reducedMotionPassed": true,
+    "noActiveOffscreen": true,
+    "noRuntimeMediaResidue": true,
+    "profileDeleted": true,
+    "secretScanZeroHits": true,
+    "secureTaskRootDeleted": true
+  },
+  "surfaces": [
+    {
+      "surface": "workspace",
+      "routeKind": "ask",
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "decoded": {
+        "width": 768,
+        "height": 900
+      },
+      "documentClientWidth": 768,
+      "documentScrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "axeRuleIds": [],
+      "screenshot": "workspace-768x900.png",
+      "screenshotBytes": 54593,
+      "screenshotSha256": "be28c9451c7633f4382fe34b1c96f644c69a60eb1c92295a8ca688a4d071428a"
+    },
+    {
+      "surface": "workspace",
+      "routeKind": "outline",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "decoded": {
+        "width": 1280,
+        "height": 900
+      },
+      "documentClientWidth": 1280,
+      "documentScrollWidth": 1280,
+      "bodyScrollWidth": 1280,
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "axeRuleIds": [],
+      "screenshot": "workspace-1280x900.png",
+      "screenshotBytes": 67030,
+      "screenshotSha256": "cdda2529e72a66f438dd15b0b591e09b39d587584914a1d7e427e4de609a0d9c"
+    },
+    {
+      "surface": "side_panel",
+      "routeKind": "chat_quick_summary",
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "decoded": {
+        "width": 360,
+        "height": 900
+      },
+      "documentClientWidth": 360,
+      "documentScrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "axeRuleIds": [],
+      "screenshot": "side-panel-360x900.png",
+      "screenshotBytes": 112368,
+      "screenshotSha256": "66090801ccca914e161a08c697165c35e597ad45aeb81110642770f259bfd5ab"
+    },
+    {
+      "surface": "side_panel",
+      "routeKind": "chat_quick_summary",
+      "viewport": {
+        "width": 420,
+        "height": 900
+      },
+      "decoded": {
+        "width": 420,
+        "height": 900
+      },
+      "documentClientWidth": 420,
+      "documentScrollWidth": 420,
+      "bodyScrollWidth": 420,
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "axeRuleIds": [],
+      "screenshot": "side-panel-420x900.png",
+      "screenshotBytes": 123568,
+      "screenshotSha256": "4f425ee5878880fd9d091d9ab1bba785b7ce3ef3486f4f31636c99616e2b208b"
+    }
+  ],
+  "keyboard": {
+    "sidePanelMainActionFocused": true,
+    "sidePanelEnterActivated": true,
+    "evidenceOpenedByKeyboard": true,
+    "escapeReturnedEvidenceFocus": true,
+    "askInputFocused": true,
+    "exportActionFocused": true,
+    "reducedMotionOperable": true
+  },
+  "routeChecks": [
+    {
+      "kind": "task_library",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "task_overview",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "outline",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "timeline",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "mindmap",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "ask",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "export",
+      "direct": true,
+      "reload": true
+    },
+    {
+      "kind": "evidence",
+      "direct": true,
+      "reload": true
+    }
+  ],
+  "seekObservations": [
+    {
+      "origin": "outline",
+      "requestedMs": 0,
+      "observedMs": 71,
+      "deltaMs": 71,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.416Z"
+    },
+    {
+      "origin": "timeline",
+      "requestedMs": 0,
+      "observedMs": 108,
+      "deltaMs": 108,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.632Z"
+    },
+    {
+      "origin": "mindmap",
+      "requestedMs": 0,
+      "observedMs": 106,
+      "deltaMs": 106,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.850Z"
+    },
+    {
+      "origin": "ask_citation",
+      "requestedMs": 0,
+      "observedMs": 112,
+      "deltaMs": 112,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:33.097Z"
+    },
+    {
+      "origin": "evidence_drawer",
+      "requestedMs": 0,
+      "observedMs": 113,
+      "deltaMs": 113,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:33.318Z"
+    }
+  ],
+  "exports": [
+    {
+      "format": "markdown_zip",
+      "byteLength": 3640,
+      "artifactSha256": "a6c3786d4687800118da66d7485f1fef80745439a0051644c0f510be433fa97a",
+      "memberIndexSha256": "5f7368e328ffbf596cc9e03be700479c917c117e3dba502ab865d7d331566bec",
+      "memberCount": 6,
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    {
+      "format": "json_bundle",
+      "byteLength": 7818,
+      "artifactSha256": "95b4433d1f5d9cdcad1838c3f7ef884d3dc9da60a1061d216643da26ae6e1401",
+      "memberIndexSha256": "7a52b324e71147318f6825d9009f3b94682c0d09c146a3019dc4085d0a19ce8b",
+      "memberCount": 1,
+      "knowledgeImportStatus": "deferred_to_v4"
+    }
+  ],
+  "resourceObservation": {
+    "cpuCoreLimit": 8,
+    "memoryLimitBytes": 8589934592,
+    "temporaryDiskPeakBytes": 1081168,
+    "gpuUsed": false
+  },
+  "runtimeArtifactSummary": {
+    "persistentPrivateEvidenceFiles": 4,
+    "persistentPrivateExportFiles": 4,
+    "temporaryMediaFiles": 0,
+    "asrTemporaryFiles": 0
+  },
+  "taskBinding": {
+    "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+    "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:p1",
+    "revision": 7,
+    "outlineId": "outline_1213ab6c7fe3f6e624c4770c7a08edf1"
+  }
+}

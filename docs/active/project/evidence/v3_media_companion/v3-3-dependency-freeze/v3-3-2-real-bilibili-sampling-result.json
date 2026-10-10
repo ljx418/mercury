@@ -1,0 +1,191 @@
+{
+  "schemaVersion": "v3-3-2-real-sampling-acceptance/v1",
+  "executedAt": "2026-10-08T06:19:20.033731Z",
+  "passed": true,
+  "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+  "input": {
+    "mediaId": "BV1ZpYd66ELP",
+    "durationMs": 8000,
+    "byteLength": 1208799,
+    "sha256": "33245dc5e83dbc5e49a7291610eef56a5701130fedbabafc29db8f2c1a417684"
+  },
+  "sampling": {
+    "policyVersion": "v3-frame-sampling/v1",
+    "algorithm": "scene-change-plus-timeline-budget/v1",
+    "candidateFrameLimit": 24,
+    "selectedEvidenceLimit": 12,
+    "cloudVisionFrameLimit": 8,
+    "maxDimensionPx": 1280,
+    "rawVideoUploadAllowed": false,
+    "mediaSha256": "33245dc5e83dbc5e49a7291610eef56a5701130fedbabafc29db8f2c1a417684",
+    "durationMs": 8000,
+    "points": [
+      {
+        "timestampMs": 0,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 500,
+        "reason": "scene_change",
+        "sceneScore": 0.088477,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 705,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 750,
+        "reason": "scene_change",
+        "sceneScore": 0.084649,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 1000,
+        "reason": "scene_change",
+        "sceneScore": 0.099923,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 1409,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 1500,
+        "reason": "scene_change",
+        "sceneScore": 0.150403,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 1750,
+        "reason": "scene_change",
+        "sceneScore": 0.098637,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 2114,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 2250,
+        "reason": "scene_change",
+        "sceneScore": 0.245869,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 2500,
+        "reason": "scene_change",
+        "sceneScore": 0.091956,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 2750,
+        "reason": "scene_change",
+        "sceneScore": 0.085379,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 2818,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 3523,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 4227,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 4932,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 5636,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": true,
+        "cloudEligible": true
+      },
+      {
+        "timestampMs": 6341,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 6750,
+        "reason": "scene_change",
+        "sceneScore": 0.093173,
+        "selected": true,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 7045,
+        "reason": "timeline",
+        "sceneScore": 0.0,
+        "selected": false,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 7250,
+        "reason": "scene_change",
+        "sceneScore": 0.10609,
+        "selected": true,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 7500,
+        "reason": "scene_change",
+        "sceneScore": 0.098747,
+        "selected": true,
+        "cloudEligible": false
+      },
+      {
+        "timestampMs": 7750,
+        "reason": "both",
+        "sceneScore": 0.089321,
+        "selected": true,
+        "cloudEligible": false
+      }
+    ],
+    "contentSha256": "b2bfb267271a80ef50034e7776afdfd7f2d90a45a91daef94c227b837b41fd24"
+  },
+  "repeatContentSha256": "b2bfb267271a80ef50034e7776afdfd7f2d90a45a91daef94c227b837b41fd24",
+  "providerDispatchCount": 0,
+  "cookieSeedPersisted": false,
+  "privateMediaPersisted": false
+}

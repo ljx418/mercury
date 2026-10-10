@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v3-asr-low-resource-public-evidence/v1",
+  "measuredAt": "2026-09-21",
+  "inputClass": "user_authorized_real_bilibili_audio",
+  "inputDisclosure": "No audio bytes, transcript text, Cookie value, account identifier, or absolute path is included.",
+  "model": {
+    "modelId": "faster-whisper-tiny",
+    "providerId": "faster_whisper_local",
+    "revision": "d90ca5fe260221311c53c58e660288d3deb8d356",
+    "bundledManifestSha256": "b6713f1f8c9750b6853dc59c4e188569d5389d33b1ff50e219d920e4a32c2afb"
+  },
+  "resourceBoundary": {
+    "cpuAffinity": "0-7",
+    "addressSpaceLimitBytes": 8589934592,
+    "gpuVisible": false,
+    "maximumResidentSetKiB": 350200,
+    "elapsedSeconds": 3.68
+  },
+  "inference": {
+    "windowStartSeconds": 30,
+    "windowDurationSeconds": 30,
+    "normalizedAudio": "pcm_s16le_16000_mono",
+    "timestampedSegmentCount": 17,
+    "exitCode": 0
+  },
+  "cleanup": {
+    "rawMediaDeleted": true,
+    "normalizedAudioDeleted": true
+  },
+  "privateResultSha256": "bccd4d953932b493ac7db83eb6785f3e4f8ae71e6f61ea584edbd3a320625db0",
+  "passed": true,
+  "claimBoundary": {
+    "fallbackSelfTestPassed": true,
+    "v3_2_A06Passed": false,
+    "reason": "Bundled Tiny proves a local low-resource fallback only; it is not the frozen production quality denominator."
+  }
+}

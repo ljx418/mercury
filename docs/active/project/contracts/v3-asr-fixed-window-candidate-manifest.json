@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "v3-asr-fixed-window-candidate-manifest/v1",
+  "candidateId": "funasr-paraformer-q8-fixed15-cpu-v2",
+  "stage": "V3-2-0b-5.3",
+  "status": "document_candidate_not_authorized",
+  "parentCandidate": {
+    "candidateId": "funasr-paraformer-q8-cpu-v1",
+    "manifestSha256": "2016e6e87baa440ac240fcf5ceb5653928e1f3b6c284ff586413bd42c71cd1cf",
+    "providerId": "funasr_edge_local",
+    "engineVersion": "runtime-llamacpp-v0.2.6",
+    "asrModelSha256": "42bf76ea1575a336aaca4c1b7c01a82b79113e6d04d0d6b799561bfcf07ee011",
+    "vadModelSha256": "1270f2559c495f4e7b6e739541151027d360761a3fda43fc147034f5719f5479"
+  },
+  "orchestrator": {
+    "entity": "FixedWindowAsrOrchestrator",
+    "inputType": "TaskAudioRef",
+    "providerAdapter": "FunAsrLlamaCppProviderAdapter",
+    "processHost": "NativeAsrProcessHost",
+    "portalNeutral": true,
+    "networkDuringInference": false
+  },
+  "sourceCorpus": [
+    {"sampleId":"v3-asr-comparison-01","audioSha256":"2a11e09975733740d49f4a63ca7b3ec1a9ebc77e8e8897d770e1991d4c1beb05","sourceFrameCount":1919997,"durationMs":120000,"baselineElapsedMs":8180,"maximumElapsedMs":16360},
+    {"sampleId":"v3-asr-comparison-02","audioSha256":"63eb48d9027e1cfa09747d7261f9e2b7347cbec58daeb38b4aff09cdbd647405","sourceFrameCount":1920000,"durationMs":120000,"baselineElapsedMs":7380,"maximumElapsedMs":14760},
+    {"sampleId":"v3-asr-comparison-03","audioSha256":"f4f61c09f8fe19828fb2085ef18459179d5142596b8107cef82df6c7bf7cc97b","sourceFrameCount":1920000,"durationMs":120000,"baselineElapsedMs":8140,"maximumElapsedMs":16280}
+  ],
+  "fixedWindow": {
+    "audioFormat": "pcm_s16le_mono_16000hz",
+    "windowDurationMs": 120000,
+    "chunkDurationMs": 15000,
+    "chunkCountPerSample": 8,
+    "totalChunkCount": 24,
+    "overlapMs": 0,
+    "maxConcurrency": 1,
+    "expectedFrameCount": 1920000,
+    "maximumTailPadFrames": 16,
+    "tailPaddingPolicy": "zero_pad_final_chunk_only_for_frozen_frame_shortfall",
+    "boundariesMs": [[0,15000],[15000,30000],[30000,45000],[45000,60000],[60000,75000],[75000,90000],[90000,105000],[105000,120000]],
+    "retryPolicy": "fresh_sample_attempt_from_chunk_zero",
+    "textPolicy": "preserve_provider_segments_no_cross_chunk_rewrite",
+    "mergePolicy": "validate_local_then_add_chunk_offset"
+  },
+  "resourcePolicy": {
+    "cpuCores": 8,
+    "addressSpaceBytes": 8589934592,
+    "gpuAllowed": false,
+    "installedDiskCeilingBytes": 536870912,
+    "maximumLatencyRegressionRatio": 2.0
+  },
+  "qualityPolicy": {
+    "sampleCount": 3,
+    "binCount": 24,
+    "reviewerCount": 2,
+    "totalJudgments": 48,
+    "minimumMeaningPreserved": 44,
+    "minimumPerSample": 15,
+    "maximumCriticalMeaningErrors": 0,
+    "maximumNeitherAcceptable": 0
+  },
+  "publicEvidencePolicy": {
+    "audioAllowed": false,
+    "transcriptTextAllowed": false,
+    "absolutePathAllowed": false,
+    "credentialAllowed": false,
+    "hashAndCountOnly": true
+  },
+  "notes": [
+    "This manifest freezes a document candidate only; implementation requires a new explicit user authorization.",
+    "All three samples must be regenerated from chunk zero in a new run; old long-window and diagnostic outputs are read-only.",
+    "The frozen sample 01 source is three PCM frames short; only its final chunk is zero-padded and every chunk hash covers the emitted WAV bytes.",
+    "A pass qualifies only this provider route and does not imply V3-2 or V3 completion."
+  ]
+}

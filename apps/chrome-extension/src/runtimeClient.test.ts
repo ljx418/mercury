@@ -1,14 +1,20 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  bootstrapMediaCredentialChannel,
+  bootstrapLocalRuntimeSession,
+  createV3KnowledgeDraft,
   clearLocalRuntimeSession,
   createKnowledgeStatusPoller,
   forgetKnowledgeSource,
   getLocalRuntimeSessionSnapshot,
   isForgetSourceVerified,
   listKnowledgePermissions,
+  listV3KnowledgeItems,
   saveCurrentPageToKnowledge,
+  saveV3KnowledgeDraft,
   setLocalRuntimeToken,
   subscribeLocalRuntimeSession,
+  updateV3KnowledgeItem,
   type KnowledgeServiceStatus
 } from "./runtimeClient";
 
@@ -96,6 +102,105 @@ describe("knowledge Runtime session", () => {
 
     await expect(listKnowledgePermissions("ws_default")).resolves.toEqual([]);
     expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it("runs the V3 Chat draft to Know persistence contract over authenticated Runtime calls", async () => {
+    setLocalRuntimeToken("k".repeat(32));
+    const draft = {
+      schemaVersion: "v3-knowledge-draft/v1" as const,
+      draftId: `knd_${"1".repeat(32)}`,
+      state: "editing" as const,
+      sourceRefs: [{ url: "https://www.bilibili.com/video/BV1ZpYd66ELP", kind: "web_page", anchor: "main" }],
+      title: "真实视频页面",
+      summary: "页面摘要",
+      body: "页面正文",
+      tags: [],
+      customFields: {},
+      provenance: { contextType: "web_page" },
+      createdFromContextHash: "1".repeat(64),
+      revision: 1,
+      itemId: null,
+      createdAt: "2026-10-10T00:00:00Z",
+      updatedAt: "2026-10-10T00:00:00Z"
+    };
+    const item = {
+      schemaVersion: "v3-knowledge-item/v1" as const,
+      itemId: `kni_${"2".repeat(32)}`,
+      sourceRefs: draft.sourceRefs,
+      title: draft.title,
+      summary: draft.summary,
+      body: draft.body,
+      tags: [],
+      customFields: {},
+      priority: 50,
+      lifecycleState: "active" as const,
+      revision: 1,
+      createdAt: draft.createdAt,
+      updatedAt: draft.updatedAt
+    };
+    const requests: Array<{ url: string; method: string }> = [];
+    vi.stubGlobal("fetch", vi.fn(async (url: string, init?: RequestInit) => {
+      requests.push({ url, method: init?.method ?? "GET" });
+      const headers = init?.headers as Record<string, string>;
+      expect(headers.Authorization).toBe(`Bearer ${"k".repeat(32)}`);
+      const data = url.endsWith("/v3/knowledge/drafts") ? { draft }
+        : url.endsWith(`/v3/knowledge/drafts/${draft.draftId}/save`) ? { draft: { ...draft, state: "saved", itemId: item.itemId }, item, idempotentReplay: false }
+          : url.includes("/v3/knowledge/items?") ? { items: [item] }
+            : { item: { ...item, priority: 75, revision: 2 } };
+      return new Response(JSON.stringify({ ok: true, data, request_id: headers["X-Request-ID"], error: null }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }));
+
+    const created = await createV3KnowledgeDraft({
+      url: draft.sourceRefs[0].url,
+      title: draft.title,
+      domain: "www.bilibili.com",
+      captured_at: draft.createdAt,
+      headings: [],
+      visible_text: draft.body,
+      cleaned_text: draft.body
+    });
+    const saved = await saveV3KnowledgeDraft(created.draftId);
+    const listed = await listV3KnowledgeItems("priority_desc");
+    const updated = await updateV3KnowledgeItem({ ...listed[0], priority: 75 });
+
+    expect(saved.item.itemId).toBe(item.itemId);
+    expect(updated).toMatchObject({ priority: 75, revision: 2 });
+    expect(requests).toEqual([
+      { url: "http://127.0.0.1:17861/v3/knowledge/drafts", method: "POST" },
+      { url: `http://127.0.0.1:17861/v3/knowledge/drafts/${draft.draftId}/save`, method: "POST" },
+      { url: "http://127.0.0.1:17861/v3/knowledge/items?sort=priority_desc", method: "GET" },
+      { url: `http://127.0.0.1:17861/v3/knowledge/items/${item.itemId}`, method: "PATCH" }
+    ]);
+  });
+
+  it("bootstraps a process-scoped companion session without exposing the token", async () => {
+    vi.stubGlobal("location", { protocol: "chrome-extension:" });
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({
+      ok: true,
+      data: {
+        schemaVersion: "navia-companion-session/v1",
+        sessionId: `comp_session_${"1".repeat(32)}`,
+        runtimeInstanceId: `runtime_${"2".repeat(32)}`,
+        extensionOriginSha256: "3".repeat(64),
+        issuedAt: "2026-10-07T00:00:00Z",
+        expiresAt: "2026-10-07T00:15:00Z",
+        token: "A".repeat(43),
+        persisted: false
+      },
+      error: null
+    }), { status: 201, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(bootstrapLocalRuntimeSession()).resolves.toMatchObject({
+      sessionId: `comp_session_${"1".repeat(32)}`,
+      runtimeInstanceId: `runtime_${"2".repeat(32)}`,
+      persisted: false
+    });
+    expect(getLocalRuntimeSessionSnapshot().hasToken).toBe(true);
+    expect(await bootstrapLocalRuntimeSession()).not.toHaveProperty("token");
   });
 
   it("sends an integrity-bound page snapshot for real persistence", async () => {
@@ -202,7 +307,53 @@ describe("knowledge Runtime session", () => {
 
     expect(snapshots.map((item) => item.generation)).toEqual([before + 1, before + 2, before + 3]);
     expect(snapshots.map((item) => item.hasToken)).toEqual([true, true, false]);
-    expect(Object.keys(snapshots[0])).toEqual(["hasToken", "generation"]);
+    expect(Object.keys(snapshots[0])).toEqual(["hasToken", "generation", "runtimeInstanceId"]);
+  });
+
+  it("bootstraps a media credential channel directly without exposing the Runtime bearer", async () => {
+    setLocalRuntimeToken("m".repeat(32));
+    vi.stubGlobal("location", { protocol: "chrome-extension:" });
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+      expect(_url).toBe("http://127.0.0.1:17861/v1/media/credential-channels");
+      expect((init?.headers as Record<string, string>).Authorization).toBe(`Bearer ${"m".repeat(32)}`);
+      expect(init).toMatchObject({ cache: "no-store", credentials: "omit", redirect: "error", referrerPolicy: "no-referrer" });
+      return new Response(JSON.stringify({
+        ok: true,
+        data: {
+          channelToken: "A".repeat(43),
+          channel: {
+            schemaVersion: "portal-credential-channel-record/v1",
+            channelId: `pch_${"1".repeat(32)}`,
+            taskId: `media_task_${"2".repeat(32)}`,
+            adapterId: "example",
+            policyId: "example-media-consent/v1",
+            policyRevision: 1,
+            browserSessionBindingSha256: "3".repeat(64),
+            extensionOriginSha256: "4".repeat(64),
+            credentialNameSetSha256: "5".repeat(64),
+            transport: "authenticated_loopback_one_shot",
+            oneShot: true,
+            channelTokenPersisted: false,
+            issuedAt: "2026-09-17T10:00:00Z",
+            expiresAt: "2026-09-17T10:00:20Z",
+            status: "issued",
+            failureCode: null
+          }
+        }
+      }), { status: 201, headers: { "Content-Type": "application/json" } });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await bootstrapMediaCredentialChannel({
+      taskId: `media_task_${"2".repeat(32)}`,
+      adapterId: "example",
+      policyId: "example-media-consent/v1",
+      policyRevision: 1,
+      browserSessionBindingSha256: "3".repeat(64),
+      credentialNameSetSha256: "5".repeat(64)
+    });
+    expect(result.channelToken).toHaveLength(43);
+    expect(getLocalRuntimeSessionSnapshot()).not.toHaveProperty("token");
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
   it("rejects malformed Forget verification and never treats residual surfaces as success", async () => {

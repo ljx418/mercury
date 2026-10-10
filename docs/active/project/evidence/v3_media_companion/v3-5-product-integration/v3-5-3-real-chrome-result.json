@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "v3-5-3-sanitized-result/v1",
+  "runId": "v3-5-3-real-20261008T145305Z",
+  "sampleUrl": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+  "sourceResultSha256": "7da2297f01a40319d68f3e433d4bdd0da1dc0afce3fd6f8333afc78c40569449",
+  "passed": true,
+  "checks": {
+    "startActionAccepted": true,
+    "realThreeRouteFailure": true,
+    "realDecodedAudio": true,
+    "realPlayback": true,
+    "extensionInvokedOnTarget": true,
+    "trustedCaptureStarted": true,
+    "playbackContinuedDuringCapture": true,
+    "senseVoiceTerminal": true,
+    "productMaterialized": true,
+    "resourceNoticeVisible": true,
+    "canonicalWorkspaceSameTask": true,
+    "visualDegradationDisclosed": true,
+    "noCookieOrPrivatePathVisible": true,
+    "typedVisualEvidence": true,
+    "visualLeaseRevoked": true,
+    "eightCanonicalRoutes": true,
+    "backForwardRestored": true,
+    "legacyRouteReplaced": true,
+    "invalidRouteRecovered": true,
+    "sidePanelReopenedSameTask": true,
+    "noActiveOffscreen": true,
+    "noRuntimeMediaResidue": true,
+    "profileDeleted": true,
+    "secretScanZeroHits": true,
+    "secureTaskRootDeleted": true
+  },
+  "visualEvidenceKinds": [
+    "frame",
+    "ocr_block",
+    "transcript",
+    "vision_caption"
+  ],
+  "routeKinds": [
+    "task_library",
+    "task_overview",
+    "outline",
+    "timeline",
+    "mindmap",
+    "ask",
+    "export",
+    "evidence"
+  ],
+  "credentialRevocation": {
+    "attempted": 1,
+    "succeeded": 1,
+    "failed": 0
+  },
+  "runtimeArtifactSummary": {
+    "persistentPrivateEvidenceFiles": 4,
+    "temporaryMediaFiles": 0,
+    "asrTemporaryFiles": 0
+  },
+  "secretScan": {
+    "sourceSha256": "a7bb038ada481f052836964097ccb2608cd509c2878cb3001e565e48900b237d",
+    "scannedFiles": 105,
+    "scannedBytes": 3988101,
+    "hitCount": 0
+  }
+}

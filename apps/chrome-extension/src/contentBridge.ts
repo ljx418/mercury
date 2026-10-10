@@ -1,7 +1,20 @@
 import { extractPageContext, type ExtractedPageContext } from "./pageContext";
+import {
+  collectMediaPageContext,
+  readMediaPlayback,
+  resolveMediaPortalAdapter,
+  seekMediaPlayback,
+  type MediaBridgeResponse,
+  type MediaCollectionFailureCode,
+  type MediaPageContext,
+  type MediaPlaybackSnapshot
+} from "./modules/media_companion";
 
 export const PAGE_CONTEXT_MESSAGE_TYPE = "navia.extractPageContext";
 export const JUMPBACK_MESSAGE_TYPE = "navia.jumpToSource";
+export const MEDIA_COLLECT_CONTEXT_MESSAGE_TYPE = "navia.media.collectPageContext";
+export const MEDIA_READ_PLAYBACK_MESSAGE_TYPE = "navia.media.readPlayback";
+export const MEDIA_SEEK_MESSAGE_TYPE = "navia.media.seek";
 export const LEGACY_INJECTED_HOST_ID = ["navia", "injected", "host"].join("-");
 export const IN_PAGE_SIDEBAR_HOST_ID = ["navia", "inpage", "sidebar"].join("-");
 export const IN_PAGE_LAUNCHER_ID = ["navia", "floating", "launcher"].join("-");
@@ -20,11 +33,13 @@ const LAUNCHER_COLLAPSED_PEEK = 18;
 const SIDEBAR_STATE_STORAGE_KEY = "navia.inpageSidebarState";
 const SIDEBAR_DEFAULT_MODE: SidebarMode = "collapsed";
 const CONTENT_BRIDGE_READY_ATTRIBUTE = "data-navia-content-bridge-ready";
+const CONTENT_BRIDGE_MODE_ATTRIBUTE = "data-navia-content-bridge-mode";
 const pendingSidebarReadyDocuments = new WeakSet<Document>();
 
 type SidebarMode = "expanded" | "collapsed";
 type SidebarLayoutMode = "push" | "overlay";
 type LauncherSide = "left" | "right";
+export type ContentBridgeMode = "portal_auto" | "bridge_only";
 
 type SidebarInteractionState = {
   mode: SidebarMode;
@@ -63,6 +78,8 @@ type JumpbackResult = {
 type ContentBridgeResponse =
   | PageContextBridgeResponse
   | { ok: true; result: JumpbackResult }
+  | MediaBridgeResponse<MediaPageContext>
+  | MediaBridgeResponse<MediaPlaybackSnapshot>
   | { ok: false; error: string };
 
 type SendResponse = (response: ContentBridgeResponse) => void;
@@ -71,14 +88,23 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "页面上下文读取失败。";
 }
 
-export function initializeContentBridge(documentRef: Document, href: string): void {
+export function initializeContentBridge(
+  documentRef: Document,
+  href: string,
+  options: { mode?: ContentBridgeMode } = {}
+): void {
+  const mode = options.mode ?? "portal_auto";
   if (documentRef.documentElement?.getAttribute(CONTENT_BRIDGE_READY_ATTRIBUTE) === "true") {
-    ensureInPageSidebarWhenReady(documentRef);
+    if (mode === "portal_auto") {
+      documentRef.documentElement?.setAttribute(CONTENT_BRIDGE_MODE_ATTRIBUTE, mode);
+      ensureInPageSidebarWhenReady(documentRef);
+    }
     return;
   }
   documentRef.documentElement?.setAttribute(CONTENT_BRIDGE_READY_ATTRIBUTE, "true");
+  documentRef.documentElement?.setAttribute(CONTENT_BRIDGE_MODE_ATTRIBUTE, mode);
   cleanupLegacyInjectedPanel(documentRef);
-  ensureInPageSidebarWhenReady(documentRef);
+  if (mode === "portal_auto") ensureInPageSidebarWhenReady(documentRef);
   chrome.runtime.onMessage.addListener(createPageContextMessageHandler(documentRef, href));
 }
 
@@ -533,7 +559,74 @@ export function createPageContextMessageHandler(documentRef: Document, href: str
       return true;
     }
 
+    if (type === MEDIA_COLLECT_CONTEXT_MESSAGE_TYPE) {
+      const currentHref = currentDocumentHref(documentRef, href);
+      void collectMediaPageContext({ document: documentRef, href: currentHref })
+        .then((context) => sendResponse({ ok: true, adapterId: context.adapterId, value: context }))
+        .catch((error) => sendResponse(mediaFailure(error)));
+      return true;
+    }
+
+    if (type === MEDIA_READ_PLAYBACK_MESSAGE_TYPE) {
+      try {
+        const currentHref = currentDocumentHref(documentRef, href);
+        const adapter = resolveMediaPortalAdapter(currentHref);
+        if (!adapter) throw new Error("V3_MEDIA_PORTAL_UNSUPPORTED: No registered media portal adapter matched the page.");
+        sendResponse({
+          ok: true,
+          adapterId: adapter.adapterId,
+          value: readMediaPlayback({ document: documentRef, href: currentHref })
+        });
+      } catch (error) {
+        sendResponse(mediaFailure(error));
+      }
+      return true;
+    }
+
+    if (type === MEDIA_SEEK_MESSAGE_TYPE) {
+      try {
+        const seconds = (message as { seconds?: unknown }).seconds;
+        if (typeof seconds !== "number") throw new Error("V3_MEDIA_SEEK_INVALID: Seek target must be a number.");
+        const currentHref = currentDocumentHref(documentRef, href);
+        const adapter = resolveMediaPortalAdapter(currentHref);
+        if (!adapter) throw new Error("V3_MEDIA_PORTAL_UNSUPPORTED: No registered media portal adapter matched the page.");
+        sendResponse({
+          ok: true,
+          adapterId: adapter.adapterId,
+          value: seekMediaPlayback({ document: documentRef, href: currentHref }, seconds)
+        });
+      } catch (error) {
+        sendResponse(mediaFailure(error));
+      }
+      return true;
+    }
+
     return false;
+  };
+}
+
+function currentDocumentHref(documentRef: Document, fallback: string): string {
+  const current = documentRef.location?.href;
+  if (!current || !/^https?:/i.test(current)) return fallback;
+  const currentAdapter = resolveMediaPortalAdapter(current);
+  const fallbackAdapter = resolveMediaPortalAdapter(fallback);
+  return fallbackAdapter && !currentAdapter ? fallback : current;
+}
+
+function mediaFailure(error: unknown): MediaBridgeResponse<never> {
+  const message = error instanceof Error ? error.message : String(error);
+  const candidate = message.split(":", 1)[0] as MediaCollectionFailureCode;
+  const allowed = new Set<MediaCollectionFailureCode>([
+    "V3_MEDIA_PORTAL_UNSUPPORTED",
+    "V3_MEDIA_PORTAL_AMBIGUOUS",
+    "V3_MEDIA_PAGE_IDENTITY_INCOMPLETE",
+    "V3_MEDIA_PLAYBACK_UNAVAILABLE",
+    "V3_MEDIA_SEEK_INVALID"
+  ]);
+  return {
+    ok: false,
+    failureCode: allowed.has(candidate) ? candidate : "V3_MEDIA_PAGE_IDENTITY_INCOMPLETE",
+    error: message
   };
 }
 

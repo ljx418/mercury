@@ -1,0 +1,320 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_acquisition_contracts.schema.json",
+  "title": "Navia V3.2 media acquisition, capture, transcript, ASR and cleanup contracts",
+  "type": "object",
+  "required": ["manifestPolicy", "task", "acquisition", "captureGrant", "asr", "transcript", "cleanup", "privacyAudit"],
+  "additionalProperties": false,
+  "properties": {
+    "manifestPolicy": { "$ref": "#/$defs/ChromeManifestPermissions" },
+    "task": { "$ref": "#/$defs/MediaAcquisitionTask" },
+    "acquisition": { "$ref": "#/$defs/MediaAcquisitionRecord" },
+    "captureGrant": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/MediaCaptureGrant" }] },
+    "asr": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/LocalAsrRecord" }] },
+    "transcript": { "$ref": "#/$defs/MediaTranscript" },
+    "cleanup": { "$ref": "#/$defs/MediaCleanupReceipt" },
+    "privacyAudit": { "$ref": "#/$defs/MediaAcquisitionPrivacyAudit" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "FailureCode": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "V3_MEDIA_TASK_INVALID",
+        "V3_MEDIA_CONSENT_REQUIRED",
+        "V3_MEDIA_LEASE_REQUIRED",
+        "V3_MEDIA_LEASE_TASK_MISMATCH",
+        "V3_MEDIA_LEASE_EXPIRED",
+        "V3_MEDIA_SUBTITLE_UNAVAILABLE",
+        "V3_MEDIA_PLATFORM_REJECTED",
+        "V3_MEDIA_ROUTE_ORDER_INVALID",
+        "V3_MEDIA_TEMP_FILE_MODE_INVALID",
+        "V3_MEDIA_CAPTURE_GRANT_REQUIRED",
+        "V3_MEDIA_CAPTURE_GRANT_INVALID",
+        "V3_MEDIA_CAPTURE_GRANT_EXPIRED",
+        "V3_MEDIA_CAPTURE_TAB_MISMATCH",
+        "V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_STOPPED",
+        "V3_MEDIA_ASR_UNAVAILABLE",
+        "V3_MEDIA_ASR_OUTPUT_INVALID",
+        "V3_MEDIA_TRANSCRIPT_EMPTY",
+        "V3_MEDIA_TRANSCRIPT_PROVENANCE_INVALID",
+        "V3_MEDIA_CROSS_TASK_REUSE",
+        "V3_MEDIA_CANCEL_NOT_HONORED",
+        "V3_MEDIA_RUNTIME_OFFLINE",
+        "V3_MEDIA_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_PUBLIC_ARTIFACT_SECRET"
+      ]
+    },
+    "NonNullFailureCode": {
+      "type": "string",
+      "enum": [
+        "V3_MEDIA_TASK_INVALID",
+        "V3_MEDIA_CONSENT_REQUIRED",
+        "V3_MEDIA_LEASE_REQUIRED",
+        "V3_MEDIA_LEASE_TASK_MISMATCH",
+        "V3_MEDIA_LEASE_EXPIRED",
+        "V3_MEDIA_SUBTITLE_UNAVAILABLE",
+        "V3_MEDIA_PLATFORM_REJECTED",
+        "V3_MEDIA_ROUTE_ORDER_INVALID",
+        "V3_MEDIA_TEMP_FILE_MODE_INVALID",
+        "V3_MEDIA_CAPTURE_GRANT_REQUIRED",
+        "V3_MEDIA_CAPTURE_GRANT_INVALID",
+        "V3_MEDIA_CAPTURE_GRANT_EXPIRED",
+        "V3_MEDIA_CAPTURE_TAB_MISMATCH",
+        "V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_STOPPED",
+        "V3_MEDIA_ASR_UNAVAILABLE",
+        "V3_MEDIA_ASR_OUTPUT_INVALID",
+        "V3_MEDIA_TRANSCRIPT_EMPTY",
+        "V3_MEDIA_TRANSCRIPT_PROVENANCE_INVALID",
+        "V3_MEDIA_CROSS_TASK_REUSE",
+        "V3_MEDIA_CANCEL_NOT_HONORED",
+        "V3_MEDIA_RUNTIME_OFFLINE",
+        "V3_MEDIA_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_PUBLIC_ARTIFACT_SECRET"
+      ]
+    },
+    "AcquisitionRoute": {
+      "enum": [
+        "credentialed_subtitle",
+        "credentialed_media_asr",
+        "public_or_page_subtitle",
+        "trusted_tab_capture_asr"
+      ]
+    },
+    "ChromeManifestPermissions": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "minimumChromeVersion", "requiredPermissions", "optionalPermissions",
+        "requiredHostPermissions", "optionalHostPermissions", "webAccessibleMatches", "forbiddenPatterns"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "chrome-manifest-permissions/v1" },
+        "minimumChromeVersion": { "const": 116 },
+        "requiredPermissions": {
+          "const": ["activeTab", "scripting", "sidePanel", "storage", "tabs", "offscreen", "tabCapture"]
+        },
+        "optionalPermissions": { "const": ["cookies"] },
+        "requiredHostPermissions": {
+          "const": ["http://127.0.0.1:17861/*", "http://localhost:17861/*"]
+        },
+        "optionalHostPermissions": { "const": ["https://*.bilibili.com/*"] },
+        "webAccessibleMatches": { "const": ["https://www.bilibili.com/*"] },
+        "forbiddenPatterns": { "const": ["<all_urls>", "http://*/*", "https://*/*"] }
+      }
+    },
+    "MediaAcquisitionTask": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "taskId", "sourceIdentity", "adapterId", "mediaId", "playbackUnitId",
+        "partId", "state", "consentPolicyId", "consentPolicyRevision", "credentialLeaseId",
+        "captureGrantId", "startedAt", "terminalAt", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-acquisition-task/v1" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+        "mediaId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "playbackUnitId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "partId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "state": { "enum": ["created", "acquiring", "capturing", "transcribing", "cleaning", "succeeded", "degraded", "blocked", "failed", "cancelled"] },
+        "consentPolicyId": { "type": "string", "pattern": "^[a-z0-9_-]+-media-consent/v[1-9][0-9]*$" },
+        "consentPolicyRevision": { "type": "integer", "minimum": 1 },
+        "credentialLeaseId": { "type": ["string", "null"], "pattern": "^pcl_[a-f0-9]{32}$" },
+        "captureGrantId": { "type": ["string", "null"], "pattern": "^mcg_[a-f0-9]{32}$" },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "terminalAt": { "type": ["string", "null"], "format": "date-time" },
+        "failureCode": { "$ref": "#/$defs/FailureCode" }
+      }
+    },
+    "MediaAcquisitionAttempt": {
+      "type": "object",
+      "required": [
+        "sequence", "route", "status", "requestedKind", "authorityClass", "authorityId",
+        "startedAt", "completedAt", "responseSha256", "artifactSha256", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "route": { "$ref": "#/$defs/AcquisitionRoute" },
+        "status": { "enum": ["succeeded", "failed", "skipped", "cancelled"] },
+        "requestedKind": { "enum": ["subtitle", "audio", "video"] },
+        "authorityClass": { "enum": ["credential_lease", "public_page", "trusted_capture_grant"] },
+        "authorityId": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "responseSha256": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Sha256" }] },
+        "artifactSha256": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Sha256" }] },
+        "failureCode": { "$ref": "#/$defs/FailureCode" }
+      }
+    },
+    "MediaAcquisitionRecord": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "recordId", "taskId", "adapterId", "sourceIdentity", "attempts",
+        "selectedRoute", "status", "temporaryDirectoryClass", "cookieFileCreated", "cookieFileMode",
+        "rawAudioCreated", "rawVideoCreated", "transcriptSha256", "fallbackReasonCodes", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-acquisition-record/v1" },
+        "recordId": { "type": "string", "pattern": "^mar_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "attempts": { "type": "array", "minItems": 1, "maxItems": 4, "items": { "$ref": "#/$defs/MediaAcquisitionAttempt" } },
+        "selectedRoute": { "$ref": "#/$defs/AcquisitionRoute" },
+        "status": { "enum": ["succeeded", "degraded", "blocked", "failed", "cancelled"] },
+        "temporaryDirectoryClass": { "const": "os_random_task_private_0700" },
+        "cookieFileCreated": { "type": "boolean" },
+        "cookieFileMode": { "type": ["string", "null"], "enum": [null, "0600"] },
+        "rawAudioCreated": { "type": "boolean" },
+        "rawVideoCreated": { "type": "boolean" },
+        "transcriptSha256": { "$ref": "#/$defs/Sha256" },
+        "fallbackReasonCodes": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/NonNullFailureCode" } },
+        "failureCode": { "$ref": "#/$defs/FailureCode" }
+      }
+    },
+    "MediaCaptureGrant": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "grantId", "taskId", "adapterId", "tabIdSha256", "userGestureEventSha256",
+        "surface", "issuedAt", "expiresAt", "oneShot", "persisted", "state", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-capture-grant/v1" },
+        "grantId": { "type": "string", "pattern": "^mcg_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,31}$" },
+        "tabIdSha256": { "$ref": "#/$defs/Sha256" },
+        "userGestureEventSha256": { "$ref": "#/$defs/Sha256" },
+        "surface": { "enum": ["side_panel", "workspace"] },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "oneShot": { "const": true },
+        "persisted": { "const": false },
+        "state": { "enum": ["issued", "consumed", "expired", "revoked", "failed"] },
+        "failureCode": { "$ref": "#/$defs/FailureCode" }
+      }
+    },
+    "TranscriptSegment": {
+      "type": "object",
+      "required": ["segmentId", "startMs", "endMs", "text", "textSha256", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "segmentId": { "type": "string", "pattern": "^mts_[a-f0-9]{32}$" },
+        "startMs": { "type": "integer", "minimum": 0 },
+        "endMs": { "type": "integer", "minimum": 1 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "textSha256": { "$ref": "#/$defs/Sha256" },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "MediaTranscript": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "transcriptId", "taskId", "sourceIdentity", "acquisitionRecordId",
+        "route", "language", "durationMs", "segments", "contentSha256", "createdAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-transcript/v1" },
+        "transcriptId": { "type": "string", "pattern": "^mtr_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "acquisitionRecordId": { "type": "string", "pattern": "^mar_[a-f0-9]{32}$" },
+        "route": { "$ref": "#/$defs/AcquisitionRoute" },
+        "language": { "type": "string", "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$" },
+        "durationMs": { "type": "integer", "minimum": 1 },
+        "segments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/TranscriptSegment" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "LocalAsrRecord": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "asrRecordId", "taskId", "engineId", "engineVersion", "modelId",
+        "modelRevisionSha256", "weightsSha256", "deviceClass", "computeType", "executedLocally",
+        "cloudUpload", "inputArtifactSha256", "outputTranscriptSha256", "segmentCount",
+        "startedAt", "completedAt", "status", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "local-asr-record/v1" },
+        "asrRecordId": { "type": "string", "pattern": "^masr_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "engineId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "engineVersion": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "modelId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "modelRevisionSha256": { "$ref": "#/$defs/Sha256" },
+        "weightsSha256": { "$ref": "#/$defs/Sha256" },
+        "deviceClass": { "enum": ["cpu", "cuda"] },
+        "computeType": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "executedLocally": { "const": true },
+        "cloudUpload": { "const": false },
+        "inputArtifactSha256": { "$ref": "#/$defs/Sha256" },
+        "outputTranscriptSha256": { "$ref": "#/$defs/Sha256" },
+        "segmentCount": { "type": "integer", "minimum": 1 },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "status": { "enum": ["succeeded", "failed", "cancelled"] },
+        "failureCode": { "$ref": "#/$defs/FailureCode" }
+      }
+    },
+    "MediaCleanupReceipt": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "taskId", "terminalState", "cookieFileResidualCount", "temporaryMediaResidualCount",
+        "rawAudioResidualCount", "rawVideoResidualCount", "activeCaptureCount", "privatePathDisclosureCount",
+        "cleanupStartedAt", "cleanupCompletedAt", "scannedPathIndexSha256", "passed", "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-cleanup-receipt/v1" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "terminalState": { "enum": ["succeeded", "degraded", "blocked", "failed", "cancelled"] },
+        "cookieFileResidualCount": { "const": 0 },
+        "temporaryMediaResidualCount": { "const": 0 },
+        "rawAudioResidualCount": { "const": 0 },
+        "rawVideoResidualCount": { "const": 0 },
+        "activeCaptureCount": { "const": 0 },
+        "privatePathDisclosureCount": { "const": 0 },
+        "cleanupStartedAt": { "type": "string", "format": "date-time" },
+        "cleanupCompletedAt": { "type": "string", "format": "date-time" },
+        "scannedPathIndexSha256": { "$ref": "#/$defs/Sha256" },
+        "passed": { "const": true },
+        "failureCode": { "type": "null" }
+      }
+    },
+    "MediaAcquisitionPrivacyAudit": {
+      "type": "object",
+      "required": [
+        "schemaVersion", "cookieValuePersisted", "cookieValueHashed", "cookieFilePathPublished",
+        "rawAudioPublished", "rawVideoPublished", "accountIdentityPublished", "profilePathPublished",
+        "genericRuntimeProxyUsed", "crossTaskArtifactReuseCount", "publicSecretHitCount"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "media-acquisition-privacy-audit/v1" },
+        "cookieValuePersisted": { "const": false },
+        "cookieValueHashed": { "const": false },
+        "cookieFilePathPublished": { "const": false },
+        "rawAudioPublished": { "const": false },
+        "rawVideoPublished": { "const": false },
+        "accountIdentityPublished": { "const": false },
+        "profilePathPublished": { "const": false },
+        "genericRuntimeProxyUsed": { "const": false },
+        "crossTaskArtifactReuseCount": { "const": 0 },
+        "publicSecretHitCount": { "const": 0 }
+      }
+    }
+  }
+}

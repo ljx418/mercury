@@ -1,6 +1,12 @@
 import type { ExtractedPageContext } from "./pageContext";
 import type { AgentEvent } from "./sse";
 import { parseSseBlocks } from "./sse";
+import { isPortalCredentialChannelRecord } from "./modules/media_companion/session/credential/validateCredentialTransportContracts";
+import type {
+  PortalCredentialChannelBootstrap,
+  PortalCredentialChannelBootstrapResult
+} from "./modules/media_companion/session/credential/PortalCredentialChannelClient";
+import type { MediaCaptureBinding, PublicMediaCaptureGrant } from "./modules/media_companion/capture";
 
 declare const __NAVIA_E2E_BRIDGE__: boolean;
 
@@ -25,6 +31,49 @@ export type LLMProviderConfig = {
   updatedAt: string;
 };
 
+export type VisionProviderConfig = {
+  id: string;
+  adapterKind: "openai_responses" | "minimax_chat_completions";
+  name: string;
+  baseUrl: string;
+  model: string;
+  secretRef: string;
+  secretStorage: "os_keyring" | "windows_credential_vault";
+  credentialConfigured: boolean;
+  apiKeyMasked: string;
+  testStatus: VisionProviderTestResult | { status: "untested"; message: string } | null;
+  createdAt: string;
+  updatedAt: string;
+  selected: boolean;
+};
+
+export type VisionProviderDescriptor = {
+  id: string;
+  adapterKind: VisionProviderConfig["adapterKind"];
+  name: string;
+  baseUrl: string;
+  models: string[];
+  defaultModel: string;
+};
+
+export type VisionProviderSettings = {
+  providers: VisionProviderConfig[];
+  catalog: VisionProviderDescriptor[];
+  selectedProviderId: string | null;
+};
+
+export type VisionProviderTestResult = {
+  status: "ok";
+  model: string;
+  latencyMs: number;
+  usage: { input_tokens: number; output_tokens: number; total_tokens: number };
+  observation: { summary: string; containsText: boolean; dominantColors: string[] };
+  imageSha256: string;
+  containsUserContent: false;
+  store: false;
+  testedAt: string;
+};
+
 export type MercurySettings = {
   providers: LLMProviderConfig[];
   defaultProviderId: string | null;
@@ -35,6 +84,96 @@ export type MercurySettings = {
   profiles?: Record<RuntimeProfile, ProfileConfig> | null;
   settingsMigration?: Record<string, boolean> | null;
   updatedAt: string;
+};
+
+export type AsrInstallationState =
+  | "not_installed"
+  | "qualification_required"
+  | "checking"
+  | "downloading"
+  | "verifying"
+  | "installing"
+  | "self_testing"
+  | "ready"
+  | "cancelling"
+  | "cancelled"
+  | "failed"
+  | "corrupt";
+
+export type AsrProviderDescriptor = {
+  providerId: string;
+  name: string;
+  engine: string;
+  engineVersion: string;
+  locality: "local_only";
+  status: "ready" | "qualification_required" | "qualification_pending";
+  description: string;
+  runtimeKind?: "python_local" | "native_process";
+  capabilities?: string[];
+};
+
+export type AsrModelDescriptor = {
+  modelId: string;
+  providerId: string;
+  name: string;
+  repository: string;
+  revision: string;
+  license: string;
+  installKind: "bundled" | "remote_verified" | "qualification_required";
+  installable: boolean;
+  selectable: boolean;
+  bundled: boolean;
+  fallbackOnly: boolean;
+  quality: { status: "fallback_only" | "failed_current_gate" | "not_evaluated" | "qualification_pending" | "development_baseline" | "production_qualified"; note: string; gateVersion?: string; qualificationRunId?: string };
+  runtimeKind?: "python_local" | "native_process";
+  capabilities?: string[];
+  resources: {
+    downloadBytes: number;
+    diskBytes: number;
+    estimatedPeakRamBytes: number;
+    requiresGpu: boolean;
+    recommendedCpuCores: number;
+    vramBytes: number;
+    installationFreeSpaceRequiredBytes?: number;
+    platformDownloadBytes?: { linuxX64: number; windowsX64: number };
+  };
+  installation: { state: AsrInstallationState; verifiedAt: string | null };
+};
+
+export type AsrCatalog = {
+  schemaVersion: "v3-asr-model-catalog/v1";
+  providers: AsrProviderDescriptor[];
+  models: AsrModelDescriptor[];
+  lowResourceBaseline: { cpuCores: number; ramBytes: number; gpuRequired: boolean };
+};
+
+export type AsrSelection = {
+  schemaVersion: "v3-asr-selection/v1";
+  requestedModelId: string;
+  effectiveModelId: string | null;
+  fallbackActive: boolean;
+  fallbackReason: string | null;
+  updatedAt: string;
+};
+
+export type AsrInstallationJob = {
+  schemaVersion: "v3-asr-installation-job/v1";
+  jobId: string;
+  modelId: string;
+  source: "remote" | "offline_package";
+  state: AsrInstallationState;
+  bytesCompleted: number;
+  bytesTotal: number;
+  percent: number;
+  bytesPerSecond: number;
+  etaSeconds: number | null;
+  message: string;
+  failureCode: string | null;
+  sequence: number;
+  history: Array<{ state: AsrInstallationState; sequence: number; at: string }>;
+  createdAt: string;
+  updatedAt: string;
+  finishedAt: string | null;
 };
 
 export type CoreProviderId = "mock" | "llm_direct" | "piagent" | "custom";
@@ -240,6 +379,40 @@ export type KnowledgeWorkspace = {
   updatedAt?: string;
 };
 
+export type V3KnowledgeDraft = {
+  schemaVersion: "v3-knowledge-draft/v1";
+  draftId: string;
+  state: "editing" | "cancelled" | "saved";
+  sourceRefs: Array<{ url: string; kind?: string; anchor?: string; timestampMs?: number }>;
+  title: string;
+  summary: string;
+  body: string;
+  tags: string[];
+  customFields: Record<string, string>;
+  provenance: Record<string, unknown>;
+  createdFromContextHash: string;
+  revision: number;
+  itemId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type V3KnowledgeItem = {
+  schemaVersion: "v3-knowledge-item/v1";
+  itemId: string;
+  sourceRefs: V3KnowledgeDraft["sourceRefs"];
+  title: string;
+  summary: string;
+  body: string;
+  tags: string[];
+  customFields: Record<string, string>;
+  priority: number;
+  lifecycleState: "active" | "aging" | "archived";
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type KnowledgeQueryResult = {
   workspaceId: string;
   question: string;
@@ -313,6 +486,7 @@ export function isStaleRuntimeRequestError(error: unknown): error is RuntimeRequ
 export type LocalRuntimeSessionSnapshot = Readonly<{
   hasToken: boolean;
   generation: number;
+  runtimeInstanceId: string | null;
 }>;
 
 type LocalRuntimeSessionListener = (snapshot: LocalRuntimeSessionSnapshot) => void;
@@ -320,7 +494,8 @@ type LocalRuntimeSessionListener = (snapshot: LocalRuntimeSessionSnapshot) => vo
 const localRuntimeSession = {
   token: "",
   generation: 0,
-  controllers: new Map<number, AbortController>()
+  controllers: new Map<number, AbortController>(),
+  runtimeInstanceId: null as string | null
 };
 const localRuntimeSessionListeners = new Set<LocalRuntimeSessionListener>();
 let localRuntimeControllerId = 0;
@@ -335,6 +510,7 @@ function replaceLocalRuntimeToken(token: string): void {
   for (const controller of localRuntimeSession.controllers.values()) controller.abort();
   localRuntimeSession.controllers.clear();
   localRuntimeSession.token = token;
+  if (!token) localRuntimeSession.runtimeInstanceId = null;
   publishLocalRuntimeSession();
 }
 
@@ -350,10 +526,678 @@ export function hasLocalRuntimeToken(): boolean {
   return Boolean(localRuntimeSession.token);
 }
 
+export type CompanionSession = {
+  schemaVersion: "navia-companion-session/v1";
+  sessionId: string;
+  runtimeInstanceId: string;
+  extensionOriginSha256: string;
+  issuedAt: string;
+  expiresAt: string;
+  persisted: false;
+};
+
+function assertExtensionDocument(): void {
+  if (typeof location === "undefined" || location.protocol !== "chrome-extension:") {
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: "本机伴侣会话仅允许由 Navia 扩展建立。",
+      code: "V3_COMPANION_ORIGIN_MISMATCH"
+    });
+  }
+}
+
+export async function bootstrapLocalRuntimeSession(): Promise<CompanionSession> {
+  assertExtensionDocument();
+  let response: Response;
+  try {
+    response = await fetch(`${RUNTIME_URL}/v1/companion/sessions`, {
+      method: "POST",
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "error",
+      referrerPolicy: "no-referrer"
+    });
+  } catch (error) {
+    throw new RuntimeRequestError({
+      kind: "transport",
+      message: error instanceof Error ? error.message : "Navia 本机伴侣未启动。",
+      code: "V3_COMPANION_OFFLINE",
+      reason: "companion_transport_failed"
+    });
+  }
+  const value = await response.json() as ApiResponse<CompanionSession & { token?: string }>;
+  const session = value.data;
+  const token = session?.token;
+  if (!response.ok || !value.ok || !session || typeof token !== "string") {
+    throw new RuntimeRequestError({
+      kind: response.status === 401 || response.status === 403 ? "authentication" : "api",
+      message: value.error?.message ?? "无法建立本机伴侣会话。",
+      httpStatus: response.status,
+      code: value.error?.code
+    });
+  }
+  if (session.schemaVersion !== "navia-companion-session/v1"
+      || !/^runtime_[a-f0-9]{32}$/.test(session.runtimeInstanceId)
+      || !/^comp_session_[a-f0-9]{32}$/.test(session.sessionId)
+      || !/^[A-Za-z0-9_-]{43,86}$/.test(token)
+      || session.persisted !== false) {
+    throw new RuntimeRequestError({ kind: "api", message: "本机伴侣返回了无效会话。", code: "INVALID_RUNTIME_RESPONSE" });
+  }
+  localRuntimeSession.runtimeInstanceId = session.runtimeInstanceId;
+  replaceLocalRuntimeToken(token);
+  const { token: _secret, ...publicSession } = session;
+  return publicSession;
+}
+
+async function companionAuthenticatedRequest(path: string, method: "DELETE" | "POST"): Promise<void> {
+  assertExtensionDocument();
+  if (!localRuntimeSession.token) return;
+  const token = localRuntimeSession.token;
+  const response = await fetch(`${RUNTIME_URL}${path}`, {
+    method,
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+    credentials: "omit",
+    redirect: "error",
+    referrerPolicy: "no-referrer"
+  });
+  if (!response.ok) {
+    const value = await response.json() as ApiResponse<unknown>;
+    throw new RuntimeRequestError({
+      kind: response.status === 401 || response.status === 403 ? "authentication" : "api",
+      message: value.error?.message ?? "本机伴侣请求失败。",
+      httpStatus: response.status,
+      code: value.error?.code
+    });
+  }
+}
+
+export async function revokeLocalRuntimeSession(): Promise<void> {
+  try {
+    await companionAuthenticatedRequest("/v1/companion/sessions/current", "DELETE");
+  } finally {
+    clearLocalRuntimeSession();
+  }
+}
+
+export async function stopLocalRuntime(): Promise<void> {
+  try {
+    await companionAuthenticatedRequest("/v1/companion/stop", "POST");
+  } finally {
+    clearLocalRuntimeSession();
+  }
+}
+
+export async function bootstrapMediaCredentialChannel(
+  input: PortalCredentialChannelBootstrap
+): Promise<PortalCredentialChannelBootstrapResult> {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({
+      kind: "authentication",
+      message: "请先连接本机 Runtime。",
+      code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED",
+      reason: "runtime_token_missing"
+    });
+  }
+  if (typeof location === "undefined" || location.protocol !== "chrome-extension:") {
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: "媒体凭据通道仅允许在 Navia 扩展页面创建。",
+      code: "V3_MEDIA_RUNTIME_ORIGIN_MISMATCH",
+      reason: "extension_document_required"
+    });
+  }
+  const generation = localRuntimeSession.generation;
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  let response: Response;
+  try {
+    response = await fetch(`${RUNTIME_URL}/v1/media/credential-channels`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localRuntimeSession.token}`,
+        "Content-Type": "application/json",
+        "X-Request-ID": requestId
+      },
+      body: JSON.stringify(input),
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "error",
+      referrerPolicy: "no-referrer"
+    });
+  } catch (error) {
+    throw new RuntimeRequestError({
+      kind: "transport",
+      message: error instanceof Error ? error.message : "Runtime 当前不可达",
+      code: "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED",
+      reason: "channel_bootstrap_transport_failed",
+      requestId
+    });
+  }
+  if (generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+  let body: ApiResponse<{ channelToken: string; channel: unknown }>;
+  try {
+    body = JSON.parse(await response.text()) as ApiResponse<{ channelToken: string; channel: unknown }>;
+  } catch {
+    throw new RuntimeRequestError({ kind: "api", message: "Runtime 返回了无效响应。", code: "INVALID_RUNTIME_RESPONSE", requestId });
+  }
+  if (!response.ok || !body.ok || !body.data) {
+    throw new RuntimeRequestError({
+      kind: response.status === 401 ? "authentication" : "api",
+      message: body.error?.message ?? "凭据通道创建失败。",
+      httpStatus: response.status,
+      code: body.error?.code,
+      requestId
+    });
+  }
+  if (!/^[A-Za-z0-9_-]{43}$/.test(body.data.channelToken) || !isPortalCredentialChannelRecord(body.data.channel)) {
+    throw new RuntimeRequestError({ kind: "api", message: "Runtime 返回了无效凭据通道。", code: "INVALID_RUNTIME_RESPONSE", requestId });
+  }
+  return {
+    channelToken: body.data.channelToken,
+    channel: body.data.channel as PortalCredentialChannelBootstrapResult["channel"]
+  };
+}
+
+export async function bootstrapMediaCaptureGrant(
+  input: MediaCaptureBinding
+): Promise<{ ticket: string; grant: PublicMediaCaptureGrant }> {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({
+      kind: "authentication",
+      message: "请先连接本机 Runtime。",
+      code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED",
+      reason: "runtime_token_missing"
+    });
+  }
+  if (typeof location === "undefined" || location.protocol !== "chrome-extension:") {
+    throw new RuntimeRequestError({
+      kind: "api",
+      message: "标签页捕获授权仅允许由 Navia 扩展页面创建。",
+      code: "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH",
+      reason: "extension_document_required"
+    });
+  }
+  const generation = localRuntimeSession.generation;
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  let response: Response;
+  try {
+    response = await fetch(`${RUNTIME_URL}/v1/media/capture-grants`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localRuntimeSession.token}`,
+        "Content-Type": "application/json",
+        "X-Request-ID": requestId
+      },
+      body: JSON.stringify(input),
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "error",
+      referrerPolicy: "no-referrer"
+    });
+  } catch (error) {
+    throw new RuntimeRequestError({
+      kind: "transport",
+      message: error instanceof Error ? error.message : "Runtime 当前不可达",
+      code: "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+      reason: "capture_grant_transport_failed",
+      requestId
+    });
+  }
+  if (generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+  const body = JSON.parse(await response.text()) as ApiResponse<{ ticket: string; grant: PublicMediaCaptureGrant }>;
+  if (!response.ok || !body.ok || !body.data || typeof body.data.ticket !== "string" || body.data.ticket.length < 43) {
+    throw new RuntimeRequestError({
+      kind: response.status === 401 ? "authentication" : "api",
+      message: body.error?.message ?? "Runtime 拒绝了标签页捕获授权。",
+      code: body.error?.code ?? "V3_MEDIA_CAPTURE_GRANT_INVALID",
+      reason: "capture_grant_rejected",
+      requestId
+    });
+  }
+  return body.data;
+}
+
+export type MediaCaptureEligibility = {
+  taskId: string;
+  failures: Array<{ route: "credentialed_subtitle" | "credentialed_media_asr" | "public_or_page_subtitle"; failureCode: string }>;
+  captureFallbackEligible: boolean;
+};
+
+export type MediaAcquisitionTask = {
+  schemaVersion: "media-acquisition-task/v1";
+  taskId: string;
+  sourceIdentity: string;
+  adapterId: string;
+  mediaId: string;
+  playbackUnitId: string;
+  partId: string;
+  state: "created" | "acquiring" | "capturing" | "transcribing" | "cleaning" | "succeeded" | "degraded" | "blocked" | "failed" | "cancelled";
+  consentPolicyId: string;
+  consentPolicyRevision: number;
+  failureCode: string | null;
+};
+
+export type MediaAcquisitionInput = {
+  route: "credentialed_subtitle" | "credentialed_media_asr";
+  artifact: { artifactId: string; kind: string; byteLength: number; sha256: string };
+  fallbackReasonCodes: string[];
+};
+
+export type MediaAcquisitionExecution = {
+  task: MediaAcquisitionTask;
+  outcome: "input_acquired" | "awaiting_public_subtitle";
+  input: MediaAcquisitionInput | null;
+  failures: MediaCaptureEligibility["failures"];
+  transcript?: MediaTranscriptTask | null;
+};
+
+export type MediaTranscriptTask = {
+  taskId: string;
+  state: "queued" | "loading_model" | "transcribing" | "validating" | "cleaning" | "succeeded" | "failed" | "cancelled";
+  result?: { status: string; segmentCount: number; failureCode: string | null } | null;
+};
+
+export type MediaTranscriptProjection = {
+  schemaVersion: "v3-media-transcript-projection/v1";
+  taskId: string;
+  sourceIdentity: string;
+  adapterId: string;
+  revision: number;
+  updatedAt: string;
+  state: "created" | "acquiring" | "awaiting_trusted_capture" | "capturing" | "transcribing" | "validating" | "cleaning" | "succeeded" | "degraded" | "blocked" | "failed" | "cancelled";
+  route: "credentialed_subtitle" | "credentialed_media_asr" | "public_or_page_subtitle" | "trusted_tab_capture_asr" | "none";
+  progressPercent: number;
+  failureCode: string | null;
+  terminal: boolean;
+  cleanupStatus: "not_applicable" | "pending" | "complete";
+  canCancel: boolean;
+  canRetry: boolean;
+  failures: MediaCaptureEligibility["failures"];
+  segments: Array<{ segmentId: string; startMs: number; endMs: number; text: string }>;
+  resources?: {
+    temporaryDiskPeakBytes?: number;
+    cpuCoreLimit?: number;
+    memoryLimitBytes?: number;
+    peakRssBytes?: number;
+    elapsedMs?: number;
+    gpuUsed?: boolean;
+  } | null;
+};
+
+export type MediaOutlineEvidence = {
+  evidenceId: string;
+  taskId: string;
+  kind: string;
+  timestampStartMs: number;
+  timestampEndMs: number;
+  contentSha256: string;
+  relativeArtifactRef: string;
+};
+
+export type MediaOutlineSection = {
+  sectionId: string;
+  title: string;
+  summary: string;
+  startMs: number;
+  endMs: number;
+  evidenceIds: string[];
+};
+
+export type MediaOutlineProjections = {
+  schemaVersion: "v3-media-outline-taskstore/v2";
+  task: { taskId: string; sourceIdentity: string; state: "ready" | "degraded"; revision: number; knowledgeImportStatus: "deferred_to_v4" };
+  evidenceCatalog: MediaOutlineEvidence[];
+  outline: { outlineId: string; taskId: string; taskRevision: number; title: string; summary: string; sections: MediaOutlineSection[]; contentSha256: string };
+  timeline: Array<{ segmentId: string; outlineId: string; sectionId: string; sequence: number; startMs: number; endMs: number; evidenceIds: string[] }>;
+  mindmap: { projectionId: string; outlineId: string; taskId: string; contentSha256: string; nodes: Array<{ nodeId: string; parentNodeId: string | null; sectionId: string | null; label: string; evidenceIds: string[] }> };
+  terminalFailureCode: string | null;
+};
+
+export type MediaOutlineTask = {
+  taskId: string;
+  sourceIdentity: string;
+  state: "created" | "acquiring" | "transcribing" | "extracting_frames" | "analyzing_vision" | "synthesizing" | "ready" | "degraded" | "blocked" | "failed" | "cancelled";
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+  knowledgeImportStatus: "deferred_to_v4";
+  terminalFailureCode: string | null;
+  currentOutlineId: string | null;
+  projections?: MediaOutlineProjections | null;
+  events?: Array<{ sequence: number; taskRevision: number; eventType: string; createdAt: string }>;
+};
+
+export type MediaAskResult = {
+  answerId: string;
+  taskId: string;
+  taskRevision: number;
+  question: string;
+  answer: string;
+  evidenceIds: string[];
+  status: "answered" | "insufficient_evidence" | "blocked";
+  failureCode: string | null;
+  createdAt: string;
+  category?: "factual" | "visual" | "cross_chapter";
+  answerBlocks?: Array<{ text: string; evidenceIds: string[]; timestampMs: number }>;
+  retrievalPlanSha256?: string;
+  executionMode?: "local_deterministic";
+};
+
+export type MediaComprehensionEvidence = MediaOutlineEvidence & {
+  thumbnailAvailable: boolean;
+  excerpt: string;
+};
+
+export type MediaComprehensionChapter = {
+  chapterId: string;
+  parentChapterId: string | null;
+  depth: number;
+  order: number;
+  startMs: number;
+  endMs: number;
+  title: string;
+  thesis: string;
+  keyPoints: string[];
+  evidenceIds: string[];
+  representativeFrameEvidenceId: string | null;
+};
+
+export type MediaComprehensionProjection = {
+  schemaVersion: "v3-media-workspace-comprehension-projection/v1";
+  task: {
+    taskId: string;
+    taskRevision: number;
+    sourceIdentity: string;
+    mediaDurationMs: number;
+    outlineId: string;
+  };
+  authorization: {
+    groundedTextCloudStatus: "disabled";
+    providerId: null;
+    modelId: null;
+    outboundDerivedTextSha256: null;
+    rawMediaUploadCount: 0;
+  };
+  evidenceCatalog: MediaComprehensionEvidence[];
+  outline: {
+    outlineId: string;
+    taskId: string;
+    taskRevision: number;
+    title: string;
+    summary: string;
+    chapters: MediaComprehensionChapter[];
+    contentSha256: string;
+  };
+  timeline: {
+    projectionId: string;
+    outlineId: string;
+    chapterIds: string[];
+    moments: Array<{
+      momentId: string;
+      chapterId: string;
+      timestampMs: number;
+      kind: "chapter" | "key_point" | "frame" | "quote";
+      title: string;
+      evidenceIds: string[];
+      frameEvidenceId: string | null;
+    }>;
+    contentSha256: string;
+  };
+  mindmap: {
+    projectionId: string;
+    outlineId: string;
+    nodes: Array<{
+      nodeId: string;
+      parentNodeId: string | null;
+      depth: number;
+      kind: "root" | "chapter" | "key_point" | "evidence";
+      label: string;
+      chapterId: string | null;
+      timestampMs: number | null;
+      evidenceIds: string[];
+    }>;
+    contentSha256: string;
+  };
+};
+
+export type MediaExportManifest = {
+  exportId: string;
+  taskId: string;
+  taskRevision: number;
+  format: "json_bundle" | "markdown_zip";
+  filename: string;
+  artifactSha256: string;
+  memberIndex: Array<{ name: string; byteLength: number; sha256: string }>;
+  memberIndexSha256: string;
+  byteLength: number;
+  createdAt: string;
+  knowledgeImportStatus: "deferred_to_v4";
+};
+
+async function privilegedMediaJson<T>(path: string, method: "GET" | "POST" | "DELETE", body?: unknown): Promise<T> {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({ kind: "authentication", message: "请先连接本机 Runtime。", code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED" });
+  }
+  if (typeof location === "undefined" || location.protocol !== "chrome-extension:") {
+    throw new RuntimeRequestError({ kind: "api", message: "媒体任务状态仅允许在 Navia 扩展页面读取。", code: "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH" });
+  }
+  const generation = localRuntimeSession.generation;
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  const response = await fetch(`${RUNTIME_URL}${path}`, {
+    method,
+    headers: {
+      "Authorization": `Bearer ${localRuntimeSession.token}`,
+      "Content-Type": "application/json",
+      "X-Request-ID": requestId
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    cache: "no-store",
+    credentials: "omit",
+    redirect: "error",
+    referrerPolicy: "no-referrer"
+  });
+  if (generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+  const value = JSON.parse(await response.text()) as ApiResponse<T>;
+  if (!response.ok || !value.ok || value.data == null) {
+    throw new RuntimeRequestError({ kind: response.status === 401 ? "authentication" : "api", message: value.error?.message ?? "媒体任务请求失败。", code: value.error?.code });
+  }
+  return value.data as T;
+}
+
+export function createMediaAcquisition(input: {
+  taskId: string;
+  sourceIdentity: string;
+  adapterId: string;
+  mediaId: string;
+  playbackUnitId: string;
+  partId: string;
+  consentPolicyId: string;
+  consentPolicyRevision: number;
+}) {
+  return privilegedMediaJson<{ task: MediaAcquisitionTask }>("/v1/media/acquisitions", "POST", input);
+}
+
+export function executeMediaAcquisition(taskId: string) {
+  return privilegedMediaJson<MediaAcquisitionExecution>(`/v1/media/acquisitions/${encodeURIComponent(taskId)}/execute`, "POST");
+}
+
+export function getMediaAcquisition(taskId: string) {
+  return privilegedMediaJson<{ task: MediaAcquisitionTask }>(`/v1/media/acquisitions/${encodeURIComponent(taskId)}`, "GET");
+}
+
+export function cancelMediaAcquisition(taskId: string) {
+  return privilegedMediaJson<{ task: MediaAcquisitionTask }>(`/v1/media/acquisitions/${encodeURIComponent(taskId)}`, "DELETE");
+}
+
+export function getMediaTranscript(taskId: string) {
+  return privilegedMediaJson<{ task: MediaTranscriptTask; segments?: Array<{ segmentId: string; startMs: number; endMs: number; text: string }> }>(
+    `/v1/media/transcripts/${encodeURIComponent(taskId)}`,
+    "GET"
+  );
+}
+
+export function getMediaCaptureEligibility(taskId: string) {
+  return privilegedMediaJson<MediaCaptureEligibility>(`/v1/media/capture-eligibility/${encodeURIComponent(taskId)}`, "GET");
+}
+
+export function getMediaTranscriptProjection(taskId: string) {
+  return privilegedMediaJson<{ projection: MediaTranscriptProjection }>(
+    `/v1/media/task-projections/${encodeURIComponent(taskId)}`,
+    "GET"
+  ).then((value) => value.projection);
+}
+
+export function getLatestMediaTranscriptProjection(sourceIdentity: string) {
+  return privilegedMediaJson<{ projection: MediaTranscriptProjection }>(
+    `/v1/media/task-projections?sourceIdentity=${encodeURIComponent(sourceIdentity)}`,
+    "GET"
+  ).then((value) => value.projection);
+}
+
+export function cancelMediaTranscriptProjection(taskId: string) {
+  return privilegedMediaJson<{ projection: MediaTranscriptProjection }>(
+    `/v1/media/task-projections/${encodeURIComponent(taskId)}`,
+    "DELETE"
+  ).then((value) => value.projection);
+}
+
+export function recordMediaCaptureRouteFailure(
+  taskId: string,
+  failure: MediaCaptureEligibility["failures"][number]
+) {
+  return privilegedMediaJson<MediaCaptureEligibility>(
+    `/v1/media/capture-eligibility/${encodeURIComponent(taskId)}/failures`,
+    "POST",
+    failure
+  );
+}
+
+export function listMediaOutlineTasks(limit = 50) {
+  return privilegedMediaJson<{ tasks: MediaOutlineTask[] }>(
+    `/v1/media/outline-tasks?limit=${encodeURIComponent(String(limit))}`,
+    "GET"
+  ).then((value) => value.tasks);
+}
+
+export function getMediaOutlineTask(taskId: string) {
+  return privilegedMediaJson<{ task: MediaOutlineTask }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}`,
+    "GET"
+  ).then((value) => value.task);
+}
+
+export function getMediaWorkspaceComprehension(taskId: string, revision: number) {
+  return privilegedMediaJson<{ projection: MediaComprehensionProjection }>(
+    `/v1/media/tasks/${encodeURIComponent(taskId)}/comprehension?revision=${encodeURIComponent(String(revision))}`,
+    "GET"
+  ).then((value) => value.projection);
+}
+
+export async function downloadMediaEvidenceThumbnail(taskId: string, evidenceId: string): Promise<Blob> {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({ kind: "authentication", message: "请先连接本机 Runtime。", code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED" });
+  }
+  const response = await fetch(
+    `${RUNTIME_URL}/v1/media/tasks/${encodeURIComponent(taskId)}/evidence/${encodeURIComponent(evidenceId)}/thumbnail`,
+    {
+      headers: { Authorization: `Bearer ${localRuntimeSession.token}` },
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "error",
+      referrerPolicy: "no-referrer"
+    }
+  );
+  if (!response.ok) {
+    const value = await response.json() as ApiResponse<unknown>;
+    throw new RuntimeRequestError({ kind: "api", message: value.error?.message ?? "代表帧读取失败。", code: value.error?.code });
+  }
+  return response.blob();
+}
+
+export function materializeMediaOutlineTask(taskId: string) {
+  return privilegedMediaJson<{ task: MediaOutlineTask }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/materialize`,
+    "POST"
+  ).then((value) => value.task);
+}
+
+export function materializeVisualMediaOutlineTask(taskId: string, credentialLeaseId: string) {
+  return privilegedMediaJson<{ task: MediaOutlineTask }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/materialize-visual`,
+    "POST",
+    { credentialLeaseId }
+  ).then((value) => value.task);
+}
+
+export function cancelMediaOutlineTask(taskId: string, expectedRevision: number) {
+  return privilegedMediaJson<{ task: MediaOutlineTask }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/cancel`,
+    "POST",
+    { expectedRevision }
+  ).then((value) => value.task);
+}
+
+export function retryMediaOutlineTask(taskId: string, expectedRevision: number) {
+  return privilegedMediaJson<{ task: MediaOutlineTask }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/retry`,
+    "POST",
+    { expectedRevision }
+  ).then((value) => value.task);
+}
+
+export function askMediaOutlineTask(taskId: string, expectedRevision: number, question: string) {
+  return privilegedMediaJson<{ result: MediaAskResult }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/ask`,
+    "POST",
+    { expectedRevision, question }
+  ).then((value) => value.result);
+}
+
+export function listMediaOutlineTaskAsks(taskId: string, revision: number) {
+  return privilegedMediaJson<{ results: MediaAskResult[] }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/asks?revision=${encodeURIComponent(String(revision))}`,
+    "GET"
+  ).then((value) => value.results);
+}
+
+export function createMediaOutlineExport(
+  taskId: string,
+  expectedRevision: number,
+  format: MediaExportManifest["format"]
+) {
+  return privilegedMediaJson<{ manifest: MediaExportManifest }>(
+    `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/exports`,
+    "POST",
+    { expectedRevision, format }
+  ).then((value) => value.manifest);
+}
+
+export async function downloadMediaOutlineExport(taskId: string, manifest: MediaExportManifest): Promise<Blob> {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({ kind: "authentication", message: "请先连接本机 Runtime。", code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED" });
+  }
+  const response = await fetch(
+    `${RUNTIME_URL}/v1/media/outline-tasks/${encodeURIComponent(taskId)}/exports/${encodeURIComponent(manifest.exportId)}`,
+    {
+      headers: { Authorization: `Bearer ${localRuntimeSession.token}` },
+      cache: "no-store",
+      credentials: "omit",
+      redirect: "error",
+      referrerPolicy: "no-referrer"
+    }
+  );
+  if (!response.ok) {
+    const value = await response.json() as ApiResponse<unknown>;
+    throw new RuntimeRequestError({ kind: "api", message: value.error?.message ?? "导出文件读取失败。", code: value.error?.code });
+  }
+  return response.blob();
+}
+
 export function getLocalRuntimeSessionSnapshot(): LocalRuntimeSessionSnapshot {
   return Object.freeze({
     hasToken: Boolean(localRuntimeSession.token),
-    generation: localRuntimeSession.generation
+    generation: localRuntimeSession.generation,
+    runtimeInstanceId: localRuntimeSession.runtimeInstanceId
   });
 }
 
@@ -487,6 +1331,70 @@ export async function patchSettings(
   return unwrapApiResponse(body);
 }
 
+export async function getAsrCatalog(): Promise<AsrCatalog> {
+  return unwrapApiResponse(await runtimeJson<AsrCatalog>({ path: "/v1/asr/catalog" }));
+}
+
+export async function getAsrSettings(): Promise<AsrSelection> {
+  return unwrapApiResponse(await runtimeJson<AsrSelection>({ path: "/v1/asr/settings" }));
+}
+
+export async function patchAsrSettings(requestedModelId: string): Promise<AsrSelection> {
+  return unwrapApiResponse(await runtimeJson<AsrSelection>({
+    path: "/v1/asr/settings",
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: { requestedModelId }
+  }));
+}
+
+export async function startAsrModelInstallation(modelId: string): Promise<AsrInstallationJob> {
+  const body = unwrapApiResponse(await runtimeJson<{ job: AsrInstallationJob }>({
+    path: "/v1/asr/installations",
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: { modelId }
+  }));
+  return body.job;
+}
+
+export async function getAsrModelInstallation(jobId: string): Promise<AsrInstallationJob> {
+  const body = unwrapApiResponse(await runtimeJson<{ job: AsrInstallationJob }>({
+    path: `/v1/asr/installations/${encodeURIComponent(jobId)}`
+  }));
+  return body.job;
+}
+
+export async function cancelAsrModelInstallation(jobId: string): Promise<AsrInstallationJob> {
+  const body = unwrapApiResponse(await runtimeJson<{ job: AsrInstallationJob }>({
+    path: `/v1/asr/installations/${encodeURIComponent(jobId)}`,
+    method: "DELETE"
+  }));
+  return body.job;
+}
+
+export async function uninstallAsrModel(modelId: string): Promise<AsrSelection> {
+  return unwrapApiResponse(await runtimeJson<AsrSelection>({
+    path: `/v1/asr/models/${encodeURIComponent(modelId)}`,
+    method: "DELETE"
+  }));
+}
+
+export async function importAsrModelPackage(modelId: string, packageFile: File): Promise<AsrInstallationJob> {
+  if (shouldUseRuntimeProxy()) {
+    throw new RuntimeRequestError({ kind: "api", message: "离线模型包只能从 Navia 扩展页面导入。", code: "CREDENTIAL_SCOPE_VIOLATION" });
+  }
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  const response = await fetch(`${RUNTIME_URL}/v1/asr/models/import/${encodeURIComponent(modelId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/octet-stream", "X-Request-ID": requestId },
+    body: packageFile,
+    redirect: "error"
+  });
+  const body = (await response.json()) as ApiResponse<{ job: AsrInstallationJob }>;
+  return unwrapApiResponse(body).job;
+}
+
 export async function importProvider(input: {
   providerType?: string;
   displayName?: string;
@@ -527,6 +1435,48 @@ export async function testProvider(providerId: string): Promise<ProviderTestResu
     method: "POST"
   });
   return unwrapApiResponse(body).result;
+}
+
+export async function listVisionProviders(): Promise<VisionProviderSettings> {
+  const body = await runtimeJson<VisionProviderSettings>({ path: "/v1/vision/providers" });
+  return unwrapApiResponse(body);
+}
+
+export async function saveVisionProvider(provider: VisionProviderDescriptor, model: string, apiKey: string): Promise<VisionProviderConfig> {
+  const body = await runtimeJson<{ provider: VisionProviderConfig }>({
+    path: `/v1/vision/providers/${provider.id}`,
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: {
+      adapterKind: provider.adapterKind,
+      name: provider.name,
+      baseUrl: provider.baseUrl,
+      model,
+      apiKey
+    }
+  });
+  return unwrapApiResponse(body).provider;
+}
+
+export async function testVisionProvider(providerId: string): Promise<{ result: VisionProviderTestResult; provider: VisionProviderConfig }> {
+  return unwrapApiResponse(await runtimeJson<{ result: VisionProviderTestResult; provider: VisionProviderConfig }>({
+    path: `/v1/vision/providers/${providerId}/test`,
+    method: "POST"
+  }));
+}
+
+export async function selectVisionProvider(providerId: string): Promise<VisionProviderConfig> {
+  return unwrapApiResponse(await runtimeJson<{ provider: VisionProviderConfig }>({
+    path: `/v1/vision/providers/${providerId}/select`,
+    method: "PATCH"
+  })).provider;
+}
+
+export async function deleteVisionProvider(providerId: string): Promise<void> {
+  unwrapApiResponse(await runtimeJson<{ deleted: boolean; providerId: string }>({
+    path: `/v1/vision/providers/${providerId}`,
+    method: "DELETE"
+  }));
 }
 
 export async function clearLastSessionId() {
@@ -637,6 +1587,63 @@ export function createKnowledgeStatusPoller(options: KnowledgeStatusPollerOption
 export async function listKnowledgeWorkspaces(): Promise<KnowledgeWorkspace[]> {
   const body = unwrapApiResponse(await runtimeJson<{ workspaces: KnowledgeWorkspace[]; cursor: string | null }>({ path: "/v1/knowledge/workspaces" }));
   return body.workspaces;
+}
+
+export async function createV3KnowledgeDraft(context: ExtractedPageContext): Promise<V3KnowledgeDraft> {
+  const body = (context.cleaned_text || context.visible_text || context.title).slice(0, 100_000).trim();
+  const contextHash = await sha256Hex(new TextEncoder().encode(`${context.url}\n${context.title}\n${body}`));
+  return unwrapApiResponse(await runtimeJson<{ draft: V3KnowledgeDraft }>({
+    path: "/v3/knowledge/drafts", method: "POST", headers: { "Content-Type": "application/json" },
+    body: {
+      sourceRefs: [{ url: context.url, kind: "web_page", anchor: "main" }],
+      title: context.title,
+      summary: body.slice(0, 280),
+      body,
+      tags: [],
+      customFields: {},
+      provenance: { contextType: "web_page", adapterId: "web_page", capturedAt: context.captured_at },
+      createdFromContextHash: contextHash
+    }
+  })).draft;
+}
+
+export async function updateV3KnowledgeDraft(draft: V3KnowledgeDraft): Promise<V3KnowledgeDraft> {
+  return unwrapApiResponse(await runtimeJson<{ draft: V3KnowledgeDraft }>({
+    path: `/v3/knowledge/drafts/${encodeURIComponent(draft.draftId)}`, method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: { revision: draft.revision, title: draft.title, summary: draft.summary, body: draft.body, tags: draft.tags, customFields: draft.customFields }
+  })).draft;
+}
+
+export async function cancelV3KnowledgeDraft(draftId: string): Promise<V3KnowledgeDraft> {
+  return unwrapApiResponse(await runtimeJson<{ draft: V3KnowledgeDraft }>({
+    path: `/v3/knowledge/drafts/${encodeURIComponent(draftId)}/cancel`, method: "POST"
+  })).draft;
+}
+
+export async function saveV3KnowledgeDraft(draftId: string): Promise<{ draft: V3KnowledgeDraft; item: V3KnowledgeItem; idempotentReplay: boolean }> {
+  return unwrapApiResponse(await runtimeJson<{ draft: V3KnowledgeDraft; item: V3KnowledgeItem; idempotentReplay: boolean }>({
+    path: `/v3/knowledge/drafts/${encodeURIComponent(draftId)}/save`, method: "POST"
+  }));
+}
+
+export async function listV3KnowledgeItems(sort = "updated_desc"): Promise<V3KnowledgeItem[]> {
+  return unwrapApiResponse(await runtimeJson<{ items: V3KnowledgeItem[] }>({
+    path: `/v3/knowledge/items?sort=${encodeURIComponent(sort)}`
+  })).items;
+}
+
+export async function updateV3KnowledgeItem(item: V3KnowledgeItem): Promise<V3KnowledgeItem> {
+  return unwrapApiResponse(await runtimeJson<{ item: V3KnowledgeItem }>({
+    path: `/v3/knowledge/items/${encodeURIComponent(item.itemId)}`, method: "PATCH",
+    headers: { "Content-Type": "application/json" }, body: item
+  })).item;
+}
+
+export async function deleteV3KnowledgeItem(itemId: string): Promise<{ itemId: string; deleted: boolean; deletionScope: "local_single_store" }> {
+  return unwrapApiResponse(await runtimeJson<{ itemId: string; deleted: boolean; deletionScope: "local_single_store" }>({
+    path: `/v3/knowledge/items/${encodeURIComponent(itemId)}`, method: "DELETE"
+  }));
 }
 
 export async function listKnowledgeSources(workspaceId = "ws_default"): Promise<KnowledgeSource[]> {
@@ -885,7 +1892,9 @@ type RuntimeProxyResponse<T> = {
 };
 
 async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> {
-  const knowledgeRequest = request.path.startsWith("/v1/knowledge/");
+  const knowledgeRequest = request.path.startsWith("/v1/knowledge/") || request.path.startsWith("/v3/knowledge/");
+  const visionProviderRequest = request.path.startsWith("/v1/vision/providers");
+  const authenticatedRequest = knowledgeRequest || visionProviderRequest;
   const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
   const generation = localRuntimeSession.generation;
   const controllerId = knowledgeRequest ? ++localRuntimeControllerId : null;
@@ -895,7 +1904,7 @@ async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> 
   const headers = {
     ...request.headers,
     "X-Request-ID": requestId,
-    ...(knowledgeRequest && localRuntimeSession.token
+    ...(authenticatedRequest && localRuntimeSession.token
       ? { Authorization: `Bearer ${localRuntimeSession.token}` }
       : {})
   };
@@ -903,7 +1912,7 @@ async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> 
   let responseBytesObserved = false;
 
   try {
-    if (knowledgeRequest && shouldUseRuntimeProxy() && localRuntimeSession.token) {
+    if (authenticatedRequest && shouldUseRuntimeProxy() && localRuntimeSession.token) {
       throw new RuntimeRequestError({
         kind: "api",
         message: "会话凭据仅允许在 Navia 扩展页面使用。",
@@ -926,7 +1935,7 @@ async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> 
         });
       }
       if (knowledgeRequest && generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
-      return classifyRuntimeResponse(proxied.response.body, proxied.response.status, requestId, knowledgeRequest);
+      return classifyRuntimeResponse(proxied.response.body, proxied.response.status, requestId, authenticatedRequest);
     }
 
     const requestBody = preparedRequest.body === undefined ? undefined : JSON.stringify(preparedRequest.body);
@@ -936,7 +1945,8 @@ async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> 
       url: `${RUNTIME_URL}${preparedRequest.path}`,
       requestId,
       contentType: request.headers?.["Content-Type"] ?? request.headers?.["content-type"] ?? null,
-      bodyBase64: requestBody === undefined ? null : bytesToBase64(new TextEncoder().encode(requestBody)),
+      bodyBase64: requestBody === undefined || visionProviderRequest ? null : bytesToBase64(new TextEncoder().encode(requestBody)),
+      secretBodyRedacted: visionProviderRequest,
       containsPrivatePath: Boolean(preparedRequest.body && typeof preparedRequest.body === "object" && "path" in preparedRequest.body)
     });
     const responsePromise = fetch(`${RUNTIME_URL}${preparedRequest.path}`, {
@@ -973,7 +1983,7 @@ async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> 
       });
     }
     if (knowledgeRequest && generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(body.request_id ?? requestId);
-    return classifyRuntimeResponse(body, response.status, requestId, knowledgeRequest);
+    return classifyRuntimeResponse(body, response.status, requestId, authenticatedRequest);
   } catch (error) {
     if (!responseBytesObserved) {
       await emitR2RuntimeObservation({
@@ -1022,8 +2032,8 @@ function bytesToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-function classifyRuntimeResponse<T>(body: ApiResponse<T>, status: number, fallbackRequestId: string, knowledgeRequest: boolean): ApiResponse<T> {
-  if (!knowledgeRequest) return body;
+function classifyRuntimeResponse<T>(body: ApiResponse<T>, status: number, fallbackRequestId: string, authenticatedRequest: boolean): ApiResponse<T> {
+  if (!authenticatedRequest) return body;
   const requestId = body.request_id ?? fallbackRequestId;
   const code = body.error?.code;
   const detailsReason = body.error?.details?.reason;

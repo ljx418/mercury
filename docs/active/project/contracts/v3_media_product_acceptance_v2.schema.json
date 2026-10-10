@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-product-acceptance/v2",
+  "title": "Navia V3-5 automated product acceptance receipt with observed execution route",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "buildTreeSha256", "taskBinding", "taskExecution", "surfaces", "routes", "askResults", "seekObservations", "exports", "accessibility", "requirements", "machinePassed"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-product-acceptance/v2" },
+    "runId": { "type": "string", "pattern": "^v3-5-product-[0-9]{8}T[0-9]{6}Z$" },
+    "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+    "taskBinding": { "$ref": "#/$defs/TaskBinding" },
+    "taskExecution": { "$ref": "#/$defs/TaskExecution" },
+    "surfaces": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/Surface" } },
+    "routes": { "type": "array", "minItems": 8, "items": { "$ref": "#/$defs/RouteObservation" } },
+    "askResults": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/AskResult" } },
+    "seekObservations": { "type": "array", "minItems": 5, "items": { "$ref": "#/$defs/SeekObservation" } },
+    "exports": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "#/$defs/ExportReceipt" } },
+    "accessibility": { "$ref": "#/$defs/Accessibility" },
+    "requirements": { "type": "array", "minItems": 18, "maxItems": 18, "items": { "$ref": "#/$defs/Requirement" } },
+    "machinePassed": { "const": true }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "EvidenceId": { "type": "string", "pattern": "^(?:mev|mtr)_[a-f0-9]{32}$" },
+    "TaskBinding": {
+      "type": "object",
+      "required": ["taskId", "sourceIdentity", "taskRevision", "outlineId", "evidenceCatalogSha256", "mediaDurationMs"],
+      "additionalProperties": false,
+      "properties": {
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "taskRevision": { "type": "integer", "minimum": 1 },
+        "outlineId": { "type": "string", "pattern": "^outline_[a-f0-9]{32}$" },
+        "evidenceCatalogSha256": { "$ref": "#/$defs/Sha256" },
+        "mediaDurationMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "TaskExecution": {
+      "type": "object",
+      "required": ["registryClass", "observedRoute", "routeDrift", "fallbackReasonCodes", "resourceNotice"],
+      "additionalProperties": false,
+      "properties": {
+        "registryClass": { "enum": ["subtitle", "asr", "multipart", "restricted", "low_signal"] },
+        "observedRoute": { "enum": ["credentialed_subtitle", "public_or_page_subtitle", "credentialed_media_asr", "trusted_tab_capture_asr", "blocked", "visual_low_signal"] },
+        "routeDrift": { "type": "boolean" },
+        "fallbackReasonCodes": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" } },
+        "resourceNotice": { "$ref": "#/$defs/ResourceNotice" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "observedRoute": { "enum": ["credentialed_media_asr", "trusted_tab_capture_asr"] } }, "required": ["observedRoute"] },
+          "then": {
+            "properties": {
+              "resourceNotice": {
+                "properties": {
+                  "shown": { "const": true },
+                  "localAsr": { "const": true },
+                  "cancelAvailable": { "const": true },
+                  "temporaryMediaDeleted": { "const": true }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "routeDrift": { "const": true } }, "required": ["routeDrift"] },
+          "then": { "properties": { "fallbackReasonCodes": { "minItems": 1 } } },
+          "else": { "properties": { "fallbackReasonCodes": { "maxItems": 0 } } }
+        }
+      ]
+    },
+    "ResourceNotice": {
+      "type": "object",
+      "required": ["shown", "localAsr", "expectedWaitClass", "cpuImpact", "memoryMiB", "temporaryDiskBytes", "cancelAvailable", "temporaryMediaDeleted"],
+      "additionalProperties": false,
+      "properties": {
+        "shown": { "type": "boolean" },
+        "localAsr": { "type": "boolean" },
+        "expectedWaitClass": { "enum": ["none", "short", "medium", "long"] },
+        "cpuImpact": { "enum": ["none", "low", "medium", "high"] },
+        "memoryMiB": { "type": "integer", "minimum": 0 },
+        "temporaryDiskBytes": { "type": "integer", "minimum": 0 },
+        "cancelAvailable": { "type": "boolean" },
+        "temporaryMediaDeleted": { "type": "boolean" }
+      }
+    },
+    "Surface": {
+      "type": "object",
+      "required": ["surface", "viewport", "screenshotSha256", "rootOverflow", "axeSerious", "axeCritical", "keyboardPassed"],
+      "additionalProperties": false,
+      "properties": {
+        "surface": { "enum": ["side_panel", "workspace"] },
+        "viewport": { "enum": ["360x900", "420x900", "768x900", "1280x900"] },
+        "screenshotSha256": { "$ref": "#/$defs/Sha256" },
+        "rootOverflow": { "const": false },
+        "axeSerious": { "const": 0 },
+        "axeCritical": { "const": 0 },
+        "keyboardPassed": { "const": true }
+      }
+    },
+    "RouteObservation": {
+      "type": "object",
+      "required": ["routeId", "mode", "taskId", "outcome", "runtimeRead"],
+      "additionalProperties": false,
+      "properties": {
+        "routeId": { "enum": ["/media/tasks", "/media/tasks/:taskId", "/media/tasks/:taskId/outline", "/media/tasks/:taskId/timeline", "/media/tasks/:taskId/mindmap", "/media/tasks/:taskId/ask", "/media/tasks/:taskId/evidence/:evidenceId", "/media/tasks/:taskId/export"] },
+        "mode": { "enum": ["direct", "reload", "back", "reopen", "invalid", "forbidden"] },
+        "taskId": { "oneOf": [{ "$ref": "#/$defs/TaskId" }, { "type": "null" }] },
+        "outcome": { "enum": ["restored", "recovered_to_task_library", "blocked"] },
+        "runtimeRead": { "const": true }
+      }
+    },
+    "AskResult": {
+      "type": "object",
+      "required": ["questionId", "questionType", "status", "answer", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "questionId": { "type": "string", "pattern": "^question_[a-f0-9]{16}$" },
+        "questionType": { "enum": ["grounded", "unsupported", "visual"] },
+        "status": { "enum": ["answered", "insufficient_evidence", "blocked"] },
+        "answer": { "type": "string", "maxLength": 16384 },
+        "evidenceIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } }
+      },
+      "allOf": [
+        { "if": { "properties": { "status": { "const": "answered" } } }, "then": { "properties": { "answer": { "minLength": 1 }, "evidenceIds": { "minItems": 1 } } } },
+        { "if": { "properties": { "status": { "const": "insufficient_evidence" } } }, "then": { "properties": { "answer": { "maxLength": 0 }, "evidenceIds": { "maxItems": 0 } } } }
+      ]
+    },
+    "SeekObservation": {
+      "type": "object",
+      "required": ["origin", "requestedMs", "observedMs", "deltaMs", "outcome", "pageIdentityMatched", "observedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "origin": { "enum": ["outline", "timeline", "mindmap", "ask_citation", "evidence_drawer"] },
+        "requestedMs": { "type": "integer", "minimum": 0 },
+        "observedMs": { "type": "integer", "minimum": 0 },
+        "deltaMs": { "type": "integer", "minimum": 0, "maximum": 2000 },
+        "outcome": { "enum": ["located", "fallback", "blocked"] },
+        "pageIdentityMatched": { "type": "boolean" },
+        "observedAt": { "type": "string", "format": "date-time" }
+      },
+      "allOf": [{ "if": { "properties": { "outcome": { "const": "located" } }, "required": ["outcome"] }, "then": { "properties": { "pageIdentityMatched": { "const": true } } } }]
+    },
+    "ExportReceipt": {
+      "type": "object",
+      "required": ["format", "artifactSha256", "memberIndexSha256", "byteLength", "knowledgeImportStatus"],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "enum": ["markdown_zip", "json_bundle"] },
+        "artifactSha256": { "$ref": "#/$defs/Sha256" },
+        "memberIndexSha256": { "$ref": "#/$defs/Sha256" },
+        "byteLength": { "type": "integer", "minimum": 1 },
+        "knowledgeImportStatus": { "const": "deferred_to_v4" }
+      }
+    },
+    "Accessibility": {
+      "type": "object",
+      "required": ["axeScanCount", "serious", "critical", "keyboardScenarioCount", "keyboardPassed"],
+      "additionalProperties": false,
+      "properties": {
+        "axeScanCount": { "type": "integer", "minimum": 4 },
+        "serious": { "const": 0 },
+        "critical": { "const": 0 },
+        "keyboardScenarioCount": { "type": "integer", "minimum": 1 },
+        "keyboardPassed": { "const": true }
+      }
+    },
+    "Requirement": {
+      "type": "object",
+      "required": ["requirementId", "passed", "evidenceSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": { "type": "string", "pattern": "^V3-5-A(?:0[1-9]|1[0-8])$" },
+        "passed": { "const": true },
+        "evidenceSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}

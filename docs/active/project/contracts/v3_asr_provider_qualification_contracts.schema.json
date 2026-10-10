@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-asr-provider-qualification/v1",
+  "title": "Navia V3-2-0b ASR Provider Qualification Contracts",
+  "oneOf": [
+    {"$ref":"#/$defs/CandidateManifest"},
+    {"$ref":"#/$defs/QualificationRun"},
+    {"$ref":"#/$defs/IndependentReview"},
+    {"$ref":"#/$defs/Adjudication"}
+  ],
+  "$defs": {
+    "Sha256": {"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "Commit": {"type":"string","pattern":"^[a-f0-9]{40}$"},
+    "HttpUrl": {"type":"string","pattern":"^https://"},
+    "RuntimeAsset": {
+      "type":"object","additionalProperties":false,
+      "required":["platform","fileName","byteLength","sha256","sourceUrl"],
+      "properties": {
+        "platform":{"enum":["linux-x64-portable","windows-x64-portable"]},
+        "fileName":{"type":"string","minLength":1},
+        "byteLength":{"type":"integer","minimum":1},
+        "sha256":{"$ref":"#/$defs/Sha256"},
+        "sourceUrl":{"$ref":"#/$defs/HttpUrl"}
+      }
+    },
+    "ModelAsset": {
+      "type":"object","additionalProperties":false,
+      "required":["role","repository","revision","fileName","byteLength","sha256","license","sourceUrl"],
+      "properties": {
+        "role":{"enum":["asr_model","vad_model"]},
+        "repository":{"type":"string","minLength":3},
+        "revision":{"$ref":"#/$defs/Commit"},
+        "fileName":{"type":"string","pattern":"^[A-Za-z0-9._-]+\\.gguf$"},
+        "byteLength":{"type":"integer","minimum":1},
+        "sha256":{"$ref":"#/$defs/Sha256"},
+        "license":{"enum":["Apache-2.0","MIT"]},
+        "sourceUrl":{"$ref":"#/$defs/HttpUrl"}
+      }
+    },
+    "CandidateManifest": {
+      "type":"object","additionalProperties":false,
+      "required":["schemaVersion","candidateId","stage","status","provider","runtimeAssets","modelAssets","capabilities","lowResourceBaseline","resourceDisclosure","comparison","notes"],
+      "properties": {
+        "schemaVersion":{"const":"v3-asr-provider-qualification-candidate-manifest/v1"},
+        "candidateId":{"const":"funasr-paraformer-q8-cpu-v1"},
+        "stage":{"const":"V3-2-0b"},
+        "status":{"const":"document_candidate_not_qualified"},
+        "provider": {
+          "type":"object","additionalProperties":false,
+          "required":["providerId","engine","engineVersion","sourceRepository","sourceUrl","license","runtimeKind","remoteCodeAllowed"],
+          "properties": {
+            "providerId":{"const":"funasr_edge_local"},
+            "engine":{"const":"funasr-llamacpp"},
+            "engineVersion":{"const":"runtime-llamacpp-v0.2.6"},
+            "sourceRepository":{"const":"modelscope/FunASR"},
+            "sourceUrl":{"$ref":"#/$defs/HttpUrl"},
+            "license":{"const":"MIT"},
+            "runtimeKind":{"const":"native_process"},
+            "remoteCodeAllowed":{"const":false}
+          }
+        },
+        "runtimeAssets":{"type":"array","minItems":2,"maxItems":2,"items":{"$ref":"#/$defs/RuntimeAsset"}},
+        "modelAssets":{"type":"array","minItems":2,"maxItems":2,"items":{"$ref":"#/$defs/ModelAsset"}},
+        "capabilities": {
+          "type":"object","additionalProperties":false,
+          "required":["localOnly","requiresGpu","languages","timestamps","input","networkDuringInference"],
+          "properties": {
+            "localOnly":{"const":true},"requiresGpu":{"const":false},
+            "languages":{"type":"array","minItems":2,"uniqueItems":true,"items":{"enum":["zh","en"]}},
+            "timestamps":{"const":"fsmn_vad_srt_segments"},
+            "input":{"const":"pcm_s16le_mono_16000hz"},
+            "networkDuringInference":{"const":false}
+          }
+        },
+        "lowResourceBaseline": {
+          "type":"object","additionalProperties":false,
+          "required":["cpuCores","addressSpaceBytes","gpuAllowed","qualificationThreads"],
+          "properties": {
+            "cpuCores":{"const":8},"addressSpaceBytes":{"const":8589934592},
+            "gpuAllowed":{"const":false},"qualificationThreads":{"const":8}
+          }
+        },
+        "resourceDisclosure": {
+          "type":"object","additionalProperties":false,
+          "required":["linuxDownloadBytes","windowsDownloadBytes","installedDiskCeilingBytes","installationFreeSpaceRequiredBytes","peakRssCeilingBytes","gpuVramBytes","measurementStatus"],
+          "properties": {
+            "linuxDownloadBytes":{"const":246664010},
+            "windowsDownloadBytes":{"const":243616993},
+            "installedDiskCeilingBytes":{"const":536870912},
+            "installationFreeSpaceRequiredBytes":{"const":1073741824},
+            "peakRssCeilingBytes":{"const":8589934592},
+            "gpuVramBytes":{"const":0},
+            "measurementStatus":{"const":"policy_ceiling_pending_real_measurement"}
+          }
+        },
+        "comparison": {
+          "type":"object","additionalProperties":false,
+          "required":["baselineCandidateId","sampleIds","windowStartMs","windowEndMs","binDurationMs","binsPerSample","reviewerCount","minimumMeaningPreserved","minimumPerSample","maximumCriticalMeaningErrors","maximumNeitherAcceptable"],
+          "properties": {
+            "baselineCandidateId":{"const":"faster-whisper-small-failed-20260921"},
+            "sampleIds":{"type":"array","minItems":3,"maxItems":3,"uniqueItems":true,"items":{"enum":["v3-asr-comparison-01","v3-asr-comparison-02","v3-asr-comparison-03"]}},
+            "windowStartMs":{"const":30000},"windowEndMs":{"const":150000},
+            "binDurationMs":{"const":15000},"binsPerSample":{"const":8},
+            "reviewerCount":{"const":2},"minimumMeaningPreserved":{"const":44},
+            "minimumPerSample":{"const":15},"maximumCriticalMeaningErrors":{"const":0},
+            "maximumNeitherAcceptable":{"const":0}
+          }
+        },
+        "notes":{"type":"array","minItems":1,"items":{"type":"string","minLength":1}}
+      }
+    },
+    "ResourceObservation": {
+      "type":"object","additionalProperties":false,
+      "required":["cpuCores","addressSpaceLimitBytes","gpuVisible","peakRssBytes","installedBytes","wallTimeMs","audioDurationMs","realTimeFactor"],
+      "properties": {
+        "cpuCores":{"const":8},"addressSpaceLimitBytes":{"const":8589934592},"gpuVisible":{"const":false},
+        "peakRssBytes":{"type":"integer","minimum":1,"maximum":8589934592},
+        "installedBytes":{"type":"integer","minimum":1},"wallTimeMs":{"type":"integer","minimum":1},
+        "audioDurationMs":{"type":"integer","minimum":1},"realTimeFactor":{"type":"number","exclusiveMinimum":0}
+      }
+    },
+    "Segment": {
+      "type":"object","additionalProperties":false,
+      "required":["segmentId","startMs","endMs","text","textSha256"],
+      "properties": {
+        "segmentId":{"type":"string","pattern":"^seg_[0-9]{3,5}$"},
+        "startMs":{"type":"integer","minimum":0},"endMs":{"type":"integer","minimum":1},
+        "text":{"type":"string","minLength":1},"textSha256":{"$ref":"#/$defs/Sha256"}
+      }
+    },
+    "SampleResult": {
+      "type":"object","additionalProperties":false,
+      "required":["sampleId","bvid","windowStartMs","windowEndMs","segments","outputSha256"],
+      "properties": {
+        "sampleId":{"enum":["v3-asr-comparison-01","v3-asr-comparison-02","v3-asr-comparison-03"]},
+        "bvid":{"enum":["BV1sMNtzJE5B","BV1xz4y1S7yF","BV1Bb411w741"]},
+        "windowStartMs":{"const":30000},"windowEndMs":{"const":150000},
+        "segments":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/Segment"}},
+        "outputSha256":{"$ref":"#/$defs/Sha256"}
+      }
+    },
+    "QualificationRun": {
+      "type":"object","additionalProperties":false,
+      "required":["schemaVersion","evidenceClass","runId","candidateManifestSha256","candidateId","createdAt","resources","samples","cleanup","secretScan","machinePassed"],
+      "properties": {
+        "schemaVersion":{"const":"v3-asr-provider-qualification-run/v1"},
+        "evidenceClass":{"enum":["contract_fixture","production_candidate"]},
+        "runId":{"type":"string","pattern":"^v3-2-0b-qualification-[0-9]{8}T[0-9]{6}Z$"},
+        "candidateManifestSha256":{"$ref":"#/$defs/Sha256"},
+        "candidateId":{"const":"funasr-paraformer-q8-cpu-v1"},
+        "createdAt":{"type":"string","format":"date-time"},
+        "resources":{"$ref":"#/$defs/ResourceObservation"},
+        "samples":{"type":"array","minItems":3,"maxItems":3,"items":{"$ref":"#/$defs/SampleResult"}},
+        "cleanup": {
+          "type":"object","additionalProperties":false,
+          "required":["cookieFileDeleted","sourceMediaDeleted","audioDeleted","privateWorkDeleted"],
+          "properties":{"cookieFileDeleted":{"const":true},"sourceMediaDeleted":{"const":true},"audioDeleted":{"const":true},"privateWorkDeleted":{"const":true}}
+        },
+        "secretScan": {
+          "type":"object","additionalProperties":false,"required":["hitCount","passed"],
+          "properties":{"hitCount":{"const":0},"passed":{"const":true}}
+        },
+        "machinePassed":{"type":"boolean"}
+      }
+    },
+    "Judgment": {
+      "type":"object","additionalProperties":false,
+      "required":["sampleId","binIndex","choice","candidateMeaningPreserved","baselineMeaningPreserved","criticalMeaningError","errorCodes"],
+      "properties": {
+        "sampleId":{"enum":["v3-asr-comparison-01","v3-asr-comparison-02","v3-asr-comparison-03"]},
+        "binIndex":{"type":"integer","minimum":0,"maximum":7},
+        "choice":{"enum":["candidate_better","baseline_better","equivalent","neither_acceptable"]},
+        "candidateMeaningPreserved":{"type":"boolean"},"baselineMeaningPreserved":{"type":"boolean"},
+        "criticalMeaningError":{"type":"boolean"},
+        "errorCodes":{"type":"array","uniqueItems":true,"items":{"enum":["omission","hallucination","named_entity","number","wrong_language","timestamp","other"]}}
+      }
+    },
+    "IndependentReview": {
+      "type":"object","additionalProperties":false,
+      "required":["schemaVersion","bundleSha256","reviewerId","reviewerRole","submittedAt","judgments"],
+      "properties": {
+        "schemaVersion":{"const":"v3-asr-provider-qualification-review/v1"},
+        "bundleSha256":{"$ref":"#/$defs/Sha256"},
+        "reviewerId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"},
+        "reviewerRole":{"const":"independent_human_listener"},
+        "submittedAt":{"type":"string","format":"date-time"},
+        "judgments":{"type":"array","minItems":24,"maxItems":24,"items":{"$ref":"#/$defs/Judgment"}}
+      }
+    },
+    "DisagreementResolution": {
+      "type":"object","additionalProperties":false,
+      "required":["sampleId","binIndex","resolution","note"],
+      "properties": {
+        "sampleId":{"enum":["v3-asr-comparison-01","v3-asr-comparison-02","v3-asr-comparison-03"]},
+        "binIndex":{"type":"integer","minimum":0,"maximum":7},
+        "resolution":{"enum":["candidate_better","baseline_better","equivalent","neither_acceptable","reviewer_disagreement_retained"]},
+        "note":{"type":"string","minLength":1,"maxLength":240}
+      }
+    },
+    "Adjudication": {
+      "type":"object","additionalProperties":false,
+      "required":["schemaVersion","bundleSha256","reviewerIds","reviewSha256s","adjudicatorId","submittedAt","disagreementResolutions","summary","passed"],
+      "properties": {
+        "schemaVersion":{"const":"v3-asr-provider-qualification-adjudication/v1"},
+        "bundleSha256":{"$ref":"#/$defs/Sha256"},
+        "reviewerIds":{"type":"array","minItems":2,"maxItems":2,"uniqueItems":true,"items":{"type":"string","minLength":3}},
+        "reviewSha256s":{"type":"array","minItems":2,"maxItems":2,"uniqueItems":true,"items":{"$ref":"#/$defs/Sha256"}},
+        "adjudicatorId":{"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9_-]{2,63}$"},
+        "submittedAt":{"type":"string","format":"date-time"},
+        "disagreementResolutions":{"type":"array","maxItems":24,"items":{"$ref":"#/$defs/DisagreementResolution"}},
+        "summary": {
+          "type":"object","additionalProperties":false,
+          "required":["totalIndependentJudgments","uniqueReviewerBinKeys","uniqueSampleBinKeys","reviewerIdsDistinct","adjudicatorDistinct","candidateMeaningPreservedCount","perSampleMinimumCount","criticalMeaningErrorCount","neitherAcceptableCount","disagreementCount","resolutionCount"],
+          "properties": {
+            "totalIndependentJudgments":{"const":48},
+            "uniqueReviewerBinKeys":{"const":48},
+            "uniqueSampleBinKeys":{"const":24},
+            "reviewerIdsDistinct":{"const":true},
+            "adjudicatorDistinct":{"const":true},
+            "candidateMeaningPreservedCount":{"type":"integer","minimum":0,"maximum":48},
+            "perSampleMinimumCount":{"type":"integer","minimum":0,"maximum":16},
+            "criticalMeaningErrorCount":{"type":"integer","minimum":0,"maximum":48},
+            "neitherAcceptableCount":{"type":"integer","minimum":0,"maximum":48},
+            "disagreementCount":{"type":"integer","minimum":0,"maximum":24},
+            "resolutionCount":{"type":"integer","minimum":0,"maximum":24}
+          }
+        },
+        "passed":{"type":"boolean"}
+      },
+      "allOf":[{
+        "if":{"properties":{"passed":{"const":true}},"required":["passed"]},
+        "then":{"properties":{"summary":{"properties":{"candidateMeaningPreservedCount":{"minimum":44},"perSampleMinimumCount":{"minimum":15},"criticalMeaningErrorCount":{"const":0},"neitherAcceptableCount":{"const":0}}}}}
+      }]
+    }
+  }
+}

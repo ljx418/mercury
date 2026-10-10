@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-outline-taskstore/v2",
+  "title": "Navia V3-4 media task terminal envelope and deterministic projections",
+  "type": "object",
+  "required": ["schemaVersion", "task", "evidenceCatalog", "outline", "timeline", "mindmap", "transactionReceipt"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-outline-taskstore/v2" },
+    "task": { "$ref": "#/$defs/Task" },
+    "evidenceCatalog": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/EvidenceRef" }
+    },
+    "outline": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/Outline" }
+      ]
+    },
+    "timeline": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/TimelineSegment" }
+    },
+    "mindmap": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/Mindmap" }
+      ]
+    },
+    "transactionReceipt": { "$ref": "#/$defs/TransactionReceipt" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "OutlineId": { "type": "string", "pattern": "^outline_[a-f0-9]{32}$" },
+    "EvidenceId": { "type": "string", "pattern": "^(?:mev|mtr)_[a-f0-9]{32}$" },
+    "RelativeRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    },
+    "Task": {
+      "type": "object",
+      "required": ["taskId", "sourceIdentity", "state", "revision", "createdAt", "updatedAt", "knowledgeImportStatus"],
+      "additionalProperties": false,
+      "properties": {
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "state": { "enum": ["created", "acquiring", "transcribing", "extracting_frames", "analyzing_vision", "synthesizing", "ready", "degraded", "blocked", "failed", "cancelling", "cancelled"] },
+        "revision": { "type": "integer", "minimum": 1 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "knowledgeImportStatus": { "const": "deferred_to_v4" }
+      }
+    },
+    "EvidenceRef": {
+      "type": "object",
+      "required": ["evidenceId", "taskId", "kind", "timestampStartMs", "timestampEndMs", "contentSha256", "relativeArtifactRef"],
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "kind": { "enum": ["transcript", "frame", "ocr_block", "vision_caption"] },
+        "timestampStartMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "timestampEndMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "contentSha256": { "$ref": "#/$defs/Sha256" },
+        "relativeArtifactRef": { "$ref": "#/$defs/RelativeRef" }
+      }
+    },
+    "Section": {
+      "type": "object",
+      "required": ["sectionId", "title", "summary", "startMs", "endMs", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "sectionId": { "type": "string", "pattern": "^section_[a-f0-9]{16}$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "startMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "endMs": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } }
+      }
+    },
+    "Outline": {
+      "type": "object",
+      "required": ["outlineId", "taskId", "taskRevision", "title", "summary", "sections", "contentSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "taskRevision": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "sections": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Section" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "TimelineSegment": {
+      "type": "object",
+      "required": ["segmentId", "outlineId", "sectionId", "sequence", "startMs", "endMs", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "segmentId": { "type": "string", "pattern": "^timeline_[a-f0-9]{16}$" },
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "sectionId": { "type": "string", "pattern": "^section_[a-f0-9]{16}$" },
+        "sequence": { "type": "integer", "minimum": 0 },
+        "startMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "endMs": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } }
+      }
+    },
+    "MindmapNode": {
+      "type": "object",
+      "required": ["nodeId", "parentNodeId", "sectionId", "label", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": { "type": "string", "pattern": "^node_[a-f0-9]{16}$" },
+        "parentNodeId": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^node_[a-f0-9]{16}$" }] },
+        "sectionId": { "type": ["string", "null"], "pattern": "^section_[a-f0-9]{16}$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "evidenceIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } }
+      }
+    },
+    "Mindmap": {
+      "type": "object",
+      "required": ["projectionId", "outlineId", "taskId", "nodes", "contentSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "projectionId": { "type": "string", "pattern": "^mindmap_[a-f0-9]{32}$" },
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "nodes": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/MindmapNode" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "TransactionReceipt": {
+      "type": "object",
+      "required": ["transactionId", "taskId", "expectedRevision", "committedRevision", "aggregateCommitted", "eventCommitted", "outboxCommitted", "outlinePublished", "projectionPublished", "terminalFailureCode", "duplicateWriteCount", "unresolvedEvidenceReferenceCount", "crossTaskEvidenceReferenceCount", "projectionEvidenceClosurePassed", "committedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "transactionId": { "type": "string", "pattern": "^mtx_[a-f0-9]{32}$" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "committedRevision": { "type": "integer", "minimum": 1 },
+        "aggregateCommitted": { "const": true },
+        "eventCommitted": { "const": true },
+        "outboxCommitted": { "const": true },
+        "outlinePublished": { "type": "boolean" },
+        "projectionPublished": { "type": "boolean" },
+        "terminalFailureCode": { "type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
+        "duplicateWriteCount": { "const": 0 },
+        "unresolvedEvidenceReferenceCount": { "const": 0 },
+        "crossTaskEvidenceReferenceCount": { "const": 0 },
+        "projectionEvidenceClosurePassed": { "type": "boolean" },
+        "committedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

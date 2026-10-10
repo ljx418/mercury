@@ -1,134 +1,566 @@
-<mxfile host="app.diagrams.net" modified="2026-09-15T00:00:00.000Z" agent="Navia Codex" version="24.7.17" type="device">
-  <diagram id="v3-01" name="01 阶段目标与竞品对标">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+<mxfile host="Electron" agent="Codex" pages="8">
+  <diagram id="v3-page-01" name="01 用户入口与目标体验">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1600" pageHeight="900">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title1" value="V3 Media Companion：B站优先视频伴随体验" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="160" y="30" width="1180" height="50" as="geometry"/></mxCell>
-        <mxCell id="goal" value="目标体验&#xa;打开B站视频 -> 字幕或本地转写 -> 图文大纲 / 时间轴 / Media Mindmap -> 点击证据跳回播放器 -> 用户主动保存" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="90" y="120" width="410" height="170" as="geometry"/></mxCell>
-        <mxCell id="bili" value="首个锚点&#xa;BV1ZpYd66ELP&#xa;单P / 约792秒 / 无公开字幕&#xa;必须由用户显式启动当前标签页音频本地ASR，不得换样本" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="545" y="120" width="410" height="170" as="geometry"/></mxCell>
-        <mxCell id="scope" value="阶段边界&#xa;B站先于YouTube。V3.0含字幕优先 + 显式标签页音频本地ASR；V3.x才做帧语义 / VLM / OCR / 直播。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="1000" y="120" width="410" height="170" as="geometry"/></mxCell>
-        <mxCell id="refs" value="研究转化&#xa;BiliNote：字幕优先 / ASR fallback / 后台任务 / 时间戳图文&#xa;Navia采纳流程，拒绝自动下载媒体流和marker正则权威&#xa;统一VideoOutline派生图文、时间轴和导图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=16;spacing=14;align=left;" vertex="1" parent="1"><mxGeometry x="90" y="340" width="1320" height="190" as="geometry"/></mxCell>
-        <mxCell id="nogo" value="不得声明&#xa;V3媒体链路当前已实现 / Mock等于真实持久化 / 标题替代转录 / 自动下载B站媒体 / 未授权音频采集 / VLM OCR直播 ready / 跨视频RAG ready" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=16;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="190" y="600" width="1120" height="130" as="geometry"/></mxCell>
+        <mxCell id="p1-0" />
+        <mxCell id="p1-1" parent="p1-0" />
+        <mxCell id="p1-title" value="V3 用户入口与目标体验｜B站优先，V4 知识能力后置" style="text;html=1;fontSize=24;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="p1-1">
+          <mxGeometry x="60" y="35" width="1100" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-note" value="蓝色：V3待新增　绿色：现有保留　黄色：需治理　灰色：V4延后　红色：禁止/停止" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#c9d3d0;fontSize=13;align=left;spacingLeft=12;" vertex="1" parent="p1-1">
+          <mxGeometry x="60" y="90" width="910" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-host" value="B站视频详情页&#xa;BV / CID / 分P / 播放器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="60" y="190" width="190" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-side" value="Side Panel 快速面&#xa;识别·授权·启动&#xa;进度·取消·快速摘要" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="290" y="180" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-runtime" value="受控会话 + Runtime 媒体管线&#xa;Cookie短租约 / 双回退 / 本地ASR&#xa;关键帧 / OCR / VLM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="540" y="180" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-outline" value="VideoOutline 权威&#xa;章节·时间线·证据ID&#xa;质量与拒答" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="790" y="180" width="210" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-workspace" value="Media Workspace 完整面&#xa;大纲·时间线·导图&#xa;Ask·证据·历史·导出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="1040" y="180" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-seek" value="真实播放器反跳&#xa;读取 currentTime&#xa;located / fallback / blocked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="1300" y="180" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-store" value="V3 本地闭环（待新增）&#xa;MediaTaskStore + Markdown ZIP / JSON&#xa;不依赖 PX-6 / data_service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="540" y="390" width="360" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-v4" value="V4 未来知识接入&#xa;用户主动导入&#xa;Query / Graph / Forget / RKM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#87918e;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="980" y="390" width="300" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-no" value="NO-GO&#xa;原型/Mock/BiliNote 输出不得计生产证据&#xa;全站静态注入 / Cookie值落盘 / 绕过平台限制" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="60" y="600" width="500" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-success" value="目标体验&#xa;用户能理解“系统正在做什么、依据是什么、如何跳回原片、结果保存在哪里”" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=16;fontStyle=1;" vertex="1" parent="p1-1">
+          <mxGeometry x="650" y="600" width="650" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e1" edge="1" parent="p1-1" source="p1-host" target="p1-side" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e2" edge="1" parent="p1-1" source="p1-side" target="p1-runtime" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e3" edge="1" parent="p1-1" source="p1-runtime" target="p1-outline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e4" edge="1" parent="p1-1" source="p1-outline" target="p1-workspace" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e5" edge="1" parent="p1-1" source="p1-workspace" target="p1-seek" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e6" edge="1" parent="p1-1" source="p1-outline" target="p1-store" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-e7" edge="1" parent="p1-1" source="p1-store" target="p1-v4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;dashed=1;strokeColor=#87918e;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-02" name="02 当前架构与目标架构差异">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-02" name="02 当前与目标代码实体">
+    <mxGraphModel dx="1653" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title2" value="当前基线到V3 B站优先目标架构差异" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="legend" value="绿色=已实现保持&#xa;蓝色=待新增规划&#xa;黄色=保持边界需治理&#xa;红色=No-Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=14;align=left;spacing=10;" vertex="1" parent="1"><mxGeometry x="50" y="95" width="270" height="115" as="geometry"/></mxCell>
-        <mxCell id="shell" value="已实现保持&#xa;Launcher / Sidebar Shell&#xa;继续作为视频页 companion 入口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="70" y="260" width="250" height="110" as="geometry"/></mxCell>
-        <mxCell id="collector" value="未开发&#xa;BilibiliMediaCollector&#xa;bvid / cid / 分P / 播放器时间 / 页内字幕可用性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="370" y="240" width="290" height="150" as="geometry"/></mxCell>
-        <mxCell id="context" value="未开发&#xa;MediaPageContext + MediaTranscript&#xa;字幕优先；无字幕需MediaCaptureGrant + LocalAsrAdapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="720" y="240" width="310" height="150" as="geometry"/></mxCell>
-        <mxCell id="a" value="未开发&#xa;A Media Page Perception&#xa;统一VideoOutline / TimelineSegment / evidence coverage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="1080" y="240" width="300" height="150" as="geometry"/></mxCell>
-        <mxCell id="d" value="已实现候选 / 待Chrome验收&#xa;DataServiceKnowledgeAdapter&#xa;真实source/build/trace与重启恢复已过&#xa;三入口一致性待H01；B不直连服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="160" y="470" width="300" height="130" as="geometry"/></mxCell>
-        <mxCell id="c" value="未开发&#xa;C MediaMindmapProjection&#xa;只从VideoOutline派生，复用同一segment/evidence ID" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="520" y="470" width="300" height="130" as="geometry"/></mxCell>
-        <mxCell id="b" value="未开发&#xa;B MediaCompanionRenderer&#xa;采集/转写状态、图文大纲、时间轴、导图和证据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="880" y="470" width="300" height="130" as="geometry"/></mxCell>
-        <mxCell id="jump" value="待新增规划&#xa;MediaJumpbackTarget&#xa;timestamp seek / transcript segment / fallback / blocked" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=10;" vertex="1" parent="1"><mxGeometry x="1220" y="470" width="240" height="130" as="geometry"/></mxCell>
-        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="shell" target="collector"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="collector" target="context"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="context" target="a"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="a" target="d"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="d" target="c"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="c" target="b"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="edge7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="b" target="jump"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p2-0" />
+        <mxCell id="p2-1" parent="p2-0" />
+        <mxCell id="p2-title" parent="p2-1" style="text;html=1;fontSize=24;fontStyle=1;align=left;" value="当前架构 → V3 目标代码实体｜依赖单向、状态明确" vertex="1">
+          <mxGeometry height="42" width="1100" x="60" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-current" parent="p2-1" style="swimlane;html=1;startSize=34;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=16;fontStyle=1;" value="现有保留" vertex="1">
+          <mxGeometry height="640" width="420" x="60" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-c1" parent="p2-current" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0b765f;" value="pageContext.ts&#xa;普通 DOM / metadata / selection" vertex="1">
+          <mxGeometry height="72" width="360" x="30" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-c2" parent="p2-current" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0b765f;" value="entrypoints/sidepanel&#xa;Quick Surface 容器" vertex="1">
+          <mxGeometry height="72" width="360" x="30" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-c3" parent="p2-current" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0b765f;" value="entrypoints/workspace&#xa;独立 Extension Page 容器" vertex="1">
+          <mxGeometry height="72" width="360" x="30" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-c4" parent="p2-current" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0b765f;" value="runtimeClient + Event/Trace&#xa;普通数据边界；不得承载Cookie body&#xa;V3-1.3使用专用一次性通道" vertex="1">
+          <mxGeometry height="72" width="360" x="30" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-c5" parent="p2-current" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0b765f;" value="Evidence Card / Reading Map&#xa;复用呈现与选择交互" vertex="1">
+          <mxGeometry height="72" width="360" x="30" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-target" parent="p2-1" style="swimlane;html=1;startSize=34;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=16;fontStyle=1;" value="V3 已实现 / 待新增 / 需修改" vertex="1">
+          <mxGeometry height="640" width="660" x="540" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t1" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;" value="已实现 V3-1.1（外部限定PASS）&#xa;MediaPortalRegistry + Adapter&#xa;Bilibili实现 → 通用MediaPageContext" vertex="1">
+          <mxGeometry height="82" width="285" x="30" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t2" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;" value="已实现 V3-1.2 / V3-1.3 PASS&#xa;Session Broker + B站9名候选能力&#xa;一次性通道 + 60秒Runtime租约" vertex="1">
+          <mxGeometry height="82" width="285" x="345" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t3" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="V3-2-0a LIMITED PASS；0b FAIL/REPLAN&#xa;5.3文档候选：FixedWindowOrchestrator → 8×15秒顺序推理&#xa;Acquirer + Capture + 生产LocalAsr仍未开发" vertex="1">
+          <mxGeometry height="82" width="285" x="20" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t4" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="MediaFramePipeline&#xa;FFmpeg/OpenCV + RapidOCR" vertex="1">
+          <mxGeometry height="82" width="285" x="345" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t5" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="D Adapter / Governance&#xa;MediaVisionProvider + capability + trace" vertex="1">
+          <mxGeometry height="82" width="285" x="345" y="299" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t6" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="A/C semantic layer&#xa;VideoOutline + Timeline + MindmapProjection" vertex="1">
+          <mxGeometry height="82" width="285" x="360" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t7" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="MediaTaskStore&#xa;task/evidence/history/export" vertex="1">
+          <mxGeometry height="82" width="285" x="30" y="542" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-t8" parent="p2-target" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="B Media UI + Jumpback&#xa;双容器、Ask、证据、真实 seek" vertex="1">
+          <mxGeometry height="82" width="285" x="40" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-v4" parent="p2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#87918e;fontSize=15;" value="V4 延后：Knowledge Adapter / Query / Graph / Durable Forget / RKM&#xa;不允许 V3 前端直接写知识事实" vertex="1">
+          <mxGeometry height="180" width="280" x="1260" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-ban" parent="p2-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" value="禁止依赖&#xa;B 前端 → 模型/ASR/B站接口/data_service&#xa;A/C → Chrome API&#xa;dirty BiliNote → Navia" vertex="1">
+          <mxGeometry height="180" width="280" x="1260" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e1" edge="1" parent="p2-1" source="p2-c1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e4" edge="1" parent="p2-1" source="p2-c4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e5" edge="1" parent="p2-1" source="p2-t3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e6" edge="1" parent="p2-1" source="p2-t4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e7" edge="1" parent="p2-1" source="p2-t6" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e8" edge="1" parent="p2-1" source="p2-t7" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;dashed=1;strokeColor=#87918e;" target="p2-v4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e2" edge="1" parent="p2-1" source="p2-c2" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-e3" edge="1" parent="p2-1" source="p2-c3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p2-t8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-03" name="03 B站字幕与本地ASR输入链路">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-03" name="03 双容器路由与组件">
+    <mxGraphModel dx="1653" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title3" value="V3.0 B站输入：字幕优先，用户显式本地ASR fallback" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="yt" value="路径A：页内/公开字幕&#xa;BilibiliMediaCollector&#xa;字幕URL / language / start/end&#xa;原始字节hash&#xa;不需要音频授权" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=15;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="90" y="130" width="310" height="170" as="geometry"/></mxCell>
-        <mxCell id="bili" value="路径B：无字幕&#xa;用户点击“开始本地转写”&#xa;MediaCaptureGrant + chrome.tabCapture&#xa;当前标签页音频 -> LocalAsrAdapter&#xa;取消/关页必须清理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=15;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="90" y="380" width="310" height="190" as="geometry"/></mxCell>
-        <mxCell id="collector" value="统一TranscriptResolver&#xa;输出MediaTranscript&#xa;segment start/end/text/confidence/hash&#xa;禁止标题/评论填充缺失转录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="500" y="240" width="360" height="190" as="geometry"/></mxCell>
-        <mxCell id="context" value="MediaPageContext + MediaIngestRun&#xa;bvid / cid / part / duration&#xa;queued / capturing / transcribing / summarizing / ready&#xa;degraded / failed / cancelled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="960" y="240" width="360" height="190" as="geometry"/></mxCell>
-        <mxCell id="quality" value="硬边界&#xa;无字幕且用户未授权：等待授权，不生成大纲。字幕和ASR都失败：degraded / blocked。网络日志不得出现自动媒体下载或cookie导出。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=16;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="330" y="610" width="840" height="120" as="geometry"/></mxCell>
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="yt" target="collector"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="bili" target="collector"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="collector" target="context"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p3-0" />
+        <mxCell id="p3-1" parent="p3-0" />
+        <mxCell id="p3-title" parent="p3-1" style="text;html=1;fontSize=24;fontStyle=1;align=left;" value="双容器、路由与组件｜共享同一 MediaTask，不复制状态" vertex="1">
+          <mxGeometry height="42" width="1150" x="60" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-side" parent="p3-1" style="swimlane;html=1;startSize=36;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=17;fontStyle=1;" value="Side Panel 360 / 420" vertex="1">
+          <mxGeometry height="620" width="430" x="60" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-s1" parent="p3-side" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="MediaQuickSurface&#xa;当前视频身份 / 字幕状态" vertex="1">
+          <mxGeometry height="68" width="370" x="30" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-s2" parent="p3-side" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="MediaConsentPanel&#xa;一次授权 + 设置撤销" vertex="1">
+          <mxGeometry height="68" width="370" x="30" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-s3" parent="p3-side" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="MediaRunProgress&#xa;开始 / 阶段 / 取消 / 清理" vertex="1">
+          <mxGeometry height="68" width="370" x="30" y="245" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-s4" parent="p3-side" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="MediaQuickSummary&#xa;完成后摘要 + 打开工作台" vertex="1">
+          <mxGeometry height="68" width="370" x="30" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-s5" parent="p3-side" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="不得放入：完整长文、完整时间线、历史管理、知识图谱" vertex="1">
+          <mxGeometry height="75" width="370" x="30" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-work" parent="p3-1" style="swimlane;html=1;startSize=36;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=17;fontStyle=1;" value="Media Workspace 768 / 1280" vertex="1">
+          <mxGeometry height="620" width="660" x="560" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w1" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/media/current&#xa;MediaWorkspaceShell + 当前任务" vertex="1">
+          <mxGeometry height="76" width="285" x="20" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w2" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/media/tasks&#xa;MediaTaskHistory" vertex="1">
+          <mxGeometry height="76" width="285" x="350" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w3" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/outline + #/timeline&#xa;VideoOutlineReader / MediaTimeline" vertex="1">
+          <mxGeometry height="76" width="285" x="345" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w4" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/mindmap&#xa;MediaMindmap" vertex="1">
+          <mxGeometry height="76" width="285" x="20" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w5" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/ask&#xa;AskVideoPanel + evidence citations" vertex="1">
+          <mxGeometry height="76" width="285" x="20" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w6" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="#/evidence/:evidenceId&#xa;Gallery + Drawer + JumpbackStatus" vertex="1">
+          <mxGeometry height="76" width="285" x="350" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w7" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="#/media/settings&#xa;持久 scope / revoke / Provider 状态" vertex="1">
+          <mxGeometry height="76" width="285" x="30" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-w8" parent="p3-work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#87918e;" value="MediaExportPanel&#xa;Markdown ZIP / JSON&#xa;knowledgeImportStatus=deferred_to_v4" vertex="1">
+          <mxGeometry height="76" width="285" x="345" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-runtime" parent="p3-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" value="runtimeClient → 同一 MediaTask&#xa;direct-open / reload / Back / reopen 保持 taskId、route、evidenceId" vertex="1">
+          <mxGeometry height="160" width="270" x="1300" y="91" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-focus" parent="p3-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;" value="可访问性&#xa;44px 目标·aria-live·键盘选点&#xa;抽屉关闭焦点返回触发元素" vertex="1">
+          <mxGeometry height="150" width="270" x="1280" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-e1" edge="1" parent="p3-1" source="p3-s4" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p3-w1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-e2" edge="1" parent="p3-1" source="p3-s1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p3-runtime">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-e3" edge="1" parent="p3-1" source="p3-w1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p3-runtime">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-e4" edge="1" parent="p3-1" source="p3-w3" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p3-w6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-e5" edge="1" parent="p3-1" source="p3-w5" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p3-w6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-04" name="04 视频概览图与Media Mindmap">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-04" name="04 Cookie媒体与双回退">
+    <mxGraphModel dx="1653" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title4" value="视频概览图与 Media Mindmap 目标体验" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="overview" value="VideoOutline图文大纲&#xa;一句话结论 / 关键看点&#xa;适合谁看 / 章节正文&#xa;限制 / 来源覆盖率&#xa;唯一语义权威" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="90" y="150" width="270" height="190" as="geometry"/></mxCell>
-        <mxCell id="timeline" value="章节时间轴&#xa;00:00 开场&#xa;03:20 背景&#xa;08:10 核心观点&#xa;15:40 示例&#xa;22:00 结论" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="440" y="150" width="270" height="190" as="geometry"/></mxCell>
-        <mxCell id="mindmap" value="Media Mindmap投影&#xa;只从同一VideoOutline派生&#xa;复用segmentId/evidenceId&#xa;禁止Markdown marker二次造事实" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="790" y="150" width="300" height="190" as="geometry"/></mxCell>
-        <mxCell id="ask" value="Ask Video&#xa;这个片段讲什么？&#xa;总结 10:30-15:00&#xa;提炼观点&#xa;找对应证据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="1170" y="150" width="260" height="190" as="geometry"/></mxCell>
-        <mxCell id="evidence" value="每个输出都需要 evidence binding&#xa;transcript segment / timestamp / description / comment / danmaku / screenshot evidence / degraded reason" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=17;spacing=14;align=center;" vertex="1" parent="1"><mxGeometry x="180" y="460" width="1140" height="130" as="geometry"/></mxCell>
-        <mxCell id="nogo" value="No-Go：顶层节点只来自标题、推荐、广告、版权提示或评论噪声；无来源的导图节点不能计入 pass" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=16;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="250" y="650" width="1000" height="90" as="geometry"/></mxCell>
+        <mxCell id="p4-0" />
+        <mxCell id="p4-1" parent="p4-0" />
+        <mxCell id="p4-title" parent="p4-1" style="text;html=1;fontSize=24;fontStyle=1;align=left;" value="Cookie租约 / 字幕 / 音频 / OCR / VLM｜主路径与双回退" vertex="1">
+          <mxGeometry height="42" width="1200" x="60" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-policy" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;fontStyle=1;" value="PortalPermissionClient → PortalSessionBroker&#xa;五项scope持久到主动撤销&#xa;真实click请求；Background只复核" vertex="1">
+          <mxGeometry height="120" width="260" x="60" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-click" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" value="用户点击开始&#xa;V3-1.2候选能力已通过&#xa;UI bearer只创建短期channel" vertex="1">
+          <mxGeometry height="90" width="260" x="60" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-grant" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=14;" value="V3-1.3 Credential Channel（已实现PASS）&#xa;精确Origin + 20秒一次性ticket&#xa;Background 9名envelope → 60秒Runtime内存lease&#xa;专用fetch；同body不重试" vertex="1">
+          <mxGeometry height="120" width="260" x="360" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-sub" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;" value="V3-2 固定四路线（仍BLOCKED）&#xa;0b已FAIL；5.3固定窗口仅为文档候选&#xa;1凭据字幕 → 2媒体ASR → 3公开字幕 → 4可信capture" vertex="1">
+          <mxGeometry height="120" width="260" x="360" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-asr" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;" value="TaskAudioRef → FixedWindowOrchestrator&#xa;8×15秒无重叠 → FunASR Adapter → NativeProcessHost&#xa;Tiny兜底；≤2×延迟；门户不得控制Provider" vertex="1">
+          <mxGeometry height="120" width="300" x="730" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-frame" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="MediaFramePipeline&#xa;任务期临时视频 → FFmpeg/OpenCV选帧&#xa;平台拒绝则可见帧回退" vertex="1">
+          <mxGeometry height="120" width="300" x="730" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-ocr" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="LocalOcrAdapter&#xa;RapidOCR 本地处理&#xa;OcrEvidence" vertex="1">
+          <mxGeometry height="120" width="240" x="760" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-vlm" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;" value="D Governance → MediaVisionProvider&#xa;仅选定证据帧出站&#xa;provider/model/request/response hash" vertex="1">
+          <mxGeometry height="120" width="300" x="1190" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-evidence" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" value="分型 Evidence Index&#xa;subtitle / asr / ocr / vision_frame / metadata" vertex="1">
+          <mxGeometry height="110" width="330" x="1175" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-clean" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;" value="V3-2 五终态清理屏障&#xa;succeeded/degraded/blocked/failed/cancelled&#xa;cookiefile·临时媒体·原始音视频·active capture=0" vertex="1">
+          <mxGeometry height="130" width="370" x="520" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-revoke" parent="p4-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" value="撤销/到期&#xa;阻止新租约 / 下载 / capture / 上传&#xa;清理在途临时资源&#xa;不隐式删除旧任务" vertex="1">
+          <mxGeometry height="130" width="300" x="60" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e1" edge="1" parent="p4-1" source="p4-click" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p4-grant">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e2" edge="1" parent="p4-1" source="p4-grant" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-sub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e3" edge="1" parent="p4-1" source="p4-policy" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-frame">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e4" edge="1" parent="p4-1" source="p4-frame" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-ocr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e5" edge="1" parent="p4-1" source="p4-frame" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-vlm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e6" edge="1" parent="p4-1" source="p4-sub" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e7" edge="1" parent="p4-1" source="p4-asr" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e8" edge="1" parent="p4-1" source="p4-ocr" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e9" edge="1" parent="p4-1" source="p4-vlm" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p4-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e10" edge="1" parent="p4-1" source="p4-policy" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#c28c13;" target="p4-vlm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p4-e11" edge="1" parent="p4-1" source="p4-sub" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;dashed=1;strokeColor=#b85450;" target="p4-asr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-05" name="05 截图证据与视频反跳">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-05" name="05 任务证据Ask与反跳">
+    <mxGraphModel dx="1653" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title5" value="截图证据与视频反跳：可验证，不伪装" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="node" value="用户点击&#xa;Media Mindmap 节点&#xa;或视频证据卡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=17;spacing=12;" vertex="1" parent="1"><mxGeometry x="100" y="220" width="260" height="130" as="geometry"/></mxCell>
-        <mxCell id="target" value="MediaJumpbackTarget&#xa;timestamp&#xa;transcriptSegmentId&#xa;screenshotEvidenceId&#xa;fallbackReason" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="470" y="205" width="300" height="160" as="geometry"/></mxCell>
-        <mxCell id="seek" value="located&#xa;播放器 seek 到目标时间点附近&#xa;UI 显示 Navia source marker&#xa;报告记录 located" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="900" y="120" width="320" height="145" as="geometry"/></mxCell>
-        <mxCell id="fallback" value="fallback_shown&#xa;无法精确 seek 但可展示 timestamp、字幕片段、截图证据或原因" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="900" y="315" width="320" height="145" as="geometry"/></mxCell>
-        <mxCell id="blocked" value="blocked&#xa;登录墙、地区限制、播放器限制、字幕缺失、反爬或用户未授权" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="900" y="510" width="320" height="145" as="geometry"/></mxCell>
-        <mxCell id="frame" value="VideoFrameEvidenceRef&#xa;timestamp + screenshot path&#xa;只证明该时间点可见帧&#xa;不代表 VLM 已理解画面" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=16;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="250" y="560" width="420" height="130" as="geometry"/></mxCell>
-        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#334155;" edge="1" parent="1" source="node" target="target"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#16a34a;" edge="1" parent="1" source="target" target="seek"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#0284c7;" edge="1" parent="1" source="target" target="fallback"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;strokeColor=#dc2626;" edge="1" parent="1" source="target" target="blocked"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="p5-0" />
+        <mxCell id="p5-1" parent="p5-0" />
+        <mxCell id="p5-title" parent="p5-1" style="text;html=1;fontSize=24;fontStyle=1;align=left;" value="任务状态、证据、Ask 与真实反跳｜一个事实源，多种投影" vertex="1">
+          <mxGeometry height="42" width="1180" x="60" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-state" parent="p5-1" style="swimlane;html=1;startSize=36;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=17;fontStyle=1;" value="MediaTask 状态机" vertex="1">
+          <mxGeometry height="640" width="470" x="60" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st1" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="detected → consent_required → ready" vertex="1">
+          <mxGeometry height="62" width="410" x="30" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st2" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="collecting_subtitle | capturing → transcribing" vertex="1">
+          <mxGeometry height="62" width="410" x="30" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st3" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2b74b8;" value="extracting_frames → ocr_running → vision_running" vertex="1">
+          <mxGeometry height="62" width="410" x="30" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st4" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;" value="synthesizing → completed" vertex="1">
+          <mxGeometry height="62" width="410" x="30" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st5" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" value="终态：degraded / blocked / cancelled / failed&#xa;重试新 attempt，保留 task 审计链" vertex="1">
+          <mxGeometry height="82" width="410" x="30" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-st6" parent="p5-state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="completed 前置&#xa;rawAudioDeleted=true&#xa;nonEvidenceFramesDeleted=true" vertex="1">
+          <mxGeometry height="82" width="410" x="30" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-outline" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" value="VideoOutline&#xa;outlineId + taskId&#xa;ordered TimelineSegment[]&#xa;closed evidenceIds" vertex="1">
+          <mxGeometry height="150" width="260" x="620" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-article" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" value="图文大纲&#xa;VideoOutlineReader" vertex="1">
+          <mxGeometry height="90" width="220" x="960" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-timeline" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" value="时间线&#xa;MediaTimeline" vertex="1">
+          <mxGeometry height="90" width="220" x="960" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-map" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" value="思维导图&#xa;MediaMindmapProjection" vertex="1">
+          <mxGeometry height="90" width="220" x="960" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-ask" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" value="AskVideoResult&#xa;answered 必须有同 task evidence&#xa;否则 insufficient_evidence" vertex="1">
+          <mxGeometry height="130" width="260" x="620" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-evidence" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" value="MediaEvidenceDrawer&#xa;字幕 / ASR / OCR / vision frame&#xa;时间、hash、来源、retention" vertex="1">
+          <mxGeometry height="140" width="280" x="1240" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-seek" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="MediaJumpbackController&#xa;请求时间 → 设置 currentTime → 回读实际时间&#xa;误差≤2秒才 located" vertex="1">
+          <mxGeometry height="140" width="330" x="1210" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-false" parent="p5-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;" value="拒绝假绿&#xa;fallback/blocked 不计 located&#xa;复制同一证据不增加覆盖&#xa;无引用不得 answered" vertex="1">
+          <mxGeometry height="120" width="380" x="720" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e1" edge="1" parent="p5-1" source="p5-state" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-outline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e2" edge="1" parent="p5-1" source="p5-outline" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-article">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e3" edge="1" parent="p5-1" source="p5-outline" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-timeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e4" edge="1" parent="p5-1" source="p5-outline" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-map">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e5" edge="1" parent="p5-1" source="p5-outline" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-ask">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e6" edge="1" parent="p5-1" source="p5-article" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e7" edge="1" parent="p5-1" source="p5-ask" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;" target="p5-evidence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p5-e8" edge="1" parent="p5-1" source="p5-evidence" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p5-seek">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-06" name="06 音频授权与V3x多模态边界">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-06" name="06 BiliNote迁移与治理">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1600" pageHeight="900">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title6" value="V3.0本地ASR例外与V3.x多模态边界" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="asr" value="V3.0限定LocalAsrAdapter&#xa;仅用户显式tabCapture&#xa;原始音频本机临时处理&#xa;取消/关页/撤销立即清理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="80" y="150" width="280" height="140" as="geometry"/></mxCell>
-        <mxCell id="vlm" value="VLM / Gemini Video 候选&#xa;frame caption&#xa;video understanding&#xa;成本与延迟高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="430" y="150" width="280" height="140" as="geometry"/></mxCell>
-        <mxCell id="ocr" value="OCR 候选&#xa;字幕烧录文字&#xa;画面文字&#xa;区域 / 时间来源" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="780" y="150" width="280" height="140" as="geometry"/></mxCell>
-        <mxCell id="live" value="Live input 候选&#xa;直播 rolling events&#xa;低延迟预算&#xa;EventStore 回放" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;" vertex="1" parent="1"><mxGeometry x="1130" y="150" width="280" height="140" as="geometry"/></mxCell>
-        <mxCell id="gate" value="统一治理门槛&#xa;MediaCaptureGrant / trusted click / tabId / 本机处理 / 临时缓存删除 / EventStore Trace / 延迟预算 / confidence / source provenance / false-green audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=17;spacing=14;align=center;" vertex="1" parent="1"><mxGeometry x="180" y="390" width="1140" height="150" as="geometry"/></mxCell>
-        <mxCell id="nogo" value="No-Go&#xa;自动下载媒体 / cookie导出 / 未授权采集 / 云端上传原始音频 / 取消后残留；VLM / OCR / Gemini Video / 直播仍属于V3.x。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=17;spacing=14;align=center;" vertex="1" parent="1"><mxGeometry x="260" y="620" width="980" height="110" as="geometry"/></mxCell>
+        <mxCell id="p6-0" />
+        <mxCell id="p6-1" parent="p6-0" />
+        <mxCell id="p6-title" value="BiliNote 选择性迁移与安全治理｜固定 clean commit，防腐层接入" style="text;html=1;fontSize=24;fontStyle=1;align=left;" vertex="1" parent="p6-1">
+          <mxGeometry x="60" y="35" width="1200" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-source" value="研究来源&#xa;GitHub JefferyHcool/BiliNote&#xa;clean commit be388939…&#xa;MIT License + license hash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" vertex="1" parent="p6-1">
+          <mxGeometry x="60" y="140" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-allow" value="允许借鉴&#xa;Cookie字幕 / yt-dlp / ASR fallback&#xa;后台任务 / 抽帧 / 时间戳笔记&#xa;经Navia短租约与清理层重写" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=15;" vertex="1" parent="p6-1">
+          <mxGeometry x="440" y="120" width="300" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-reject" value="拒绝迁移&#xa;整仓应用壳 / 账号 / SQLite / Chroma&#xa;明文Cookie配置 / 跨任务下载 / 绕过限制&#xa;Markdown marker 作为事实权威" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" vertex="1" parent="p6-1">
+          <mxGeometry x="440" y="360" width="300" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-acl" value="Navia 防腐层&#xa;MediaPortalAdapter + Registry&#xa;B站首个实现；YouTube/XHS后续独立适配&#xa;MediaTask / Evidence / VideoOutline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;fontStyle=1;" vertex="1" parent="p6-1">
+          <mxGeometry x="820" y="210" width="320" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-license" value="V3-0 已冻结 reference_only 清单&#xa;6 个 clean-commit 文件 + source hash&#xa;清单外默认拒绝；当前不授权复制&#xa;未来复制须目标映射 + MIT + 独立预审" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;" vertex="1" parent="p6-1">
+          <mxGeometry x="60" y="390" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-dirty" value="本地 bilinote/ 有未提交修改&#xa;dirty diff 不得作为迁移来源" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;fontStyle=1;" vertex="1" parent="p6-1">
+          <mxGeometry x="60" y="610" width="360" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-privacy" value="隐私边界&#xa;Cookie值仅浏览器/内存/0600临时文件&#xa;不上传原始音频，只上传已选证据帧&#xa;public evidence 零 secret / 临时媒体" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;" vertex="1" parent="p6-1">
+          <mxGeometry x="1210" y="130" width="320" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-fail" value="Fail closed&#xa;Provider 无 vision capability / 未授权 / 请求失败&#xa;不得伪造画面理解；允许文本大纲 degraded" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" vertex="1" parent="p6-1">
+          <mxGeometry x="1210" y="370" width="320" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-output" value="V3 产物&#xa;Navia 强类型合同与证据包&#xa;不依赖 BiliNote 运行时" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=16;fontStyle=1;" vertex="1" parent="p6-1">
+          <mxGeometry x="820" y="590" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e1" edge="1" parent="p6-1" source="p6-source" target="p6-allow" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e2" edge="1" parent="p6-1" source="p6-allow" target="p6-acl" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e3" edge="1" parent="p6-1" source="p6-acl" target="p6-output" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e4" edge="1" parent="p6-1" source="p6-license" target="p6-acl" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e5" edge="1" parent="p6-1" source="p6-acl" target="p6-privacy" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p6-e6" edge="1" parent="p6-1" source="p6-acl" target="p6-fail" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-07" name="07 开发及验收计划">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-07" name="07 开发里程碑与自动验收">
+    <mxGraphModel dx="1884" dy="876" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title7" value="V3 B站优先顺序开发与真实验收" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="doc" value="前置与文档&#xa;H01-RDS Runtime候选已过&#xa;真实Chrome三入口待验收&#xa;V3-B0合同/样本/风险已冻结&#xa;外部审计仍需0 Fatal / 0 Major&#xa;旧PX6证据只读，不跨run拼接" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="90" y="130" width="410" height="280" as="geometry"/></mxCell>
-        <mxCell id="impl" value="顺序实现&#xa;B1媒体页识别&#xa;B2字幕&#xa;B3显式tabCapture + 本地ASR&#xa;B4 VideoOutline + 导图投影&#xa;B5渲染与反跳&#xa;B6真实出门 -> Y1 YouTube" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="545" y="130" width="410" height="280" as="geometry"/></mxCell>
-        <mxCell id="accept" value="B站12页固定分母&#xa;6字幕 + 3 ASR + 1多P + 1 blocked + 1 degraded&#xa;指定BV必须ASR成功&#xa;8个证据节点 / 5次seek误差不超过2秒&#xa;四视口 + Axe + Keyboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="1000" y="130" width="410" height="280" as="geometry"/></mxCell>
-        <mxCell id="report" value="每阶段操作闭环&#xa;实施前计划与审计 -> 真实Chrome和真实数据 -> PRD复检 -> false-green audit -> 独立出门审计；失败回计划，不降低分母。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=16;spacing=14;align=center;" vertex="1" parent="1"><mxGeometry x="210" y="520" width="1080" height="130" as="geometry"/></mxCell>
+        <mxCell id="p7-0" />
+        <mxCell id="p7-1" parent="p7-0" />
+        <mxCell id="p7-title" parent="p7-1" style="text;html=1;fontSize=24;fontStyle=1;align=left;" value="V3-0..V3-7 开发里程碑与自动验收｜前一门禁不过，不得进入下一阶段" vertex="1">
+          <mxGeometry height="42" width="1300" x="60" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v30" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;fontStyle=1;" value="V3-0 文档冻结&#xa;PRD/架构/合同/原型/8页图&#xa;内审×2 + 外审 + 用户授权" vertex="1">
+          <mxGeometry height="125" width="260" x="60" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v31" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=14;" value="V3-1 页面/会话/租约&#xa;1.1页面、1.2会话、1.3租约已PASS&#xa;20秒channel + 60秒lease已实证" vertex="1">
+          <mxGeometry height="125" width="260" x="360" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v32" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=14;" value="0a LIMITED PASS；0b FAIL/REPLAN&#xa;5.3 DOCUMENT CANDIDATE：24 chunk·FW01-FW20&#xa;外审+新授权前禁实现；A06前V3-2-1..7阻塞" vertex="1">
+          <mxGeometry height="125" width="260" x="660" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v33" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="V3-3 画面理解&#xa;10 OCR + ≥8真实VLM&#xa;授权/provider/evidence闭合" vertex="1">
+          <mxGeometry height="125" width="260" x="960" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v34" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="V3-4 任务与语义&#xa;状态恢复 / outline / timeline / map&#xa;一个事实源" vertex="1">
+          <mxGeometry height="125" width="260" x="1260" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v35" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="V3-5 双容器交互&#xa;Ask/证据/反跳/导出&#xa;四视口 + 5次seek + Axe/Keyboard" vertex="1">
+          <mxGeometry height="135" width="300" x="1110" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v36" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;fontSize=14;" value="V3-6 生产矩阵&#xa;12页单run / 故障注入 / 隐私扫描&#xa;0 mock / 0跨run / 0 Major" vertex="1">
+          <mxGeometry height="135" width="300" x="520" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-v37" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=14;fontStyle=1;" value="V3-7 人类出门&#xa;H01-H10 可见Chrome&#xa;独立审计 Fatal=0 / Major=0" vertex="1">
+          <mxGeometry height="135" width="300" x="780" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-stop" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;fontStyle=1;" value="每阶段停止条件&#xa;真实数据失败 → 回到计划&#xa;PRD偏差/假绿/隐私风险 → 停止并审计&#xa;不得降低分母或阈值" vertex="1">
+          <mxGeometry height="135" width="430" x="60" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-denom" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;" value="阶段固定分母&#xa;5.3：3 source·24 chunk·0缺口/重叠·单并发·≤2×延迟&#xa;其后24bin×2人；A06前V3-2 A01-A20仍不放行" vertex="1">
+          <mxGeometry height="135" width="450" x="575" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-claim" parent="p7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#87918e;fontSize=15;" value="允许声明边界&#xa;V3-0：规格可请求实施授权&#xa;V3-7：仅 B站固定矩阵限定通过&#xa;禁止全平台/直播/RAG/V4" vertex="1">
+          <mxGeometry height="135" width="410" x="1110" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e1" edge="1" parent="p7-1" source="p7-v30" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e2" edge="1" parent="p7-1" source="p7-v31" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e3" edge="1" parent="p7-1" source="p7-v32" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e4" edge="1" parent="p7-1" source="p7-v33" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e5" edge="1" parent="p7-1" source="p7-v34" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e6" edge="1" parent="p7-1" source="p7-v35" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7-e7" edge="1" parent="p7-1" source="p7-v36" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;" target="p7-v37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="v3-08" name="08 里程碑与出门条件">
-    <mxGraphModel dx="1500" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="850" math="0" shadow="0">
+  <diagram id="v3-page-08" name="08 人类验收与出门条件">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1600" pageHeight="900">
       <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        <mxCell id="title8" value="V3 里程碑、出门条件与 No-Go" style="rounded=0;whiteSpace=wrap;html=1;fontSize=28;fontStyle=1;align=center;strokeColor=none;fillColor=none;" vertex="1" parent="1"><mxGeometry x="150" y="30" width="1200" height="50" as="geometry"/></mxCell>
-        <mxCell id="m1" value="当前状态&#xa;V3文档内部静态审计通过&#xa;H01-RDS Runtime候选通过&#xa;Chrome三入口待验收；V3代码未开始" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=17;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="130" width="390" height="120" as="geometry"/></mxCell>
-        <mxCell id="m2" value="V3-B6可出门&#xa;B站优先本地转录伴随体验通过固定12页真实验收" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=17;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="555" y="130" width="390" height="120" as="geometry"/></mxCell>
-        <mxCell id="m3" value="V3.x才可讨论&#xa;VLM / OCR / Gemini Video / 直播；Local ASR仅是V3.0用户授权例外" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=17;spacing=12;align=center;" vertex="1" parent="1"><mxGeometry x="1010" y="130" width="390" height="120" as="geometry"/></mxCell>
-        <mxCell id="docs" value="文档路径&#xa;stage-gates/v3-media-companion.md&#xa;design/v3-media-companion-gap.md&#xa;design/v3-media-companion-gap.drawio&#xa;design/v3-media-companion-development-acceptance-plan.md&#xa;design/v3-media-companion-readiness-audit.md" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="120" y="350" width="570" height="210" as="geometry"/></mxCell>
-        <mxCell id="nogo" value="硬No-Go&#xa;Mock冒充真实持久化&#xa;无转录生成内容大纲&#xa;自动下载媒体 / 导出cookie&#xa;未授权或取消后继续采集&#xa;图文与导图事实分叉&#xa;VLM OCR直播或跨视频RAG ready" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=16;spacing=12;align=left;" vertex="1" parent="1"><mxGeometry x="810" y="335" width="560" height="250" as="geometry"/></mxCell>
-        <mxCell id="human" value="人工出门操作&#xa;在指定BV确认无公开字幕 -> 点击本地转写 -> 可取消 -> 看到图文/时间轴/导图 -> 抽查8个证据 -> 点击5次跳转 -> 保存真实data_service并重启复读。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=17;spacing=14;align=center;" vertex="1" parent="1"><mxGeometry x="250" y="660" width="1000" height="110" as="geometry"/></mxCell>
+        <mxCell id="p8-0" />
+        <mxCell id="p8-1" parent="p8-0" />
+        <mxCell id="p8-title" value="H01-H10 人类验收与出门条件｜场景、操作、实际回填缺一不可" style="text;html=1;fontSize=24;fontStyle=1;align=left;" vertex="1" parent="p8-1">
+          <mxGeometry x="60" y="35" width="1250" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h1" value="H01 身份&#xa;打开锚点&#xa;核对 BV/CID/单P/792秒/无字幕" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="60" y="120" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h2" value="H02 五项授权&#xa;首次同意→刷新→设置撤销&#xa;不显示Cookie值；撤销后0新操作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" vertex="1" parent="p8-1">
+          <mxGeometry x="360" y="120" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h3" value="H03 启动与回退&#xa;短租约主路径；平台拒绝后可信capture&#xa;阶段、原因、取消可理解" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="660" y="120" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h4" value="H04 内容&#xa;抽查≥8节点&#xa;大纲/时间线与真实内容一致" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="960" y="120" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h5" value="H05 画面&#xa;帧/OCR/VLM分型&#xa;画面描述有真实依据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="1260" y="120" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h6" value="H06 导图&#xa;与大纲同源&#xa;节点可打开同一证据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="60" y="300" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h7" value="H07 Ask&#xa;3题有引用 + 1题拒答&#xa;无证据不得answered" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="360" y="300" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h8" value="H08 反跳&#xa;5次真实seek&#xa;回读 currentTime，误差≤2秒" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#2b74b8;" vertex="1" parent="p8-1">
+          <mxGeometry x="660" y="300" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h9" value="H09 故障&#xa;Cookie失效 / 取消 / Provider不可用&#xa;回退、清理和恢复提示正确" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;" vertex="1" parent="p8-1">
+          <mxGeometry x="960" y="300" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-h10" value="H10 导出&#xa;检查 Markdown ZIP/JSON&#xa;无“已保存知识库”声明" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#87918e;" vertex="1" parent="p8-1">
+          <mxGeometry x="1260" y="300" width="270" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-fill" value="每项回填&#xa;PASS / FAIL / BLOCKED&#xa;实际结果 + 截图路径 + 备注&#xa;未执行不得 PASS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;fontStyle=1;" vertex="1" parent="p8-1">
+          <mxGeometry x="120" y="520" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-machine" value="机器门禁&#xa;5.3 FW01-FW20待外审；3样本·24 chunk·每样本≤2×延迟&#xa;其后24bin×2人：≥44/48且每样本≥15/16；critical=0；neither=0&#xa;未通过前A06失败与V3-2-1..7阻塞保持" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#c28c13;fontSize=15;fontStyle=1;" vertex="1" parent="p8-1">
+          <mxGeometry x="620" y="520" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-exit" value="V3 出门&#xa;人类签署 + 独立审计&#xa;只声明 B站固定矩阵&#xa;V4 / 全平台 / 直播仍禁止" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dff2eb;strokeColor=#0b765f;fontSize=15;fontStyle=1;" vertex="1" parent="p8-1">
+          <mxGeometry x="1120" y="520" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-stop" value="任一 H 项 FAIL/BLOCKED、Cookie值泄漏、无租约下载、临时资源残留、分母缩小、Mock 假绿或无法重算 → 停止并返回对应计划" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=16;fontStyle=1;" vertex="1" parent="p8-1">
+          <mxGeometry x="350" y="730" width="900" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-e1" edge="1" parent="p8-1" source="p8-fill" target="p8-machine" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p8-e2" edge="1" parent="p8-1" source="p8-machine" target="p8-exit" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

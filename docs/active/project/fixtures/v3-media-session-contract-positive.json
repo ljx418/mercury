@@ -1,0 +1,51 @@
+{
+  "policy": {
+    "schemaVersion": "media-consent-policy/v1",
+    "policyId": "bilibili-media-consent/v1",
+    "adapterId": "bilibili",
+    "policyRevision": 1,
+    "status": "granted",
+    "scopeGrants": [
+      {
+        "scopeId": "bilibili_session_access",
+        "granted": true
+      },
+      {
+        "scopeId": "temporary_media_download",
+        "granted": true
+      },
+      {
+        "scopeId": "audio_local_processing",
+        "granted": true
+      },
+      {
+        "scopeId": "frame_local_processing",
+        "granted": true
+      },
+      {
+        "scopeId": "selected_frame_cloud_vision",
+        "granted": true
+      }
+    ],
+    "decidedAt": "2026-09-17T08:00:00Z",
+    "revokedAt": null
+  },
+  "capability": {
+    "schemaVersion": "portal-session-capability/v1",
+    "adapterId": "bilibili",
+    "sessionAdapterId": "bilibili-cookie-session",
+    "policyId": "bilibili-media-consent/v1",
+    "policyRevision": 1,
+    "status": "available",
+    "permissionState": {
+      "namedPermissionGranted": true,
+      "hostPermissionGranted": true
+    },
+    "credentialCount": 5,
+    "credentialNameSetSha256": "67166981712c0b024632614b43d1c7d4ecf7e23c2557b6f76dc58318a7530fc2",
+    "serverValidated": false,
+    "observedAt": "2026-09-17T08:00:05Z",
+    "expiresAt": "2026-09-17T08:00:35Z",
+    "failureCode": null
+  }
+}

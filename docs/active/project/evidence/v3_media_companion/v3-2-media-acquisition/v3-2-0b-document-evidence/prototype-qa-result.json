@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "v3-2-0b-prototype-qa/v1",
+  "source": {
+    "path": "docs/active/project/design/v3-media-companion-prototype-review/v3-2-0b-asr-qualification.html",
+    "sha256": "24623525d08aeeb8b380d7e3a6b48eb74477a16a9a0773719712bbd2f33a9753"
+  },
+  "viewports": [
+    {
+      "width": 360,
+      "height": 900,
+      "scrollY": 0,
+      "doc": 345,
+      "body": 345,
+      "heroTop": 59,
+      "heroText": "低资源中文 ASR 资格恢复，不绕过失败门禁",
+      "images": [
+        true,
+        true
+      ],
+      "sections": 8,
+      "buttons": 21,
+      "noHorizontalOverflow": true,
+      "imagesLoaded": true,
+      "heroVisible": true,
+      "screenshot": "prototype-screenshots/prototype-360x900.png",
+      "screenshotSha256": "16410f71cdcaa7970ab3c75d6a683afe1bb634bd3b2b76250fa96c3408cf831e"
+    },
+    {
+      "width": 420,
+      "height": 900,
+      "scrollY": 0,
+      "doc": 405,
+      "body": 405,
+      "heroTop": 59,
+      "heroText": "低资源中文 ASR 资格恢复，不绕过失败门禁",
+      "images": [
+        true,
+        true
+      ],
+      "sections": 8,
+      "buttons": 21,
+      "noHorizontalOverflow": true,
+      "imagesLoaded": true,
+      "heroVisible": true,
+      "screenshot": "prototype-screenshots/prototype-420x900.png",
+      "screenshotSha256": "2e937bb9bc84495936307c3a4ea05cbea138c9a45349defc04b23307eab077b6"
+    },
+    {
+      "width": 768,
+      "height": 900,
+      "scrollY": 0,
+      "doc": 753,
+      "body": 753,
+      "heroTop": 59,
+      "heroText": "低资源中文 ASR 资格恢复，不绕过失败门禁",
+      "images": [
+        true,
+        true
+      ],
+      "sections": 8,
+      "buttons": 21,
+      "noHorizontalOverflow": true,
+      "imagesLoaded": true,
+      "heroVisible": true,
+      "screenshot": "prototype-screenshots/prototype-768x900.png",
+      "screenshotSha256": "3af5508ea41c61527b300c500ac584d1f4e640fd3a20fb0fb730adf4d8bb0756"
+    },
+    {
+      "width": 1280,
+      "height": 900,
+      "scrollY": 0,
+      "doc": 1265,
+      "body": 1265,
+      "heroTop": 59,
+      "heroText": "低资源中文 ASR 资格恢复，不绕过失败门禁",
+      "images": [
+        true,
+        true
+      ],
+      "sections": 8,
+      "buttons": 21,
+      "noHorizontalOverflow": true,
+      "imagesLoaded": true,
+      "heroVisible": true,
+      "screenshot": "prototype-screenshots/prototype-1280x900.png",
+      "screenshotSha256": "9aa9da8e6d4817d5bdef623fd367c9d2f43ababf62441c1ee2174758abff46bd"
+    }
+  ],
+  "interactions": {
+    "dialogOpen": true,
+    "focusInDialog": true,
+    "cancelText": "已取消；未发布半成品，Tiny 继续生效",
+    "focusReturned": true,
+    "installed": "已安装 · 资格待验证",
+    "progressText": "232.33 / 232.33 MiB · 100%",
+    "requested": "funasr-paraformer-q8",
+    "effective": "faster-whisper-tiny",
+    "validation": "未完成：必须选择 A/B/等价/均不可接受。",
+    "saved": "示例判断已保存；正式页面还要求错误分类和 24/24 完整。",
+    "dark": "dark",
+    "passed": true
+  },
+  "axe": {
+    "serious": 0,
+    "critical": 0,
+    "violations": []
+  },
+  "accessibilityTree": {
+    "nodeCount": 738,
+    "headingCount": 20,
+    "buttonCount": 19,
+    "hasMain": true
+  },
+  "passed": true,
+  "cleanup": {
+    "profileDeleted": true
+  }
+}

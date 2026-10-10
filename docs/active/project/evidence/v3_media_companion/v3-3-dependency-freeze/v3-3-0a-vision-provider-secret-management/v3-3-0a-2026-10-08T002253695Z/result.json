@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "v3-vision-provider-settings-e2e/v1",
+  "runId": "v3-3-0a-2026-10-08T002253695Z",
+  "checks": [
+    {
+      "id": "ui_360",
+      "passed": true,
+      "detail": "password input visible; empty submit disabled"
+    },
+    {
+      "id": "axe_360",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "ui_420",
+      "passed": true,
+      "detail": "password input visible; empty submit disabled"
+    },
+    {
+      "id": "axe_420",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "vision-provider-settings-360x900.png",
+      "sha256": "874622e4895236c53ea307ec85ff39b758883e90831c06e46bddea8824e66828",
+      "byteLength": 90406,
+      "width": 360
+    },
+    {
+      "path": "vision-provider-settings-420x900.png",
+      "sha256": "135195a74c699b5750df739faf5a0114805cbea0b2bd9d9d64d999bf2dad9696",
+      "byteLength": 90092,
+      "width": 420
+    }
+  ],
+  "passed": true
+}

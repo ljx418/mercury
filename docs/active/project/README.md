@@ -1,5 +1,7 @@
 # Navia V1 Active Project Documentation
 
+> 当前 V3 产品收敛入口：`design/v3-chat-know-product-convergence.md`。目标原型：`design/v3-chat-know-target-review.html`。L0 架构：`design/v3-chat-know-l0-architecture.html`。V3 只以 Chat/Know 为一级产品域，Runtime 手动启动，Agent 延至 V5+。
+
 本目录只保留当前仍然激活的项目级 V1 / V1.2 / V1.3 / A-V1.2 开发入口、公共合同、工作区说明和验收门禁。
 
 模块级开发文档已统一移动到：
@@ -174,6 +176,23 @@ docs/active/project/evidence/v1_3_evidence_card_mindmap/screenshots/
 | V2-RKM round2原审查 | `evidence/v2_real_knowledge_maintenance/rkm-doc-readiness-review-round2-2026-09-10.md` | G-1..G-7发现与历史结论原文；错误的36项/阶段措辞由后续处置supersede |
 | V2-RKM DOC-Closure处置 | `evidence/v2_real_knowledge_maintenance/rkm-doc-readiness-round2-remediation-2026-09-10.md` | 39项封闭注册表、唯一T01..10、G-1..G-7字段闭环及三组限定范围0/0/0复核；待外部CLI审查 |
 | V2-RKM 风险再核查 | 同上文件第6节 | RC-01..04状态/调度、turn事务交接、离线撤销、Forget与恢复；图纸同步，新增修订仍待独立复审 |
+| V3 Media Companion 文档冻结 | `evidence/v3_media_companion/document-freeze/` | B站受控 Cookie 主路径、公开字幕/tabCapture 回退、PRD/架构/合同 v2/确定性原型/8 页 Draw.io/clean-commit allowlist；V3-0 文档已通过，后续按子阶段实施门禁推进 |
+| V3 Media Companion / V3-1.1 | `evidence/v3_media_companion/v3-1-page-session-baseline/independent-v3-1.1-implementation-audit.md` | B站页面 adapter、通用门户接口与窄域入口外部 LIMITED PASS；12/12 真实 Chrome、15/15 verifier；Fatal=0/Major=0/Minor=0，Cookie/session 与 V3-2+ 未实现 |
+| V3 Media Companion / V3-1.2 文档 | `evidence/v3_media_companion/v3-1-page-session-baseline/independent-v3-1.2-document-audit.md` | 通用 PortalSession 接口、B站独立 Cookie 策略、optional permission 与真实登录/匿名验收文档 PASS；Fatal=0/Major=0/Minor=3；高风险实施已获用户明确授权 |
+| V3 Media Companion / V3-1.2 历史会话阻塞 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.2-server-session-risk-stop-20260917.md` | 历史 `code=-101` 阻塞已由有效新会话 run 关闭；保留为失败证据，不再是当前门禁 |
+| V3 Media Companion / V3-1.2 历史停止 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.2-v3-1.1-sample-drift-risk-stop-20260917.md` | 历史匿名字幕漂移风险保留；当前由 V3-1R 独立登录态证据类关闭候选，不再作为现行状态 |
+| V3 Media Companion / V3-1R 本地候选 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1r-authenticated-regression-acceptance-result.md` | 当前 12/12、18/18 verifier、顶部隐私裁剪、秘密零命中；已由独立出门审计复核 |
+| V3 Media Companion / V3-1R 独立出门 | `evidence/v3_media_companion/v3-1-page-session-baseline/independent-v3-1r-implementation-exit-audit.md` | Fatal=0/Major=0；V3-1.2 QUALIFIED PASS；统计口径 Minor 已关闭；只允许进入 V3-1.3 文档阶段 |
+| V3 Media Companion / V3-1.3 文档外审 | `evidence/v3_media_companion/v3-1-page-session-baseline/independent-v3-1.3-document-audit.md` | Fatal=0/Major=0/Minor=2；DOCUMENT CONDITIONAL GO；等待 V3-1.3-0..7 用户高风险实施授权 |
+| V3 Media Companion / V3-1.3 实施候选 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-7-acceptance-result.md` | 真实 Chrome/Runtime 28/28、A01-A20 20/20、四视口、Axe/键盘、撤销/过期/重启、12 页当前 build 回归与 raw-value 0 hit；已由后续独立实施出门审查复核 |
+| V3 Media Companion / V3-1.3 外审请求 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-independent-implementation-audit-request.md` | 当前平铺 20 文件包的审查边界、唯一候选与输出路径；V3-2 implementation 仍 NO-GO |
+| V3 Media Companion / V3-1.3 独立实施出门 | `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-independent-implementation-exit-audit.md` | Browser-to-Runtime credential transport PASS；Fatal=0/Major=0/Minor=3；仅放行 V3-2 详细文档与威胁建模，V3-2 implementation 仍 NO-GO |
+| V3 Media Companion / V3-2 当前状态 | `evidence/v3_media_companion/v3-2-media-acquisition/` | SenseVoice development baseline、Runtime acquisition core、V3-2-2 Route B3 与 V3-2-3 已限定通过；V3-2-4 grant/Background/Offscreen/WebSocket/WAV/UI 已形成实现候选，但真实生产任务编排缺失，自动验收 FAIL 并进入 V3-2-4a 重规划；V3-2-5..7 保持阻塞 |
+| V3 Media Companion / V3-3..7 第三轮文档外审 | `evidence/v3_media_companion/v3-3-7-independent-document-audit.md` | 19/19 hash、5/5 Schema、6/6 positive、10/10 包内和 4/4 独立语义负例通过；文档 Fatal=0/Major=0/Minor=2；实现仍受 V3-2、RapidOCR/VLM、tooling/真实 build 前置阻塞 |
+| V3 Media Companion / V3-5 产品文档恢复外审 | `evidence/v3_media_companion/v3-5-independent-document-audit.md` | product acceptance v2、真实 observed route、ASR 资源/取消/清理、8 条 Media route 与 H01..H10 复审；Fatal=0/Major=0/Minor=2；仅达到等待用户明确实施授权的 CONDITIONAL GO |
+| V3 Media Companion / V3-2-0a 独立实施出门 | `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0a-independent-implementation-exit-audit.md` | Provider/模型管理与低资源 fallback `LOCAL LIMITED PASS`；历史 A06 失败已由后续 SenseVoice development baseline 取代为 V3 当前路线，不改写旧失败证据 |
+| V3 Media Companion / V3-2-0b-5.3 文档候选 | `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0b-provider-qualification/subphases/v3-2-0b-5.3/document-readiness-audit.md` | 原 0b 长窗质量 FAIL/REPLAN；固定 15 秒窗口、24 chunk、每样本 <=2x 延迟恢复路线；待外部独立文档审查，implementation NO-GO |
+| V3 Media Companion / V3-2-0c 路线 C 与开发基线 | `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0c-sensevoice-spike/` | SenseVoiceSmall Q8 三窗口 spike 后已完成 V3-2-0c-1 真实安装/音频/Chrome 基线；状态为 `development_baseline`，不扩大为 production-qualified |
 
 历史阶段（如 V1 / V1.1 / V1.2 / A-V1.2 / V1.2-AC-* / V1.3 / V1.4）的独立审计与 false-green 复审保留在各阶段 `evidence/<stage>/` 下，文件命名遵循 `<stage>-<scope>-audit.md` 或 `false-green-audit.md`。
 

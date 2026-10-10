@@ -1,0 +1,206 @@
+{
+  "schemaVersion": "v3-vision-sample-registry/v1",
+  "sourceRunId": "v3-2-production-20261007T174158Z",
+  "sourceRouteRunId": "v3-2-route-b3-20261007T174158Z",
+  "sourceRegistryPath": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/route/sample-registry-v5.json",
+  "sourceRegistrySha256": "d683d59ffe71fcc6aa7e7955121c959d0094b0c496e90fd9a69be73dd8e40aab",
+  "selectionRule": "all_expectedOutcome_success_in_source_order_first_8_cloud_targets",
+  "sampleCount": 10,
+  "cloudVisionTargetCount": 8,
+  "classificationCounts": {
+    "subtitle": 6,
+    "asr": 3,
+    "multipart": 1
+  },
+  "samples": [
+    {
+      "sampleId": "v3-sample-01",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1yLuwzpEt2",
+      "mediaId": "BV1yLuwzpEt2",
+      "partId": "1",
+      "playbackUnitId": "31882283793",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/01-BV1yLuwzpEt2.png",
+        "sha256": "6e212481aee8c64efa8462af99e71c9d9c37f32ecb373dded37a6f92d7900cd1"
+      }
+    },
+    {
+      "sampleId": "v3-sample-02",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1VG4117775",
+      "mediaId": "BV1VG4117775",
+      "partId": "1",
+      "playbackUnitId": "866655852",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/02-BV1VG4117775.png",
+        "sha256": "dc6787480a4b013ad786fa2680ad04529f51bccf295a098fffee449f37b96c54"
+      }
+    },
+    {
+      "sampleId": "v3-sample-03",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1Bt411D78C",
+      "mediaId": "BV1Bt411D78C",
+      "partId": "1",
+      "playbackUnitId": "65583597",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/03-BV1Bt411D78C.png",
+        "sha256": "f24d81ec2bce49cb8bba627c7d398f3053741ab0ee73922b140922fabed1464e"
+      }
+    },
+    {
+      "sampleId": "v3-sample-04",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1CiFMenEye",
+      "mediaId": "BV1CiFMenEye",
+      "partId": "1",
+      "playbackUnitId": "28144241035",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/04-BV1CiFMenEye.png",
+        "sha256": "3d28d28cbdd27ebcd7e02680ac197b3932a1c5d9f4869ff069ac24c1ebda7a34"
+      }
+    },
+    {
+      "sampleId": "v3-sample-05",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1Fh1VYFEDu",
+      "mediaId": "BV1Fh1VYFEDu",
+      "partId": "1",
+      "playbackUnitId": "26500924067",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/05-BV1Fh1VYFEDu.png",
+        "sha256": "3e3da98c5e776ecf27c2ac680ee1a30cb2409c64011e77f78fa474eeea899093"
+      }
+    },
+    {
+      "sampleId": "v3-sample-06",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1iv411j7wL",
+      "mediaId": "BV1iv411j7wL",
+      "partId": "1",
+      "playbackUnitId": "334264115",
+      "sourceClass": "subtitle",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/06-BV1iv411j7wL.png",
+        "sha256": "97fae9eb291215cafad2082ceeb63653816925bca84c61487073fd770ded8806"
+      }
+    },
+    {
+      "sampleId": "v3-sample-07",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV13W41137qV",
+      "mediaId": "BV13W41137qV",
+      "partId": "1",
+      "playbackUnitId": "34837341",
+      "sourceClass": "asr",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/07-BV13W41137qV.png",
+        "sha256": "d6de54be43058e9e8d7174ee367be78bfa23d606962bc5613c6861fb4c0cdb95"
+      }
+    },
+    {
+      "sampleId": "v3-sample-08",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+      "mediaId": "BV1ZpYd66ELP",
+      "partId": "1",
+      "playbackUnitId": "41828944992",
+      "sourceClass": "asr",
+      "expectedEvidence": [
+        "frame",
+        "ocr",
+        "vlm"
+      ],
+      "cloudVisionTarget": true,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/08-BV1ZpYd66ELP.png",
+        "sha256": "f74c0e6227737c1eb42f19ff46c6d0494f3e0aaa53b08480ec8457f096c416f4"
+      }
+    },
+    {
+      "sampleId": "v3-sample-09",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1pW421c7DH",
+      "mediaId": "BV1pW421c7DH",
+      "partId": "1",
+      "playbackUnitId": "1466516259",
+      "sourceClass": "asr",
+      "expectedEvidence": [
+        "frame",
+        "ocr"
+      ],
+      "cloudVisionTarget": false,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/09-BV1pW421c7DH.png",
+        "sha256": "2d6ee0e54b77522ddb7dbd3b8730382f16b1c9d0d4e5cd4dd2aac36ca7537626"
+      }
+    },
+    {
+      "sampleId": "v3-sample-10",
+      "adapterId": "bilibili",
+      "url": "https://www.bilibili.com/video/BV1PA4m1w7ya",
+      "mediaId": "BV1PA4m1w7ya",
+      "partId": "1",
+      "playbackUnitId": "1491078608",
+      "sourceClass": "multipart",
+      "expectedEvidence": [
+        "frame",
+        "ocr"
+      ],
+      "cloudVisionTarget": false,
+      "sourceScreenshot": {
+        "path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/10-BV1PA4m1w7ya.png",
+        "sha256": "fa973a44a632a1126940dea67e58d1b3dfb9dcb138fab26c39f2420848b793bf"
+      }
+    }
+  ],
+  "contentSha256": "04a948a7d143a6bdc66c4e96cabf271a79810cf6db374b21d5ba960a1c29afb2"
+}

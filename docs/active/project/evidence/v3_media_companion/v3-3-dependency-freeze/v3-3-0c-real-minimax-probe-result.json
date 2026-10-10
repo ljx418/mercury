@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "v3-vision-selected-provider-probe/v1",
+  "executedAt": "2026-10-08T06:12:41.425Z",
+  "executed": true,
+  "passed": true,
+  "failureCode": null,
+  "provider": {
+    "providerId": "minimax-cn-openai-vision",
+    "adapterKind": "minimax_chat_completions",
+    "modelId": "MiniMax-M3",
+    "apiBase": "https://api.minimaxi.com/v1",
+    "credentialStorage": "windows_credential_vault",
+    "credentialReferenceSha256": "f714d46386bc5ad2d87931914318dfbee35840ded2267f2a447fc46141a555d3"
+  },
+  "probeImage": {
+    "kind": "generated_neutral_checkerboard",
+    "containsUserContent": false,
+    "byteLength": 589,
+    "sha256": "521fa8f06e101b14c0f1b85e329b651e66ecf80406aa64021ba47ac6745e8eeb"
+  },
+  "requestPolicy": {
+    "singleImage": true,
+    "store": false,
+    "toolsEnabled": false
+  },
+  "result": {
+    "latencyMs": 5682,
+    "usage": {
+      "input_tokens": 262,
+      "output_tokens": 50,
+      "total_tokens": 312
+    },
+    "observation": {
+      "summary": "Checkerboard pattern of dark teal, light cream, red, and yellow squares arranged in a 2x4 grid.",
+      "containsText": false,
+      "dominantColors": [
+        "dark teal",
+        "light cream",
+        "red",
+        "yellow"
+      ]
+    }
+  },
+  "secretMaterialIncluded": false
+}

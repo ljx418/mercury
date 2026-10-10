@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "v3-media-workspace-comprehension-negative-cases/v1",
+  "cases": [
+    { "caseId": "V351-N01", "requirementId": "V351-R01", "mutation": "task.outlineId=outline_ffffffffffffffffffffffffffffffff", "expectedFailureCode": "V351_IDENTITY_MISMATCH" },
+    { "caseId": "V351-N02", "requirementId": "V351-R02", "mutation": "outline.chapters[1].order=0", "expectedFailureCode": "V351_CHAPTER_ORDER_INVALID" },
+    { "caseId": "V351-N03", "requirementId": "V351-R03", "mutation": "outline.chapters[1].startMs=90000", "expectedFailureCode": "V351_CHAPTER_OVERLAP" },
+    { "caseId": "V351-N04", "requirementId": "V351-R04", "mutation": "outline.chapters[0].evidenceIds[0]=mtr_ffffffffffffffffffffffffffffffff", "expectedFailureCode": "V351_EVIDENCE_ORPHAN" },
+    { "caseId": "V351-N05", "requirementId": "V351-R05", "mutation": "outline.chapters[0].representativeFrameEvidenceId=mtr_00000000000000000000000000000001", "expectedFailureCode": "V351_FRAME_KIND_INVALID" },
+    { "caseId": "V351-N06", "requirementId": "V351-R06", "mutation": "timeline.outlineId=outline_ffffffffffffffffffffffffffffffff", "expectedFailureCode": "V351_PROJECTION_IDENTITY_MISMATCH" },
+    { "caseId": "V351-N07", "requirementId": "V351-R07", "mutation": "timeline.moments[0].chapterId=chapter_ffffffffffffffff", "expectedFailureCode": "V351_TIMELINE_CHAPTER_ORPHAN" },
+    { "caseId": "V351-N08", "requirementId": "V351-R08", "mutation": "timeline.moments[1].frameEvidenceId=mtr_00000000000000000000000000000001", "expectedFailureCode": "V351_FRAME_KIND_INVALID" },
+    { "caseId": "V351-N09", "requirementId": "V351-R09", "mutation": "mindmap.nodes[0].parentNodeId=node_0000000000000002", "expectedFailureCode": "V351_MINDMAP_ROOT_INVALID" },
+    { "caseId": "V351-N10", "requirementId": "V351-R10", "mutation": "mindmap.nodes[2].parentNodeId=node_0000000000000003", "expectedFailureCode": "V351_MINDMAP_CYCLE" },
+    { "caseId": "V351-N11", "requirementId": "V351-R11", "mutation": "mindmap.nodes[2].depth=1", "expectedFailureCode": "V351_MINDMAP_DEPTH_INVALID" },
+    { "caseId": "V351-N12", "requirementId": "V351-R12", "mutation": "askBenchmark[0].answerBlocks[0].evidenceIds[0]=mtr_ffffffffffffffffffffffffffffffff", "expectedFailureCode": "V351_ASK_CITATION_ORPHAN" },
+    { "caseId": "V351-N13", "requirementId": "V351-R13", "mutation": "askBenchmark[6].answerBlocks[0].evidenceIds=[mtr_00000000000000000000000000000003]", "expectedFailureCode": "V351_VISUAL_CITATION_INVALID" },
+    { "caseId": "V351-N14", "requirementId": "V351-R14", "mutation": "askBenchmark[10].status=answered", "expectedFailureCode": "V351_INSUFFICIENT_ANSWER_INVALID" },
+    { "caseId": "V351-N15", "requirementId": "V351-R15", "mutation": "askBenchmark[0].criticalMeaningError=true", "expectedFailureCode": "V351_CRITICAL_MEANING_ERROR" },
+    { "caseId": "V351-N16", "requirementId": "V351-R16", "mutation": "playbackObservations[0].deltaMs=0", "expectedFailureCode": "V351_SEEK_DELTA_MISMATCH" },
+    { "caseId": "V351-N17", "requirementId": "V351-R17", "mutation": "playbackObservations=first_9", "expectedFailureCode": "V351_SEEK_COVERAGE_INSUFFICIENT" },
+    { "caseId": "V351-N18", "requirementId": "V351-R18", "mutation": "authorization.providerId=minimax", "expectedFailureCode": "V351_CLOUD_SCOPE_INVALID" },
+    { "caseId": "V351-N19", "requirementId": "V351-R19", "mutation": "authorization.rawMediaUploadCount=1", "expectedFailureCode": "V351_RAW_MEDIA_UPLOAD_FORBIDDEN" },
+    { "caseId": "V351-N20", "requirementId": "V351-R20", "mutation": "resourceVerification.remoteScriptCount=1", "expectedFailureCode": "V351_REMOTE_SCRIPT_FORBIDDEN" }
+  ]
+}

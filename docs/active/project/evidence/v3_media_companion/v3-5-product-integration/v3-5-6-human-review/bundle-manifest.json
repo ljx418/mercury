@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "v3-5-human-review-bundle/v1",
+  "runId": "v3-5-product-20261009T085637Z",
+  "buildTreeSha256": "e7ad9c05f402b30f69923df44d02150e9c0fbc9d07e2272fba066bec036ba33d",
+  "productAcceptance": {
+    "path": "v3-5-5-product-acceptance-v2.json",
+    "sha256": "cea45a8da77ff16930b34bb8d2d0e3dece14592ac340dfa36d31b85e15d1d862"
+  },
+  "machineEvidence": {
+    "path": "v3-5-5-machine-evidence.json",
+    "sha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/side-panel-360x900.png",
+      "width": 360,
+      "height": 900,
+      "sha256": "66090801ccca914e161a08c697165c35e597ad45aeb81110642770f259bfd5ab"
+    },
+    {
+      "path": "screenshots/side-panel-420x900.png",
+      "width": 420,
+      "height": 900,
+      "sha256": "4f425ee5878880fd9d091d9ab1bba785b7ce3ef3486f4f31636c99616e2b208b"
+    },
+    {
+      "path": "screenshots/workspace-768x900.png",
+      "width": 768,
+      "height": 900,
+      "sha256": "be28c9451c7633f4382fe34b1c96f644c69a60eb1c92295a8ca688a4d071428a"
+    },
+    {
+      "path": "screenshots/workspace-1280x900.png",
+      "width": 1280,
+      "height": 900,
+      "sha256": "cdda2529e72a66f438dd15b0b591e09b39d587584914a1d7e427e4de609a0d9c"
+    }
+  ],
+  "requirements": [
+    "H01",
+    "H02",
+    "H03",
+    "H04",
+    "H05",
+    "H06",
+    "H07",
+    "H08",
+    "H09",
+    "H10"
+  ],
+  "reviewStatus": "pending_human"
+}

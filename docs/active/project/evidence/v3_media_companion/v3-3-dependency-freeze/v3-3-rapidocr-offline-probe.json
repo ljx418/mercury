@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "v3-vision-offline-probe/v1",
+  "passed": true,
+  "engineManifestSha256": "3cff6d5868824c357d0609671669511a507bb25fef64ed4030450ebb8f73d81f",
+  "sourceSampleId": "v3-sample-08",
+  "sourceImagePath": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-7-production-exit/runs/v3-2-production-20261007T174158Z/probe/candidate-screenshots/08-BV1ZpYd66ELP.png",
+  "sourceImageSha256": "f74c0e6227737c1eb42f19ff46c6d0494f3e0aaa53b08480ec8457f096c416f4",
+  "networkPolicy": "python_audit_hook_deny_socket_connect_and_getaddrinfo",
+  "networkAttemptCount": 0,
+  "gpuUsed": false,
+  "threadLimit": 4,
+  "textCount": 82,
+  "meanConfidence": 0.97391,
+  "resultSha256": "98426e7a0002d9e55b4ec2e5bdc1607a5e2e76c75a62909d4cfed19ced695449",
+  "wallClockSeconds": 1.408202,
+  "peakRssKiB": 426072
+}

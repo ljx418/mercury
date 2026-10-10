@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v3-asr-route-c-spike-manifest/v1",
+  "candidateId": "sensevoice-small-q8-cpu-spike-v1",
+  "status": "authorized_isolated_spike",
+  "runtime": {
+    "tag": "runtime-llamacpp-v0.2.6",
+    "sourceCommit": "a57c05bfe2a91b5e0cb0983479634eba3e28ede5",
+    "archiveBytes": 8014474,
+    "archiveSha256": "779967de1c528c2be966bcc47f246e7d3e6fcdb748d9491263062f4120f35e52",
+    "binaryBytes": 2442392,
+    "binarySha256": "c41a53b0156f5c6c01a4390aee601831890d2fffe272d34499e1589e64c30edd",
+    "license": "MIT"
+  },
+  "model": {
+    "repository": "FunAudioLLM/SenseVoiceSmall-GGUF",
+    "revision": "90c1c61912018b70ada0fcc024ea24aca62f2e63",
+    "fileName": "sensevoice-small-q8.gguf",
+    "bytes": 254208320,
+    "sha256": "4ae45c94422de949b387e2e0fb10d7e14e4c42c69db30c3444ecc7d4b844b7c5",
+    "license": "Apache-2.0"
+  },
+  "vad": {
+    "fileName": "fsmn-vad.gguf",
+    "bytes": 1720512,
+    "sha256": "1270f2559c495f4e7b6e739541151027d360761a3fda43fc147034f5719f5479"
+  },
+  "resourcePolicy": {"cpuCores": 8, "addressSpaceBytes": 8589934592, "gpuAllowed": false, "assetBytesCeiling": 536870912},
+  "sampleTuples": [
+    {"sampleId": "v3-asr-comparison-03", "sourceSha256": "f4f61c09f8fe19828fb2085ef18459179d5142596b8107cef82df6c7bf7cc97b", "chunkIndex": 4, "startMs": 60000, "endMs": 75000, "pcmPayloadSha256": "6271ffeeb1f1f1d144bcc0402027c7abc5acf67b1b72c49064094511360c090b"},
+    {"sampleId": "v3-asr-comparison-03", "sourceSha256": "f4f61c09f8fe19828fb2085ef18459179d5142596b8107cef82df6c7bf7cc97b", "chunkIndex": 2, "startMs": 30000, "endMs": 45000, "pcmPayloadSha256": "e0a45bf905f458bae924496f25257cc0086675aa363afaf10463937d8c1164bf"},
+    {"sampleId": "v3-asr-comparison-01", "sourceSha256": "2a11e09975733740d49f4a63ca7b3ec1a9ebc77e8e8897d770e1991d4c1beb05", "chunkIndex": 0, "startMs": 0, "endMs": 15000, "pcmPayloadSha256": "48eeadf590c80efbda863b7f91ab60afed45accb3d2f441c3bc3c788bb72c195"}
+  ],
+  "allowedConclusion": ["SPIKE_FEASIBLE", "SPIKE_FAILED"],
+  "productionIntegrationAuthorized": false
+}

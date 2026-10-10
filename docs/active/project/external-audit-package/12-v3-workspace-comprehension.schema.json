@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-workspace-comprehension/v1",
+  "title": "Navia V3-5.1 grounded media workspace comprehension candidate",
+  "type": "object",
+  "required": ["schemaVersion", "task", "authorization", "evidenceCatalog", "outline", "timeline", "mindmap", "askBenchmark", "playbackObservations", "uiVerification", "resourceVerification"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-workspace-comprehension/v1" },
+    "task": { "$ref": "#/$defs/TaskBinding" },
+    "authorization": { "$ref": "#/$defs/Authorization" },
+    "evidenceCatalog": { "type": "array", "minItems": 6, "uniqueItems": true, "items": { "$ref": "#/$defs/Evidence" } },
+    "outline": { "$ref": "#/$defs/Outline" },
+    "timeline": { "$ref": "#/$defs/Timeline" },
+    "mindmap": { "$ref": "#/$defs/Mindmap" },
+    "askBenchmark": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "$ref": "#/$defs/AskResult" } },
+    "playbackObservations": { "type": "array", "minItems": 10, "items": { "$ref": "#/$defs/PlaybackObservation" } },
+    "uiVerification": { "$ref": "#/$defs/UiVerification" },
+    "resourceVerification": { "$ref": "#/$defs/ResourceVerification" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "OutlineId": { "type": "string", "pattern": "^outline_[a-f0-9]{32}$" },
+    "EvidenceId": { "type": "string", "pattern": "^(?:mev|mtr)_[a-f0-9]{32}$" },
+    "ChapterId": { "type": "string", "pattern": "^chapter_[a-f0-9]{16}$" },
+    "NodeId": { "type": "string", "pattern": "^node_[a-f0-9]{16}$" },
+    "TaskBinding": {
+      "type": "object",
+      "required": ["taskId", "taskRevision", "sourceIdentity", "mediaDurationMs", "outlineId"],
+      "additionalProperties": false,
+      "properties": {
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "taskRevision": { "type": "integer", "minimum": 1 },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$" },
+        "mediaDurationMs": { "type": "integer", "minimum": 1000, "maximum": 86400000 },
+        "outlineId": { "$ref": "#/$defs/OutlineId" }
+      }
+    },
+    "Authorization": {
+      "type": "object",
+      "required": ["groundedTextCloudStatus", "providerId", "modelId", "outboundDerivedTextSha256", "rawMediaUploadCount", "selectedFrameUploadCount"],
+      "additionalProperties": false,
+      "properties": {
+        "groundedTextCloudStatus": { "enum": ["disabled", "granted", "revoked"] },
+        "providerId": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_-]{1,63}$" },
+        "modelId": { "type": ["string", "null"], "minLength": 1, "maxLength": 128 },
+        "outboundDerivedTextSha256": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Sha256" }] },
+        "rawMediaUploadCount": { "const": 0 },
+        "selectedFrameUploadCount": { "type": "integer", "minimum": 0, "maximum": 8 }
+      }
+    },
+    "Evidence": {
+      "type": "object",
+      "required": ["evidenceId", "kind", "timestampStartMs", "timestampEndMs", "contentSha256", "privateArtifactRef"],
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "kind": { "enum": ["transcript", "frame", "ocr_block", "vision_caption"] },
+        "timestampStartMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "timestampEndMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "contentSha256": { "$ref": "#/$defs/Sha256" },
+        "privateArtifactRef": { "type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$" }
+      }
+    },
+    "Chapter": {
+      "type": "object",
+      "required": ["chapterId", "parentChapterId", "depth", "order", "startMs", "endMs", "title", "thesis", "keyPoints", "evidenceIds", "representativeFrameEvidenceId"],
+      "additionalProperties": false,
+      "properties": {
+        "chapterId": { "$ref": "#/$defs/ChapterId" },
+        "parentChapterId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ChapterId" }] },
+        "depth": { "type": "integer", "minimum": 1, "maximum": 4 },
+        "order": { "type": "integer", "minimum": 0 },
+        "startMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "endMs": { "type": "integer", "minimum": 1, "maximum": 86400000 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "thesis": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "keyPoints": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "type": "string", "minLength": 1, "maxLength": 500 } },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } },
+        "representativeFrameEvidenceId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/EvidenceId" }] }
+      }
+    },
+    "Outline": {
+      "type": "object",
+      "required": ["outlineId", "taskId", "taskRevision", "title", "summary", "chapters", "contentSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "taskRevision": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "summary": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "chapters": { "type": "array", "minItems": 3, "maxItems": 48, "items": { "$ref": "#/$defs/Chapter" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "TimelineMoment": {
+      "type": "object",
+      "required": ["momentId", "chapterId", "timestampMs", "kind", "title", "evidenceIds", "frameEvidenceId"],
+      "additionalProperties": false,
+      "properties": {
+        "momentId": { "type": "string", "pattern": "^moment_[a-f0-9]{16}$" },
+        "chapterId": { "$ref": "#/$defs/ChapterId" },
+        "timestampMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "kind": { "enum": ["chapter", "key_point", "frame", "quote"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } },
+        "frameEvidenceId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/EvidenceId" }] }
+      }
+    },
+    "Timeline": {
+      "type": "object",
+      "required": ["projectionId", "outlineId", "chapterIds", "moments", "contentSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "projectionId": { "type": "string", "pattern": "^timeline_[a-f0-9]{32}$" },
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "chapterIds": { "type": "array", "minItems": 3, "uniqueItems": true, "items": { "$ref": "#/$defs/ChapterId" } },
+        "moments": { "type": "array", "minItems": 8, "items": { "$ref": "#/$defs/TimelineMoment" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "MindmapNode": {
+      "type": "object",
+      "required": ["nodeId", "parentNodeId", "depth", "kind", "label", "chapterId", "timestampMs", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "nodeId": { "$ref": "#/$defs/NodeId" },
+        "parentNodeId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/NodeId" }] },
+        "depth": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "kind": { "enum": ["root", "chapter", "key_point", "evidence"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "chapterId": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/ChapterId" }] },
+        "timestampMs": { "type": ["integer", "null"], "minimum": 0, "maximum": 86400000 },
+        "evidenceIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } }
+      }
+    },
+    "Mindmap": {
+      "type": "object",
+      "required": ["projectionId", "outlineId", "nodes", "contentSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "projectionId": { "type": "string", "pattern": "^mindmap_[a-f0-9]{32}$" },
+        "outlineId": { "$ref": "#/$defs/OutlineId" },
+        "nodes": { "type": "array", "minItems": 7, "items": { "$ref": "#/$defs/MindmapNode" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "AnswerBlock": {
+      "type": "object",
+      "required": ["text", "evidenceIds", "timestampMs"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string", "minLength": 1, "maxLength": 1500 },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/EvidenceId" } },
+        "timestampMs": { "type": "integer", "minimum": 0, "maximum": 86400000 }
+      }
+    },
+    "AskResult": {
+      "type": "object",
+      "required": ["questionId", "category", "question", "status", "answerBlocks", "retrievalPlanSha256", "executionMode", "criticalMeaningError", "citationSupported"],
+      "additionalProperties": false,
+      "properties": {
+        "questionId": { "type": "string", "pattern": "^question_[a-f0-9]{8}$" },
+        "category": { "enum": ["factual", "visual", "cross_chapter", "insufficient"] },
+        "question": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "status": { "enum": ["answered", "insufficient_evidence", "blocked"] },
+        "answerBlocks": { "type": "array", "items": { "$ref": "#/$defs/AnswerBlock" } },
+        "retrievalPlanSha256": { "$ref": "#/$defs/Sha256" },
+        "executionMode": { "enum": ["local_deterministic", "authorized_grounded_cloud"] },
+        "criticalMeaningError": { "type": "boolean" },
+        "citationSupported": { "type": "boolean" }
+      }
+    },
+    "PlaybackObservation": {
+      "type": "object",
+      "required": ["observationId", "origin", "requestedMs", "observedMs", "deltaMs", "pageIdentityMatched", "observedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "observationId": { "type": "string", "pattern": "^seek_[a-f0-9]{16}$" },
+        "origin": { "enum": ["chapter", "moment", "frame", "mindmap_node", "ask_citation"] },
+        "requestedMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "observedMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "deltaMs": { "type": "integer", "minimum": 0, "maximum": 2000 },
+        "pageIdentityMatched": { "const": true },
+        "observedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UiVerification": {
+      "type": "object",
+      "required": ["wheelPan", "pointerDrag", "zoom", "fit", "chapterBands", "playbackCursor", "frameCards", "mindmapPanZoomCollapse", "keyboardTree", "viewportWidths", "axeSerious", "axeCritical"],
+      "additionalProperties": false,
+      "properties": {
+        "wheelPan": { "const": true },
+        "pointerDrag": { "const": true },
+        "zoom": { "const": true },
+        "fit": { "const": true },
+        "chapterBands": { "const": true },
+        "playbackCursor": { "const": true },
+        "frameCards": { "const": true },
+        "mindmapPanZoomCollapse": { "const": true },
+        "keyboardTree": { "const": true },
+        "viewportWidths": { "type": "array", "minItems": 4, "uniqueItems": true, "contains": { "const": 360 }, "items": { "enum": [360, 420, 768, 1280] } },
+        "axeSerious": { "const": 0 },
+        "axeCritical": { "const": 0 }
+      }
+    },
+    "ResourceVerification": {
+      "type": "object",
+      "required": ["baselineRamGiB", "gpuRequired", "interactiveMs", "maxMainThreadBlockMs", "remoteScriptCount", "evalCount"],
+      "additionalProperties": false,
+      "properties": {
+        "baselineRamGiB": { "const": 8 },
+        "gpuRequired": { "const": false },
+        "interactiveMs": { "type": "integer", "minimum": 0, "maximum": 2000 },
+        "maxMainThreadBlockMs": { "type": "integer", "minimum": 0, "exclusiveMaximum": 200 },
+        "remoteScriptCount": { "const": 0 },
+        "evalCount": { "const": 0 }
+      }
+    }
+  }
+}

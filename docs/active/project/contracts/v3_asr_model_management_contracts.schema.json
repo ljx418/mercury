@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_asr_model_management_contracts.schema.json",
+  "title": "Navia V3 local ASR provider and model management public contracts",
+  "type": "object",
+  "required": ["catalog", "selection", "installationJob"],
+  "additionalProperties": false,
+  "properties": {
+    "catalog": { "$ref": "#/$defs/Catalog" },
+    "selection": { "$ref": "#/$defs/Selection" },
+    "installationJob": { "$ref": "#/$defs/InstallationJob" }
+  },
+  "$defs": {
+    "InstallationState": {
+      "enum": ["not_installed", "qualification_required", "checking", "downloading", "verifying", "installing", "self_testing", "ready", "cancelling", "cancelled", "failed", "corrupt"]
+    },
+    "ResourceProfile": {
+      "type": "object",
+      "required": ["downloadBytes", "diskBytes", "estimatedPeakRamBytes", "requiresGpu", "recommendedCpuCores", "vramBytes"],
+      "additionalProperties": false,
+      "properties": {
+        "downloadBytes": { "type": "integer", "minimum": 0 },
+        "diskBytes": { "type": "integer", "minimum": 0 },
+        "estimatedPeakRamBytes": { "type": "integer", "minimum": 0 },
+        "requiresGpu": { "type": "boolean" },
+        "recommendedCpuCores": { "type": "integer", "minimum": 1 },
+        "vramBytes": { "type": "integer", "minimum": 0 },
+        "installationFreeSpaceRequiredBytes": { "type": "integer", "minimum": 0 },
+        "platformDownloadBytes": {
+          "type": "object",
+          "required": ["linuxX64", "windowsX64"],
+          "additionalProperties": false,
+          "properties": {
+            "linuxX64": { "type": "integer", "minimum": 0 },
+            "windowsX64": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "Provider": {
+      "type": "object",
+      "required": ["providerId", "name", "engine", "engineVersion", "locality", "status", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "providerId": { "enum": ["faster_whisper_local", "funasr_edge_local"] },
+        "name": { "type": "string", "minLength": 1 },
+        "engine": { "type": "string", "minLength": 1 },
+        "engineVersion": { "type": "string", "minLength": 1 },
+        "locality": { "const": "local_only" },
+        "status": { "enum": ["ready", "qualification_required", "qualification_pending"] },
+        "description": { "type": "string", "minLength": 1 },
+        "runtimeKind": { "enum": ["python_local", "native_process"] },
+        "capabilities": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "Model": {
+      "type": "object",
+      "required": ["modelId", "providerId", "name", "repository", "revision", "license", "installKind", "installable", "selectable", "bundled", "fallbackOnly", "quality", "resources", "installation"],
+      "additionalProperties": false,
+      "properties": {
+        "modelId": { "enum": ["faster-whisper-tiny", "faster-whisper-small", "funasr-paraformer-q8", "funasr-sensevoice-small-q8", "faster-whisper-large-v3-turbo"] },
+        "providerId": { "enum": ["faster_whisper_local", "funasr_edge_local"] },
+        "name": { "type": "string", "minLength": 1 },
+        "repository": { "type": "string", "minLength": 1 },
+        "revision": { "type": "string", "minLength": 1 },
+        "license": { "type": "string", "minLength": 1 },
+        "installKind": { "enum": ["bundled", "remote_verified", "qualification_required"] },
+        "installable": { "type": "boolean" },
+        "selectable": { "type": "boolean" },
+        "bundled": { "type": "boolean" },
+        "fallbackOnly": { "type": "boolean" },
+        "quality": {
+          "type": "object",
+          "required": ["status", "note"],
+          "additionalProperties": false,
+          "properties": {
+            "status": { "enum": ["fallback_only", "failed_current_gate", "not_evaluated", "qualification_pending", "development_baseline", "production_qualified"] },
+            "note": { "type": "string", "minLength": 1 },
+            "gateVersion": { "type": "string", "minLength": 1 },
+            "qualificationRunId": { "type": "string", "minLength": 1 }
+          }
+        },
+        "runtimeKind": { "enum": ["python_local", "native_process"] },
+        "capabilities": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "resources": { "$ref": "#/$defs/ResourceProfile" },
+        "installation": {
+          "type": "object",
+          "required": ["state", "verifiedAt"],
+          "additionalProperties": false,
+          "properties": {
+            "state": { "$ref": "#/$defs/InstallationState" },
+            "verifiedAt": { "type": ["string", "null"], "format": "date-time" }
+          }
+        }
+      }
+    },
+    "Catalog": {
+      "type": "object",
+      "required": ["schemaVersion", "providers", "models", "lowResourceBaseline"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-model-catalog/v1" },
+        "providers": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/Provider" } },
+        "models": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/Model" } },
+        "lowResourceBaseline": {
+          "type": "object",
+          "required": ["cpuCores", "ramBytes", "gpuRequired"],
+          "additionalProperties": false,
+          "properties": {
+            "cpuCores": { "const": 8 },
+            "ramBytes": { "const": 8589934592 },
+            "gpuRequired": { "const": false }
+          }
+        }
+      }
+    },
+    "Selection": {
+      "type": "object",
+      "required": ["schemaVersion", "requestedModelId", "effectiveModelId", "fallbackActive", "fallbackReason", "updatedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-selection/v1" },
+        "requestedModelId": { "type": "string", "minLength": 1 },
+        "effectiveModelId": { "type": ["string", "null"] },
+        "fallbackActive": { "type": "boolean" },
+        "fallbackReason": { "type": ["string", "null"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "InstallationJob": {
+      "type": "object",
+      "required": ["schemaVersion", "jobId", "modelId", "source", "state", "bytesCompleted", "bytesTotal", "percent", "bytesPerSecond", "etaSeconds", "message", "failureCode", "sequence", "history", "createdAt", "updatedAt", "finishedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-asr-installation-job/v1" },
+        "jobId": { "type": "string", "pattern": "^asrjob_[a-f0-9]{32}$" },
+        "modelId": { "type": "string", "minLength": 1 },
+        "source": { "enum": ["remote", "offline_package"] },
+        "state": { "$ref": "#/$defs/InstallationState" },
+        "bytesCompleted": { "type": "integer", "minimum": 0 },
+        "bytesTotal": { "type": "integer", "minimum": 0 },
+        "percent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "bytesPerSecond": { "type": "integer", "minimum": 0 },
+        "etaSeconds": { "type": ["integer", "null"], "minimum": 0 },
+        "message": { "type": "string", "minLength": 1 },
+        "failureCode": { "type": ["string", "null"] },
+        "sequence": { "type": "integer", "minimum": 1 },
+        "history": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["state", "sequence", "at"],
+            "additionalProperties": false,
+            "properties": {
+              "state": { "$ref": "#/$defs/InstallationState" },
+              "sequence": { "type": "integer", "minimum": 1 },
+              "at": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "finishedAt": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

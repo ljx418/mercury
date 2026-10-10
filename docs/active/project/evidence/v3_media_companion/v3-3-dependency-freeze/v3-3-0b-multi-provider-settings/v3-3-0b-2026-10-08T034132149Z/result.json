@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "v3-vision-provider-settings-e2e/v1",
+  "runId": "v3-3-0b-2026-10-08T034132149Z",
+  "checks": [
+    {
+      "id": "ui_360",
+      "passed": true,
+      "detail": {
+        "passwordInputCount": 1,
+        "submitDisabled": true,
+        "inputEditable": true,
+        "providerValue": "minimax-openai-vision",
+        "modelValue": "MiniMax-M3"
+      }
+    },
+    {
+      "id": "axe_360",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "ui_420",
+      "passed": true,
+      "detail": {
+        "passwordInputCount": 1,
+        "submitDisabled": true,
+        "inputEditable": true,
+        "providerValue": "minimax-openai-vision",
+        "modelValue": "MiniMax-M3"
+      }
+    },
+    {
+      "id": "axe_420",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "vision-provider-settings-360x900.png",
+      "sha256": "5b7180fabe7f4146e722ad5001da0ce48ab40aca90c16e830d8894bcaab4edd2",
+      "byteLength": 96858,
+      "width": 360
+    },
+    {
+      "path": "vision-provider-settings-420x900.png",
+      "sha256": "2744ed953b0ef15c42cc94698f2e614344ca0879d4ae09c62453b4d43d7a0981",
+      "byteLength": 96794,
+      "width": 420
+    }
+  ],
+  "passed": true
+}

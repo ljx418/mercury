@@ -1,0 +1,258 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-vision-evidence/v1",
+  "title": "Navia V3-3 governed frame, OCR and vision evidence receipt",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "taskId",
+    "sourceIdentity",
+    "samplingPolicy",
+    "consent",
+    "frames",
+    "ocrObservations",
+    "visionObservations",
+    "cleanup"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-media-vision-evidence/v1" },
+    "taskId": { "$ref": "#/$defs/TaskId" },
+    "sourceIdentity": {
+      "type": "string",
+      "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$"
+    },
+    "samplingPolicy": { "$ref": "#/$defs/SamplingPolicy" },
+    "consent": { "$ref": "#/$defs/ConsentReceipt" },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 24,
+      "items": { "$ref": "#/$defs/FrameEvidence" }
+    },
+    "ocrObservations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/OcrObservation" }
+    },
+    "visionObservations": {
+      "type": "array",
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/VisionObservation" }
+    },
+    "cleanup": { "$ref": "#/$defs/CleanupReceipt" }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "EvidenceId": { "type": "string", "pattern": "^mev_[a-f0-9]{32}$" },
+    "SamplingPolicy": {
+      "type": "object",
+      "required": [
+        "policyVersion",
+        "algorithm",
+        "candidateFrameLimit",
+        "selectedEvidenceLimit",
+        "cloudVisionFrameLimit",
+        "maxDimensionPx",
+        "rawVideoUploadAllowed"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "policyVersion": { "const": "v3-frame-sampling/v1" },
+        "algorithm": { "const": "scene-change-plus-timeline-budget/v1" },
+        "candidateFrameLimit": { "const": 24 },
+        "selectedEvidenceLimit": { "const": 12 },
+        "cloudVisionFrameLimit": { "const": 8 },
+        "maxDimensionPx": { "const": 1280 },
+        "rawVideoUploadAllowed": { "const": false }
+      }
+    },
+    "ConsentReceipt": {
+      "type": "object",
+      "required": [
+        "scope",
+        "state",
+        "decisionId",
+        "grantedAt",
+        "revokedAt",
+        "outboundBarrierAt",
+        "authorizedDispatchCount",
+        "postRevocationDispatchCount",
+        "consentCheckedPerDispatch"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scope": { "const": "selected_frame_cloud_vision" },
+        "state": { "enum": ["granted", "revoked", "not_granted"] },
+        "decisionId": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "pattern": "^consent_[a-f0-9]{32}$" }
+          ]
+        },
+        "grantedAt": { "type": ["string", "null"], "format": "date-time" },
+        "revokedAt": { "type": ["string", "null"], "format": "date-time" },
+        "outboundBarrierAt": { "type": ["string", "null"], "format": "date-time" },
+        "authorizedDispatchCount": { "type": "integer", "minimum": 0, "maximum": 8 },
+        "postRevocationDispatchCount": { "const": 0 },
+        "consentCheckedPerDispatch": { "const": true }
+      }
+    },
+    "FrameEvidence": {
+      "type": "object",
+      "required": [
+        "evidenceId",
+        "taskId",
+        "timestampMs",
+        "kind",
+        "selected",
+        "relativeArtifactRef",
+        "artifactSha256",
+        "widthPx",
+        "heightPx",
+        "retention"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "timestampMs": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+        "kind": { "const": "frame" },
+        "selected": { "type": "boolean" },
+        "relativeArtifactRef": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+\\.(?:jpg|webp|png)$",
+          "maxLength": 256
+        },
+        "artifactSha256": { "$ref": "#/$defs/Sha256" },
+        "widthPx": { "type": "integer", "minimum": 1, "maximum": 1280 },
+        "heightPx": { "type": "integer", "minimum": 1, "maximum": 1280 },
+        "retention": { "enum": ["evidence_until_task_delete", "delete_at_terminal"] }
+      }
+    },
+    "OcrBlock": {
+      "type": "object",
+      "required": ["blockId", "text", "confidence", "box"],
+      "additionalProperties": false,
+      "properties": {
+        "blockId": { "type": "string", "pattern": "^ocr_[a-f0-9]{32}$" },
+        "text": { "type": "string", "minLength": 1, "maxLength": 4096 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "box": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "number", "minimum": 0, "maximum": 1 }
+          ],
+          "items": false
+        }
+      }
+    },
+    "OcrObservation": {
+      "type": "object",
+      "required": [
+        "evidenceId",
+        "taskId",
+        "frameEvidenceId",
+        "kind",
+        "providerId",
+        "engineVersion",
+        "modelRevision",
+        "localOnly",
+        "blocks",
+        "contentSha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "frameEvidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "kind": { "const": "ocr_block" },
+        "providerId": { "const": "rapidocr_local" },
+        "engineVersion": { "type": "string", "minLength": 1, "maxLength": 96 },
+        "modelRevision": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "localOnly": { "const": true },
+        "blocks": { "type": "array", "items": { "$ref": "#/$defs/OcrBlock" } },
+        "contentSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Usage": {
+      "type": "object",
+      "required": ["inputImageCount", "inputBytes", "inputTokens", "outputTokens", "estimatedCostUsd"],
+      "additionalProperties": false,
+      "properties": {
+        "inputImageCount": { "const": 1 },
+        "inputBytes": { "type": "integer", "minimum": 1 },
+        "inputTokens": { "type": ["integer", "null"], "minimum": 0 },
+        "outputTokens": { "type": ["integer", "null"], "minimum": 0 },
+        "estimatedCostUsd": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "VisionObservation": {
+      "type": "object",
+      "required": [
+        "evidenceId",
+        "taskId",
+        "frameEvidenceId",
+        "kind",
+        "providerId",
+        "modelId",
+        "requestSha256",
+        "responseSha256",
+        "authorized",
+        "consentDecisionId",
+        "dispatchSequence",
+        "consentValidAtDispatch",
+        "uploadedAt",
+        "caption",
+        "usage",
+        "status",
+        "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "frameEvidenceId": { "$ref": "#/$defs/EvidenceId" },
+        "kind": { "const": "vision_caption" },
+        "providerId": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$" },
+        "modelId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "requestSha256": { "$ref": "#/$defs/Sha256" },
+        "responseSha256": { "$ref": "#/$defs/Sha256" },
+        "authorized": { "const": true },
+        "consentDecisionId": { "type": "string", "pattern": "^consent_[a-f0-9]{32}$" },
+        "dispatchSequence": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "consentValidAtDispatch": { "const": true },
+        "uploadedAt": { "type": "string", "format": "date-time" },
+        "caption": { "type": "string", "minLength": 1, "maxLength": 8192 },
+        "usage": { "$ref": "#/$defs/Usage" },
+        "status": { "const": "succeeded" },
+        "failureCode": { "type": "null" }
+      }
+    },
+    "CleanupReceipt": {
+      "type": "object",
+      "required": [
+        "terminalStatus",
+        "candidateFrameCount",
+        "retainedEvidenceFrameCount",
+        "deletedNonEvidenceFrameCount",
+        "residualNonEvidenceFrameCount",
+        "pendingOutboundRequestCount",
+        "cleanedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "terminalStatus": { "enum": ["succeeded", "failed", "cancelled"] },
+        "candidateFrameCount": { "type": "integer", "minimum": 1, "maximum": 24 },
+        "retainedEvidenceFrameCount": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "deletedNonEvidenceFrameCount": { "type": "integer", "minimum": 0, "maximum": 24 },
+        "residualNonEvidenceFrameCount": { "const": 0 },
+        "pendingOutboundRequestCount": { "const": 0 },
+        "cleanedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

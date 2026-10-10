@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_session_contracts.schema.json",
+  "title": "Navia V3.1.2 media session contracts",
+  "type": "object",
+  "required": [
+    "policy",
+    "capability"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "policy": {
+      "$ref": "#/$defs/MediaConsentPolicyRecord"
+    },
+    "capability": {
+      "$ref": "#/$defs/PortalSessionCapability"
+    }
+  },
+  "$defs": {
+    "ScopeGrant": {
+      "type": "object",
+      "required": [
+        "scopeId",
+        "granted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "scopeId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{2,63}$"
+        },
+        "granted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "MediaConsentPolicyRecord": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "policyId",
+        "adapterId",
+        "policyRevision",
+        "status",
+        "scopeGrants",
+        "decidedAt",
+        "revokedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "media-consent-policy/v1"
+        },
+        "policyId": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+-media-consent/v[1-9][0-9]*$"
+        },
+        "adapterId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,31}$"
+        },
+        "policyRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "not_granted",
+            "granted",
+            "denied",
+            "revoked"
+          ]
+        },
+        "scopeGrants": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/ScopeGrant"
+          }
+        },
+        "decidedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "revokedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "PermissionState": {
+      "type": "object",
+      "required": [
+        "namedPermissionGranted",
+        "hostPermissionGranted"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "namedPermissionGranted": {
+          "type": "boolean"
+        },
+        "hostPermissionGranted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PortalSessionCapability": {
+      "type": "object",
+      "required": [
+        "schemaVersion",
+        "adapterId",
+        "sessionAdapterId",
+        "policyId",
+        "policyRevision",
+        "status",
+        "permissionState",
+        "credentialCount",
+        "credentialNameSetSha256",
+        "serverValidated",
+        "observedAt",
+        "expiresAt",
+        "failureCode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "portal-session-capability/v1"
+        },
+        "adapterId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{1,31}$"
+        },
+        "sessionAdapterId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{2,63}$"
+        },
+        "policyId": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+-media-consent/v[1-9][0-9]*$"
+        },
+        "policyRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "status": {
+          "enum": [
+            "permission_required",
+            "permission_denied",
+            "unavailable",
+            "available",
+            "revoked",
+            "unknown"
+          ]
+        },
+        "permissionState": {
+          "$ref": "#/$defs/PermissionState"
+        },
+        "credentialCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "credentialNameSetSha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "serverValidated": {
+          "const": false
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "failureCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "V3_MEDIA_SESSION_ADAPTER_UNSUPPORTED",
+            "V3_MEDIA_SESSION_PERMISSION_REQUIRED",
+            "V3_MEDIA_SESSION_PERMISSION_DENIED",
+            "V3_MEDIA_SESSION_SCOPE_NOT_GRANTED",
+            "V3_MEDIA_SESSION_COOKIE_MISSING",
+            "V3_MEDIA_SESSION_REVOKED",
+            "V3_MEDIA_SESSION_READ_FAILED",
+            "V3_MEDIA_SESSION_POLICY_MISMATCH",
+            "V3_MEDIA_SESSION_SCOPE_SET_INVALID",
+            "V3_MEDIA_SESSION_CAPABILITY_INCONSISTENT",
+            "V3_MEDIA_SESSION_NAME_SET_INVALID",
+            "V3_MEDIA_SESSION_OBSERVATION_EXPIRED",
+            "V3_MEDIA_SESSION_ADAPTER_MISMATCH"
+          ]
+        }
+      }
+    }
+  }
+}

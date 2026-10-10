@@ -1,10 +1,41 @@
 {
   "schemaVersion": "v1.3-extension-load-diagnostic.1",
-  "generatedAt": "2026-06-23T13:26:47.351Z",
-  "browserMode": "chrome",
-  "extensionRoot": "/mnt/c/workSpace/navia/apps/chrome-extension/chrome-mv3-unpacked",
-  "passed": false,
-  "fatalIssues": [
-    "browserType.launchPersistentContext: Chromium distribution 'chrome' is not found at /opt/google/chrome/chrome\nRun \"npx playwright install chrome\"\n    at async main (/mnt/c/workSpace/navia/apps/chrome-extension/e2e/diagnose-extension-load.mjs:63:15)"
-  ]
+  "generatedAt": "2026-10-07T05:43:55.995Z",
+  "browserMode": "chromium",
+  "extensionRoot": "/mnt/c/workspace/navia/apps/chrome-extension/chrome-mv3-unpacked",
+  "manifestExists": true,
+  "backgroundExists": true,
+  "serviceWorkers": [
+    "chrome-extension://nlmgmnejkpkfigagmokcofnmpcdkepib/background.js"
+  ],
+  "targets": [
+    {
+      "type": "service_worker",
+      "title": "Service Worker chrome-extension://nlmgmnejkpkfigagmokcofnmpcdkepib/background.js",
+      "url": "chrome-extension://nlmgmnejkpkfigagmokcofnmpcdkepib/background.js",
+      "attached": true
+    },
+    {
+      "type": "page",
+      "title": "about:blank",
+      "url": "about:blank",
+      "attached": true
+    },
+    {
+      "type": "page",
+      "title": "about:blank",
+      "url": "about:blank",
+      "attached": true
+    }
+  ],
+  "extensionTargets": [
+    {
+      "type": "service_worker",
+      "title": "Service Worker chrome-extension://nlmgmnejkpkfigagmokcofnmpcdkepib/background.js",
+      "url": "chrome-extension://nlmgmnejkpkfigagmokcofnmpcdkepib/background.js",
+      "attached": true
+    }
+  ],
+  "passed": true,
+  "fatalIssues": []
 }

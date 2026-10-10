@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "v3-media-acquisition-probe-candidates/v5-route-b3",
+  "candidates": [
+    {"url": "https://www.bilibili.com/video/BV1yLuwzpEt2", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV1VG4117775", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV1Bt411D78C", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV1CiFMenEye", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV1Fh1VYFEDu", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV1iv411j7wL", "intendedClass": "subtitle"},
+    {"url": "https://www.bilibili.com/video/BV13W41137qV", "intendedClass": "asr_capability", "faultPolicy": "subtitle_body_http_503"},
+    {"url": "https://www.bilibili.com/video/BV1ZpYd66ELP", "intendedClass": "asr_capability", "faultPolicy": "subtitle_body_http_403", "isAnchor": true},
+    {"url": "https://www.bilibili.com/video/BV1pW421c7DH", "intendedClass": "asr_capability", "faultPolicy": "subtitle_body_empty"},
+    {"url": "https://www.bilibili.com/video/BV1PA4m1w7ya", "intendedClass": "multipart"},
+    {"url": "https://www.bilibili.com/video/BV1vt1sBgEzc", "intendedClass": "restricted"},
+    {"url": "https://www.bilibili.com/video/BV1goA2zrEEq", "intendedClass": "low_signal"}
+  ]
+}

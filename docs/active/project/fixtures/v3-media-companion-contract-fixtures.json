@@ -1,0 +1,573 @@
+{
+  "schemaVersion": "v3-media-companion-fixtures/v3",
+  "positiveInstances": [
+    {
+      "fixtureId": "v3-positive-anchor-contract",
+      "instance": {
+        "schemaVersion": "v3-media-companion/v3",
+        "mediaPageContext": {
+          "platform": "bilibili",
+          "adapterId": "bilibili",
+          "adapterRevision": 1,
+          "canonicalUrl": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+          "mediaId": "BV1ZpYd66ELP",
+          "playbackUnitId": "41828944992",
+          "part": {
+            "id": "p1",
+            "index": 1,
+            "count": 1,
+            "label": null
+          },
+          "title": "勇哥教人开餐饮，自己的店水平到底如何？探店勇哥餐厅，套路确实深！",
+          "author": "地上足球888",
+          "durationSeconds": 792,
+          "currentTimeSeconds": 402,
+          "transcriptAvailability": "unavailable",
+          "observedAt": "2026-09-16T10:00:00+08:00"
+        },
+        "consentPolicy": {
+          "policyId": "policy_v3_media_001",
+          "revision": 1,
+          "status": "granted",
+          "scopes": [
+            "bilibili_session_access",
+            "temporary_media_download",
+            "audio_local_processing",
+            "frame_local_processing",
+            "selected_frame_cloud_vision"
+          ],
+          "grantedAt": "2026-09-16T10:01:00+08:00",
+          "revokedAt": null
+        },
+        "acquisition": {
+          "route": "credentialed_media",
+          "status": "completed",
+          "credentialLease": {
+            "leaseId": "lease_anchor_001",
+            "taskId": "task_anchor_001",
+            "adapterId": "bilibili",
+            "browserProfileSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "credentialNameSetSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+            "credentialPolicyRevision": 1,
+            "transport": "authenticated_loopback_one_shot",
+            "issuedAt": "2026-09-16T10:02:00+08:00",
+            "expiresAt": "2026-09-16T10:20:00+08:00",
+            "storage": "browser_managed_ephemeral"
+          },
+          "downloadedAudio": true,
+          "downloadedVideo": true,
+          "fallbackReason": null
+        },
+        "task": {
+          "taskId": "task_anchor_001",
+          "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:p1",
+          "state": "completed",
+          "createdAt": "2026-09-16T10:02:00+08:00",
+          "updatedAt": "2026-09-16T10:16:00+08:00",
+          "captureGrant": null,
+          "evidence": [
+            {
+              "evidenceId": "evidence_asr_001",
+              "kind": "asr_segment",
+              "startSeconds": 396,
+              "endSeconds": 418,
+              "contentSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "retention": "task_lifetime"
+            },
+            {
+              "evidenceId": "evidence_ocr_001",
+              "kind": "ocr_block",
+              "startSeconds": 402,
+              "endSeconds": 402,
+              "contentSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "retention": "task_lifetime"
+            },
+            {
+              "evidenceId": "evidence_frame_001",
+              "kind": "vision_frame",
+              "startSeconds": 402,
+              "endSeconds": 402,
+              "contentSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "retention": "task_lifetime"
+            }
+          ],
+          "failureCode": null,
+          "cleanup": {
+            "credentialFileDeleted": true,
+            "temporaryMediaDeleted": true,
+            "rawAudioDeleted": true,
+            "nonEvidenceFramesDeleted": true
+          }
+        },
+        "outline": {
+          "outlineId": "outline_anchor_001",
+          "taskId": "task_anchor_001",
+          "title": "锚点视频结构化大纲示例",
+          "summary": "该文本仅验证合同形状，不是生产视频理解结论。",
+          "segments": [
+            {
+              "segmentId": "segment_anchor_001",
+              "order": 1,
+              "title": "示例章节",
+              "startSeconds": 396,
+              "endSeconds": 418,
+              "summary": "合同夹具示例。",
+              "evidenceIds": [
+                "evidence_asr_001",
+                "evidence_frame_001"
+              ]
+            },
+            {
+              "segmentId": "segment_anchor_002",
+              "order": 2,
+              "title": "第二个示例章节",
+              "startSeconds": 419,
+              "endSeconds": 440,
+              "summary": "用于验证时间线顺序和重叠负例。",
+              "evidenceIds": [
+                "evidence_asr_001",
+                "evidence_ocr_001"
+              ]
+            }
+          ],
+          "quality": "grounded"
+        },
+        "mindmap": {
+          "projectionId": "mindmap_anchor_001",
+          "outlineId": "outline_anchor_001",
+          "nodes": [
+            {
+              "nodeId": "node_anchor_001",
+              "label": "示例章节",
+              "segmentId": "segment_anchor_001",
+              "evidenceIds": [
+                "evidence_asr_001"
+              ]
+            },
+            {
+              "nodeId": "node_anchor_002",
+              "label": "第二个示例章节",
+              "segmentId": "segment_anchor_002",
+              "evidenceIds": [
+                "evidence_ocr_001"
+              ]
+            }
+          ]
+        },
+        "askResult": {
+          "answerId": "answer_anchor_001",
+          "taskId": "task_anchor_001",
+          "question": "该示例片段说明什么？",
+          "answer": "这是合同验证文本，不是生产答案。",
+          "evidenceIds": [
+            "evidence_asr_001"
+          ],
+          "status": "answered"
+        },
+        "exportManifest": {
+          "exportId": "export_anchor_001",
+          "taskId": "task_anchor_001",
+          "format": "json_bundle",
+          "artifactSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "createdAt": "2026-09-16T10:17:00+08:00",
+          "knowledgeImportStatus": "deferred_to_v4"
+        },
+        "evidenceClass": "contract_fixture",
+        "validation": {
+          "portalRegistryArtifact": {
+            "path": "docs/active/project/contracts/v3-media-portal-registry.json",
+          "sha256": "c96ab0d356851a7f444b7a3cb01e51c5d5012f564a929277151352bf9868eab6",
+            "adapterIds": [
+              "bilibili"
+            ]
+          },
+          "providerEvidence": {
+            "executionMode": "real",
+            "capability": "vision",
+            "providerId": "contract-fixture-provider",
+            "modelId": "contract-fixture-model",
+            "requestSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "responseSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+          },
+          "networkLog": {
+            "authorizedCredentialLeaseEvents": 1,
+            "credentialedMediaRequests": 2,
+            "tabCaptureRequests": 0,
+            "unauthorizedCredentialAccessEvents": 0,
+            "cookieValuePersistenceEvents": 0,
+            "cookieValueEvidenceEvents": 0,
+            "temporaryMediaResidualCount": 0
+          },
+          "seekObservations": [
+            {
+              "requestedSeconds": 402,
+              "observedCurrentTimeSeconds": 402.8,
+              "outcome": "located",
+              "observedAt": "2026-09-16T10:16:30+08:00"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "V3-N-001",
+      "requirementKey": "credential_lease_ephemeral_storage",
+      "target": "acquisition.credentialLease.storage",
+      "mutation": "persistent_plaintext",
+      "expected": "schema_invalid",
+      "failureCode": "V3_CREDENTIAL_STORAGE_INVALID"
+    },
+    {
+      "caseId": "V3-N-002",
+      "requirementKey": "cloud_vision_requires_persisted_scope",
+      "target": "consentPolicy.scopes",
+      "mutation": [
+        "bilibili_session_access",
+        "temporary_media_download",
+        "audio_local_processing",
+        "frame_local_processing"
+      ],
+      "expected": "schema_invalid",
+      "failureCode": "V3_CLOUD_VISION_SCOPE_REQUIRED"
+    },
+    {
+      "caseId": "V3-N-003",
+      "requirementKey": "answered_requires_evidence",
+      "target": "askResult.evidenceIds",
+      "mutation": [],
+      "expected": "schema_invalid",
+      "failureCode": "V3_ANSWER_EVIDENCE_REQUIRED"
+    },
+    {
+      "caseId": "V3-N-004",
+      "requirementKey": "knowledge_import_deferred_to_v4",
+      "target": "exportManifest.knowledgeImportStatus",
+      "mutation": "imported",
+      "expected": "schema_invalid",
+      "failureCode": "V3_KNOWLEDGE_IMPORT_BOUNDARY"
+    },
+    {
+      "caseId": "V3-N-005",
+      "requirementKey": "portal_canonical_url_https",
+      "target": "mediaPageContext.canonicalUrl",
+      "mutation": "http://www.bilibili.com/video/BV1ZpYd66ELP",
+      "expected": "schema_invalid",
+      "failureCode": "V3_PORTAL_URL_INVALID"
+    },
+    {
+      "caseId": "V3-N-006",
+      "requirementKey": "completed_cleanup",
+      "target": "task.cleanup.credentialFileDeleted",
+      "mutation": false,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_CREDENTIAL_FILE_NOT_DELETED"
+    },
+    {
+      "caseId": "V3-N-007",
+      "requirementKey": "mindmap_same_outline",
+      "target": "mindmap.outlineId",
+      "mutation": "outline_other_001",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_PROJECTION_SOURCE_MISMATCH"
+    },
+    {
+      "caseId": "V3-N-008",
+      "requirementKey": "evidence_identity_closed",
+      "target": "outline.segments[0].evidenceIds[0]",
+      "mutation": "evidence_missing_001",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_EVIDENCE_NOT_FOUND"
+    },
+    {
+      "caseId": "V3-N-009",
+      "requirementKey": "timeline_ordered_non_overlapping",
+      "target": "outline.segments[1].startSeconds",
+      "mutation": 410,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_TIMELINE_INVALID"
+    },
+    {
+      "caseId": "V3-N-010",
+      "requirementKey": "vision_provider_real",
+      "target": "validation.providerEvidence.executionMode",
+      "mutation": "mock",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_VISION_PROVIDER_NOT_REAL"
+    },
+    {
+      "caseId": "V3-N-011",
+      "requirementKey": "credential_access_authorized",
+      "target": "validation.networkLog.unauthorizedCredentialAccessEvents",
+      "mutation": 1,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_UNAUTHORIZED_CREDENTIAL_ACCESS"
+    },
+    {
+      "caseId": "V3-N-012",
+      "requirementKey": "seek_reads_real_player_time",
+      "target": "validation.seekObservations[0].observedCurrentTimeSeconds",
+      "mutation": 415,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_SEEK_NOT_OBSERVED"
+    },
+    {
+      "caseId": "V3-N-013",
+      "requirementKey": "credential_lease_same_task",
+      "target": "acquisition.credentialLease.taskId",
+      "mutation": "task_other_001",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_CREDENTIAL_TASK_MISMATCH"
+    },
+    {
+      "caseId": "V3-N-014",
+      "requirementKey": "outline_same_task",
+      "target": "outline.taskId",
+      "mutation": "task_other_001",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_OUTLINE_TASK_MISMATCH"
+    },
+    {
+      "caseId": "V3-N-015",
+      "requirementKey": "ask_same_task",
+      "target": "askResult.taskId",
+      "mutation": "task_other_001",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_ASK_TASK_MISMATCH"
+    },
+    {
+      "caseId": "V3-N-016",
+      "requirementKey": "evidence_within_media_duration",
+      "target": "task.evidence[0].endSeconds",
+      "mutation": 900,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_EVIDENCE_TIME_INVALID"
+    },
+    {
+      "caseId": "V3-N-017",
+      "requirementKey": "revoked_policy_blocks_acquisition",
+      "target": "consentPolicy.status",
+      "mutation": "revoked",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_POLICY_STATE_INVALID"
+    },
+    {
+      "caseId": "V3-N-018",
+      "requirementKey": "completed_has_no_failure",
+      "target": "task.failureCode",
+      "mutation": "V3_SYNTHESIS_FAILED",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_COMPLETED_FAILURE_INVALID"
+    },
+    {
+      "caseId": "V3-N-019",
+      "requirementKey": "cookie_value_not_persisted",
+      "target": "validation.networkLog.cookieValuePersistenceEvents",
+      "mutation": 1,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_COOKIE_VALUE_PERSISTED"
+    },
+    {
+      "caseId": "V3-N-020",
+      "requirementKey": "cookie_value_not_in_evidence",
+      "target": "validation.networkLog.cookieValueEvidenceEvents",
+      "mutation": 1,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_COOKIE_VALUE_EVIDENCE_LEAK"
+    },
+    {
+      "caseId": "V3-N-021",
+      "requirementKey": "temporary_media_removed",
+      "target": "validation.networkLog.temporaryMediaResidualCount",
+      "mutation": 1,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_TEMPORARY_MEDIA_RESIDUAL"
+    },
+    {
+      "caseId": "V3-N-022",
+      "requirementKey": "credential_route_requires_lease",
+      "target": "acquisition.credentialLease",
+      "mutation": null,
+      "expected": "semantic_invalid",
+      "failureCode": "V3_CREDENTIAL_LEASE_REQUIRED"
+    },
+    {
+      "caseId": "V3-N-023",
+      "requirementKey": "tab_capture_requires_trusted_grant",
+      "target": "acquisition.route",
+      "mutation": "tab_capture",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_TRUSTED_GESTURE_REQUIRED"
+    },
+    {
+      "caseId": "V3-N-024",
+      "requirementKey": "portal_adapter_binding",
+      "target": "mediaPageContext.adapterId",
+      "mutation": "youtube",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_PORTAL_ADAPTER_BINDING_INVALID"
+    },
+    {
+      "caseId": "V3-N-025",
+      "requirementKey": "source_identity_matches_page_context",
+      "target": "task.sourceIdentity",
+      "mutation": "portal:bilibili:BV1OTHER:41828944992:p1",
+      "expected": "semantic_invalid",
+      "failureCode": "V3_SOURCE_IDENTITY_MISMATCH"
+    }
+  ],
+  "fixtureNotice": "All instances are contract fixtures. evidenceClass=contract_fixture MUST be rejected as production acceptance evidence.",
+  "requirementRegistry": [
+    {
+      "requirementId": "V3-N-001",
+      "requirementKey": "credential_lease_ephemeral_storage",
+      "enforcementLayer": "schema",
+      "expectedFailureCode": "V3_CREDENTIAL_STORAGE_INVALID"
+    },
+    {
+      "requirementId": "V3-N-002",
+      "requirementKey": "cloud_vision_requires_persisted_scope",
+      "enforcementLayer": "schema",
+      "expectedFailureCode": "V3_CLOUD_VISION_SCOPE_REQUIRED"
+    },
+    {
+      "requirementId": "V3-N-003",
+      "requirementKey": "answered_requires_evidence",
+      "enforcementLayer": "schema",
+      "expectedFailureCode": "V3_ANSWER_EVIDENCE_REQUIRED"
+    },
+    {
+      "requirementId": "V3-N-004",
+      "requirementKey": "knowledge_import_deferred_to_v4",
+      "enforcementLayer": "schema",
+      "expectedFailureCode": "V3_KNOWLEDGE_IMPORT_BOUNDARY"
+    },
+    {
+      "requirementId": "V3-N-005",
+      "requirementKey": "portal_canonical_url_https",
+      "enforcementLayer": "schema",
+      "expectedFailureCode": "V3_PORTAL_URL_INVALID"
+    },
+    {
+      "requirementId": "V3-N-006",
+      "requirementKey": "completed_cleanup",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_CREDENTIAL_FILE_NOT_DELETED"
+    },
+    {
+      "requirementId": "V3-N-007",
+      "requirementKey": "mindmap_same_outline",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_PROJECTION_SOURCE_MISMATCH"
+    },
+    {
+      "requirementId": "V3-N-008",
+      "requirementKey": "evidence_identity_closed",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_EVIDENCE_NOT_FOUND"
+    },
+    {
+      "requirementId": "V3-N-009",
+      "requirementKey": "timeline_ordered_non_overlapping",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_TIMELINE_INVALID"
+    },
+    {
+      "requirementId": "V3-N-010",
+      "requirementKey": "vision_provider_real",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_VISION_PROVIDER_NOT_REAL"
+    },
+    {
+      "requirementId": "V3-N-011",
+      "requirementKey": "credential_access_authorized",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_UNAUTHORIZED_CREDENTIAL_ACCESS"
+    },
+    {
+      "requirementId": "V3-N-012",
+      "requirementKey": "seek_reads_real_player_time",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_SEEK_NOT_OBSERVED"
+    },
+    {
+      "requirementId": "V3-N-013",
+      "requirementKey": "credential_lease_same_task",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_CREDENTIAL_TASK_MISMATCH"
+    },
+    {
+      "requirementId": "V3-N-014",
+      "requirementKey": "outline_same_task",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_OUTLINE_TASK_MISMATCH"
+    },
+    {
+      "requirementId": "V3-N-015",
+      "requirementKey": "ask_same_task",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_ASK_TASK_MISMATCH"
+    },
+    {
+      "requirementId": "V3-N-016",
+      "requirementKey": "evidence_within_media_duration",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_EVIDENCE_TIME_INVALID"
+    },
+    {
+      "requirementId": "V3-N-017",
+      "requirementKey": "revoked_policy_blocks_acquisition",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_POLICY_STATE_INVALID"
+    },
+    {
+      "requirementId": "V3-N-018",
+      "requirementKey": "completed_has_no_failure",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_COMPLETED_FAILURE_INVALID"
+    },
+    {
+      "requirementId": "V3-N-019",
+      "requirementKey": "cookie_value_not_persisted",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_COOKIE_VALUE_PERSISTED"
+    },
+    {
+      "requirementId": "V3-N-020",
+      "requirementKey": "cookie_value_not_in_evidence",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_COOKIE_VALUE_EVIDENCE_LEAK"
+    },
+    {
+      "requirementId": "V3-N-021",
+      "requirementKey": "temporary_media_removed",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_TEMPORARY_MEDIA_RESIDUAL"
+    },
+    {
+      "requirementId": "V3-N-022",
+      "requirementKey": "credential_route_requires_lease",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_CREDENTIAL_LEASE_REQUIRED"
+    },
+    {
+      "requirementId": "V3-N-023",
+      "requirementKey": "tab_capture_requires_trusted_grant",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_TRUSTED_GESTURE_REQUIRED"
+    },
+    {
+      "requirementId": "V3-N-024",
+      "requirementKey": "portal_adapter_binding",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_PORTAL_ADAPTER_BINDING_INVALID"
+    },
+    {
+      "requirementId": "V3-N-025",
+      "requirementKey": "source_identity_matches_page_context",
+      "enforcementLayer": "semantic",
+      "expectedFailureCode": "V3_SOURCE_IDENTITY_MISMATCH"
+    }
+  ]
+}

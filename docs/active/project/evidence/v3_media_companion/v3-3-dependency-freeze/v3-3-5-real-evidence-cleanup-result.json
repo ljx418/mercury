@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "v3-3-5-real-evidence-cleanup-acceptance/v1",
+  "executedAt": "2026-10-08T06:42:14.057867Z",
+  "passed": true,
+  "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+  "receiptSha256": "dacf7ebd2044d01bbe7015f4ae96449770ea9baf8708ba0edb5944fc60649180",
+  "samplingSha256": "8206cf3b1b13c87a225495a846ac63d02e8b411ae6ab21fd29962c4ad64d5d95",
+  "counts": {
+    "frames": 3,
+    "selected": 2,
+    "ocr": 2,
+    "vision": 1
+  },
+  "vision": {
+    "providerId": "minimax-cn-openai-vision",
+    "modelId": "MiniMax-M3",
+    "requestSha256": "7d60493988d67f192ba5453b13f1135b8b11c229e9e46489f98d86371a6783b3",
+    "responseSha256": "d0f79f650670910d61d7731f04bb1b28e726816169a4bbb9cd16c666b70095ba",
+    "captionSha256": "7cf5e8f6d5336a2b8a0fecc58404868372758b899d91589a8b86edd7c09e223c",
+    "usage": {
+      "inputImageCount": 1,
+      "inputBytes": 449958,
+      "inputTokens": 554,
+      "outputTokens": 154,
+      "estimatedCostUsd": null
+    }
+  },
+  "cleanup": {
+    "terminalStatus": "succeeded",
+    "candidateFrameCount": 3,
+    "retainedEvidenceFrameCount": 2,
+    "deletedNonEvidenceFrameCount": 1,
+    "residualNonEvidenceFrameCount": 0,
+    "pendingOutboundRequestCount": 0,
+    "cleanedAt": "2026-10-08T06:42:14.053290Z"
+  },
+  "schemaValid": true,
+  "retainedSelectedFrameCount": 2,
+  "deletedNonEvidenceFrameCountObserved": 1,
+  "secretMaterialIncluded": false,
+  "rawFrameIncluded": false,
+  "cookieSeedPersisted": false,
+  "privateMediaPersisted": false,
+  "publicAbsolutePathCount": 0
+}

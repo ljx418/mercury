@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-transcript-exit/v1",
+  "title": "Navia V3-2 transcript product and exit receipts",
+  "oneOf": [
+    { "$ref": "#/$defs/ProductUiAcceptance" },
+    { "$ref": "#/$defs/FaultMatrix" },
+    { "$ref": "#/$defs/ExitCandidate" }
+  ],
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "TaskId": { "type": "string", "pattern": "^media_task_[a-f0-9]{32}$" },
+    "Requirement": {
+      "type": "object",
+      "required": ["requirementId", "passed", "evidenceSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": { "type": "string" },
+        "passed": { "const": true },
+        "evidenceSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Surface": {
+      "type": "object",
+      "required": ["surface", "viewport", "screenshotSha256", "rootOverflow", "axeSerious", "axeCritical", "keyboardPassed", "runtimeTaskRead"],
+      "additionalProperties": false,
+      "properties": {
+        "surface": { "enum": ["side_panel", "workspace"] },
+        "viewport": { "enum": ["360x900", "420x900", "768x900", "1280x900"] },
+        "screenshotSha256": { "$ref": "#/$defs/Sha256" },
+        "rootOverflow": { "const": false },
+        "axeSerious": { "const": 0 },
+        "axeCritical": { "const": 0 },
+        "keyboardPassed": { "const": true },
+        "runtimeTaskRead": { "const": true }
+      }
+    },
+    "StateObservation": {
+      "type": "object",
+      "required": ["state", "route", "visibleReason", "cookieVisible", "privatePathVisible", "forbiddenV3ClaimVisible"],
+      "additionalProperties": false,
+      "properties": {
+        "state": { "enum": ["acquiring", "awaiting_trusted_capture", "transcribing", "cleaning", "terminal"] },
+        "route": { "enum": ["credentialed_subtitle", "credentialed_media_asr", "public_or_page_subtitle", "trusted_tab_capture_asr", "none"] },
+        "visibleReason": { "type": "boolean" },
+        "cookieVisible": { "const": false },
+        "privatePathVisible": { "const": false },
+        "forbiddenV3ClaimVisible": { "const": false }
+      }
+    },
+    "ProductUiAcceptance": {
+      "type": "object",
+      "required": ["schemaVersion", "runId", "buildTreeSha256", "taskId", "surfaces", "states", "cancelCleanupPassed", "retryCreatedNewTask", "requirements", "machinePassed"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-media-transcript-ui-acceptance/v1" },
+        "runId": { "type": "string", "pattern": "^v3-2-5-ui-[0-9]{8}T[0-9]{6}Z$" },
+        "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+        "taskId": { "$ref": "#/$defs/TaskId" },
+        "surfaces": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/Surface" } },
+        "states": { "type": "array", "minItems": 5, "maxItems": 5, "items": { "$ref": "#/$defs/StateObservation" } },
+        "cancelCleanupPassed": { "const": true },
+        "retryCreatedNewTask": { "const": true },
+        "requirements": { "type": "array", "minItems": 14, "maxItems": 14, "items": { "$ref": "#/$defs/Requirement" } },
+        "machinePassed": { "const": true }
+      }
+    },
+    "FaultObservation": {
+      "type": "object",
+      "required": ["faultId", "faultClass", "terminalState", "terminalCount", "postTerminalWriteCount", "residualCount", "secretHitCount", "evidenceSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "faultId": { "type": "string", "pattern": "^V3-2-6-F(?:0[1-9]|1[0-4])$" },
+        "faultClass": { "enum": ["downloader_403", "downloader_timeout", "redirect_private_network", "quota_exceeded", "disk_readonly", "disk_full", "ffmpeg_exit", "asr_exit", "runtime_disconnect", "capture_socket_loss", "lease_expired", "consent_revoked", "cancel_race", "orphan_process"] },
+        "terminalState": { "enum": ["degraded", "blocked", "failed", "cancelled"] },
+        "terminalCount": { "const": 1 },
+        "postTerminalWriteCount": { "const": 0 },
+        "residualCount": { "const": 0 },
+        "secretHitCount": { "const": 0 },
+        "evidenceSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "FaultMatrix": {
+      "type": "object",
+      "required": ["schemaVersion", "runId", "buildTreeSha256", "faults", "requirements", "machinePassed"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-media-transcript-fault-matrix/v1" },
+        "runId": { "type": "string", "pattern": "^v3-2-6-faults-[0-9]{8}T[0-9]{6}Z$" },
+        "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+        "faults": { "type": "array", "minItems": 14, "maxItems": 14, "items": { "$ref": "#/$defs/FaultObservation" } },
+        "requirements": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "$ref": "#/$defs/Requirement" } },
+        "machinePassed": { "const": true }
+      }
+    },
+    "SampleResult": {
+      "type": "object",
+      "required": ["sampleId", "sourceIdentity", "canonicalUrlSha256", "expectedClass", "terminalState", "selectedRoute", "transcriptSha256", "cleanupPassed", "secretHitCount"],
+      "additionalProperties": false,
+      "properties": {
+        "sampleId": { "type": "string", "pattern": "^v3-sample-(?:0[1-9]|1[0-2])$" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:bilibili:[^:]+:[^:]+:[^:]+$" },
+        "canonicalUrlSha256": { "$ref": "#/$defs/Sha256" },
+        "expectedClass": { "enum": ["subtitle", "asr", "multipart", "restricted", "low_signal"] },
+        "terminalState": { "enum": ["succeeded", "degraded", "blocked"] },
+        "selectedRoute": { "enum": ["credentialed_subtitle", "credentialed_media_asr", "public_or_page_subtitle", "trusted_tab_capture_asr", "none"] },
+        "transcriptSha256": { "oneOf": [{ "$ref": "#/$defs/Sha256" }, { "type": "null" }] },
+        "cleanupPassed": { "const": true },
+        "secretHitCount": { "const": 0 }
+      }
+    },
+    "ExitCandidate": {
+      "type": "object",
+      "required": ["schemaVersion", "candidateId", "runId", "buildTreeSha256", "dependencyManifestSha256", "modelManifestSha256", "sampleRegistrySha256", "sampleCount", "classificationCounts", "samples", "uiAcceptanceSha256", "faultMatrixSha256", "captureCount", "fullAsrCount", "requirements", "publicPackageSha256", "privateIndexSha256", "secretHitCount", "residualCount", "independentAuditStatus", "v3_2Passed"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-media-transcript-exit-candidate/v1" },
+        "candidateId": { "type": "string", "pattern": "^v3-2-exit-[0-9]{8}T[0-9]{6}Z$" },
+        "runId": { "type": "string", "pattern": "^v3-2-production-[0-9]{8}T[0-9]{6}Z$" },
+        "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+        "dependencyManifestSha256": { "$ref": "#/$defs/Sha256" },
+        "modelManifestSha256": { "$ref": "#/$defs/Sha256" },
+        "sampleRegistrySha256": { "$ref": "#/$defs/Sha256" },
+        "sampleCount": { "const": 12 },
+        "classificationCounts": {
+          "type": "object",
+          "required": ["subtitle", "asr", "multipart", "restricted", "lowSignal"],
+          "additionalProperties": false,
+          "properties": {
+            "subtitle": { "const": 6 },
+            "asr": { "const": 3 },
+            "multipart": { "const": 1 },
+            "restricted": { "const": 1 },
+            "lowSignal": { "const": 1 }
+          }
+        },
+        "samples": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "$ref": "#/$defs/SampleResult" } },
+        "uiAcceptanceSha256": { "$ref": "#/$defs/Sha256" },
+        "faultMatrixSha256": { "$ref": "#/$defs/Sha256" },
+        "captureCount": { "type": "integer", "minimum": 1 },
+        "fullAsrCount": { "const": 3 },
+        "requirements": { "type": "array", "minItems": 20, "maxItems": 20, "items": { "$ref": "#/$defs/Requirement" } },
+        "publicPackageSha256": { "$ref": "#/$defs/Sha256" },
+        "privateIndexSha256": { "$ref": "#/$defs/Sha256" },
+        "secretHitCount": { "const": 0 },
+        "residualCount": { "const": 0 },
+        "independentAuditStatus": { "const": "pending" },
+        "v3_2Passed": { "const": false }
+      }
+    }
+  }
+}

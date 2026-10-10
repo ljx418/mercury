@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-acquisition-sample-registry/v4",
+  "title": "Navia V3 Media Acquisition Sample Registry Revision 4 Route B",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "revision", "supersedesRevision3Artifact", "runId", "buildTreeSha256", "dependencyManifestSha256", "modelManifestSha256", "browser", "credentialEvidenceClass", "createdAt", "classificationCounts", "asrTriggerCounts", "asrBaseline", "productionReady", "samples"],
+  "properties": {
+    "schemaVersion": {"const": "v3-media-acquisition-sample-registry/v4"},
+    "revision": {"const": 4},
+    "supersedesRevision3Artifact": {"$ref": "#/$defs/ArtifactRef"},
+    "runId": {"type": "string", "pattern": "^v3-2-route-b-[0-9]{8}T[0-9]{6}Z$"},
+    "buildTreeSha256": {"$ref": "#/$defs/Sha256"},
+    "dependencyManifestSha256": {"$ref": "#/$defs/Sha256"},
+    "modelManifestSha256": {"$ref": "#/$defs/Sha256"},
+    "browser": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "version", "majorVersion", "profileClass"],
+      "properties": {
+        "name": {"const": "Google Chrome"},
+        "version": {"type": "string", "minLength": 1},
+        "majorVersion": {"type": "integer", "minimum": 116},
+        "profileClass": {"const": "user_authorized_temporary_v3_2"}
+      }
+    },
+    "credentialEvidenceClass": {"const": "user_authorized_cookie_lease"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "classificationCounts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subtitle", "asr", "multipart", "restricted", "lowSignal"],
+      "properties": {"subtitle": {"const": 6}, "asr": {"const": 3}, "multipart": {"const": 1}, "restricted": {"const": 1}, "lowSignal": {"const": 1}}
+    },
+    "asrTriggerCounts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["naturalNoSubtitle", "auditedSubtitleFailure"],
+      "properties": {"naturalNoSubtitle": {"const": 1}, "auditedSubtitleFailure": {"const": 2}}
+    },
+    "asrBaseline": {"$ref": "#/$defs/AsrBaseline"},
+    "productionReady": {"const": true},
+    "samples": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/Sample"}}
+  },
+  "$defs": {
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "RelativeArtifactPath": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+    "ArtifactRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/RelativeArtifactPath"}, "sha256": {"$ref": "#/$defs/Sha256"}}
+    },
+    "AsrBaseline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["modelId", "quality", "engine", "engineVersion", "modelRevision", "weightsSha256", "crossModelQualityGate"],
+      "properties": {
+        "modelId": {"const": "funasr-sensevoice-small-q8"},
+        "quality": {"const": "development_baseline"},
+        "engine": {"const": "funasr-llamacpp"},
+        "engineVersion": {"const": "runtime-llamacpp-v0.2.6"},
+        "modelRevision": {"const": "90c1c61912018b70ada0fcc024ea24aca62f2e63"},
+        "weightsSha256": {"const": "4ae45c94422de949b387e2e0fb10d7e14e4c42c69db30c3444ecc7d4b844b7c5"},
+        "crossModelQualityGate": {"const": "deferred_to_v4"}
+      }
+    },
+    "AuthorizedProbe": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sessionAuthenticated", "pageStatus", "viewApiCode", "playerApiCode", "routeAvailability", "probeSha256"],
+      "properties": {
+        "sessionAuthenticated": {"const": true},
+        "pageStatus": {"type": "integer", "minimum": 100, "maximum": 599},
+        "viewApiCode": {"type": "integer"},
+        "playerApiCode": {"type": "integer"},
+        "routeAvailability": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["credentialed_subtitle", "credentialed_media_asr", "public_or_page_subtitle", "trusted_tab_capture_asr", "blocked", "degraded"]}},
+        "probeSha256": {"$ref": "#/$defs/Sha256"}
+      }
+    },
+    "NaturalEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["firstProbeAt", "secondProbeAt", "firstProbeSha256", "secondProbeSha256", "firstSubtitleCount", "secondSubtitleCount", "minimumIntervalSeconds"],
+      "properties": {
+        "firstProbeAt": {"type": "string", "format": "date-time"},
+        "secondProbeAt": {"type": "string", "format": "date-time"},
+        "firstProbeSha256": {"$ref": "#/$defs/Sha256"},
+        "secondProbeSha256": {"$ref": "#/$defs/Sha256"},
+        "firstSubtitleCount": {"const": 0},
+        "secondSubtitleCount": {"const": 0},
+        "minimumIntervalSeconds": {"type": "integer", "minimum": 30}
+      }
+    },
+    "FaultScenario": {
+      "type": "object", "additionalProperties": false,
+      "required": ["faultId", "faultClass", "injectionLayer", "productionConfigReachable", "realSubtitleItemCount", "realSubtitleDiscoverySha256", "realMediaArtifactRequired"],
+      "properties": {
+        "faultId": {"type": "string", "pattern": "^route_b_fault_0[12]$"},
+        "faultClass": {"enum": ["subtitle_body_http_403", "subtitle_body_empty"]},
+        "injectionLayer": {"const": "acceptance_orchestrator"},
+        "productionConfigReachable": {"const": false},
+        "realSubtitleItemCount": {"type": "integer", "minimum": 1},
+        "realSubtitleDiscoverySha256": {"$ref": "#/$defs/Sha256"},
+        "realMediaArtifactRequired": {"const": true}
+      }
+    },
+    "Sample": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sampleId", "url", "adapterId", "mediaId", "playbackUnitId", "partId", "partIndex", "partCount", "durationSeconds", "primaryClass", "expectedOutcome", "expectedRouteClass", "subtitleEvidence", "asrTriggerClass", "naturalEvidence", "faultScenario", "observedAt", "pageContextSha256", "serverProbeSha256", "authorizedProbe", "screenshot"],
+      "properties": {
+        "sampleId": {"type": "string", "pattern": "^v3-sample-(0[1-9]|1[0-2])$"},
+        "url": {"type": "string", "pattern": "^https://www\\.bilibili\\.com/video/BV[A-Za-z0-9]+/?$"},
+        "adapterId": {"const": "bilibili"},
+        "mediaId": {"type": "string", "pattern": "^BV[A-Za-z0-9]+$"},
+        "playbackUnitId": {"type": "string", "pattern": "^[0-9]+$"},
+        "partId": {"type": "string", "minLength": 1},
+        "partIndex": {"type": "integer", "minimum": 1},
+        "partCount": {"type": "integer", "minimum": 1},
+        "durationSeconds": {"type": "number", "exclusiveMinimum": 0},
+        "primaryClass": {"enum": ["subtitle", "asr", "multipart", "restricted", "low_signal"]},
+        "expectedOutcome": {"enum": ["success", "blocked", "degraded"]},
+        "expectedRouteClass": {"enum": ["subtitle", "asr", "blocked", "degraded"]},
+        "subtitleEvidence": {"enum": ["credentialed_api_item", "public_api_item", "page_player_item", "none", "restricted"]},
+        "asrTriggerClass": {"type": ["string", "null"], "enum": ["natural_no_subtitle", "audited_subtitle_failure", null]},
+        "naturalEvidence": {"oneOf": [{"$ref": "#/$defs/NaturalEvidence"}, {"type": "null"}]},
+        "faultScenario": {"oneOf": [{"$ref": "#/$defs/FaultScenario"}, {"type": "null"}]},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "pageContextSha256": {"$ref": "#/$defs/Sha256"},
+        "serverProbeSha256": {"$ref": "#/$defs/Sha256"},
+        "authorizedProbe": {"$ref": "#/$defs/AuthorizedProbe"},
+        "screenshot": {"$ref": "#/$defs/ArtifactRef"}
+      },
+      "allOf": [
+        {"if": {"properties": {"primaryClass": {"const": "subtitle"}}, "required": ["primaryClass"]}, "then": {"properties": {"expectedOutcome": {"const": "success"}, "expectedRouteClass": {"const": "subtitle"}, "asrTriggerClass": {"const": null}, "naturalEvidence": {"const": null}, "faultScenario": {"const": null}}}},
+        {"if": {"properties": {"primaryClass": {"const": "asr"}}, "required": ["primaryClass"]}, "then": {"properties": {"expectedOutcome": {"const": "success"}, "expectedRouteClass": {"const": "asr"}}}},
+        {"if": {"properties": {"asrTriggerClass": {"const": "natural_no_subtitle"}}, "required": ["asrTriggerClass"]}, "then": {"properties": {"subtitleEvidence": {"const": "none"}, "faultScenario": {"const": null}, "naturalEvidence": {"$ref": "#/$defs/NaturalEvidence"}}}},
+        {"if": {"properties": {"asrTriggerClass": {"const": "audited_subtitle_failure"}}, "required": ["asrTriggerClass"]}, "then": {"properties": {"subtitleEvidence": {"enum": ["credentialed_api_item", "page_player_item"]}, "naturalEvidence": {"const": null}, "faultScenario": {"$ref": "#/$defs/FaultScenario"}}}},
+        {"if": {"properties": {"primaryClass": {"enum": ["multipart", "restricted", "low_signal"]}}, "required": ["primaryClass"]}, "then": {"properties": {"asrTriggerClass": {"const": null}, "naturalEvidence": {"const": null}, "faultScenario": {"const": null}}}},
+        {"if": {"properties": {"primaryClass": {"const": "multipart"}}, "required": ["primaryClass"]}, "then": {"properties": {"expectedOutcome": {"const": "success"}, "partCount": {"minimum": 2}, "expectedRouteClass": {"enum": ["subtitle", "asr"]}}}},
+        {"if": {"properties": {"primaryClass": {"const": "restricted"}}, "required": ["primaryClass"]}, "then": {"properties": {"expectedOutcome": {"const": "blocked"}, "expectedRouteClass": {"const": "blocked"}, "subtitleEvidence": {"const": "restricted"}}}},
+        {"if": {"properties": {"primaryClass": {"const": "low_signal"}}, "required": ["primaryClass"]}, "then": {"properties": {"expectedOutcome": {"const": "degraded"}, "expectedRouteClass": {"const": "degraded"}}}}
+      ]
+    }
+  }
+}

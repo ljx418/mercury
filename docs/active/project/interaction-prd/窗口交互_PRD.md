@@ -1,10 +1,18 @@
 # AI 助手 PRD
 
+> **2026-10-07 V3 当前交互权威**：生产一级导航收敛为 `Chat / Know`，`Settings` 使用辅助入口，`Agent` 与 `Debug` 不作为 V3 生产一级入口。Runtime 由用户通过桌面“Navia 本机伴侣”图标显式启动，扩展不得自动拉起或绑定浏览器生命周期。Chat 处理当前网页/视频识读、问答、提纯与 KnowledgeDraft；Know 管理用户确认保存后的真实本地条目。完整交互候选见 `../design/v3-chat-know-target-review.html` 和 `../design/v3-chat-know-product-convergence.md`。本文后续 V1/V3 Media 历史交互与该边界冲突时，以本段为准。
+
 ## 0. 当前实现基线覆盖说明
 
 截至当前 V1.x 前端基线，Chrome content script 页面内体验收敛为：**默认贴边 launcher、hover / focus 后弹出完整悬浮球、点击后展开右侧侧边栏聊天面板、再次点击后收起并恢复网页宽度**。
 
 本文后续关于悬浮球默认态、hover 预展开态、点击悬浮球展开 / 收起、挤压 / 覆盖 / resize 的内容作为当前 V1 主线交互验收依据。当前阶段验收以“普通网页默认不被挤压，用户通过贴边 launcher 主动展开侧边栏，聊天、Debug、读取网页、总结、Mindmap 等入口均在侧边栏内完成”为准。
+
+### 0.1 V3 最小权限覆盖规则
+
+自 V3 Media Companion 路线 A 起，上述“普通网页默认常驻 launcher”只对经过独立审计、在 manifest 中显式列出的受支持门户页面自动启用；V3 首批仅为 `https://www.bilibili.com/video/*`。其他普通网页不再通过全站 content script 自动注入，用户点击扩展按钮或执行快捷键后，由 `activeTab` 在当前页面读取上下文并打开 Chrome 原生 Side Panel。读取、总结、Mindmap 等能力保留，但进入动作从“页面常驻 launcher”变为“用户主动调用”。
+
+后续 YouTube、小红书等门户若需要自动入口，必须通过 `MediaPortalAdapter` 注册、窄域 match pattern、独立权限审计和真实页面验收后逐站启用；不得恢复 `<all_urls>` 或语义等价的全站静态注入。本文后续默认态图仍描述受支持门户和历史 V1 构建，不再定义任意普通网页的安装后自动注入承诺。
 
 ## 1. 产品定位
 

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_companion_runtime_v1.schema.json",
+  "title": "Navia V3 Companion Runtime contracts",
+  "oneOf": [
+    { "$ref": "#/$defs/status" },
+    { "$ref": "#/$defs/session" },
+    { "$ref": "#/$defs/stop" }
+  ],
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "status": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "status", "runtimeInstanceId", "startedAt", "sessionBootstrapAvailable"],
+      "properties": {
+        "schemaVersion": { "const": "navia-companion-status/v1" },
+        "status": { "enum": ["online", "stopping"] },
+        "runtimeInstanceId": { "type": "string", "pattern": "^runtime_[a-f0-9]{32}$" },
+        "startedAt": { "$ref": "#/$defs/timestamp" },
+        "sessionBootstrapAvailable": { "type": "boolean" }
+      }
+    },
+    "session": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "sessionId", "runtimeInstanceId", "extensionOriginSha256", "issuedAt", "expiresAt", "token", "persisted"],
+      "properties": {
+        "schemaVersion": { "const": "navia-companion-session/v1" },
+        "sessionId": { "type": "string", "pattern": "^comp_session_[a-f0-9]{32}$" },
+        "runtimeInstanceId": { "type": "string", "pattern": "^runtime_[a-f0-9]{32}$" },
+        "extensionOriginSha256": { "$ref": "#/$defs/sha256" },
+        "issuedAt": { "$ref": "#/$defs/timestamp" },
+        "expiresAt": { "$ref": "#/$defs/timestamp" },
+        "token": { "type": "string", "minLength": 43, "maxLength": 86, "pattern": "^[A-Za-z0-9_-]+$" },
+        "persisted": { "const": false }
+      }
+    },
+    "stop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "runtimeInstanceId", "status", "acceptedAt"],
+      "properties": {
+        "schemaVersion": { "const": "navia-companion-stop/v1" },
+        "runtimeInstanceId": { "type": "string", "pattern": "^runtime_[a-f0-9]{32}$" },
+        "status": { "const": "stopping" },
+        "acceptedAt": { "$ref": "#/$defs/timestamp" }
+      }
+    }
+  }
+}

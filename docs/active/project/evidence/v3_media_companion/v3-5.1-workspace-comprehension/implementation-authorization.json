@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "v3-implementation-authorization/v1",
+  "stage": "V3-5.1-1..7",
+  "authorizedBy": "user",
+  "authorizedAt": "2026-10-10T00:00:00+08:00",
+  "authorizationText": "approved V3-5.1-1..7 implementation, three-video fresh probe, and renderer fallback; grounded-text cloud upload remains disabled",
+  "scope": {
+    "productImplementation": true,
+    "threeVideoFreshProbe": true,
+    "rendererFallback": true,
+    "groundedTextCloudUpload": false,
+    "rawVideoOrAudioCloudUpload": false,
+    "v4KnowledgeOrAgentWork": false
+  },
+  "documentAudit": {
+    "path": "docs/active/project/evidence/v3_media_companion/v3-5.1-workspace-comprehension/v3-5.1-independent-document-audit.md",
+    "decision": "DOCUMENT CONDITIONAL GO",
+    "fatal": 0,
+    "major": 0,
+    "minor": 3
+  }
+}

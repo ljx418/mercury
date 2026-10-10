@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "v3-media-portal-registry/v1",
+  "registryMode": "build_time_closed_set",
+  "genericPageEntry": {
+    "trigger": "action_or_command",
+    "permission": "activeTab",
+    "surface": "native_side_panel",
+    "staticInjection": false
+  },
+  "adapters": [
+    {
+      "adapterId": "bilibili",
+      "adapterRevision": 1,
+      "platform": "bilibili",
+      "status": "v3_1_1_page_adapter_implemented_candidate",
+      "implementationTarget": "apps/chrome-extension/src/modules/media_companion/adapters/bilibili/BilibiliMediaPortalAdapter.ts",
+      "staticMatches": [
+        "https://www.bilibili.com/video/*"
+      ],
+      "webAccessibleResourceMatches": [
+        "https://www.bilibili.com/*"
+      ],
+      "capabilities": [
+        "page_identity",
+        "public_transcript_discovery",
+        "playback_read",
+        "playback_seek"
+      ],
+      "plannedCapabilities": [
+        "session_capability"
+      ],
+      "identityMapping": {
+        "mediaId": "bvid",
+        "playbackUnitId": "cid",
+        "partId": "p<one_based_part_index>",
+        "sourceIdentityTemplate": "portal:bilibili:<mediaId>:<playbackUnitId>:<partId>"
+      },
+      "sessionProfile": {
+        "brokerId": "bilibili",
+        "optionalPermissions": [
+          "cookies"
+        ],
+        "optionalHostPermissions": [
+          "https://*.bilibili.com/*"
+        ],
+        "consentScope": "bilibili_session_access",
+        "credentialPolicy": "bilibili-cookie-policy/v1",
+        "leaseAdapterId": "bilibili"
+      }
+    }
+  ],
+  "extensionPolicy": {
+    "remoteAdaptersAllowed": false,
+    "wildcardAllUrlsAllowed": false,
+    "equivalentGlobalHttpMatchesAllowed": false,
+    "newAdapterRequires": [
+      "prd_scope",
+      "narrow_host_permissions",
+      "identity_mapping",
+      "capability_matrix",
+      "real_sample_registry",
+      "negative_contract_cases",
+      "independent_document_audit",
+      "independent_implementation_audit"
+    ],
+    "futureExamplesAreNotImplemented": [
+      "youtube",
+      "xiaohongshu"
+    ]
+  }
+}

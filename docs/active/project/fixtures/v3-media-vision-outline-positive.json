@@ -1,0 +1,214 @@
+{
+  "visionEvidence": {
+    "schemaVersion": "v3-media-vision-evidence/v1",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:987654:part-1",
+    "samplingPolicy": {
+      "policyVersion": "v3-frame-sampling/v1",
+      "algorithm": "scene-change-plus-timeline-budget/v1",
+      "candidateFrameLimit": 24,
+      "selectedEvidenceLimit": 12,
+      "cloudVisionFrameLimit": 8,
+      "maxDimensionPx": 1280,
+      "rawVideoUploadAllowed": false
+    },
+    "consent": {
+      "scope": "selected_frame_cloud_vision",
+      "state": "granted",
+      "decisionId": "consent_22222222222222222222222222222222",
+      "grantedAt": "2026-10-06T14:00:00Z",
+      "revokedAt": null,
+      "outboundBarrierAt": null,
+      "authorizedDispatchCount": 1,
+      "postRevocationDispatchCount": 0,
+      "consentCheckedPerDispatch": true
+    },
+    "frames": [
+      {
+        "evidenceId": "mev_33333333333333333333333333333333",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "timestampMs": 120000,
+        "kind": "frame",
+        "selected": true,
+        "relativeArtifactRef": "frames/evidence-0001.webp",
+        "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "widthPx": 1280,
+        "heightPx": 720,
+        "retention": "evidence_until_task_delete"
+      },
+      {
+        "evidenceId": "mev_44444444444444444444444444444444",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "timestampMs": 180000,
+        "kind": "frame",
+        "selected": false,
+        "relativeArtifactRef": "frames/candidate-0002.webp",
+        "artifactSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "widthPx": 1280,
+        "heightPx": 720,
+        "retention": "delete_at_terminal"
+      }
+    ],
+    "ocrObservations": [
+      {
+        "evidenceId": "mev_55555555555555555555555555555555",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "frameEvidenceId": "mev_33333333333333333333333333333333",
+        "kind": "ocr_block",
+        "providerId": "rapidocr_local",
+        "engineVersion": "pinned-at-v3-3-freeze",
+        "modelRevision": "pinned-at-v3-3-freeze",
+        "localOnly": true,
+        "blocks": [
+          {
+            "blockId": "ocr_66666666666666666666666666666666",
+            "text": "示例画面文字",
+            "confidence": 0.97,
+            "box": [0.1, 0.1, 0.5, 0.2]
+          }
+        ],
+        "contentSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ],
+    "visionObservations": [
+      {
+        "evidenceId": "mev_77777777777777777777777777777777",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "frameEvidenceId": "mev_33333333333333333333333333333333",
+        "kind": "vision_caption",
+        "providerId": "provider-frozen-at-v3-3",
+        "modelId": "model-frozen-at-v3-3",
+        "requestSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "responseSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "authorized": true,
+        "consentDecisionId": "consent_22222222222222222222222222222222",
+        "dispatchSequence": 0,
+        "consentValidAtDispatch": true,
+        "uploadedAt": "2026-10-06T14:01:00Z",
+        "caption": "一张经过授权上传的选定证据帧。",
+        "usage": {
+          "inputImageCount": 1,
+          "inputBytes": 128000,
+          "inputTokens": null,
+          "outputTokens": null,
+          "estimatedCostUsd": null
+        },
+        "status": "succeeded",
+        "failureCode": null
+      }
+    ],
+    "cleanup": {
+      "terminalStatus": "succeeded",
+      "candidateFrameCount": 2,
+      "retainedEvidenceFrameCount": 1,
+      "deletedNonEvidenceFrameCount": 1,
+      "residualNonEvidenceFrameCount": 0,
+      "pendingOutboundRequestCount": 0,
+      "cleanedAt": "2026-10-06T14:02:00Z"
+    }
+  },
+  "outlineTaskStore": {
+    "schemaVersion": "v3-media-outline-taskstore/v1",
+    "task": {
+      "taskId": "media_task_11111111111111111111111111111111",
+      "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:987654:part-1",
+      "state": "ready",
+      "revision": 7,
+      "createdAt": "2026-10-06T13:00:00Z",
+      "updatedAt": "2026-10-06T14:03:00Z",
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    "evidenceCatalog": [
+      {
+        "evidenceId": "mtr_88888888888888888888888888888888",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "kind": "transcript",
+        "timestampStartMs": 90000,
+        "timestampEndMs": 150000,
+        "contentSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      {
+        "evidenceId": "mev_33333333333333333333333333333333",
+        "taskId": "media_task_11111111111111111111111111111111",
+        "kind": "frame",
+        "timestampStartMs": 120000,
+        "timestampEndMs": 120001,
+        "contentSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "outline": {
+      "outlineId": "outline_99999999999999999999999999999999",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "taskRevision": 7,
+      "title": "示例视频大纲",
+      "summary": "由同一任务的转写与画面证据生成。",
+      "sections": [
+        {
+          "sectionId": "section_aaaaaaaaaaaaaaaa",
+          "title": "核心片段",
+          "summary": "本章节有可回读的转写和画面证据。",
+          "startMs": 90000,
+          "endMs": 150000,
+          "evidenceIds": [
+            "mtr_88888888888888888888888888888888",
+            "mev_33333333333333333333333333333333"
+          ]
+        }
+      ],
+      "contentSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "timeline": [
+      {
+        "segmentId": "timeline_bbbbbbbbbbbbbbbb",
+        "outlineId": "outline_99999999999999999999999999999999",
+        "sectionId": "section_aaaaaaaaaaaaaaaa",
+        "sequence": 0,
+        "startMs": 90000,
+        "endMs": 150000,
+        "evidenceIds": [
+          "mtr_88888888888888888888888888888888",
+          "mev_33333333333333333333333333333333"
+        ]
+      }
+    ],
+    "mindmap": {
+      "projectionId": "mindmap_cccccccccccccccccccccccccccccccc",
+      "outlineId": "outline_99999999999999999999999999999999",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "nodes": [
+        {
+          "nodeId": "node_dddddddddddddddd",
+          "parentNodeId": null,
+          "sectionId": null,
+          "label": "示例视频大纲",
+          "evidenceIds": []
+        },
+        {
+          "nodeId": "node_eeeeeeeeeeeeeeee",
+          "parentNodeId": "node_dddddddddddddddd",
+          "sectionId": "section_aaaaaaaaaaaaaaaa",
+          "label": "核心片段",
+          "evidenceIds": [
+            "mtr_88888888888888888888888888888888",
+            "mev_33333333333333333333333333333333"
+          ]
+        }
+      ],
+      "contentSha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "transactionReceipt": {
+      "transactionId": "mtx_ffffffffffffffffffffffffffffffff",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "expectedRevision": 6,
+      "committedRevision": 7,
+      "aggregateCommitted": true,
+      "eventCommitted": true,
+      "outboxCommitted": true,
+      "duplicateWriteCount": 0,
+      "unresolvedEvidenceReferenceCount": 0,
+      "crossTaskEvidenceReferenceCount": 0,
+      "projectionEvidenceClosurePassed": true,
+      "committedAt": "2026-10-06T14:03:00Z"
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "checks": [
+    {
+      "id": 1,
+      "name": "V409-01 canonical result hash",
+      "passed": true
+    },
+    {
+      "id": 2,
+      "name": "V409-02 seal bindings",
+      "passed": true
+    },
+    {
+      "id": 3,
+      "name": "V409-03 fixed denominator",
+      "passed": true
+    },
+    {
+      "id": 4,
+      "name": "V409-04 ordered terminal matrix",
+      "passed": true
+    },
+    {
+      "id": 5,
+      "name": "V409-05 selected-frame budget",
+      "passed": true
+    },
+    {
+      "id": 6,
+      "name": "V402 state rows",
+      "passed": true
+    },
+    {
+      "id": 7,
+      "name": "V403 atomic rows",
+      "passed": true
+    },
+    {
+      "id": 8,
+      "name": "V405 idempotency rows",
+      "passed": true
+    },
+    {
+      "id": 9,
+      "name": "V411 no duplicate evidence",
+      "passed": true
+    },
+    {
+      "id": 10,
+      "name": "V409-06 reconstructed envelopes",
+      "passed": true
+    },
+    {
+      "id": 11,
+      "name": "V409-07 blocked zero projection",
+      "passed": true
+    },
+    {
+      "id": 12,
+      "name": "V412 time and evidence files",
+      "passed": true
+    },
+    {
+      "id": 13,
+      "name": "V413 timeline closure",
+      "passed": true
+    },
+    {
+      "id": 14,
+      "name": "V414 mindmap closure",
+      "passed": true
+    },
+    {
+      "id": 15,
+      "name": "V415 deterministic receipts",
+      "passed": true
+    },
+    {
+      "id": 16,
+      "name": "V416 restart read",
+      "passed": true
+    },
+    {
+      "id": 17,
+      "name": "V417 public path boundary",
+      "passed": true
+    },
+    {
+      "id": 18,
+      "name": "V417 V4 boundary",
+      "passed": true
+    },
+    {
+      "id": 19,
+      "name": "V417 raw artifact cleanup",
+      "passed": true
+    },
+    {
+      "id": 20,
+      "name": "V418 public allowlist",
+      "passed": true
+    }
+  ],
+  "failedChecks": [],
+  "passed": true,
+  "runId": "v3-4-outline-production-20261008T104258Z",
+  "schemaVersion": "v3-4-production-verification/v1",
+  "summary": {
+    "failed": 0,
+    "passed": 20,
+    "total": 20
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "v3-5-1-real-chrome/v1",
+  "runId": "v3-5-1-real-20261008T135559Z",
+  "sampleUrl": "https://www.bilibili.com/video/BV13W41137qV",
+  "nativeSidePanelMethod": "extension_page_user_gesture+e2e_bridge",
+  "buildTreeSha256": "8a45bff3060b518904e4a14e3c2d6944cff71a2ccf79e34f21c44dea62ec3cca",
+  "checks": {
+    "startActionAccepted": true,
+    "realThreeRouteFailure": true,
+    "realDecodedAudio": true,
+    "realPlayback": true,
+    "extensionInvokedOnTarget": true,
+    "trustedCaptureStarted": true,
+    "playbackContinuedDuringCapture": true,
+    "senseVoiceTerminal": true,
+    "productMaterialized": true,
+    "resourceNoticeVisible": true,
+    "canonicalWorkspaceSameTask": true,
+    "visualDegradationDisclosed": true,
+    "noCookieOrPrivatePathVisible": true,
+    "noActiveOffscreen": true,
+    "noRuntimeMediaResidue": true,
+    "profileDeleted": true,
+    "secretScanZeroHits": true,
+    "secureTaskRootDeleted": true
+  },
+  "states": [
+    { "state": "awaiting_trusted_capture", "route": "none", "visibleReason": true, "cookieVisible": false, "privatePathVisible": false, "forbiddenV3ClaimVisible": false },
+    { "state": "transcribing", "route": "trusted_tab_capture_asr", "visibleReason": true, "cookieVisible": false, "privatePathVisible": false, "forbiddenV3ClaimVisible": false },
+    { "state": "terminal", "route": "trusted_tab_capture_asr", "visibleReason": true, "cookieVisible": false, "privatePathVisible": false, "forbiddenV3ClaimVisible": false }
+  ],
+  "taskBindings": { "completedTaskId": "media_task_7b970c39f530454aabd2fdcc100349be" },
+  "runtimeArtifactSummary": { "persistentPrivateEvidenceFiles": 1, "temporaryMediaFiles": 0, "asrTemporaryFiles": 0 },
+  "secretScan": { "scannedFiles": 102, "scannedBytes": 3968823, "hitCount": 0, "passed": true },
+  "sourceResultSha256": "bf753254aa819cddbfc4aafaa5320f08085976020a38a5529942d5970ebef41f",
+  "sourceSecretScanSha256": "85d7b44e1b41cdd44b2e197f32d361fd5ca96e706caee42cfe20e3d569fa1f16",
+  "passed": true
+}

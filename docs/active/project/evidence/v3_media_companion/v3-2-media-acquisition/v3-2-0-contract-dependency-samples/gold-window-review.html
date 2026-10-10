@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Navia V3-2 旧听写页面（已停用）</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, "Microsoft YaHei", sans-serif; color: #172321; background: #eef3f1; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header, main { width: min(1080px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 34px 0 20px; }
+    h1 { margin: 0 0 10px; font-size: 30px; }
+    p { line-height: 1.65; }
+    .notice { border-left: 5px solid #9b4a1c; background: #fff7ef; padding: 14px 18px; }
+    .meta { display: grid; grid-template-columns: 180px 1fr; gap: 10px; margin: 22px 0; }
+    label { font-weight: 700; }
+    input, textarea { width: 100%; border: 1px solid #9eb4ae; background: #fff; padding: 11px; font: inherit; }
+    article { background: #fff; border: 1px solid #c9d8d4; border-radius: 6px; margin: 18px 0; padding: 20px; }
+    article h2 { margin: 0 0 8px; font-size: 20px; }
+    .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; color: #41524e; font-size: 14px; }
+    textarea { min-height: 220px; margin-top: 12px; resize: vertical; line-height: 1.55; }
+    a, button { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; margin-top: 14px; padding: 0 15px; border-radius: 5px; font-weight: 700; }
+    a { color: #075e54; border: 1px solid #075e54; text-decoration: none; }
+    button { border: 0; color: #fff; background: #075e54; cursor: pointer; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid #f2a33b; outline-offset: 2px; }
+    footer { padding: 10px 0 40px; color: #53635f; }
+    @media (max-width: 620px) { .meta { grid-template-columns: 1fr; } h1 { font-size: 25px; } }
+  </style>
+</head>
+<body>
+  <div style="background:#8c2f24;color:#fff;padding:14px 20px;font-weight:700;text-align:center">已停用：用户已取消人工逐字听写。请使用生成后的 ASR 双模型盲评页面。</div>
+  <header>
+    <h1>V3-2 中文 Gold Window 独立转写</h1>
+    <p class="notice"><strong>独立性要求：</strong>每位 reviewer 单独使用本页，不得查看机器 ASR 或另一位 reviewer 的文本。只转写 00:30 到 02:30。页面不保存 Cookie，也不自动上传内容。</p>
+    <div class="meta">
+      <label for="reviewer">Reviewer ID</label>
+      <input id="reviewer" autocomplete="off" placeholder="使用非敏感、可追责的审查者标识">
+    </div>
+  </header>
+  <main id="samples"></main>
+  <footer>
+    <button id="export" type="button">导出本次独立审查 JSON</button>
+    <p>导出后关闭页面。第二位 reviewer 必须从空白页面独立开始。</p>
+  </footer>
+  <script>
+    const samples = [
+      { bvid: "BV1sMNtzJE5B", partIndex: 1, cid: "30592600559", title: "第181期 北北对谈", url: "https://www.bilibili.com/video/BV1sMNtzJE5B?t=30" },
+      { bvid: "BV1xz4y1S7yF", partIndex: 1, cid: "286754257", title: "陈晓专访：兄弟好久不见", url: "https://www.bilibili.com/video/BV1xz4y1S7yF?p=1&t=30" },
+      { bvid: "BV1Bb411w741", partIndex: 1, cid: "61744125", title: "Eason 你快乐吗？", url: "https://www.bilibili.com/video/BV1Bb411w741?p=1&t=30" }
+    ];
+    const root = document.querySelector("#samples");
+    for (const sample of samples) {
+      const article = document.createElement("article");
+      article.innerHTML = `<h2>${sample.title}</h2><div class="facts"><span>${sample.bvid}</span><span>P${sample.partIndex}</span><span>cid ${sample.cid}</span><span>00:30..02:30</span></div><a href="${sample.url}" target="_blank" rel="noreferrer">打开目标视频与时间点</a><label for="text-${sample.bvid}" style="display:block;margin-top:16px">逐字转写</label><textarea id="text-${sample.bvid}" data-bvid="${sample.bvid}" spellcheck="false" placeholder="不要粘贴机器字幕；按实际听到内容逐字记录"></textarea>`;
+      root.append(article);
+    }
+    document.querySelector("#export").addEventListener("click", () => {
+      const reviewerId = document.querySelector("#reviewer").value.trim();
+      const reviews = samples.map((sample) => ({
+        bvid: sample.bvid,
+        partIndex: sample.partIndex,
+        cid: sample.cid,
+        startMs: 30000,
+        endMs: 150000,
+        transcript: document.querySelector(`#text-${sample.bvid}`).value.trim()
+      }));
+      if (!reviewerId || reviews.some((review) => !review.transcript)) {
+        alert("请填写 reviewer ID，并完成三个窗口的独立转写。");
+        return;
+      }
+      const payload = { schemaVersion: "v3-gold-window-independent-review/v1", reviewerId, submittedAt: new Date().toISOString(), reviews };
+      const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `v3-gold-review-${reviewerId.replace(/[^A-Za-z0-9_-]/g, "-")}.json`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    });
+  </script>
+</body>
+</html>

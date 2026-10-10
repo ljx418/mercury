@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "v3-asr-fixed-window-policy-registry/v1",
+  "stage": "V3-2-0b-5.3",
+  "requirements": [
+    {"requirementId":"V3-2-0B-FW-R01","requirementKey":"schema_meta","failureCode":"V3_ASR_FW_SCHEMA_INVALID"},
+    {"requirementId":"V3-2-0B-FW-R02","requirementKey":"parent_lineage","failureCode":"V3_ASR_FW_LINEAGE_MISMATCH"},
+    {"requirementId":"V3-2-0B-FW-R03","requirementKey":"fixed_source_samples","failureCode":"V3_ASR_FW_SOURCE_DENOMINATOR_CHANGED"},
+    {"requirementId":"V3-2-0B-FW-R04","requirementKey":"deterministic_chunk_plan","failureCode":"V3_ASR_FW_CHUNK_PLAN_DRIFT"},
+    {"requirementId":"V3-2-0B-FW-R05","requirementKey":"exact_pcm_format","failureCode":"V3_ASR_FW_AUDIO_FORMAT_INVALID"},
+    {"requirementId":"V3-2-0B-FW-R06","requirementKey":"chunk_hash_binding","failureCode":"V3_ASR_FW_CHUNK_HASH_MISMATCH"},
+    {"requirementId":"V3-2-0B-FW-R07","requirementKey":"no_overlap_or_gap","failureCode":"V3_ASR_FW_CHUNK_COVERAGE_INVALID"},
+    {"requirementId":"V3-2-0B-FW-R08","requirementKey":"sequential_single_concurrency","failureCode":"V3_ASR_FW_CONCURRENCY_VIOLATION"},
+    {"requirementId":"V3-2-0B-FW-R09","requirementKey":"closed_provider_boundary","failureCode":"V3_ASR_FW_PROVIDER_BOUNDARY_BYPASSED"},
+    {"requirementId":"V3-2-0B-FW-R10","requirementKey":"no_text_rewrite","failureCode":"V3_ASR_FW_TEXT_REWRITE_FORBIDDEN"},
+    {"requirementId":"V3-2-0B-FW-R11","requirementKey":"per_chunk_nonempty","failureCode":"V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY"},
+    {"requirementId":"V3-2-0B-FW-R12","requirementKey":"local_timestamp_contract","failureCode":"V3_ASR_FW_LOCAL_TIMESTAMP_INVALID"},
+    {"requirementId":"V3-2-0B-FW-R13","requirementKey":"global_offset_merge","failureCode":"V3_ASR_FW_GLOBAL_TIMESTAMP_INVALID"},
+    {"requirementId":"V3-2-0B-FW-R14","requirementKey":"no_partial_retry_reuse","failureCode":"V3_ASR_FW_PARTIAL_REUSE_FORBIDDEN"},
+    {"requirementId":"V3-2-0B-FW-R15","requirementKey":"cleanup_barrier","failureCode":"V3_ASR_FW_PRIVATE_DATA_RETAINED"},
+    {"requirementId":"V3-2-0B-FW-R16","requirementKey":"low_resource_baseline","failureCode":"V3_ASR_FW_RESOURCE_BASELINE_EXCEEDED"},
+    {"requirementId":"V3-2-0B-FW-R17","requirementKey":"latency_regression","failureCode":"V3_ASR_FW_LATENCY_REGRESSION_EXCEEDED"},
+    {"requirementId":"V3-2-0B-FW-R18","requirementKey":"blind_review_denominator","failureCode":"V3_ASR_FW_REVIEW_DENOMINATOR_NOT_MET"},
+    {"requirementId":"V3-2-0B-FW-R19","requirementKey":"quality_threshold","failureCode":"V3_ASR_FW_QUALITY_GATE_FAILED"},
+    {"requirementId":"V3-2-0B-FW-R20","requirementKey":"independent_exit_audit","failureCode":"V3_ASR_FW_INDEPENDENT_AUDIT_NOT_PASSED"}
+  ]
+}

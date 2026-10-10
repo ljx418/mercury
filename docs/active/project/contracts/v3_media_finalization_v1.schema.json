@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-finalization/v1",
+  "title": "Navia V3-6 candidate and V3-7 final disposition",
+  "oneOf": [
+    { "$ref": "#/$defs/FinalizationCandidate" },
+    { "$ref": "#/$defs/FinalDisposition" }
+  ],
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "Requirement": {
+      "type": "object",
+      "required": ["requirementId", "passed", "evidenceSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": { "type": "string", "pattern": "^V3-6-A(?:0[1-9]|1[0-9]|20)$" },
+        "passed": { "const": true },
+        "evidenceSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "SampleResult": {
+      "type": "object",
+      "required": ["sampleId", "sourceIdentity", "canonicalUrlSha256", "expectedClass", "terminalStatus", "resultSha256"],
+      "additionalProperties": false,
+      "properties": {
+        "sampleId": { "type": "string", "pattern": "^v3-sample-(?:0[1-9]|1[0-2])$" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:bilibili:[^:]+:[^:]+:[^:]+$" },
+        "canonicalUrlSha256": { "$ref": "#/$defs/Sha256" },
+        "expectedClass": { "enum": ["subtitle", "asr", "multipart", "restricted", "low_signal"] },
+        "terminalStatus": { "enum": ["succeeded", "blocked", "degraded"] },
+        "resultSha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "FinalizationCandidate": {
+      "type": "object",
+      "required": ["schemaVersion", "recordType", "candidateId", "runId", "buildTreeSha256", "registrySha256", "classificationCounts", "sampleCount", "samples", "requirements", "humanReviewSha256", "humanReviewStatus", "publicPackageSha256", "secretHitCount", "residualCount", "sealSha256", "machinePassed", "finalPassed", "auditStatus"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-media-finalization/v1" },
+        "recordType": { "const": "finalization_candidate" },
+        "candidateId": { "type": "string", "pattern": "^v3_final_[a-f0-9]{32}$" },
+        "runId": { "type": "string", "pattern": "^v3-6-production-[0-9]{8}T[0-9]{6}Z$" },
+        "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+        "registrySha256": { "$ref": "#/$defs/Sha256" },
+        "classificationCounts": {
+          "type": "object",
+          "required": ["subtitle", "asr", "multipart", "restricted", "lowSignal"],
+          "additionalProperties": false,
+          "properties": { "subtitle": { "const": 6 }, "asr": { "const": 3 }, "multipart": { "const": 1 }, "restricted": { "const": 1 }, "lowSignal": { "const": 1 } }
+        },
+        "sampleCount": { "const": 12 },
+        "samples": { "type": "array", "minItems": 12, "maxItems": 12, "items": { "$ref": "#/$defs/SampleResult" } },
+        "requirements": { "type": "array", "minItems": 20, "maxItems": 20, "items": { "$ref": "#/$defs/Requirement" } },
+        "humanReviewSha256": { "$ref": "#/$defs/Sha256" },
+        "humanReviewStatus": { "const": "PASS" },
+        "publicPackageSha256": { "$ref": "#/$defs/Sha256" },
+        "secretHitCount": { "const": 0 },
+        "residualCount": { "const": 0 },
+        "sealSha256": { "$ref": "#/$defs/Sha256" },
+        "machinePassed": { "const": true },
+        "finalPassed": { "const": false },
+        "auditStatus": { "const": "pending_independent_audit" }
+      }
+    },
+    "FinalDisposition": {
+      "type": "object",
+      "required": ["schemaVersion", "recordType", "candidateId", "candidateSha256", "reviewerSessionSha256", "reviewedAt", "fatalCount", "majorCount", "minorCount", "decision", "finalPassed", "allowedClaim"],
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": { "const": "v3-media-finalization/v1" },
+        "recordType": { "const": "final_disposition" },
+        "candidateId": { "type": "string", "pattern": "^v3_final_[a-f0-9]{32}$" },
+        "candidateSha256": { "$ref": "#/$defs/Sha256" },
+        "reviewerSessionSha256": { "$ref": "#/$defs/Sha256" },
+        "reviewedAt": { "type": "string", "format": "date-time" },
+        "fatalCount": { "const": 0 },
+        "majorCount": { "const": 0 },
+        "minorCount": { "type": "integer", "minimum": 0 },
+        "decision": { "const": "PASS" },
+        "finalPassed": { "const": true },
+        "allowedClaim": { "const": "V3 Bilibili-first media companion passed the frozen subtitle/local-ASR/keyframe/OCR/authorized-cloud-VLM acceptance matrix." }
+      }
+    }
+  }
+}

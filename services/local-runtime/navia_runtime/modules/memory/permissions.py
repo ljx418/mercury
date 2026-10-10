@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass, field
 from io import StringIO
 from threading import RLock
-from typing import Any
+from typing import Any, Callable
 from uuid import uuid4
 
 from navia_runtime.contracts import utc_now
@@ -73,8 +73,9 @@ class Root:
 
 
 class PermissionService:
-    def __init__(self, adapter: Any) -> None:
+    def __init__(self, adapter: Any, session_acceptor: Callable[[str | None, str | None], bool] | None = None) -> None:
         self.adapter = adapter
+        self._session_acceptor = session_acceptor
         self.roots: dict[str, Root] = {}
         self.lock = RLock()
         self._ticket_lock = RLock()
@@ -123,13 +124,17 @@ class PermissionService:
         return len(token) >= 32 and len(extension_id) == 32 and all(c in "abcdefghijklmnop" for c in extension_id)
 
     def authenticate(self, authorization: str | None, origin: str | None) -> None:
+        if self._session_acceptor is not None and self._session_acceptor(authorization, origin):
+            return
         expected = os.environ.get("NAVIA_LOCAL_FILES_TOKEN", "")
         extension = os.environ.get("NAVIA_LOCAL_FILES_EXTENSION_ID", "")
         if not self.enabled() or (origin is not None and origin != f"chrome-extension://{extension}"):
             raise PermissionFailure("missing_permission")
         supplied = (authorization or "").removeprefix("Bearer ")
-        if not (authorization or "").startswith("Bearer ") or not hmac.compare_digest(supplied.encode(), expected.encode()):
-            raise PermissionFailure("missing_permission")
+        master_matches = (authorization or "").startswith("Bearer ") and hmac.compare_digest(supplied.encode(), expected.encode())
+        if master_matches:
+            return
+        raise PermissionFailure("missing_permission")
 
     def close(self) -> None:
         with self.lock:

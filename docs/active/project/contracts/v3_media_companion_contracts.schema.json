@@ -1,0 +1,308 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-companion/v3",
+  "title": "Navia V3 Media Companion Contracts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceClass", "mediaPageContext", "consentPolicy", "acquisition", "task", "outline", "mindmap", "askResult", "exportManifest", "validation"],
+  "properties": {
+    "schemaVersion": { "const": "v3-media-companion/v3" },
+    "evidenceClass": { "enum": ["contract_fixture", "production_acceptance"] },
+    "mediaPageContext": { "$ref": "#/$defs/MediaPageContext" },
+    "consentPolicy": { "$ref": "#/$defs/MediaConsentPolicy" },
+    "acquisition": { "$ref": "#/$defs/MediaAcquisitionRecord" },
+    "task": { "$ref": "#/$defs/MediaTask" },
+    "outline": { "$ref": "#/$defs/VideoOutline" },
+    "mindmap": { "$ref": "#/$defs/MediaMindmapProjection" },
+    "askResult": { "$ref": "#/$defs/AskVideoResult" },
+    "exportManifest": { "$ref": "#/$defs/MediaExportManifest" },
+    "validation": { "$ref": "#/$defs/ProductionValidationInputs" }
+  },
+  "$defs": {
+    "Id": { "type": "string", "minLength": 8, "pattern": "^[a-z][a-z0-9_-]+$" },
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "Timestamp": { "type": "string", "format": "date-time" },
+    "MediaPageContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "adapterId", "adapterRevision", "canonicalUrl", "mediaId", "playbackUnitId", "part", "title", "author", "durationSeconds", "currentTimeSeconds", "transcriptAvailability", "observedAt"],
+      "properties": {
+        "platform": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,31}$" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+        "adapterRevision": { "type": "integer", "minimum": 1 },
+        "canonicalUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "mediaId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "playbackUnitId": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "part": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "index", "count"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "index": { "type": "integer", "minimum": 1 },
+            "count": { "type": "integer", "minimum": 1 },
+            "label": { "type": ["string", "null"], "maxLength": 256 }
+          }
+        },
+        "title": { "type": "string", "minLength": 1 },
+        "author": { "type": "string", "minLength": 1 },
+        "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "currentTimeSeconds": { "type": "number", "minimum": 0 },
+        "transcriptAvailability": { "enum": ["available", "unavailable", "restricted", "unknown"] },
+        "observedAt": { "$ref": "#/$defs/Timestamp" }
+      }
+    },
+    "MediaConsentPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policyId", "revision", "status", "scopes", "grantedAt", "revokedAt"],
+      "properties": {
+        "policyId": { "$ref": "#/$defs/Id" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "status": { "enum": ["not_granted", "granted", "revoked"] },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["bilibili_session_access", "temporary_media_download", "audio_local_processing", "frame_local_processing", "selected_frame_cloud_vision"] }
+        },
+        "grantedAt": { "anyOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] },
+        "revokedAt": { "anyOf": [{ "$ref": "#/$defs/Timestamp" }, { "type": "null" }] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "granted" } }, "required": ["status"] },
+          "then": { "properties": { "grantedAt": { "$ref": "#/$defs/Timestamp" }, "scopes": { "minItems": 5 } } }
+        }
+      ]
+    },
+    "MediaCaptureGrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["grantId", "taskId", "tabId", "trustedUserGesture", "issuedAt", "expiresAt"],
+      "properties": {
+        "grantId": { "$ref": "#/$defs/Id" },
+        "taskId": { "$ref": "#/$defs/Id" },
+        "tabId": { "type": "integer", "minimum": 0 },
+        "trustedUserGesture": { "const": true },
+        "issuedAt": { "$ref": "#/$defs/Timestamp" },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" }
+      }
+    },
+    "PortalCredentialLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["leaseId", "taskId", "adapterId", "browserProfileSha256", "credentialNameSetSha256", "credentialPolicyRevision", "transport", "issuedAt", "expiresAt", "storage"],
+      "properties": {
+        "leaseId": { "$ref": "#/$defs/Id" },
+        "taskId": { "$ref": "#/$defs/Id" },
+        "adapterId": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" },
+        "browserProfileSha256": { "$ref": "#/$defs/Sha256" },
+        "credentialNameSetSha256": { "$ref": "#/$defs/Sha256" },
+        "credentialPolicyRevision": { "type": "integer", "minimum": 1 },
+        "transport": { "const": "authenticated_loopback_one_shot" },
+        "issuedAt": { "$ref": "#/$defs/Timestamp" },
+        "expiresAt": { "$ref": "#/$defs/Timestamp" },
+        "storage": { "const": "browser_managed_ephemeral" }
+      }
+    },
+    "MediaAcquisitionRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "status", "credentialLease", "downloadedAudio", "downloadedVideo", "fallbackReason"],
+      "properties": {
+        "route": { "enum": ["credentialed_media", "public_or_page_subtitle", "tab_capture"] },
+        "status": { "enum": ["ready", "running", "completed", "fallback", "blocked", "failed"] },
+        "credentialLease": { "anyOf": [{ "$ref": "#/$defs/PortalCredentialLease" }, { "type": "null" }] },
+        "downloadedAudio": { "type": "boolean" },
+        "downloadedVideo": { "type": "boolean" },
+        "fallbackReason": { "anyOf": [{ "type": "string", "pattern": "^V3_[A-Z0-9_]+$" }, { "type": "null" }] }
+      }
+    },
+    "EvidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceId", "kind", "startSeconds", "endSeconds", "contentSha256", "retention"],
+      "properties": {
+        "evidenceId": { "$ref": "#/$defs/Id" },
+        "kind": { "enum": ["subtitle_segment", "asr_segment", "ocr_block", "vision_frame", "page_metadata"] },
+        "startSeconds": { "type": "number", "minimum": 0 },
+        "endSeconds": { "type": "number", "minimum": 0 },
+        "contentSha256": { "$ref": "#/$defs/Sha256" },
+        "retention": { "enum": ["task_lifetime", "transient_deleted"] }
+      }
+    },
+    "MediaTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId", "sourceIdentity", "state", "createdAt", "updatedAt", "captureGrant", "evidence", "failureCode", "cleanup"],
+      "properties": {
+        "taskId": { "$ref": "#/$defs/Id" },
+        "sourceIdentity": { "type": "string", "pattern": "^portal:[a-z][a-z0-9_]{1,63}:[A-Za-z0-9._~-]+:[A-Za-z0-9._~-]+:[A-Za-z0-9._~-]+$" },
+        "state": { "enum": ["detected", "consent_required", "ready", "acquiring_credentials", "downloading_media", "collecting_subtitle", "capturing", "transcribing", "extracting_frames", "ocr_running", "vision_running", "synthesizing", "completed", "degraded", "blocked", "cancelled", "failed"] },
+        "createdAt": { "$ref": "#/$defs/Timestamp" },
+        "updatedAt": { "$ref": "#/$defs/Timestamp" },
+        "captureGrant": { "anyOf": [{ "$ref": "#/$defs/MediaCaptureGrant" }, { "type": "null" }] },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/EvidenceRef" } },
+        "failureCode": { "anyOf": [{ "type": "string", "pattern": "^V3_[A-Z0-9_]+$" }, { "type": "null" }] },
+        "cleanup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["credentialFileDeleted", "temporaryMediaDeleted", "rawAudioDeleted", "nonEvidenceFramesDeleted"],
+          "properties": {
+            "credentialFileDeleted": { "type": "boolean" },
+            "temporaryMediaDeleted": { "type": "boolean" },
+            "rawAudioDeleted": { "type": "boolean" },
+            "nonEvidenceFramesDeleted": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "TimelineSegment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["segmentId", "order", "title", "startSeconds", "endSeconds", "summary", "evidenceIds"],
+      "properties": {
+        "segmentId": { "$ref": "#/$defs/Id" },
+        "order": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "startSeconds": { "type": "number", "minimum": 0 },
+        "endSeconds": { "type": "number", "minimum": 0 },
+        "summary": { "type": "string", "minLength": 1 },
+        "evidenceIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } }
+      }
+    },
+    "VideoOutline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outlineId", "taskId", "title", "summary", "segments", "quality"],
+      "properties": {
+        "outlineId": { "$ref": "#/$defs/Id" },
+        "taskId": { "$ref": "#/$defs/Id" },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "segments": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/TimelineSegment" } },
+        "quality": { "enum": ["grounded", "degraded"] }
+      }
+    },
+    "MediaMindmapProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projectionId", "outlineId", "nodes"],
+      "properties": {
+        "projectionId": { "$ref": "#/$defs/Id" },
+        "outlineId": { "$ref": "#/$defs/Id" },
+        "nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["nodeId", "label", "segmentId", "evidenceIds"],
+            "properties": {
+              "nodeId": { "$ref": "#/$defs/Id" },
+              "label": { "type": "string", "minLength": 1 },
+              "segmentId": { "$ref": "#/$defs/Id" },
+              "evidenceIds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Id" } }
+            }
+          }
+        }
+      }
+    },
+    "AskVideoResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["answerId", "taskId", "question", "answer", "evidenceIds", "status"],
+      "properties": {
+        "answerId": { "$ref": "#/$defs/Id" },
+        "taskId": { "$ref": "#/$defs/Id" },
+        "question": { "type": "string", "minLength": 1 },
+        "answer": { "type": "string" },
+        "evidenceIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Id" } },
+        "status": { "enum": ["answered", "insufficient_evidence", "blocked"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "answered" } }, "required": ["status"] },
+          "then": { "properties": { "answer": { "minLength": 1 }, "evidenceIds": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "MediaExportManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exportId", "taskId", "format", "artifactSha256", "createdAt", "knowledgeImportStatus"],
+      "properties": {
+        "exportId": { "$ref": "#/$defs/Id" },
+        "taskId": { "$ref": "#/$defs/Id" },
+        "format": { "enum": ["markdown_zip", "json_bundle"] },
+        "artifactSha256": { "$ref": "#/$defs/Sha256" },
+        "createdAt": { "$ref": "#/$defs/Timestamp" },
+        "knowledgeImportStatus": { "const": "deferred_to_v4" }
+      }
+    },
+    "ProductionValidationInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["portalRegistryArtifact", "providerEvidence", "networkLog", "seekObservations"],
+      "properties": {
+        "portalRegistryArtifact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "adapterIds"],
+          "properties": {
+            "path": { "const": "docs/active/project/contracts/v3-media-portal-registry.json" },
+            "sha256": { "$ref": "#/$defs/Sha256" },
+            "adapterIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]{1,63}$" }
+            }
+          }
+        },
+        "providerEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["executionMode", "capability", "providerId", "modelId", "requestSha256", "responseSha256"],
+          "properties": {
+            "executionMode": { "enum": ["real", "mock"] },
+            "capability": { "const": "vision" },
+            "providerId": { "type": "string", "minLength": 1 },
+            "modelId": { "type": "string", "minLength": 1 },
+            "requestSha256": { "$ref": "#/$defs/Sha256" },
+            "responseSha256": { "$ref": "#/$defs/Sha256" }
+          }
+        },
+        "networkLog": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["authorizedCredentialLeaseEvents", "credentialedMediaRequests", "tabCaptureRequests", "unauthorizedCredentialAccessEvents", "cookieValuePersistenceEvents", "cookieValueEvidenceEvents", "temporaryMediaResidualCount"],
+          "properties": {
+            "authorizedCredentialLeaseEvents": { "type": "integer", "minimum": 0 },
+            "credentialedMediaRequests": { "type": "integer", "minimum": 0 },
+            "tabCaptureRequests": { "type": "integer", "minimum": 0 },
+            "unauthorizedCredentialAccessEvents": { "type": "integer", "minimum": 0 },
+            "cookieValuePersistenceEvents": { "type": "integer", "minimum": 0 },
+            "cookieValueEvidenceEvents": { "type": "integer", "minimum": 0 },
+            "temporaryMediaResidualCount": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "seekObservations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["requestedSeconds", "observedCurrentTimeSeconds", "outcome", "observedAt"],
+            "properties": {
+              "requestedSeconds": { "type": "number", "minimum": 0 },
+              "observedCurrentTimeSeconds": { "type": "number", "minimum": 0 },
+              "outcome": { "enum": ["located", "fallback", "blocked"] },
+              "observedAt": { "$ref": "#/$defs/Timestamp" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

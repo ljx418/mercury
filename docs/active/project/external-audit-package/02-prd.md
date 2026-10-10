@@ -1,6 +1,19 @@
 # Navia / 伴航 V1 PRD
 
-> 2026-09-15 V2-PX 状态：T04.1 全新隔离重放与真实 Chrome 复验已取得独立实现出门 `LIMITED PASS`（Fatal 0 / Major 0 / Minor 0），候选为 `t04-r4-resolved-invocation-20260914t145648z`。PX6-0..5 的 machine-only 审计候选固定为 `px6-machine-exit-20260914t164500z`；本地机器阶段只能是 A01..A14 passed、A15/A16 pending，独立实施出门审计前不是 PX-6 PASS。真实人类仍须在可见 Chrome 完成 H01..H07，自动化不得代签。PX6-7 还需先冻结“FinalizationCandidate -> 独立终审 -> FinalDisposition”两步握手，当前 production finalizer fail-closed。Human Review、G7、`finalPassed` 仍为 pending/pending/false，因此 PX-5 仍 FAIL/REOPENED，PX-6 尚未通过，V2/RKM 均不得宣称完成。
+> **2026-10-07 当前产品权威收敛**：V3 当前一级产品域收敛为 `Chat + Know`，`Settings` 为辅助入口，`Agent` 整体移入 V5+ 远期规划。Runtime 改为用户通过桌面“Navia 本机伴侣”图标显式启动/停止，不再承诺点击扩展自动启动，也不再绑定浏览器生命周期。V3 优先完成当前网页/B站视频在 Chat 内的识读、问答、知识提取与显式保存，以及 Know 的真实本地管理基线。语义 Query、Graph、自动维护、对话记忆和 Durable Forget 进入 V4。完整目标、L0、范围和冲突处置以 [V3 Chat + Know 产品收敛规格](design/v3-chat-know-product-convergence.md) 为准。既有 `V3-0..V3-7`、12 页 B站分母、H01-H10、媒体/视觉/Outline/TaskStore 合同与证据全部保留；本次只做增量扩展，不重新设计或废弃原计划。后续历史章节与新的产品归属冲突时以收敛规格为准，但其中技术门槛和审计事实继续有效。
+
+> **2026-10-08 V3-3 视觉凭据增量**：用户可在 Settings > 媒体与语音选择 MiniMax 或 OpenAI、选择受控模型、输入对应 API Key 并点击“保存、测试并使用”。MiniMax 默认候选为开放平台兼容性更广的 `MiniMax-M3`，M Plan 用户可选 `MiniMax-M3.1-Flash-Preview`；OpenAI 保留 `gpt-4.1-mini-2025-04-14`。服务商地址和模型来自 Runtime 闭集注册表，禁止自定义 URL。各 Provider 密钥相互隔离，扩展不得持久化；Runtime 仅在操作系统凭据库保存实际值，SQLite 只保存引用、掩码状态和当前选择。保存、测试、切换、删除都要求精确扩展 Origin 与进程级 Companion Session；未经能力测试的 Provider 不得设为当前。真实测试上传一张 Navia 生成的无用户内容色块图并产生少量所选服务商 API 用量；视频证据帧仍受首次授权、任务边界、固定最多 8 张及 V3-3 证据合同约束。
+
+### 当前阶段路线（权威）
+
+```text
+V3：手动本机服务 + Chat 当前上下文 + KnowledgeDraft + Know 真实管理
+V4：Query / Graph / 记忆 / 自动老化维护 / Durable Forget / ASR 质量回退
+V5+：长短任务 / 多 Agent / 知识驱动文档与图文输出
+V6：YouTube、小红书等门户独立适配与验收
+```
+
+> 2026-09-15 V2-PX 状态：T04.1 全新隔离重放与真实 Chrome 复验已取得独立实现出门 `LIMITED PASS`（Fatal 0 / Major 0 / Minor 0），候选为 `t04-r4-resolved-invocation-20260914t145648z`。PX6-0..5 的 machine-only 候选 `px6-machine-exit-20260914t164500z` 已通过独立实施出门审计（Fatal 0 / Major 0 / Minor 0），仅取得机器阶段 `LIMITED PASS`：A01..A14 passed、A15/A16 pending。真实人类仍须在可见 Chrome 完成 H01..H07，自动化不得代签。PX6-7 还需先冻结“FinalizationCandidate -> 独立终审 -> FinalDisposition”两步握手，当前 production finalizer fail-closed。Human Review、G7、`finalPassed` 仍为 pending/pending/false，因此 PX-5 仍 FAIL/REOPENED，PX-6 尚未通过，V2/RKM 均不得宣称完成。
 
 > 2026-09-09 V2-RKM 文档增量：本机双服务的真实知识库、指定对话记忆与可逆维护目标见第17.3节。当前只批准文档，不批准代码/模型调用；PX-5仍FAIL、PX-6仍BLOCKED。无费用硬上限，仅用量与估算；永久Forget仍人工确认。
 
@@ -2104,7 +2117,7 @@ unauthorizedFileOperationCount
 
 本节将已认可目标落为独立文档阶段，不把17.1的PX范围扩大，也不将17.2研究方案写成已实现。旧17.2关于后台“不联网”的约束，在RKM中仅放宽为用户明确授权scope/purpose/provider后的云模型调用；网络搜索、网页自动采集和未授权资料外发仍禁止。
 
-当前事实：独立workspace.html、入口和组件已存在，不能继续描述为未开发；R1后端F-1..6限定修复通过，前端/真实Chrome未复验，PX-5 FAIL / REOPENED、PX-6 BLOCKED。Runtime仍使用MockKnowledgeServiceAdapter，真实data_service/RAG未集成通过。
+当前事实：独立workspace.html、入口和组件已存在，不能继续描述为未开发；R1后端F-1..6限定修复通过，PX-5 FAIL / REOPENED、PX-6 BLOCKED。默认 Runtime 仍保持 Mock 供合同测试；2026-09-15 已新增显式 `NAVIA_KNOWLEDGE_ADAPTER=data_service` 的 H01-RDS 实现候选，并用真实 `data_service` 完成 Runtime 级 source import/build/trace、重复保存和重启读取。该候选不等于 H01 真实 Chrome 三入口通过，也不等于 Query/Graph/Forget、完整 RAG 或 RKM 已集成。
 
 | 需求ID | 用户可见目标与约束 |
 |---|---|
@@ -2135,27 +2148,30 @@ unauthorizedFileOperationCount
 
 ## 18. V3 Media Companion 规划目标
 
-`V3 Media Companion` 是 V1 当前网页伴读和 V2 个人知识资产之后的媒体伴随体验阶段。它面向 YouTube、B站等视频网站，把 Navia 从“读网页正文”扩展到“陪用户看视频、理解字幕 / 转录 / 时间轴、生成视频概览和可反跳证据”。本阶段当前只做文档开发和目标体验规划，不进入实际代码开发，也不改写 V1 complete 或 post-V1 hardening 基线。
+> 权威性说明（2026-09-16）：本节已按“V2 暂停、V3 优先、V4 承接知识能力”重新冻结。当前可执行范围以 §18.2 为准：B站优先、12 页固定分母、受控 Cookie 会话获取为主路径、公开/页内字幕和可信 `tabCapture` 为回退，并在首版纳入本地 ASR、关键帧、本地 OCR 与用户持久授权下的云端 VLM。YouTube 在 B站出门后复用同一合同；V2/PX-6/RKM、知识持久化、Query、Graph 与 Durable Forget 不再是 V3 前置并统一进入 V4。
+
+`V3 Media Companion` 是 V1 当前网页伴读之后独立推进的媒体伴随体验阶段。长期目标覆盖 B站、YouTube、小红书等含视频内容的门户；当前首批范围只面向 B站视频详情页，把 Navia 从“读网页正文”扩展到“陪用户看视频，理解字幕、音频和选定画面，生成可引用、可反跳的视频产物”。B站是首个 `MediaPortalAdapter`，YouTube、小红书只能在 B站固定矩阵出门后复用通用合同并单独冻结权限、采集和验收，不得复制 B站 DOM/Cookie 实现形成平行事实模型。V3-0 与 V3-1P 文档/真实样本已完成；产品实现仍按子阶段门禁推进，不改写已封存 V2 事实。
 
 V3 目标体验应接近 Monica 在 YouTube 的视频伴随体验，并参考 B站 AI 视频总结生态中用户已经熟悉的能力：视频省流总结、章节大纲、视频导图、字幕搜索、继续追问、时间戳跳转、截图证据和可复制 / 分享摘要。参考竞品包括 Monica Video Summarizer、AI课代表、BibiGPT、NoteGPT Bilibili Summarizer、Eightify、HARPA、YouTube conversational AI，以及 Gemini Video Understanding 的真实多模态能力路线。
 
 V3 分层规划：
 
 ```text
-V3.0 Transcript-first Video Companion
-  基于标题、简介、字幕 / 转录、章节、评论、弹幕 / 互动文本、页面 metadata、当前播放时间和浏览器截图证据。
+V3 Bilibili-first Media Companion
+  基于页面身份、受控 B站会话 / 公开字幕 / 本地 ASR、关键帧、本地 OCR、授权云端 VLM、当前播放时间和分型证据。
 
-V3.x Multimodal Media Understanding
-  规划 ASR、VLM、OCR、video frame sampling、Gemini Video / Live API、直播 rolling transcript 和多模态证据治理。
+V3 later platform expansion
+  在 B站矩阵出门后通过 MediaPortalAdapter 映射 YouTube、小红书等门户；每个 adapter 单独声明窄域权限、身份映射、播放器控制和采集能力。直播、通用文件、云端 ASR 和实时多模态仍需重新冻结，不属于首批承诺。
 ```
 
-V3.0 目标用户路径：
+V3 首版目标用户路径：
 
 ```text
-用户打开 YouTube 或 B站视频页
+用户打开受支持的 B站视频详情页
 -> Navia 贴边 launcher / sidebar 识别当前页为 video page
--> 用户点击读取 / 总结视频
--> Navia 读取标题、简介、作者、时长、字幕 / 转录、章节、评论 / 弹幕摘要、当前播放时间
+-> 用户首次授予 B站会话访问、任务期临时媒体、本地音频、本地画面和选定证据帧云端视觉处理权限；授权持续到主动撤销
+-> 用户点击开始分析，本次任务产生短期 Cookie 租约；平台拒绝时才提示可信点击启动 tabCapture 回退
+-> Navia 读取身份、凭据或公开字幕/本地转录、关键帧、本地 OCR 和授权 VLM 证据
 -> 生成视频概览：一句话结论、关键看点、章节时间轴、可疑低信号提示
 -> 生成 Media Mindmap / 视频概览图：主题、事件、论点、示例、结论按时间线组织
 -> 每个关键节点绑定 transcript segment、timestamp、source text、视频截图证据或 fallback reason
@@ -2164,41 +2180,240 @@ V3.0 目标用户路径：
 -> 用户可围绕“这个片段讲了什么 / 总结 10:30-15:00 / 提炼观点 / 找证据”继续追问
 ```
 
-V3.0 必须规划的用户可见能力：
+V3 首版必须规划的用户可见能力：
 
 - 视频概览卡：标题、作者 / 频道、时长、发布时间或页面可见 metadata、摘要、低信号状态。
 - 章节时间轴：按时间戳展示主题段落、关键事件、知识点、论点和结论。
 - Media Mindmap / 视频概览图：类似 B站 AI 视频总结账号提供的结构化概览，节点短、准、可追溯。
-- 截图证据卡：在目标时间点展示视频可见帧截图或截图占位，并说明它只证明“该时间点可见画面”，不等同于 VLM 已理解画面。
+- 画面证据卡：在目标时间点展示选定关键帧、本地 OCR 文本和受治理 VLM 描述；字幕推断、OCR 与 VLM 必须分型，不得互相冒充。
 - 视频反跳：点击节点或证据卡后 seek 到视频时间点；无法 seek、播放器被限制、字幕缺失或登录墙时必须显示 fallback / blocked。
 - 字幕 / 转录问答：答案必须 grounding 到 transcript segment、简介、评论 / 弹幕文本或明确 degraded。
-- B站 / YouTube 平台差异：B站可能依赖登录、字幕可用性、弹幕和评论；YouTube 可能依赖 transcript availability、章节和语言设置。
+- B站平台差异：登录、字幕、分 P、播放器和风控变化必须显示可解释的 available/degraded/blocked；YouTube 不进入首批分母。
+- 门户适配边界：UI/Runtime 只消费通用 `MediaPageContext`；B站 bvid/cid、YouTube videoId、XHS noteId 等平台字段只能存在于对应 adapter 的内部 observation 与受审计 identity 映射中。
+- 最小入口权限：B站详情页使用窄域自动入口；其他普通网页由用户点击扩展按钮或快捷键后以 `activeTab` 打开原生 Side Panel，不再申请全站静态注入。
 
-V3.0 不得声明：
+V3 首版不得声明：
 
 ```text
 完整 Monica-like YouTube parity complete。
-真实视频画面 / 音频已被理解。
+全量视频流或所有画面已被理解；V3 只允许声明固定样本、选定关键帧和分型证据范围。
 直播实时理解 ready。
-ASR / VLM / OCR / Gemini Video ready。
+通用/云端 ASR、Gemini Video 或直播 ready；本地 ASR、本地 OCR 和受治理云端 VLM 仅按冻结矩阵验收。
 跨视频知识库 / RAG ready。
-自动下载、提取或处理受版权保护的视频流。
+无授权、无限期、跨任务下载，或绕过平台限制提取受保护的视频流。
 默认本地文件读取。
 ```
 
-V3.x 多模态路线必须先冻结：
+V3 首版多模态路线必须冻结：
 
 - 用户授权和隐私边界：何时读取字幕、截图、音频、视频帧；是否上传到模型；如何提示用户。
 - 采样策略：截图 / frame sampling 的频率、触发条件、缓存、删除和脱敏。
 - 延迟和成本预算：短视频、长视频、直播的最大处理时长、token、模型调用和失败降级。
 - 证据模型：ASR transcript、VLM frame caption、OCR block、timeline event、confidence 和 source provenance。
 - EventStore / Trace：实时输出不能只存在 EventStream，必须可按时间轴和 session trace 回放。
-- 法务 / 平台风险：不得自动下载视频，不得绕过平台访问限制，不得把登录态自动化扩展为产品浏览器自动操作。
+- 法务 / 平台风险：任务期媒体获取仅限当前登录用户本来有权访问的内容；不得绕过平台限制、DRM、会员、地区或风控，不得把登录态自动化扩展为产品浏览器自动操作。
 
 V3 文档开发出门条件：
 
 - PRD、目标架构、开发计划、验收计划、stage gate、gap companion 和 drawio 使用同一阶段名：`V3 Media Companion`。
-- drawio 不超过 8 页，必须包含目标体验、当前架构与目标架构差异、YouTube/B站输入链路、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、出门条件和 No-Go。
-- 文档必须明确 V3.0 和 V3.x 的交付边界，避免把多模态未来路线写成本阶段承诺。
-- 文档必须明确视频截图证据在 V3.0 只表示时间点可见帧证据；理解截图内容必须进入 V3.x。
-- 文档必须明确无字幕 / 无转录 / 无可见文本的视频必须 degraded 或 blocked，不得伪装成内容理解成功。
+- drawio 不超过 8 页，必须包含目标体验、当前架构与目标架构差异、B站字幕/本地 ASR 双输入链路、首版本地 OCR / 授权云端 VLM、YouTube 后续映射边界、视频概览图 / Media Mindmap、截图证据 / 视频反跳、开发及验收计划、出门条件和 No-Go。
+- 文档必须明确本地 ASR、本地 OCR 和授权云端 VLM 属于首版，而直播、通用文件、云端 ASR 和 YouTube 属于后续。
+- 文档必须明确字幕、ASR、OCR 和 VLM 证据分型，画面结论必须绑定选定帧。
+- 文档必须明确无字幕/ASR 且无可用画面证据时必须 degraded 或 blocked，不得伪装成内容理解成功。
+
+### 18.1 2026-09-15 B站优先修订
+
+V3 的平台顺序调整为：先完成 B站视频详情页，再扩展 YouTube。首个锚点样本固定为：
+
+```text
+https://www.bilibili.com/video/BV1ZpYd66ELP
+```
+
+该样本在 2026-09-15 的公开能力探测中为单 P、约 792 秒且无公开字幕。它暴露了原 `Transcript-first` 规划的关键缺口：如果只依赖公开字幕或要求用户完整播放，V3 首版不能稳定达成图文大纲。因此当前 V3 首版改为：
+
+```text
+用户授权后由 B站 Broker 创建同任务、短期 PortalCredentialLease(adapterId=bilibili)
+-> 优先获取用户当前会话可访问的字幕或任务期临时音频/视频
+-> Cookie/平台路径失败时尝试页内/公开字幕
+-> 仍不足时提示用户可信点击启动当前标签页音频采集
+-> 音频只进入本机 Runtime 的 LocalAsrAdapter
+-> 生成带时间戳和来源 hash 的 MediaTranscript
+-> 同一 VideoOutline 派生图文大纲、章节时间轴和 Media Mindmap
+```
+
+V3 首版的本地 ASR 是限定 fallback，不代表通用音频理解、云端语音服务、直播或全量视频画面理解已就绪。首版本地 OCR 与授权云端 VLM 只处理冻结采样策略选出的证据帧。必须满足：
+
+- 只有用户点击开始且五项 scope 已授权，才可签发短期租约并下载当前会话有权访问的任务期媒体；平台拒绝必须回退或 blocked。
+- Cookie 值不写入配置、数据库、EventStore、Trace、日志或公开证据；需要 cookiefile 时只允许任务期随机 `0600` 文件。
+- Chrome 的自动页面桥接只匹配 `https://www.bilibili.com/video/*`；B站会话访问另行请求可选 `cookies` 与 `https://*.bilibili.com/*`。Background 再按版本化 Cookie 名称白名单过滤；秘密只经认证 loopback 的一次性 envelope 进入 Runtime 内存，前端和持久事件不得接触值。其他网页只允许用户手势触发 `activeTab`，禁止 `<all_urls>` 或等价全站静态匹配。
+- `tabCapture` 只在主路径和公开字幕失败后由可信点击启动；原始音频默认不持久化、不上传。
+- 取消、页面关闭、租约到期或撤销后必须停止并清理 cookiefile、临时媒体、原始音频和非证据帧。
+- 字幕和 ASR 都不可用时返回 `degraded/blocked`，不能由标题、简介、评论或模型常识生成伪大纲。
+- 图文笔记与 Media Mindmap 必须由同一个强类型 `VideoOutline` 派生，不能用模型 marker 正则作为事实权威。
+- 本地 ASR 质量不要求人类逐字听写。SenseVoiceSmall Q8 是 V3 的 `development_baseline`；Revision 5 路线 B3 要求三个预冻结 ASR 槽位完成真实媒体获取和后续全长本地转写、时间覆盖率、非空分段、来源哈希、取消清理和可见失败检查。每槽在 acquisition task 内按真实字幕发现分类：0 个字幕直接进入媒体 ASR；至少 1 个字幕时由仅验收可达的预冻结故障验证字幕失败后的媒体回退。两类计数可以随同 run 平台事实变化，但总数必须精确为 3，URL/顺序/故障策略不得在探测后选择。故障注入不得由生产 Runtime/API/配置触达。历史 24-bin 双模型比较保留为失败研究证据；跨模型退化检测、质量失败后的智能回退和进一步人工比较进入 V4。
+
+目标 B站用户路径：
+
+```text
+打开 BV1ZpYd66ELP
+-> Navia 识别 bvid/cid/单P/时长并显示“无公开字幕”与当前会话能力
+-> 首次授予 B站会话、临时媒体、本地音频、本地画面和选定帧云端视觉五项 scope
+-> 用户点击“开始分析”，本次任务创建短期租约并优先获取凭据字幕/临时媒体
+-> 若平台拒绝，UI 显示原因并允许可信点击切换到 tabCapture 回退
+-> UI 显示 acquiring credentials / downloading / transcribing / extracting frames / OCR / vision / synthesizing 进度，可取消
+-> 完成后展示图文大纲、章节时间轴、Media Mindmap、Ask 和分型证据覆盖
+-> 点击章节跳转播放器时间点
+-> 用户可在本地任务历史查看并导出 Markdown ZIP 或 JSON；知识库导入由 V4 提供
+```
+
+2026-10-10 人工体验复核新增 `V3-5.1` 质量门槛。既有 V3-5 基础路径通过不等于 Workspace 理解质量通过；V3-6 前必须补齐：具有时间刻度、章节色带、真实截图节点、滚轮横移、鼠标拖动、缩放、播放游标和双向播放器同步的图文时间线；按摘要、章节、关键点、证据组织的可折叠大纲；至少 root/chapter/key-point 三层且支持平移、缩放、折叠、fit 和节点反跳的 Media Mindmap；能够处理事实、视觉、跨章节和证据不足问题的 grounded Ask。所有视图继续由同一版本化强类型 outline 派生，开源 renderer 不能成为事实源，BiliNote 输出不能充当生产证据。
+
+若为章节或问答质量增加云端文本合成，只能通过独立的 `GroundedMediaSynthesisProvider` 和新增授权 scope 发送任务期派生文本；它不继承 `selected_frame_cloud_vision` 授权。未授权时必须使用本地确定性回退且 0 文本网络调用。具体开发顺序、组件 spike 和验收分母见 `design/v3-workspace-comprehension-ux-optimization-plan.md`。
+
+V3 不再以 `H01-RDS` 或 PX-6 为前置。媒体产物进入本地 `MediaTaskStore` 并可导出，`knowledgeImportStatus` 必须为 `deferred_to_v4`。已封存 H01/PX-6 事实保持不变且仍不得声明通过。BiliNote 路线研究与采纳/拒绝决定见 `design/v3-bilinote-bilibili-route-study.md`。
+
+当前真实 UI 基线仍可能显示 V2 mock adapter；该状态只证明既有容器和未完成边界，不能作为 V3 媒体能力或真实知识服务证据。V3 目标页面的功能与文本权威只来自确定性 HTML 原型、合同和 Draw.io；AI 生成样张不得定义功能、视频事实或验收结果。BiliNote clean commit 的允许研究文件、源字节 hash 与默认拒绝策略由 `design/v3-bilinote-migration-allowlist.json` 冻结，V3-0 不授权复制其实质代码。
+
+### 18.2 2026-09-16 权威范围与出门体验
+
+本小节是 V3 当前权威范围。必须交付以下完整用户路径：
+
+```text
+Side Panel 识别当前 B站视频、会话/字幕状态和持久授权
+-> 用户点击开始分析并创建短期 Cookie 租约
+-> 凭据字幕/临时媒体主路径；公开字幕与可信 tabCapture 回退
+-> 本地 ASR
+-> 关键帧 + 本地 OCR + 授权云端 VLM
+-> 同一 VideoOutline 派生图文大纲、时间线和 Media Mindmap
+-> Ask Video 只依据同 task 证据回答
+-> 章节、节点和引用跳回真实播放器时间
+-> Workspace 管理本地任务历史并导出
+```
+
+Side Panel 只负责识别、启动、进度、取消和快速摘要；Media Workspace 负责完整大纲、时间线、导图、Ask、证据和历史。完整组件、路由和状态见 `design/v3-media-companion-component-route-design.md`。
+
+首次授权涵盖 `bilibili_session_access`、`temporary_media_download`、`audio_local_processing`、`frame_local_processing`、`selected_frame_cloud_vision`，持续到用户主动撤销。每个主路径任务必须创建同 task、短期且不含 Cookie 值的 `PortalCredentialLease(adapterId=bilibili)`；只有进入 `tab_capture` 回退时，才要求浏览器可信点击创建短期 `MediaCaptureGrant`。
+
+V3 通用门户页面接口固定为 `MediaPortalAdapter`：负责 URL 匹配、页面 identity、公开能力、播放器时间读取和 seek；`MediaPortalRegistry` 只装载通过当前构建审计的 adapter。机器权威注册表为 `contracts/v3-media-portal-registry.json`。通用 `MediaPageContext` 使用 `platform/adapterId/mediaId/playbackUnitId/part`，不暴露 bvid/cid 等平台专用字段。B站实现将 bvid 映射为 `mediaId`、cid 映射为 `playbackUnitId`。
+
+会话能力不写入页面 adapter，而由独立的 `PortalSessionAdapter` / `PortalSessionRegistry` / `PortalSessionBroker` 提供。通用层只消费不含秘密的 `PortalSessionCapability`；B站只是首个 session adapter，其 optional permission、host、五项 scope 文案和 Cookie 名称由 `contracts/v3-media-session-policy-registry.json` 中的 B站策略项单独冻结。未来 YouTube、小红书等门户必须新增自己的页面 adapter、session adapter、窄域权限、secret 政策和真实样本矩阵；不得自动继承 B站 Cookie 白名单、会话权限或验收通过声明。
+
+首批 12 页固定分母为 6 个字幕样本、3 个本地 ASR 路线样本、1 个多 P、1 个受限 blocked、1 个低信号 degraded。10 个应成功样本必须完成本地 OCR，至少 8 个完成真实云端 VLM；固定锚点 `BV1ZpYd66ELP` 必须保留。2026-10-06 多轮真实探测证明 B站会异步补充 AI 字幕，固定 URL 的“永久自然无字幕”不是稳定验收前提。用户于 2026-10-07 批准 Revision 5 路线 B3：三个 ASR URL 和各自验收故障策略在探测前冻结，运行时按 acquisition task 的真实字幕发现分类；`runtime_no_subtitle + audited_subtitle_failure = 3`，三槽均须取得真实当前分 P 媒体。自然无字幕计数可以为 0，但必须如实记录，不得挑样本或声称本 run 已观测自然场景。具体门槛见 B3 amendment 与 acceptance plan。
+
+### 18.3 2026-09-17 V3-1.3 一次性凭据通道边界
+
+V3-1.2 已限定通过浏览器内授权与候选会话能力；V3-1.3 只负责把当前任务所需的白名单 Cookie 安全交给本机 Runtime，并签发短租约。用户点击开始后，UI 使用当前内存 Runtime bearer 创建 20 秒、单任务、单 adapter 的一次性 channel；Background 在重查 policy、Chrome permission 和当前 capability 后读取白名单 Cookie，经专用 loopback request 送入 Runtime。Runtime 第一次请求即消费 ticket，只在进程内持有凭据，公开返回最长 60 秒的 `PortalCredentialLease` 元数据。
+
+V3-1.3 必须满足：
+
+- 当前通用 CORS 的 `chrome-extension://` 前缀判断不能作为秘密接口认证；bootstrap 必须绑定精确 extension ID 和强 bearer。
+- Runtime 主 bearer 不进入 Background；Cookie envelope 不经过通用 `runtimeClient`、Background generic proxy、SSE 或 E2E body observation。
+- channel token、revocation token、Cookie 名列表/值不写入公开合同；公开 `leaseId` 不是访问能力。
+- request body 上限 32768 bytes，禁止 redirect/cache；响应丢失也不得重试同一 envelope。
+- `serverValidationStatus=not_performed`，租约就绪不等于 B站登录有效、字幕可获取、媒体已下载或视频已理解。
+- 撤销和 Cookie/permission 变化主动删除 lease；Runtime 重启清空全部内存状态；Background 崩溃后的残余窗口不得超过 60 秒。
+- 真实 Cookie 值只用于进程内 needle 扫描，不得保存值或可逆 hash；所有持久/公开介质必须 0 命中。
+
+V3-1.3 已通过独立实施出门审查（Fatal=0/Major=0/Minor=3），只放行 V3-2 详细文档与威胁建模。V3-2 媒体获取仍是后续独立阶段；其代码必须等待机器合同、开发计划、验收计划、威胁模型、内部审计与外部独立文档审查全部冻结，并由用户另行明确授权。
+
+### 18.4 2026-09-17 V3-2 受控媒体获取与本地 ASR 边界
+
+V3-2 从 V3-1.3 的同 task、未过期、未撤销 `PortalCredentialLease` 开始，只交付可验证的 `MediaTranscript`。用户在当前 B站视频页点击“开始分析”后，系统必须按以下唯一顺序尝试，禁止并行竞速、静默跳步或事后重排：
+
+```text
+credentialed_subtitle
+-> credentialed_media_asr
+-> public_or_page_subtitle
+-> visible trusted click + trusted_tab_capture_asr
+```
+
+前三条路线均失败时，界面必须停在“需要捕获当前标签页”，只有 Side Panel 或 Workspace 的新鲜可信点击可以创建 30 秒、一次性、绑定 task/tab/page identity 的 `MediaCaptureGrant`。Background 只验证和申请当前 tab 的 streamId，Offscreen Document 只把本次音频经专用 loopback 流交给 Runtime；content script、普通 extension page、旧 ticket、错误 tab、reload 后旧授权和后台自动开始必须拒绝。
+
+V3-2 的用户可见结果包括当前路线、机器失败原因、下载/转写进度、等待点击、取消、正在清理和最终 transcript。V3-2 不展示或声称图文大纲、画面理解、Mindmap、Ask、持久历史、导出或 V4 知识能力完成；这些仍属于 V3-3 以后。
+
+受控媒体和 ASR 必须满足：
+
+- Cookie 值、Cookie 文件路径、capture ticket、streamId、原始音频路径和临时媒体绝对路径不得进入公开合同、日志、EventStore、Trace 或审计包。
+- Cookiefile、音频、视频和字幕临时件只能位于随机任务私有目录；目录 `0700`、文件 `0600`，拒绝 symlink/hardlink/path traversal 和跨 task 复用。
+- ASR 只能本机执行；生产 profile 冻结 engine/version/model revision/weights hash，生产验收期间不得联网换模型。
+- `succeeded/degraded/blocked/failed/cancelled` 均须经过 cleanup barrier；Cookiefile、临时媒体、原始音频/视频、active capture 和公开私有路径计数全部为 0 后才能进入终态。
+- 固定生产分母为 12 个真实 B站 URL：6 subtitle、3 ASR 路线、1 multipart、1 restricted/blocked、1 low_signal/degraded；三个 ASR 全长转写。Revision 5 的三个 ASR 槽位按同 run 真实字幕能力选择直接媒体回退或仅验收可达的字幕体失败回退，两类计数之和必须为 3；至少一个后续样本仍须来自真实 trusted tabCapture 回退。
+- 自动验收固定 `V3-2-A01..A20`，不得 N/A、缩分母或跨 run；ASR 全长覆盖率至少 90%。本段原冻结的 24 bin x 2 reviewer 跨模型门槛已经产生失败研究证据，其 V3 productionReady 前置自 2026-09-22 起由 §18.9 的 Revision 3 决策取代：V3 固定 SenseVoiceSmall Q8 的 model/revision/weights、3/3 全长真实转写与机器证据，跨模型比较、双 reviewer、adjudication 和智能质量回退进入 V4。历史失败证据及 Revision 2 Schema 保持只读，不得改写成 PASS。
+
+V3-2-3 必须从 Route B3 三个固定能力槽位创建全新单 run，逐任务重新获取真实当前分 P 音频并在同一私有生命周期完成 SenseVoice 转写；B3 公开 hash 或已清理音频不得复用。验收 runner 继续采用 B3 稳定规则：每槽先真实发现字幕，0 候选直接媒体，存在候选时只在验收编排层应用该槽位预绑定字幕体故障一次；产品 Runtime/API/Acquirer 不可表达故障。当前冻结 runtime 只公开 FSMN-VAD 总段数，因此成功证据采用更严格的 fail-closed 条件：VAD 总段数必须与非空 SRT 段数完全相等，才可发布 100% 覆盖 receipt；任何缺段不得估算为达到 90%。人工听写与主观质量复核仍推迟到 V3-5/V4 已冻结范围，不在 V3-2-3 请求人类生成文本。
+
+2026-10-07 实施结果：全新 run `v3-2-3-sensevoice-20261007T044217Z` 对三个固定槽位完成 3/3 真实当前分 P 获取和 SenseVoice 全长转写，ST01..ST20 为 20/20；独立实施出门审查结论为 `V3-2-3 LIMITED PASS / Fatal=0 / Major=0 / Minor=2`。该结果只关闭 V3-2-3，不构成 V3-2-4 tabCapture 高风险实施授权，也不证明 V3-2 或 V3 整体完成。
+
+2026-10-07 V3-2-4 实施记录：高风险授权后已实现 30 秒 one-shot grant、严格 task/tab/page/adapter/surface binding、Background/Offscreen 分层、WebSocket PCM sink、task-private WAV、SenseVoice 接口、Side Panel/Workspace 条件组件和停止清理；Runtime 486、前端 298、typecheck/build 与 extension-load smoke 通过。但产品 UI 尚无 `MediaAcquisitionClient` 把 credential lease、前三路实际尝试和同 task authority projection 连成用户流程，真实 B站 trusted capture→SenseVoice 正例不可达。当前结论固定为 `IMPLEMENTATION CANDIDATE / ACCEPTANCE FAIL / REPLAN REQUIRED`，不得声明 V3-2-4 或 V3-2 通过。
+
+V3-2 的当前机器权威为 `contracts/v3_media_acquisition_contracts.schema.json`、Revision 5 的 `contracts/v3_media_acquisition_sample_registry_v5.schema.json`、历史只读的 Revision 1..4 sample registry Schema、`contracts/v3-media-acquisition-policy-registry.json`、`fixtures/v3-media-acquisition-contract-positive.json` 和 `fixtures/v3-media-acquisition-contract-fixtures.json`。详细合同、开发计划、验收计划和威胁模型位于 `evidence/v3_media_companion/v3-2-media-acquisition/`。用户已授权 V3-2-2 路线 B3 实施；该授权不构成后续阶段通过声明。
+
+### 18.5 2026-09-21 V3-2-0a 本地 ASR Provider 与模型管理
+
+V3-2-0 的真实人类比较仍以 `FAIL / REPLAN` 结束：用户指定的 24/24 判断含 `critical=1`、`neither-acceptable=1`，不得降低 V3-2-A06 或把 23/24 外推成双 reviewer 通过。V3-2-0a 只补足“用户如何看见、安装、选择和恢复本地 ASR 模型”的产品能力，不实现媒体获取，不改变生产质量结论。
+
+用户在 `Settings > 媒体与语音` 必须看见请求模型与实际生效模型、质量定位、CPU/RAM/显存/磁盘影响。Runtime 随发布资产提供固定 revision/hash 的 `faster-whisper-tiny` 作为无 GPU 最低资源兜底；Tiny 可离线加载和转写真实短音频，但界面和证据必须写明“不计入 V3-2-A06”。当前 `faster-whisper-small` 可以通过一键安装或受校验的 `.navia-asrpack` 安装，但必须显示“当前质量门禁未通过”。Paraformer 资产已冻结并只允许资格测试，真实遗漏关闭前不可选择；Large 在版本、许可、资产和真实质量未冻结前不可安装、不可选择。
+
+一键安装固定为 `checking -> downloading -> verifying -> self_testing -> installing -> ready`。弹窗显示真实字节、百分比、速度、ETA、阶段和取消；自动下载失败后提供重试、离线包和固定 CLI 指引。Runtime 只接受 build-time closed catalog，不接受前端提供 URL、hash、provider 类名或任意目录；下载和重定向只能进入冻结官方主机，逐文件 SHA-256 与本地模型加载自检通过后才原子发布。所选模型不可用、损坏、取消或安装失败时，系统明确显示原因并回退到已验证 Tiny，不得静默换模型或误标 ready。
+
+低资源验收固定为 8 CPU cores、8 GiB 地址空间、无 GPU。V3-2-0a 的固定分母是 `V3-2-0a-A01..A16`；通过后最多声明 Provider/模型选择、Tiny 回退、校验安装、离线恢复和低资源自检可用。V3-2、转录质量、视频理解、图文大纲或 V3 整体仍不得声明完成。
+
+2026-09-21 独立实施出门审查确认 `Fatal=0 / Major=0 / Minor=3`，因此 V3-2-0a 状态晋级为 `LOCAL LIMITED PASS`。本结论不改变 V3-2-A06 的 `FAIL / REOPENED`，也不放行 V3-2-1..7。
+
+### 18.6 2026-09-22 V3-2-0b 低资源中文 ASR 资格恢复
+
+V3-2-0b 只解决 V3-2-A06 已确认的中文转写质量缺口，不改变 12 个真实 B站 URL、三段 120 秒窗口、24 bin、双独立 reviewer 或 `critical=0 / neither=0` 门槛。当前 `faster-whisper-small` 保留为失败基线，bundled Tiny 继续作为最低资源兜底但不计生产质量；新增候选为官方 FunASR llama.cpp `runtime-llamacpp-v0.2.6`、Paraformer Q8 GGUF 与 FSMN-VAD GGUF 的本地 CPU 组合。
+
+用户目标体验固定为：
+
+```text
+Settings > 媒体与语音查看候选模型的下载量、磁盘、CPU、内存和显卡要求
+-> 点击安装，经历下载、校验、自检和原子发布
+-> 对同一 3 个真实 B站 ASR 样本生成带时间戳候选转写
+-> 人类只比较匿名 A/B 文本，不负责听写或修正文本
+-> 两名独立 reviewer 提交 48 个固定判断
+-> 达标并通过独立出门审查后标为 production_qualified；不达标则回退 Tiny 并保持 V3-2 阻塞
+```
+
+V3-2-0b 必须满足：
+
+- 8 CPU cores、8 GiB 地址空间、无 GPU；任何超限、崩溃、空转写或时间戳逆序均失败。
+- Runtime 原生进程只能由 Provider adapter 管理；前端不能指定二进制、模型 URL、任意类名或任意路径。
+- 引擎、模型、VAD、revision、字节数、SHA-256、许可证和官方来源必须来自闭集 candidate manifest；禁止远程代码。
+- 质量比较继续使用既有三样本与固定窗口；页面隐藏 provider/model 身份，reviewer ID 必须不同，24 项判断不能复用为 48 项。
+- production candidate 至少 `44/48` 含义保留、每个样本至少 `15/16`、`critical=0`、`neither acceptable=0`；任一失败即不得晋级。
+- 安装包、音频、进程参数和私有路径不得进入公开证据；结束时临时音频、进程和 staging 全部清零。
+
+机器权威为 `contracts/v3_asr_provider_qualification_contracts.schema.json`、`contracts/v3-asr-provider-qualification-policy-registry.json`、`contracts/v3-asr-provider-qualification-candidate-manifest.json` 与 `fixtures/v3-asr-provider-qualification-fixtures.json`。固定验收分母为 `V3-2-0B-A01..A18`，不得 N/A、缩分母或跨 run 拼接。
+
+2026-09-22 实施结果：官方资产、Provider、Settings 和低资源三样本推理均已完成；在固定 sample 03 的相对 `30000..45000ms` 非静音 bin 中，120 秒长窗候选为 0 segment，导致双 reviewer 每样本质量理论上限只有 `14/16`。机器 preflight 已在人工盲评前 fail closed，V3-2-0b 为 `FAIL / REPLAN`。同一 15 秒 bin 单独输入可产生非空结果，说明长窗 VAD/切片上下文是可疑根因；任何固定预切片方案都必须重冻结生产合同、威胁模型、完整三样本和双 reviewer 分母，不能把单 bin 诊断当作通过。
+
+失败状态传播已单独闭环：权威真实 Chrome run `v3-2-0b-5.1b-20260922T084116Z` 中，Paraformer 安装后显示红色“已安装 · 质量未通过”、`selectable=false`，实际生效模型保持 Tiny fallback-only；5.1b 为 7/7 PASS。该 PASS 只保证用户不会被安装成功误导，不恢复 V3-2-A06，不放行 0b-6/0b-7 或 V3-2-1。
+
+### 18.7 2026-09-22 V3-2-0b-5.3 固定 15 秒窗口恢复候选
+
+用户批准路线 A 进入文档冻结。该路线不更换模型，也不新增门户权限：Runtime 对三个冻结 120 秒真实样本各自确定性切成 8 个不重叠 15 秒 chunk，按 chunk 0..7 单并发顺序调用现有 Paraformer Provider，再用固定 offset 合并时间戳。`FixedWindowAsrOrchestrator` 只接受通用 `TaskAudioRef`，禁止出现 BVID、Cookie、portal URL；未来 YouTube、小红书可以复用该音频合同，但必须拥有独立门户 adapter、权限、credential policy 和生产矩阵。
+
+目标体验不得以质量修复换取不可接受的等待：每个样本的完整切片、8 次推理、解析与合并总耗时不得超过原长窗基线 2 倍，即 sample 01/02/03 分别不超过 `16360/14760/16280ms`；仍维持 8 cores、8 GiB、无 GPU、推理期断网、安装资产不超过 512 MiB。任一样本超限即失败，不能以平均值通过。
+
+机器验收固定为 `FW01..FW20`：3 个 source hash、24 个 chunk、0 gap/overlap、24/24 非空、local/global 时间合同、concurrency=1、0 文本重写、0 partial retry reuse、资源/延迟、cleanup、双 reviewer 和独立出门审查。机器门禁全部通过前不得生成人工 review bundle。人工质量分母仍是 24 bin x 2 reviewer=48 判断，至少 44/48、每样本至少 15/16、`critical=0`、`neither=0`。
+
+当前状态为 `DOCUMENT CANDIDATE / IMPLEMENTATION NO-GO`。外部独立文档审查 Fatal=0/Major=0 且用户另行明确批准 `V3-2-0b-5.3 implementation` 前，Paraformer 继续显示质量失败且不可选择，V3-2-1..7 保持 BLOCKED。
+
+### 18.8 2026-09-22 V3-2-0c SenseVoiceSmall 路线 C 最小可行性
+
+Paraformer 固定窗仍在非静音窗口完整遗漏后，路线 C 采用官方 FunASR `runtime-llamacpp-v0.2.6`、SenseVoiceSmall Q8 GGUF 与既有 FSMN-VAD，仅执行隔离真实 spike。该路线保持通用 `TaskAudioRef -> Provider Adapter -> NativeProcessHost` 边界，不新增 B站字段，不改变 Tiny 默认兜底或用户设置状态。
+
+权威 run `v3-2-0c-spike-20260922T131329Z` 对已知遗漏窗口和两个控制窗口完成 3/3 CPU-only 推理：均为非空、可解析 SRT，耗时 `1170/1118/1116ms`，峰值 RSS `322363392/320917504/325156864` bytes，资产总量 `258371224` bytes；推理子进程由 seccomp 拒绝网络 syscall。结论仅为 `SPIKE_FEASIBLE / productionQualified=false`。三窗均为近整窗单 segment，不能证明语音级时间粒度、24-bin 质量或生产体验。
+
+下一步只允许冻结路线 C 生产候选详细合同并接受外部文档审查。完整 3x120 秒、24 bin、双 reviewer 48 判断、Settings 状态、跨平台、清理与独立出门审查未通过前，V3-2-A06、V3-2-1..7 和 V3 整体继续 BLOCKED。
+
+### 18.9 SenseVoice V3 开发基线与 V4 质量优化边界
+
+用户于 2026-09-22 决定以 SenseVoiceSmall Q8 作为 V3 后续本地转写开发基线。V3 必须交付可验证安装、可选择状态、真实本地转写、资源披露、失败显式呈现、取消清理和隐私控制；跨模型退化检测、质量失败后的智能回退和进一步比较优化移入 V4。
+
+该决策不允许把三窗口 spike 误标为完整生产质量认证。catalog 使用 `development_baseline`，不得写 `production_qualified`；现有 Tiny 技术安全兜底保留但不作为 V3 质量体验承诺。SenseVoice 基线完成真实安装和真实音频验收后，最多放行 V3-2-1 的详细文档与审计，媒体获取仍需独立授权。
+
+V3-2-1 Runtime acquisition core 已于 2026-09-22 完成限定实现与真实私有 B站 WAV 验收；V3-2-2 前必须新增 sample registry revision 3。Revision 3 保留 12 个唯一 URL、`6 subtitle + 3 ASR + 1 multipart + 1 restricted + 1 low_signal`、页面身份/分P/授权探测/hash 与真实预期路线，但不再要求 V4 范围内的跨模型 review/adjudication。Revision 2 保持历史只读，禁止原地放宽。
+
+人工产品验收 `H01..H10` 统一推迟到 V3-5 双容器产品体验完成后执行；V3-2 至 V3-4 不请求人类操作，只能使用真实数据自动验收、机器审计与独立文档/实现复审。V3-5.1 自动质量门槛通过后只增加一次结构清晰度和交互质量的最小复核，不重复听写或重做 H01-H10。V3-6 重放已签署的人类结果并执行全量自动矩阵，V3-7 只做最终独立出门审计，不得自动代签或补写人工项。

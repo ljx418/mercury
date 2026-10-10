@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "v3-3-1-real-frame-acceptance/v1",
+  "executedAt": "2026-10-08T06:16:50.465097Z",
+  "passed": true,
+  "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+  "taskIdSha256": "88b13078d4a63a3ef2153778c9d79b89deefecf44c7507b7a422af46e1a3bd24",
+  "input": {
+    "kind": "real_bilibili_video_section",
+    "mediaId": "BV1ZpYd66ELP",
+    "playbackUnitId": "41828944992",
+    "durationMs": 8000,
+    "byteLength": 1208799,
+    "sha256": "33245dc5e83dbc5e49a7291610eef56a5701130fedbabafc29db8f2c1a417684"
+  },
+  "frames": [
+    {
+      "taskId": "media_task_55555555555555555555555555555555",
+      "timestampMs": 0,
+      "artifact": {
+        "artifactId": "artifact_7847fe20fe9691e51929e5651581f015",
+        "kind": "frame",
+        "byteLength": 449958,
+        "sha256": "c7725f6e8d29636f7c202faab2feee917bf60fd812e22eeb59c52b4410bb7b40"
+      },
+      "relativeArtifactRef": "frames/artifact_7847fe20fe9691e51929e5651581f015.png",
+      "widthPx": 852,
+      "heightPx": 480
+    },
+    {
+      "taskId": "media_task_55555555555555555555555555555555",
+      "timestampMs": 4000,
+      "artifact": {
+        "artifactId": "artifact_4931a8a5b4bb862a5fcab899d746ab4a",
+        "kind": "frame",
+        "byteLength": 535519,
+        "sha256": "74e8a2d24cc6ba58553d09d2e8e81fb29d54c6768a029ce530b4b4129ba6d315"
+      },
+      "relativeArtifactRef": "frames/artifact_4931a8a5b4bb862a5fcab899d746ab4a.png",
+      "widthPx": 852,
+      "heightPx": 480
+    },
+    {
+      "taskId": "media_task_55555555555555555555555555555555",
+      "timestampMs": 7900,
+      "artifact": {
+        "artifactId": "artifact_cc23ff269c16364854fab30bba6b79eb",
+        "kind": "frame",
+        "byteLength": 544884,
+        "sha256": "d7cc038816819824bfe7cd19c29081431019766d1e8a259a48ad12b92b61161c"
+      },
+      "relativeArtifactRef": "frames/artifact_cc23ff269c16364854fab30bba6b79eb.png",
+      "widthPx": 852,
+      "heightPx": 480
+    }
+  ],
+  "cookieSeedPersisted": false,
+  "privateMediaPersisted": false,
+  "publicAbsolutePathCount": 0
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "v3-5.1-fresh-sample-registry/v1",
+  "runId": "v3-5.1-sample-probe-20261010T131500Z",
+  "browser": {
+    "name": "Google Chrome",
+    "version": "154.0.8037.99",
+    "profileClass": "user_authorized_temporary_v3_2"
+  },
+  "createdAt": "2026-10-10T04:59:56.355Z",
+  "sampleCount": 3,
+  "minimumDurationPassed": true,
+  "processScreenshotsRetained": false,
+  "groundedTextCloudStatus": "disabled",
+  "samples": [
+    {
+      "sampleId": "v3-5.1-sample-01",
+      "sampleClass": "long_form_interview",
+      "url": "https://www.bilibili.com/video/BV1sMNtzJE5B",
+      "bvid": "BV1sMNtzJE5B",
+      "cid": "30592600559",
+      "partIndex": 1,
+      "partCount": 1,
+      "durationSeconds": 5989,
+      "title": "第181期 北北对谈：我们为什么接触馆长...",
+      "author": "李翔看世界",
+      "observedAt": "2026-10-10T04:59:34.052Z",
+      "observationSha256": "6f4f292dcb4935c52675fc902d25b1806697a3ca89fb456d5c121abaed7a620d",
+      "screenshotSha256": "2525adf0777b3cc537f06872e364164b33f544638c99591f650f007ab6574b46"
+    },
+    {
+      "sampleId": "v3-5.1-sample-02",
+      "sampleClass": "tutorial_demonstration",
+      "url": "https://www.bilibili.com/video/BV1PA4m1w7ya",
+      "bvid": "BV1PA4m1w7ya",
+      "cid": "1491078608",
+      "partIndex": 1,
+      "partCount": 100,
+      "durationSeconds": 613,
+      "title": "【pr教程】100集（全）比付费强十倍！这绝对是B站最系统（没有之一）的视频剪辑教程！从零开始学剪辑（新手入门实用版）",
+      "author": "AI剪辑教学",
+      "observedAt": "2026-10-10T04:59:42.034Z",
+      "observationSha256": "c10d8e04265a527485a5b53320b937810c377cdb68f50084d654beea136e20b2",
+      "screenshotSha256": "c5e7a33755907f4331c2d5a04066227fa46c33daf0d0211b65b0f9d779c590f1"
+    },
+    {
+      "sampleId": "v3-5.1-sample-03",
+      "sampleClass": "narrative_commentary_anchor",
+      "url": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+      "bvid": "BV1ZpYd66ELP",
+      "cid": "41828944992",
+      "partIndex": 1,
+      "partCount": 1,
+      "durationSeconds": 792,
+      "title": "勇哥教人开餐饮，自己的店水平到底如何？探店勇哥餐厅，套路确实深！",
+      "author": "地上足球888",
+      "observedAt": "2026-10-10T04:59:49.237Z",
+      "observationSha256": "1e086039651f83e773c9a1da5d8357703ee2c8e4b4d0e883a98536a3c5a32e43",
+      "screenshotSha256": "ff71ead7eadc2b2a2075fd73305a1f921a1715971953dc8f504df58a9be5f8cb"
+    }
+  ]
+}

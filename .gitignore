@@ -38,3 +38,8 @@ navia-v1-*-unpacked/
 # but do not commit reproducible run workspaces or packaged evidence archives.
 /docs/active/project/evidence/v2_external_brain_productization/**/runs/
 /docs/active/project/evidence/v2_external_brain_productization/**/*.tar.gz
+
+# V3 browser/media runs can contain private task roots, profiles, and large
+# reproducible artifacts. Commit promoted results, manifests, and audits only.
+/docs/active/project/evidence/v3_media_companion/**/runs/
+/docs/active/project/evidence/v3_media_companion/**/*.tar.gz

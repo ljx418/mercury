@@ -61,7 +61,21 @@
     "e2e:chrome:v2-memory-personal-knowledge:report": "node e2e/generate-v2-memory-personal-knowledge-report.mjs",
     "e2e:chrome:launcher-resize-closeout": "node e2e/chrome-launcher-resize-closeout.mjs",
     "e2e:chrome:v1-mainline-closeout": "npm run build:e2e && npm run e2e:chrome:launcher-resize-closeout && npm run e2e:chrome:external-visual-acceptance && node e2e/generate-v1-mainline-closeout-report.mjs",
-    "e2e:chrome:visual": "node e2e/chrome-sidepanel-visual-e2e.mjs"
+    "e2e:chrome:visual": "node e2e/chrome-sidepanel-visual-e2e.mjs",
+    "audit:v3-route-a": "node e2e/v3-route-a-static-audit.mjs",
+    "e2e:chrome:v3-1.1-media-page": "node e2e/v3-media-page-collector.mjs",
+    "e2e:chrome:v3-1.2-session": "node e2e/v3-session-capability-collector.mjs",
+    "verify:v3-1.2-session": "node e2e/v3-session-capability-verify.mjs",
+    "audit:v3-1.3-contracts": "python3 e2e/v3-credential-contract-audit.py",
+    "audit:v3-1.3-credential-transport": "node e2e/v3-credential-transport-static-audit.mjs",
+    "test:v3-1.3-secret-scan": "node --test e2e/lib/v3CredentialSecretScan.node-test.mjs",
+    "e2e:chrome:v3-1.3-credential-transport": "node e2e/v3-credential-transport-collector.mjs",
+    "verify:v3-1.3-credential-transport": "node e2e/v3-credential-transport-verify.mjs",
+    "package:v3-1.3-credential-transport": "node e2e/v3-credential-transport-package.mjs",
+    "e2e:chrome:v3-1.4-companion": "node e2e/v3-companion-runtime-e2e.mjs",
+    "e2e:chrome:v3-asr-settings": "node e2e/v3-asr-model-settings-e2e.mjs",
+    "e2e:chrome:v3-asr-provider-qualification-settings": "node e2e/v3-asr-provider-settings-real-e2e.mjs"
+    ,"e2e:chrome:v3-vision-provider-settings": "node e2e/v3-vision-provider-settings-e2e.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",

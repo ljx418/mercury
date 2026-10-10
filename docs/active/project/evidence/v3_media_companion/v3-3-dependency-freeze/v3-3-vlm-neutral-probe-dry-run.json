@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "v3-vision-capability-probe/v1",
+  "providerId": "openai-responses-vision",
+  "modelId": "gpt-4.1-mini-2025-04-14",
+  "apiBase": "https://api.openai.com/v1",
+  "endpoint": "/responses",
+  "image": {
+    "kind": "generated_neutral_checkerboard",
+    "mimeType": "image/png",
+    "byteLength": 589,
+    "sha256": "521fa8f06e101b14c0f1b85e329b651e66ecf80406aa64021ba47ac6745e8eeb",
+    "containsUserContent": false
+  },
+  "request": {
+    "sha256": "08460e575dc30f5bddc51223c3e5d1e693357ef708eaaadf1762ee642c1f9caa",
+    "store": false,
+    "imageDetail": "low",
+    "maxOutputTokens": 300,
+    "toolsEnabled": false
+  },
+  "executedAt": null,
+  "executed": false,
+  "passed": false,
+  "failureCode": "VISION_CAPABILITY_PROBE_NOT_EXECUTED"
+}

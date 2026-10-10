@@ -1,0 +1,319 @@
+{
+  "schemaVersion": "v3-media-product-acceptance/v2",
+  "runId": "v3-5-product-20261009T085637Z",
+  "buildTreeSha256": "e7ad9c05f402b30f69923df44d02150e9c0fbc9d07e2272fba066bec036ba33d",
+  "taskBinding": {
+    "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+    "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:p1",
+    "taskRevision": 7,
+    "outlineId": "outline_1213ab6c7fe3f6e624c4770c7a08edf1",
+    "evidenceCatalogSha256": "19941ca7ca5a158f7537b64d7de45bc0796997c1d602ca2491b8c3f07aff84e8",
+    "mediaDurationMs": 792000
+  },
+  "taskExecution": {
+    "registryClass": "subtitle",
+    "observedRoute": "trusted_tab_capture_asr",
+    "routeDrift": true,
+    "fallbackReasonCodes": [
+      "SUBTITLE_ROUTES_UNAVAILABLE"
+    ],
+    "resourceNotice": {
+      "shown": true,
+      "localAsr": true,
+      "expectedWaitClass": "long",
+      "cpuImpact": "high",
+      "memoryMiB": 8192,
+      "temporaryDiskBytes": 1081168,
+      "cancelAvailable": true,
+      "temporaryMediaDeleted": true
+    }
+  },
+  "surfaces": [
+    {
+      "surface": "workspace",
+      "viewport": "768x900",
+      "screenshotSha256": "be28c9451c7633f4382fe34b1c96f644c69a60eb1c92295a8ca688a4d071428a",
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "keyboardPassed": true
+    },
+    {
+      "surface": "workspace",
+      "viewport": "1280x900",
+      "screenshotSha256": "cdda2529e72a66f438dd15b0b591e09b39d587584914a1d7e427e4de609a0d9c",
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "keyboardPassed": true
+    },
+    {
+      "surface": "side_panel",
+      "viewport": "360x900",
+      "screenshotSha256": "66090801ccca914e161a08c697165c35e597ad45aeb81110642770f259bfd5ab",
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "keyboardPassed": true
+    },
+    {
+      "surface": "side_panel",
+      "viewport": "420x900",
+      "screenshotSha256": "4f425ee5878880fd9d091d9ab1bba785b7ce3ef3486f4f31636c99616e2b208b",
+      "rootOverflow": false,
+      "axeSerious": 0,
+      "axeCritical": 0,
+      "keyboardPassed": true
+    }
+  ],
+  "routes": [
+    {
+      "routeId": "/media/tasks",
+      "mode": "direct",
+      "taskId": null,
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/outline",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/timeline",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/mindmap",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/ask",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/export",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    },
+    {
+      "routeId": "/media/tasks/:taskId/evidence/:evidenceId",
+      "mode": "direct",
+      "taskId": "media_task_915c9a74ae594a8da2711f676d8d6e37",
+      "outcome": "restored",
+      "runtimeRead": true
+    }
+  ],
+  "askResults": [
+    {
+      "questionId": "question_f25cf561b47b82a5",
+      "questionType": "grounded",
+      "status": "answered",
+      "answer": "选中画面 852x480，内容哈希 c7725f6e8d29636f A divided white and green-rimmed plate holds various dishes: yellow omelet pieces, white sliced vegetables, green peppers, meat strips, and dark braised items. A white bowl in the foreground contains white rice. To the right, a smartphone displays an app screen showing '¥18.43' and Chinese text. Black chopsticks rest on the white table surface. A partial white bowl appears on the left edge. Top right corner text reads '地上足球888 bilibili'. Bottom Chinese subtitle reads '所以勇哥真正割人是他的蔬菜和这个'. A green chair edge is visible at the top.",
+      "evidenceIds": [
+        "mev_9ed5cf117d4bf3a2bc63e7d62a40f093",
+        "mev_00119805dbb8c66ab4cd3f38fe5ed63f"
+      ]
+    },
+    {
+      "questionId": "question_6f295dc44abb7668",
+      "questionType": "visual",
+      "status": "insufficient_evidence",
+      "answer": "",
+      "evidenceIds": []
+    },
+    {
+      "questionId": "question_c933fcd2d46aeebc",
+      "questionType": "unsupported",
+      "status": "answered",
+      "answer": "A divided white and green-rimmed plate holds various dishes: yellow omelet pieces, white sliced vegetables, green peppers, meat strips, and dark braised items. A white bowl in the foreground contains white rice. To the right, a smartphone displays an app screen showing '¥18.43' and Chinese text. Black chopsticks rest on the white table surface. A partial white bowl appears on the left edge. Top right corner text reads '地上足球888 bilibili'. Bottom Chinese subtitle reads '所以勇哥真正割人是他的蔬菜和这个'. A green chair edge is visible at the top. bilibili 地上足球888 ¥18.43 3元8气费 所以勇哥真正割人是他的蔬菜和这个 小边酒店惊喜特惠5折起 民宿立减500元",
+      "evidenceIds": [
+        "mev_00119805dbb8c66ab4cd3f38fe5ed63f",
+        "mev_54fa6e04f8d68c96a0a4e8751ab77d90"
+      ]
+    }
+  ],
+  "seekObservations": [
+    {
+      "origin": "outline",
+      "requestedMs": 0,
+      "observedMs": 71,
+      "deltaMs": 71,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.416Z"
+    },
+    {
+      "origin": "timeline",
+      "requestedMs": 0,
+      "observedMs": 108,
+      "deltaMs": 108,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.632Z"
+    },
+    {
+      "origin": "mindmap",
+      "requestedMs": 0,
+      "observedMs": 106,
+      "deltaMs": 106,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:32.850Z"
+    },
+    {
+      "origin": "ask_citation",
+      "requestedMs": 0,
+      "observedMs": 112,
+      "deltaMs": 112,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:33.097Z"
+    },
+    {
+      "origin": "evidence_drawer",
+      "requestedMs": 0,
+      "observedMs": 113,
+      "deltaMs": 113,
+      "outcome": "located",
+      "pageIdentityMatched": true,
+      "observedAt": "2026-10-09T08:57:33.318Z"
+    }
+  ],
+  "exports": [
+    {
+      "format": "markdown_zip",
+      "artifactSha256": "a6c3786d4687800118da66d7485f1fef80745439a0051644c0f510be433fa97a",
+      "memberIndexSha256": "5f7368e328ffbf596cc9e03be700479c917c117e3dba502ab865d7d331566bec",
+      "byteLength": 3640,
+      "knowledgeImportStatus": "deferred_to_v4"
+    },
+    {
+      "format": "json_bundle",
+      "artifactSha256": "95b4433d1f5d9cdcad1838c3f7ef884d3dc9da60a1061d216643da26ae6e1401",
+      "memberIndexSha256": "7a52b324e71147318f6825d9009f3b94682c0d09c146a3019dc4085d0a19ce8b",
+      "byteLength": 7818,
+      "knowledgeImportStatus": "deferred_to_v4"
+    }
+  ],
+  "accessibility": {
+    "axeScanCount": 4,
+    "serious": 0,
+    "critical": 0,
+    "keyboardScenarioCount": 7,
+    "keyboardPassed": true
+  },
+  "requirements": [
+    {
+      "requirementId": "V3-5-A01",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A02",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A03",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A04",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A05",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A06",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A07",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A08",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A09",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A10",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A11",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A12",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A13",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A14",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A15",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A16",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A17",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    },
+    {
+      "requirementId": "V3-5-A18",
+      "passed": true,
+      "evidenceSha256": "d546f251fc2b2f2da3fafd0454b7d40d779cef7ec6453b94b86573069861f657"
+    }
+  ],
+  "machinePassed": true
+}

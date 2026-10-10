@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "v3-asr-comparison-public-evidence/v1",
+  "generatedAt": "2026-09-18T00:00:00Z",
+  "runId": "v3-2-asr-comparison-20260918T153809Z",
+  "disclosure": "No transcript, Cookie value, cookie-file path, source media, audio window, or private absolute path is included.",
+  "status": {
+    "comparisonMaterial": "passed",
+    "humanComparison": "failed_replan",
+    "productionReady": false,
+    "v3_2_0": "fail_reopened",
+    "v3_2_1": "blocked"
+  },
+  "humanFinalDecision": {
+    "reviewSha256": "29313674ac457dd8df72b9f84834e8379968884a6704777d1e157f02de785d77",
+    "decisionSha256": "4b91470a8efc0eab14d570b800ef5860f69484ed653abb11a3b27b4d6fe38c85",
+    "verificationSha256": "8a4f95490b60ce88bd4314b323456d5c2a438708576dd541e22dd5d5c178f029",
+    "judgmentCount": 24,
+    "productionMeaningPreservedCount": 23,
+    "criticalMeaningErrorCount": 1,
+    "neitherAcceptableCount": 1,
+    "decision": "FAIL_REPLAN",
+    "secondReviewFabricated": false,
+    "adjudicationFabricated": false
+  },
+  "input": {
+    "sampleCount": 3,
+    "sampleIds": [
+      "BV1sMNtzJE5B",
+      "BV1xz4y1S7yF",
+      "BV1Bb411w741"
+    ],
+    "window": {
+      "startMs": 30000,
+      "endMs": 150000,
+      "durationMs": 120000,
+      "binDurationMs": 15000,
+      "binsPerSample": 8,
+      "totalBins": 24
+    },
+    "modelInferenceCount": 6,
+    "productionModelFileSetSha256": "5055de3688ab0cad50e26befd98abed6aaf2b632a2d867ce69ce5633faa938aa",
+    "baselineModelFileSetSha256": "0702979aa4eab9e62e2be69c7f6bebceffb3b58bc24eec98bd19ded54d678923"
+  },
+  "machineVerification": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "checkIds": [
+      "C01_SCHEMA_INSTANCE",
+      "C02_PRODUCTION_MODEL_BYTES",
+      "C02_BASELINE_MODEL_BYTES",
+      "C03_SAMPLE_DENOMINATOR",
+      "C04_FIXED_WINDOW",
+      "C05_MODEL_INFERENCES",
+      "C06_BIN_INTEGRITY",
+      "C07_BLIND_LABEL_MAP",
+      "C08_REVIEW_CONTROLS",
+      "C09_REVIEW_EXPORT",
+      "C10_ADJUDICATION_IMPORT",
+      "C11_CLEANUP_SECRET_SCAN",
+      "C11_ARTIFACT_HASHES",
+      "C12_REAL_CHROME_UI_QA"
+    ]
+  },
+  "realChrome": {
+    "viewports": [
+      "360x900",
+      "420x900",
+      "768x900",
+      "1280x900"
+    ],
+    "rootOverflowCount": 0,
+    "renderedBinCount": 24,
+    "transcriptionTextareaCount": 0,
+    "visibleModelIdentity": false,
+    "axe": {
+      "serious": 0,
+      "critical": 0
+    },
+    "keyboard": {
+      "passed": 3,
+      "total": 3
+    },
+    "qaReviewJudgmentCount": 24,
+    "qaAdjudicationResolvedCount": 24,
+    "qaSyntheticDisagreementCount": 1,
+    "qaCountsAsHumanQualityEvidence": false,
+    "profileDeleted": true
+  },
+  "cleanupAndSecretScan": {
+    "cookieFileDeleted": true,
+    "sourceMediaDeleted": true,
+    "audioWindowDeleted": true,
+    "privateWorkDeleted": true,
+    "scannedFiles": 12,
+    "scannedBytes": 422266,
+    "cookieValueCount": 26,
+    "hitCount": 0,
+    "passed": true
+  },
+  "artifactSha256": {
+    "comparisonBundlePrivate": "868c2ca3e8be7032501c39e93b6be86be1333b28fb70ec5d45b9b0f17be7d8d0",
+    "standaloneReviewPagePrivate": "5e7a577fa94838c993ea8b11396f520112ceab00438d45789cd16ee9da907015",
+    "generationSummary": "a5f18eafc26de53e3321037f1972c111e9402af9a328148c86521d3d80beda4b",
+    "verification": "4ec09309cde4c5b31956b9c80ce39885c7eb5d548191a8842f9b67dff6d7bf78",
+    "pageQaResult": "e0b1361902dc0a6b641fa04457dd843fbac69b30ae9c995ee1d75f54e03b703d",
+    "finalSecretScan": "6eb0138f67f3fdfb75ce59fc2927c61d347bff0fc161a3050d445519ebbb43f6",
+    "comparisonSchema": "753c009f8cddb8cdad4b585c61282e5b3e8e10a8eff22389fce5cd6befb2319a",
+    "sampleRegistrySchema": "f4b27e63874d9aa3194060109bc6c54207aa02d8ea17a4598437a372813c4006",
+    "modelManifest": "1d1349bb72b540c0796f93f8f4eae69cf854c8b523b4b9922c9114dc2f96c4b5",
+    "generator": "48b48694556e9192ee7757ed961e2e4b40c37a14b7c62607e0349c9b07a6a671",
+    "reviewTemplate": "024b3ecdccde7ae96bc5ca43bff6e0d47057e806f62956000ea0e2057bfdfc16",
+    "verifier": "21a61a7f3b7cc6d641c4a69cc6df120fe26684ec9ef0458772993c97b4555cdd",
+    "pageQaRunner": "3bb93a77f6e02310c61e59bbe489c6b5554e72e48c95166f6d5ef1e4dde835c4"
+  }
+}

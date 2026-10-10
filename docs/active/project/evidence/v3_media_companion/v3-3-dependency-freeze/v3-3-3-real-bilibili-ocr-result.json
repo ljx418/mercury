@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "v3-3-3-real-local-ocr-acceptance/v1",
+  "executedAt": "2026-10-08T06:26:54.029434Z",
+  "passed": true,
+  "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+  "input": {
+    "mediaId": "BV1ZpYd66ELP",
+    "durationMs": 8000,
+    "byteLength": 1347722,
+    "sha256": "c3fa8b421c57e2bf1c131d3641556854407a8412922d3ba76b9a3bd63c19d527"
+  },
+  "observations": [
+    {
+      "timestampMs": 0,
+      "frameSha256": "c7725f6e8d29636f7c202faab2feee917bf60fd812e22eeb59c52b4410bb7b40",
+      "provider": "rapidocr_local",
+      "engineVersion": "3.9.2",
+      "localOnly": true,
+      "blockCount": 7,
+      "allTextNonEmpty": true,
+      "allConfidenceValid": true,
+      "allBboxValid": true,
+      "textSha256": "ad3ce8e8b6abae23cee82ac2b7d75f9d577d11ff24e1bb2a8cf461c3cfaa0a47",
+      "contentSha256": "0e34fb0ff08005680f3e547403a84141128c36d497fc8734cf9a5e55ee0805c0",
+      "repeatContentSha256": "0e34fb0ff08005680f3e547403a84141128c36d497fc8734cf9a5e55ee0805c0"
+    },
+    {
+      "timestampMs": 4000,
+      "frameSha256": "74e8a2d24cc6ba58553d09d2e8e81fb29d54c6768a029ce530b4b4129ba6d315",
+      "provider": "rapidocr_local",
+      "engineVersion": "3.9.2",
+      "localOnly": true,
+      "blockCount": 1,
+      "allTextNonEmpty": true,
+      "allConfidenceValid": true,
+      "allBboxValid": true,
+      "textSha256": "aaac11c8fc85a23e5b4975b8b98b97617b161db19208706b4f5dfbcf662b98e7",
+      "contentSha256": "63c40e646f9872cb2314b1c7234c9f5fb470954be46033694fb500f0dcf1118a",
+      "repeatContentSha256": "63c40e646f9872cb2314b1c7234c9f5fb470954be46033694fb500f0dcf1118a"
+    },
+    {
+      "timestampMs": 7500,
+      "frameSha256": "8513ae71eb189648f0475852077a6227785120ba83d432bf10040409dc86796c",
+      "provider": "rapidocr_local",
+      "engineVersion": "3.9.2",
+      "localOnly": true,
+      "blockCount": 2,
+      "allTextNonEmpty": true,
+      "allConfidenceValid": true,
+      "allBboxValid": true,
+      "textSha256": "208ac70d8bc5493ef7688f2dd13a8079b4c1d69e7c4b2ff58b5a053187e22e48",
+      "contentSha256": "2c9c0370dcf907e96c0a74977b53fe5b647dcb8a44832b50fdd308718a82419f",
+      "repeatContentSha256": "2c9c0370dcf907e96c0a74977b53fe5b647dcb8a44832b50fdd308718a82419f"
+    }
+  ],
+  "networkCallCountDuringOcr": 0,
+  "cookieSeedPersisted": false,
+  "privateMediaPersisted": false,
+  "publicAbsolutePathCount": 0
+}

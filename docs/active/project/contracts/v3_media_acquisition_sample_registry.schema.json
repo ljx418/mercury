@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-acquisition-sample-registry/v2",
+  "title": "Navia V3-2 Production Media Acquisition Sample Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "revision",
+    "sourceRevision1Artifact",
+    "runId",
+    "buildTreeSha256",
+    "dependencyManifestSha256",
+    "modelManifestSha256",
+    "browser",
+    "credentialEvidenceClass",
+    "createdAt",
+    "classificationCounts",
+    "productionReady",
+    "samples"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "v3-media-acquisition-sample-registry/v2" },
+    "revision": { "type": "integer", "minimum": 2 },
+    "sourceRevision1Artifact": { "$ref": "#/$defs/ArtifactRef" },
+    "runId": { "type": "string", "pattern": "^v3-2-sample-probe-[0-9]{8}T[0-9]{6}Z$" },
+    "buildTreeSha256": { "$ref": "#/$defs/Sha256" },
+    "dependencyManifestSha256": { "$ref": "#/$defs/Sha256" },
+    "modelManifestSha256": { "$ref": "#/$defs/Sha256" },
+    "browser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "majorVersion", "profileClass"],
+      "properties": {
+        "name": { "const": "Google Chrome" },
+        "version": { "type": "string", "minLength": 1 },
+        "majorVersion": { "type": "integer", "minimum": 116 },
+        "profileClass": { "const": "user_authorized_temporary_v3_2" }
+      }
+    },
+    "credentialEvidenceClass": { "const": "user_authorized_cookie_lease" },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "classificationCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subtitle", "asr", "multipart", "restricted", "lowSignal"],
+      "properties": {
+        "subtitle": { "const": 6 },
+        "asr": { "const": 3 },
+        "multipart": { "const": 1 },
+        "restricted": { "const": 1 },
+        "lowSignal": { "const": 1 }
+      }
+    },
+    "productionReady": { "const": true },
+    "samples": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/Sample" }
+    }
+  },
+  "$defs": {
+    "Sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "RelativeArtifactPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/RelativeArtifactPath" },
+        "sha256": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ComparisonWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startMs", "endMs", "durationMs", "binDurationMs", "binCount", "bundleSha256", "bundleArtifact", "reviewerCount", "reviewArtifacts", "adjudicationStatus", "adjudicationArtifact", "summary"],
+      "properties": {
+        "startMs": { "const": 30000 },
+        "endMs": { "const": 150000 },
+        "durationMs": { "const": 120000 },
+        "binDurationMs": { "const": 15000 },
+        "binCount": { "const": 8 },
+        "bundleSha256": { "$ref": "#/$defs/Sha256" },
+        "bundleArtifact": { "$ref": "#/$defs/ArtifactRef" },
+        "reviewerCount": { "const": 2 },
+        "reviewArtifacts": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/$defs/ArtifactRef" }
+        },
+        "adjudicationStatus": { "const": "completed" },
+        "adjudicationArtifact": { "$ref": "#/$defs/ArtifactRef" },
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["independentJudgmentCount", "productionMeaningPreservedCount", "criticalMeaningErrorCount", "neitherAcceptableCount", "passed"],
+          "properties": {
+            "independentJudgmentCount": { "const": 16 },
+            "productionMeaningPreservedCount": { "type": "integer", "minimum": 15, "maximum": 16 },
+            "criticalMeaningErrorCount": { "const": 0 },
+            "neitherAcceptableCount": { "const": 0 },
+            "passed": { "const": true }
+          }
+        }
+      }
+    },
+    "Sample": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sampleId",
+        "url",
+        "adapterId",
+        "mediaId",
+        "playbackUnitId",
+        "partId",
+        "partIndex",
+        "partCount",
+        "durationSeconds",
+        "primaryClass",
+        "expectedOutcome",
+        "expectedRouteClass",
+        "subtitleEvidence",
+        "comparisonWindow",
+        "observedAt",
+        "pageContextSha256",
+        "serverProbeSha256",
+        "screenshot"
+      ],
+      "properties": {
+        "sampleId": { "type": "string", "pattern": "^v3-sample-(0[1-9]|1[0-2])$" },
+        "url": { "type": "string", "pattern": "^https://www\\.bilibili\\.com/video/BV[A-Za-z0-9]+/?$" },
+        "adapterId": { "const": "bilibili" },
+        "mediaId": { "type": "string", "pattern": "^BV[A-Za-z0-9]+$" },
+        "playbackUnitId": { "type": "string", "pattern": "^[0-9]+$" },
+        "partId": { "type": "string", "minLength": 1 },
+        "partIndex": { "type": "integer", "minimum": 1 },
+        "partCount": { "type": "integer", "minimum": 1 },
+        "durationSeconds": { "type": "number", "exclusiveMinimum": 0 },
+        "primaryClass": { "enum": ["subtitle", "asr", "multipart", "restricted", "low_signal"] },
+        "expectedOutcome": { "enum": ["success", "blocked", "degraded"] },
+        "expectedRouteClass": { "enum": ["subtitle", "asr", "blocked", "degraded"] },
+        "subtitleEvidence": { "enum": ["credentialed_api_item", "public_api_item", "page_player_item", "none", "restricted"] },
+        "comparisonWindow": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/ComparisonWindow" }
+          ]
+        },
+        "observedAt": { "type": "string", "format": "date-time" },
+        "pageContextSha256": { "$ref": "#/$defs/Sha256" },
+        "serverProbeSha256": { "$ref": "#/$defs/Sha256" },
+        "screenshot": { "$ref": "#/$defs/ArtifactRef" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "primaryClass": { "const": "asr" } }, "required": ["primaryClass"] },
+          "then": { "properties": { "expectedOutcome": { "const": "success" }, "expectedRouteClass": { "const": "asr" }, "comparisonWindow": { "$ref": "#/$defs/ComparisonWindow" } } },
+          "else": { "properties": { "comparisonWindow": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "primaryClass": { "const": "subtitle" } }, "required": ["primaryClass"] },
+          "then": { "properties": { "expectedOutcome": { "const": "success" }, "expectedRouteClass": { "const": "subtitle" } } }
+        },
+        {
+          "if": { "properties": { "primaryClass": { "const": "restricted" } }, "required": ["primaryClass"] },
+          "then": { "properties": { "expectedOutcome": { "const": "blocked" }, "expectedRouteClass": { "const": "blocked" } } }
+        },
+        {
+          "if": { "properties": { "primaryClass": { "const": "low_signal" } }, "required": ["primaryClass"] },
+          "then": { "properties": { "expectedOutcome": { "const": "degraded" }, "expectedRouteClass": { "const": "degraded" } } }
+        },
+        {
+          "if": { "properties": { "primaryClass": { "const": "multipart" } }, "required": ["primaryClass"] },
+          "then": { "properties": { "expectedOutcome": { "const": "success" }, "partCount": { "minimum": 2 }, "expectedRouteClass": { "enum": ["subtitle", "asr"] } } }
+        }
+      ]
+    }
+  }
+}

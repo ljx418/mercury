@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "v3-media-session-policy-registry/v1",
+  "status": "document_frozen_not_implemented",
+  "sourcePortalRegistry": {
+    "path": "docs/active/project/contracts/v3-media-portal-registry.json",
+    "sha256": "c96ab0d356851a7f444b7a3cb01e51c5d5012f564a929277151352bf9868eab6"
+  },
+  "genericBroker": {
+    "contractVersion": "portal-session-broker/v1",
+    "permissionClientTarget": "apps/chrome-extension/src/modules/media_companion/session/PortalPermissionClient.ts",
+    "brokerTarget": "apps/chrome-extension/src/modules/media_companion/session/PortalSessionBroker.ts",
+    "adapterInterfaceTarget": "apps/chrome-extension/src/modules/media_companion/session/PortalSessionAdapter.ts",
+    "registryTarget": "apps/chrome-extension/src/modules/media_companion/session/PortalSessionRegistry.ts",
+    "permissionRequestContext": "extension_document_trusted_user_gesture",
+    "backgroundMayRequestPermission": false,
+    "secretValuesAllowedInUi": false,
+    "secretValuesAllowedInPersistentContracts": false,
+    "runtimeEnvelopeStage": "v3_1_3_not_implemented"
+  },
+  "commands": [
+    "get_policy",
+    "record_grant",
+    "record_denial",
+    "revoke_policy",
+    "inspect_capability"
+  ],
+  "adapters": [
+    {
+      "adapterId": "bilibili",
+      "sessionAdapterId": "bilibili-cookie-session",
+      "status": "v3_1_2_document_frozen_not_implemented",
+      "implementationTarget": "apps/chrome-extension/src/modules/media_companion/session/bilibili/BilibiliPortalSessionAdapter.ts",
+      "policyId": "bilibili-media-consent/v1",
+      "policyRevision": 1,
+      "optionalPermissions": [
+        "cookies"
+      ],
+      "optionalHostPermissions": [
+        "https://*.bilibili.com/*"
+      ],
+      "consentScopes": [
+        "bilibili_session_access",
+        "temporary_media_download",
+        "audio_local_processing",
+        "frame_local_processing",
+        "selected_frame_cloud_vision"
+      ],
+      "credentialPolicy": {
+        "policyId": "bilibili-cookie-policy/v1",
+        "source": "chrome_cookie_store",
+        "readFilter": {
+          "domain": ".bilibili.com",
+          "store": "current_extension_context"
+        },
+        "allowedCookieNames": [
+          "DedeUserID",
+          "DedeUserID__ckMd5",
+          "SESSDATA",
+          "b_nut",
+          "bili_jct",
+          "buvid3",
+          "buvid4",
+          "buvid_fp",
+          "sid"
+        ],
+        "candidateAvailabilityRequires": [
+          "SESSDATA"
+        ],
+        "valueHandling": "broker_memory_only_discard_after_capability_derivation",
+        "serverValidation": "v3_1_3_not_implemented",
+        "nameSetHashEncoding": "sha256_utf8_lf_sorted_names_v1"
+      },
+      "capabilitySemantics": {
+        "available": "required session cookie is present and non-empty; server validity is not claimed",
+        "unavailable": "permissions are granted but the required session cookie is absent or empty",
+        "permission_required": "one or more optional permissions are absent",
+        "permission_denied": "the trusted user gesture did not grant the requested optional permissions",
+        "revoked": "the persisted product policy is revoked or optional permissions were removed",
+        "unknown": "the browser API failed or the policy/registry revision does not match"
+      }
+    }
+  ],
+  "persistencePolicy": {
+    "storageArea": "chrome.storage.local",
+    "allowedFields": [
+      "schemaVersion",
+      "policyId",
+      "adapterId",
+      "policyRevision",
+      "status",
+      "scopeGrants",
+      "decidedAt",
+      "revokedAt"
+    ],
+    "forbiddenFields": [
+      "cookie",
+      "cookieValue",
+      "credential",
+      "credentialValue",
+      "header",
+      "authorization",
+      "envelope",
+      "lease"
+    ]
+  },
+  "futureAdapterRequirements": [
+    "registered_page_adapter",
+    "independent_session_adapter",
+    "independent_optional_permissions",
+    "independent_secret_name_policy",
+    "independent_consent_scope_copy",
+    "real_logged_in_and_logged_out_matrix",
+    "secret_non_persistence_scan",
+    "independent_document_audit",
+    "independent_implementation_audit"
+  ],
+  "futureExamplesAreNotImplemented": [
+    "youtube",
+    "xiaohongshu"
+  ]
+}

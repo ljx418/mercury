@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "v3-media-acquisition-probe-candidates/v1",
+  "purpose": "platform_drift_candidate_discovery_only",
+  "candidates": [
+    {
+      "url": "https://www.bilibili.com/video/BV1A44y1L7eS",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV13W41137qV",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1BW41167UU",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1CW411M7Du",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Xa411P7iB",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1pW421c7DH",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV17x411i7Kh",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV13XH6ejEWL",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Jm4y1k7SL",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1tJ411q7xm",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Wx411974y",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1JT4y1Y7Sk",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_short"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV19x41147qx",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_low_view"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1va4y1t7qA",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_low_view"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1N5WLzaEvt",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_low_view"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Bs411G7tU",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_no_subtitle_low_view"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1CWUbBgEpw",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_interview_collection"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV13741117Nz",
+      "intendedClass": "asr_candidate",
+      "source": "public_search_interview_collection"
+    }
+  ]
+}

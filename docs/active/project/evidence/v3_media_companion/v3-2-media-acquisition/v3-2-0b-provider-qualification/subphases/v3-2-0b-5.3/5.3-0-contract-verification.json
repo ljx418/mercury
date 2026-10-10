@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "v3-asr-fixed-window-contract-verification/v1",
+  "createdAt": "2026-09-22T10:47:55.477764Z",
+  "candidateManifestSha256": "40c599dcd0b30a228badb720912dea765a570424a94eb288c27285c523c79c5e",
+  "passed": true,
+  "checks": {
+    "schemaMeta": true,
+    "candidateErrorCount": 0,
+    "runFixtureErrorCount": 0,
+    "requirementCount": 20,
+    "negativeCaseCount": 20,
+    "requirementIdsUnique": true,
+    "caseIdsUnique": true,
+    "requirementTuplesExact": true,
+    "sourceFrameCounts": [
+      1919997,
+      1920000,
+      1920000
+    ],
+    "sourceFrameCountsExact": true,
+    "tailPaddingPolicyExact": true,
+    "fixedDenominatorExact": true,
+    "passedCases": 20,
+    "failedCases": 0
+  },
+  "results": [
+    {
+      "caseId": "V3-2-0B-FW-N01",
+      "requirementId": "V3-2-0B-FW-R01",
+      "expectedFailureCode": "V3_ASR_FW_SCHEMA_INVALID",
+      "actualFailureCode": "V3_ASR_FW_SCHEMA_INVALID",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N02",
+      "requirementId": "V3-2-0B-FW-R02",
+      "expectedFailureCode": "V3_ASR_FW_LINEAGE_MISMATCH",
+      "actualFailureCode": "V3_ASR_FW_LINEAGE_MISMATCH",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N03",
+      "requirementId": "V3-2-0B-FW-R03",
+      "expectedFailureCode": "V3_ASR_FW_SOURCE_DENOMINATOR_CHANGED",
+      "actualFailureCode": "V3_ASR_FW_SOURCE_DENOMINATOR_CHANGED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N04",
+      "requirementId": "V3-2-0B-FW-R04",
+      "expectedFailureCode": "V3_ASR_FW_CHUNK_PLAN_DRIFT",
+      "actualFailureCode": "V3_ASR_FW_CHUNK_PLAN_DRIFT",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N05",
+      "requirementId": "V3-2-0B-FW-R05",
+      "expectedFailureCode": "V3_ASR_FW_AUDIO_FORMAT_INVALID",
+      "actualFailureCode": "V3_ASR_FW_AUDIO_FORMAT_INVALID",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N06",
+      "requirementId": "V3-2-0B-FW-R06",
+      "expectedFailureCode": "V3_ASR_FW_CHUNK_HASH_MISMATCH",
+      "actualFailureCode": "V3_ASR_FW_CHUNK_HASH_MISMATCH",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N07",
+      "requirementId": "V3-2-0B-FW-R07",
+      "expectedFailureCode": "V3_ASR_FW_CHUNK_COVERAGE_INVALID",
+      "actualFailureCode": "V3_ASR_FW_CHUNK_COVERAGE_INVALID",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N08",
+      "requirementId": "V3-2-0B-FW-R08",
+      "expectedFailureCode": "V3_ASR_FW_CONCURRENCY_VIOLATION",
+      "actualFailureCode": "V3_ASR_FW_CONCURRENCY_VIOLATION",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N09",
+      "requirementId": "V3-2-0B-FW-R09",
+      "expectedFailureCode": "V3_ASR_FW_PROVIDER_BOUNDARY_BYPASSED",
+      "actualFailureCode": "V3_ASR_FW_PROVIDER_BOUNDARY_BYPASSED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N10",
+      "requirementId": "V3-2-0B-FW-R10",
+      "expectedFailureCode": "V3_ASR_FW_TEXT_REWRITE_FORBIDDEN",
+      "actualFailureCode": "V3_ASR_FW_TEXT_REWRITE_FORBIDDEN",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N11",
+      "requirementId": "V3-2-0B-FW-R11",
+      "expectedFailureCode": "V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY",
+      "actualFailureCode": "V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N12",
+      "requirementId": "V3-2-0B-FW-R12",
+      "expectedFailureCode": "V3_ASR_FW_LOCAL_TIMESTAMP_INVALID",
+      "actualFailureCode": "V3_ASR_FW_LOCAL_TIMESTAMP_INVALID",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N13",
+      "requirementId": "V3-2-0B-FW-R13",
+      "expectedFailureCode": "V3_ASR_FW_GLOBAL_TIMESTAMP_INVALID",
+      "actualFailureCode": "V3_ASR_FW_GLOBAL_TIMESTAMP_INVALID",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N14",
+      "requirementId": "V3-2-0B-FW-R14",
+      "expectedFailureCode": "V3_ASR_FW_PARTIAL_REUSE_FORBIDDEN",
+      "actualFailureCode": "V3_ASR_FW_PARTIAL_REUSE_FORBIDDEN",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N15",
+      "requirementId": "V3-2-0B-FW-R15",
+      "expectedFailureCode": "V3_ASR_FW_PRIVATE_DATA_RETAINED",
+      "actualFailureCode": "V3_ASR_FW_PRIVATE_DATA_RETAINED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N16",
+      "requirementId": "V3-2-0B-FW-R16",
+      "expectedFailureCode": "V3_ASR_FW_RESOURCE_BASELINE_EXCEEDED",
+      "actualFailureCode": "V3_ASR_FW_RESOURCE_BASELINE_EXCEEDED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N17",
+      "requirementId": "V3-2-0B-FW-R17",
+      "expectedFailureCode": "V3_ASR_FW_LATENCY_REGRESSION_EXCEEDED",
+      "actualFailureCode": "V3_ASR_FW_LATENCY_REGRESSION_EXCEEDED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N18",
+      "requirementId": "V3-2-0B-FW-R18",
+      "expectedFailureCode": "V3_ASR_FW_REVIEW_DENOMINATOR_NOT_MET",
+      "actualFailureCode": "V3_ASR_FW_REVIEW_DENOMINATOR_NOT_MET",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N19",
+      "requirementId": "V3-2-0B-FW-R19",
+      "expectedFailureCode": "V3_ASR_FW_QUALITY_GATE_FAILED",
+      "actualFailureCode": "V3_ASR_FW_QUALITY_GATE_FAILED",
+      "passed": true
+    },
+    {
+      "caseId": "V3-2-0B-FW-N20",
+      "requirementId": "V3-2-0B-FW-R20",
+      "expectedFailureCode": "V3_ASR_FW_INDEPENDENT_AUDIT_NOT_PASSED",
+      "actualFailureCode": "V3_ASR_FW_INDEPENDENT_AUDIT_NOT_PASSED",
+      "passed": true
+    }
+  ]
+}

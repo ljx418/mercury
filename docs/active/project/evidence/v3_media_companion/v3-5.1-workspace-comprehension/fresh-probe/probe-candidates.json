@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "v3-5.1-fresh-probe-candidates/v1",
+  "candidates": [
+    {
+      "url": "https://www.bilibili.com/video/BV1sMNtzJE5B",
+      "intendedClass": "long_form_interview",
+      "source": "v3_asr_human_comparison"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1PA4m1w7ya",
+      "intendedClass": "tutorial_demonstration",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+      "intendedClass": "narrative_commentary_anchor",
+      "source": "prd_anchor"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1yLuwzpEt2",
+      "intendedClass": "subtitle",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Bt411D78C",
+      "intendedClass": "multipart_subtitle",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1hoKczREmn",
+      "intendedClass": "long_form_news",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1BfNVeBENc",
+      "intendedClass": "asr",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1zv1ZBCErv",
+      "intendedClass": "tutorial",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1goA2zrEEq",
+      "intendedClass": "low_signal_long",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1ooDJBkEBA",
+      "intendedClass": "low_signal_long",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1xt411o7Xu",
+      "intendedClass": "tutorial",
+      "source": "v3_sample_registry"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV11441177Rt",
+      "intendedClass": "subtitle",
+      "source": "v3_sample_registry"
+    }
+  ]
+}

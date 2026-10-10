@@ -1,5 +1,7 @@
 # Navia / 伴航 V1 目标验收文档
 
+> **2026-10-07 当前验收权威**：V3 总出门门槛改由 `design/v3-chat-know-acceptance-plan.md` 定义。机器和人工均必须覆盖手动 Runtime、真实网页 Chat、真实 B站 Chat、KnowledgeDraft 显式确认、Know 真实本地管理及 Chat/Know 信息架构。Agent、Query、Graph、自动维护和 Durable Forget 不计入 V3 PASS；Mock 成功状态、自动启动 Runtime 或未确认自动落库均为 No-Go。
+
 > 2026-09-15 V2-PX PX-6 验收状态：T04.1 `LIMITED PASS` 保持；固定机器审计候选 `px6-machine-exit-20260914t164500z` 已重算真实 T04.1 raw/facts/AST、执行 20/20 PX6 negatives，并通过独立实施出门审计（Fatal 0 / Major 0 / Minor 0），因此 PX6-0..5 为 `LIMITED PASS`。A01..A14 passed，A15/A16 与 H01..H07 仍 pending；G7/Human/final 继续 pending/pending/false。PX6-7 production finalizer 因最终独立审计握手尚未机器绑定而 fail-closed，不得提前生成成功声明。
 
 > 2026-09-10 RKM防假绿补强：新增认证矩阵、独立dispatch用量分母、本run截图捕获链、gold独立审签、API图谱集合对照、确定性撤销屏障、宿主文件/聊天保护及PX/RKM证据隔离，见 [RKM验收6/7](design/v2-real-knowledge-maintenance-acceptance-plan.md)。未实现fixture不能计通过，历史PNG同hash不单独决定新鲜度。
@@ -2024,92 +2026,155 @@ No-Go：
 
 ### 8.20 V3 Media Companion 文档与未来验收计划
 
-当前验收目标是证明 V3 目标体验、目标架构、开发计划、验收计划、stage gate 和 drawio 已经被完整规划，且不会把未来多模态能力误写成本阶段或 V3.0 的交付承诺。本阶段不进入代码实现。
+V3-0 已完成文档冻结；当前路线 A 重冻结只验收通用门户 adapter、最小页面权限、合同、开发/验收计划和图纸能否完整指导 V3-1。不得把原型、Mock、BiliNote 输出、V3-1P probe 或 V2 候选记为 V3 产品证据。
 
-文档门禁必须通过：
+#### 8.20.1 文档门禁
 
-- [ ] PRD、目标架构、开发计划、验收计划、stage gate、gap companion、drawio 使用同一阶段名：`V3 Media Companion`。
-- [ ] 文档明确 V3.0 是 `B站字幕优先 + 用户显式本地 ASR fallback`，V3.x 才承接通用/云端 ASR、VLM、OCR、视频帧语义理解和 Live Media。
-- [ ] 文档明确 V3 目标体验参考 Monica YouTube 视频助手、B站 AI 视频总结账号 / 工具、AI课代表、BibiGPT、NoteGPT、Eightify、HARPA、YouTube conversational AI 和 Gemini Video Understanding。
-- [ ] 当前首批平台只验收 B站；YouTube 必须在 B站 12 页出门后复用同一合同，直播平台只能作为 V3.x 或后续路线。
-- [ ] 文档必须规划视频概览卡、章节时间轴、Media Mindmap / 视频概览图、字幕 / 转录问答、截图证据卡、timestamp jumpback、fallback / blocked。
-- [ ] 文档必须明确视频截图证据在 V3.0 中只证明某个时间点的可见帧；不得声称截图内容已被 VLM 理解。
-- [ ] 无字幕、无转录、无简介、无评论 / 弹幕、无可见 metadata 或平台限制的视频必须 degraded / blocked，不得计入 understood pass。
-- [ ] drawio 不超过 8 页，中文书写，并包含目标体验、当前架构与目标架构差异、B站字幕/本地 ASR 双输入链路、视频概览图 / Media Mindmap、截图证据 / 视频反跳、多模态 V3.x 路线、开发及验收计划、里程碑和 No-Go。
-- [ ] drawio 架构页必须出现具体实体：Content Script Media Collector、MediaPageContext、A Media Page Perception、D Adapter / Governance / Trace、C Media Mindmap、B Media Companion Renderer、VideoFrameEvidenceRef、MediaJumpbackTarget 和 V3 evidence package。
+- [ ] PRD、架构、开发/验收计划、合同、组件路由、原型、Stage Gate、gap 与 Draw.io 使用同一 2026-09-16 权威范围。
+- [ ] 首版固定为 B站受控 Cookie 会话主路径、公开字幕/tabCapture 回退、本地 ASR、关键帧、本地 OCR、持久授权云端 VLM、大纲、时间线、Mindmap、Ask、反跳、本地历史与导出。
+- [ ] V2/PX-6/RKM 不再阻塞 V3；知识持久化、Query、Graph、Durable Forget 和维护只属于 V4。
+- [ ] Side Panel 与 Workspace 的路由、组件、状态、焦点和数据权威已明确。
+- [ ] 五项持久产品授权、每任务短期 credential lease 与 fallback 可信 capture grant 被分开定义；取消和清理有显式终态。
+- [ ] 当前基线使用真实 Mock 阻塞截图并记录 hash；不得用“data_service connected”旧截图或原型状态冒充当前产品事实。
+- [ ] 目标总体设计、模块图和用户路线由确定性 HTML/CSS/SVG 表达；AI 位图不定义功能、锚点视频内容、证据或验收结论。
+- [ ] BiliNote 文件级 allowlist 绑定 clean commit、MIT license hash 和逐文件原始字节 hash；清单外、dirty diff、明文 Cookie 管理、账号/数据库/应用壳默认拒绝。
+- [ ] Draw.io 固定 8 页中文，包含具体代码实体、交互关系、状态颜色、开发/验收、出门和 No-Go。
+- [ ] Schema v3 meta、正例、25 项 requirement registry/case 精确映射、5 个 schema negative、20 个 semantic negative、HTML 四视口、键盘/Axe 和两轮内部审计全部通过。
+- [ ] `MediaPortalAdapter/MediaPortalRegistry` 隔离平台字段；B站 bvid/cid 只映射为通用 `mediaId/playbackUnitId`；未注册 adapter 或 identity 错绑 fail closed。
+- [ ] 路线 A manifest 没有 `<all_urls>` 或等价全站匹配；B站详情页窄域自动桥接；普通网页只由 action/command 的 `activeTab` 打开原生 Side Panel。
 
-未来 V3.0 实现验收矩阵：
+#### 8.20.2 锚点操作验收
 
-- [ ] 当前固定 12 个真实 B站视频详情页；类别和指定锚点按 §8.20.2，不得临时缩分母。
-- [ ] 覆盖课程 / 知识、新闻评论、影视解说、游戏 / 赛事、长视频、短视频、字幕可用、字幕不可用、评论丰富、评论贫乏。
-- [ ] 12/12 均须得到可审计成功、degraded 或 blocked 终态；其中 6 个字幕样本和 3 个本地 ASR 样本必须成功，不能用 degraded/blocked 抵扣。
-- [ ] 至少 10/12 页面具备章节 / 时间轴或等价片段结构；允许正确 blocked 的 1 页和正确 degraded 的 1 页不具备内容时间轴，不能用它们抵扣 6 个字幕、3 个本地 ASR 和 1 个多 P 成功样本。
-- [ ] 至少 12 个样本包含视频截图证据卡。
-- [ ] 至少 12 个样本完成 timestamp jumpback 或清晰 fallback / blocked。
-- [ ] 每个样本必须记录 `platform`、`url`、`title`、`duration`、`transcriptAvailability`、`timelineSources`、`overviewQuality`、`mindmapTopNodes`、`screenshotEvidence`、`jumpbackResult`、`degradedReason` 和截图路径。
+首个必测页面固定为 `https://www.bilibili.com/video/BV1ZpYd66ELP`：
 
-未来 V3.0 每页 pass 质量阈值：
+- [ ] 真实 Chrome 读取 `bvid=BV1ZpYd66ELP`、`cid=41828944992`、单 P、约 792 秒；变化创建 revision。
+- [ ] 未授权时显示无公开字幕和“需要授权 B站会话”，不生成大纲、不读 Cookie、不下载、不 capture、不上传帧。
+- [ ] 首次授权五项 scope 后刷新/重开不重复弹窗；每任务租约短期且不含 Cookie 值；主动撤销后 0 新租约/下载/capture/上传。
+- [ ] 页面桥接只匹配 `https://www.bilibili.com/video/*`；会话权限仅为可选 `cookies` + `https://*.bilibili.com/*`；Broker 只读冻结名称白名单；秘密 envelope 的 request body 不进入 access/error log、EventStore、Trace 或 retry payload。
+- [ ] 点击开始后优先产生同 task `PortalCredentialLease(adapterId=bilibili)`；平台拒绝时记录原因；只有 tabCapture 回退产生 `MediaCaptureGrant`；ASR 分段有 timestamp/confidence/hash。
+- [ ] 关键帧、OCR 与 VLM 证据分型，画面描述绑定帧时间/hash/provider response。
+- [ ] 一个 `VideoOutline` 派生图文、时间线与 Mindmap，至少 8 个关键节点有同 task 证据。
+- [ ] Ask 的 answered 结果有引用，无证据问题返回 `insufficient_evidence`。
+- [ ] 至少 5 次真实播放器 seek 误差 <=2 秒；失败只能 fallback/blocked。
+- [ ] 完成、取消、关页、Runtime 离线、租约到期和撤销均停止处理并清理 cookiefile、临时媒体、原始音频和非证据帧。
 
-- [ ] 视频概览必须基于 transcript / subtitle / description / chapter / visible comments / danmaku / metadata 至少一种真实来源。
-- [ ] Media Mindmap 顶层节点必须是章节、主题、事件、论点、例子或结论，不得只来自标题、推荐、广告、版权提示或评论噪声。
-- [ ] 每个关键节点必须绑定 timestamp、transcript segment、source text、截图证据或 degraded reason。
-- [ ] timestamp jumpback 成功时，视频播放器必须跳到目标时间点附近，并在 UI / JSON / HTML / screenshot metadata 中标记 `located`。
-- [ ] 无法 seek 或平台限制时，只能标记 `fallback_shown` 或 `blocked`，不得冒充 located。
-- [ ] Ask Video 回答必须引用 transcript segment、description、chapter、comment / danmaku text 或明确 degraded。
+#### 8.20.3 真实矩阵与双容器
 
-V3.x 多模态规划验收：
+- [ ] 12 个唯一 B站 URL 固定为 6 字幕、3 ASR、1 多 P、1 受限 blocked、1 低信号 degraded；主分类互斥，禁止重复占位、换样或缩分母。
+- [ ] 10 个应成功样本完成本地 OCR，至少 8 个完成真实云端 VLM。
+- [ ] Side Panel 360/420 只承载识别、授权、启动、进度、取消和快速摘要。
+- [ ] Workspace 768/1280 承载完整大纲、时间线、Mindmap、Ask、证据、历史和导出。
+- [ ] direct-open/reload/Back/reopen 保持 taskId/route/evidence identity。
+- [ ] Axe serious/critical=0，键盘主流程和焦点返回通过。
 
-- [ ] 通用/云端 ASR、VLM、OCR、Gemini Video / Live API、直播 rolling transcript 只能作为候选路线；唯一例外是 §8.20.1 规定的用户显式当前标签页音频本地 ASR fallback。
-- [ ] 每条多模态路线必须记录用户授权、隐私边界、采样策略、缓存 / 删除、延迟预算、成本预算、confidence、source provenance、EventStore / Trace 回放和 false-green 防线。
-- [ ] 未完成上述规划，不得声明真实视频画面 / 音频理解 ready。
+#### 8.20.4 V3 本地任务与 V4 边界
 
-允许声明：
+- [ ] `MediaTaskStore` 在 Runtime 重启后恢复同 task；导出 Markdown ZIP/JSON hash 可重算。
+- [ ] `knowledgeImportStatus=deferred_to_v4`，界面不得声称“已保存到知识库”。
+- [ ] 不调用 Mock knowledge adapter 或 data_service 作为 V3 成功依据。
+- [ ] 旧 H01/PX-6 证据保持封存，不与 V3 run 拼接。
+
+#### 8.20.5 False-green 与声明
+
+任一情况阻止通过：Cookie 值持久化/进入日志或证据；无租约下载、跨任务凭据复用、绕过平台限制；tabCapture 无可信点击；无授权上传；无证据生成画面结论/Ask；mock/fixture/BiliNote 输出计生产分母；跨 run；缩分母；凭据或临时媒体清理失败仍成功；fallback 计 located；把本地导出或 V4 能力写成 V3 完成。
+
+文档阶段最多允许：
 
 ```text
-V3 Media Companion planning baseline ready for review.
+V3 Bilibili-first implementation specification ready for explicit authorization.
 ```
 
-未来 V3.0 通过后最多允许声明：
+V3-7 出门后最多允许：
 
 ```text
-V3.0 Bilibili-first video companion passed the frozen 12-page production acceptance.
+V3 Bilibili-first media companion passed the frozen subtitle/local-ASR/keyframe/OCR/authorized-cloud-VLM acceptance matrix.
 ```
 
-No-Go：
+禁止声明全平台、直播、无限期/跨任务下载、绕过平台限制、全量视频流理解、跨视频 RAG、V4 或完整 Monica/BiliNote parity。
 
-- [ ] 当前文档阶段声明 V3.0 implemented。
-- [ ] 完整 Monica-like YouTube parity complete。
-- [ ] 把 B站第三方 AI 总结账号内容或站外摘要冒充 Navia 自己理解。
-- [ ] 无字幕 / 无转录 / 无截图证据时声称理解视频内容。
-- [ ] timestamp fallback 冒充精准反跳。
-- [ ] 通用/云端 ASR / VLM / OCR / Gemini Video ready；显式本地 ASR fallback 除外。
-- [ ] 直播实时理解 ready。
-- [ ] 自动下载、提取或处理受版权保护的视频流。
-- [ ] 绕过平台访问限制或把登录态自动化作为产品浏览器自动操作。
-- [ ] 跨视频知识库 / RAG ready。
+#### 8.20.6 V3-1.3 一次性凭据通道专项门禁（已限定通过）
 
-#### 8.20.1 B站优先锚点验收
+- [x] `v3-media-credential-transport-policy-registry.json` 与 V3-1.2 session registry 原始字节 hash 精确绑定；后者不得因本阶段修改。
+- [x] public Schema meta、positive、25 个 requirement/case 通过；秘密 envelope 没有持久实例或公开 token/value/name-list。
+- [x] bootstrap 使用现有内存 bearer但独立校验精确 extension Origin；任意 extension 前缀 CORS 不算认证。
+- [x] 20 秒 channel 在首次 exchange 时消费；60 秒 lease 只在 Runtime process memory；公开 leaseId 不是 capability。
+- [x] content script、非产品 extension page、generic runtime proxy、未授权/撤销/版本失配、过期/重放/篡改全部在 Cookie read 或 lease insert 前 fail closed。
+- [x] 专用 envelope request 不进入 runtimeClient/E2E body observation、access/error log、EventStore、Trace、exception dump 或 retry queue；响应不确定也不重发同 body。
+- [x] Runtime restart 清空 channel/replay cache/lease；permission/Cookie change 和用户撤销删除 active lease；Background 崩溃残余窗口不超过 60 秒。
+- [x] 单一真实 Chrome + Runtime run 执行 `V3-1.3-A01..A20`，旧 V3-1.2/current V3-1R/全测试回归通过，原始 Cookie needle 对持久/公开介质 0 命中。
+- [x] UI 只声明“本机会话租约已就绪、媒体获取未开始”；不得声明服务端登录、字幕、媒体下载或视频理解成功。
 
-首个必测页面固定为 `https://www.bilibili.com/video/BV1ZpYd66ELP`。机器和人工必须同时验证：
+专项计划入口：`evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-credential-lease-development-plan.md` 与 `v3-1.3-credential-lease-acceptance-plan.md`。独立实施出门审查已 PASS；该结论不能扩大为 V3-2 通过。
 
-- [ ] `bvid=BV1ZpYd66ELP`、`cid=41828944992`、单 P、时长观测约 792 秒；若平台内容变化必须记录新观测而非硬改 fixture。
-- [ ] 未授权时准确显示公开字幕不可用，不生成视频内容大纲。
-- [ ] 用户点击后才允许当前标签页音频 capture；授权对象、tabId、开始/结束和清理状态可审计。
-- [ ] ASR 原始分段带 timestamp/confidence/hash；标题、简介或模型常识不能填充缺失 transcript。
-- [ ] 由一个 `VideoOutline` 派生图文大纲和 Media Mindmap，章节顺序及 evidence IDs 一致。
-- [ ] 至少 8 个关键节点绑定字幕或 ASR segment；证据覆盖率不得通过复制同一 segment 凑数。
-- [ ] 至少 5 个章节或证据点击完成真实播放器 seek，误差不超过 2 秒；失败只能 fallback/blocked。
-- [ ] 网络日志不得出现后台媒体流下载、cookie 导出或绕过平台限制的请求。
-- [ ] 取消、关闭标签页和 Runtime 离线三种故障均停止采集且临时音频残留为 0。
+#### 8.20.7 V3-2 受控媒体获取与本地 ASR 专项门禁
 
-#### 8.20.2 B站真实矩阵
+V3-2 使用 `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-acceptance-plan.md` 的 `V3-2-A01..A20` 作为唯一固定分母，不得 N/A、缩分母或跨 run。必须同时满足：
 
-V3-B6 固定 12 个 B站详情页：6 个公开/页内字幕可用、3 个无字幕需本地 ASR、1 个多 P、1 个登录或风控降级、1 个低信号。`BV1ZpYd66ELP` 必须属于“无字幕需本地 ASR”，不能被换成更容易的样本。12 个样本均需真实 Chrome 页面、capture/source hash、结构化结果和截图；production pass 不接受录制 fixture 或站外摘要。
+- [ ] Schema meta、positive、48 case（12 schema + 36 semantic）及 policy FailureCode 集合全部一致；semantic positive base 先通过。
+- [ ] V3-2-0 冻结 yt-dlp、ffmpeg/ffprobe、faster-whisper 和模型的 exact version/hash/license/capability；生产 run 不联网换模型。
+- [ ] revision 2 正好 12 个真实 B站 URL，主分类为 6 subtitle + 3 ASR + 1 multipart + 1 restricted + 1 low-signal。
+- [ ] route 严格按凭据字幕、凭据媒体 ASR、公开/页内字幕、可信 tabCapture ASR 执行；首成功即停止。
+- [ ] 3/3 ASR 能力槽位在一个全新 run 内逐任务完成真实当前分 P 获取与 SenseVoice 全长转写；VAD 总段数与非空 SRT 段数精确相等、coverage receipt=1.0；至少一个后续样本完成真实 tabCapture。不得复用 B3 已清理音频或跨 run 拼接；acceptance fault 只允许在真实发现后按 B3 预绑定映射单次使用，产品路径必须 0 可达。24 bin 双 reviewer 与智能质量回退已按 PRD §18.4/§18.9 移入 V4，不再作为 V3 出门门槛。
+- [ ] capture 只来自可见 Side Panel/Workspace 新鲜点击；30 秒 one-shot ticket、正确 tab/page/task binding，错误/过期/重放全部拒绝。
+- [ ] 两容器共享 Runtime task；用户可见 route、失败原因、进度、等待点击、取消、cleaning 和终态，但不声称 V3-3+ 功能完成。
+- [ ] 五种终态均有 cleanup receipt；Cookiefile、临时媒体、原始音频/视频、active capture、公开私有路径计数全部为 0。
+- [ ] 单一全新真实 Chrome run 绑定 build/dependency/model/sample registry；四视口、Axe、键盘、故障矩阵、secret/path scan 与独立审查全部通过。
 
-#### 8.20.3 H01-RDS 前置
+当前 V3-2-2 Route B3 与 V3-2-3 均已取得限定 `LIMITED PASS`。V3-2-4 已获高风险授权并完成 capability 实现候选，但上方组合项仍不勾选：产品 UI 没有同 task 顺序执行前三路并发布 authority projection，真实 trusted tabCapture→SenseVoice 正例不可达；自动验收结论为 `FAIL / REPLAN REQUIRED`。
 
-V3-B0 前先执行 `design/v2-px-6-h01-real-data-service-unblock-plan.md` 的 RDS-01..07。H01 的升级前置为 Runtime online、`adapterStatus=ready`、`dataServiceStatus=connected`，且至少一条真实来源由 data_service build 到 `trace_ready`。看到 `mock` 或 `unchecked` 必须停止，不得继续填写 passed。
+2026-09-21 实际结果：比较材料机器验收通过；用户指定的最终人类 review 通过 Schema 且覆盖 24/24 bin，但 production 逐样本为 7/8、8/8、8/8，并出现 critical=1、neither-acceptable=1。故本清单中的 ASR 人类质量项保持未勾选，D08=`FAIL / REPLAN`、V3-2-0=`FAIL / REOPENED`、V3-2-1+=`BLOCKED`。不得补造第二 reviewer 或把 23/24 外推为 46/48。
 
-该前置只关闭真实持久化入口；Ask、Graph、Forget、自动维护、完整 RAG 和 V3 仍需各自门禁。
+#### 8.20.8 V3-2-0a Provider 与模型管理专项门禁
 
-2026-09-15 Runtime 服务级候选已证明真实 import/build/trace、重复保存和重启恢复；人类仍须在重新加载后的真实扩展中完成 Side Panel、Workspace Library、Source Detail 三入口，并回填同一 `workspaceId/sourceId`。只有服务级证据与三入口证据同属本轮 real-mode H01，RDS-03/04 才可签署 PASS。
+- [x] Schema meta、positive 和 shape negative 由测试实际执行；catalog 只接受固定 provider/model/revision/file/hash/resource profile。
+- [x] bundled Tiny 四文件 hash/总字节可复算；首次启动离线 ready，禁止卸载；requested 模型不可用时明确成为 effective fallback。
+- [x] Settings 展示 requested/effective、质量定位和 CPU/RAM/显存/磁盘；Small 保留“当前质量门禁未通过”，qualification 模型不可安装/选择。
+- [x] 一键安装提供真实 bytes/total/percent/speed/ETA、取消与失败恢复；Runtime 拒绝客户端 URL/hash/path/provider 类。
+- [x] Small 从官方固定源真实下载 `486212372` bytes，四文件 hash 匹配，经本地 load self-test 与原子发布 ready；重启后选择保持。
+- [x] 断线、404、截断、hash、磁盘、取消、重启、错误 package identity/revision/hash、zip-slip、体积和文件数负例均 fail closed，未发布模型且 Tiny 保持可用。
+- [x] 8 cores/8 GiB/no-GPU 下 Tiny 对真实 B站短音频完成 17 个 timestamped segments，峰值 RSS `350200 KiB`；原始和规范化音频已删除。
+- [x] 最新真实 Chrome run `v3-2-0a-2026-09-21T121500382Z` 为 17/17；360/420/768/1280 无根溢出，Axe blocking 0，键盘取消/焦点返回/离线包 chooser 通过；旧 `113130938Z` 仅保留历史。
+- [x] 不同 session 的独立实施出门审查 Fatal=0/Major=0；结果为 `Fatal=0 / Major=0 / Minor=3`，见 `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0a-independent-implementation-exit-audit.md`。
+
+本专项已完成固定分母并通过独立审查，状态为 `V3-2-0a LOCAL LIMITED PASS`。该结论只覆盖模型管理与低资源兜底；V3-2-A06、MediaTranscript、媒体获取、tabCapture 和 V3 整体仍未通过。
+
+#### 8.20.9 V3-2-0b 低资源 ASR Provider 资格恢复
+
+固定分母为 `V3-2-0B-A01..A18`，任何项不得 N/A：
+
+| ID | 用户场景与操作 | 必须观察到的结果 |
+|---|---|---|
+| A01 | 审计者校验 Schema | Draft 2020-12 meta-validation 与 candidate instance 均通过 |
+| A02 | 审计者对账 registry/fixtures | 18 requirement、18 negative case、key/failureCode 集合精确相等 |
+| A03 | Runtime 安装候选引擎 | 平台 runtime 的版本、bytes、SHA-256 与官方来源完全匹配 |
+| A04 | Runtime 安装 ASR/VAD 权重 | 两个固定 revision、bytes、SHA-256 与许可证完全匹配 |
+| A05 | 注入未知 provider/URL/class/path/remote code | 全部 fail closed，设置页不能控制实现类或下载源 |
+| A06 | 无 GPU、8 cores、8 GiB 启动真实推理 | 进程在限制内完成，峰值 RSS/耗时/退出码写入结构化观测 |
+| A07 | 运行真实短音频与三个生产窗口 | 输出非空、带时间戳、单调、在媒体时长内，禁止人工改写 |
+| A08 | 取消、超时、provider 崩溃和 Runtime 重启 | 原生进程组、临时音频和 staging 全部清零，状态可解释 |
+| A09 | 生成三个冻结样本比较 bundle | 每样本同一 120 秒窗口、8 bin，共 24 bin；基线/候选不跨 run |
+| A10 | reviewer 打开盲评页 | A/B 不显示 provider/model/文件名/速度等可识别信号 |
+| A11 | 两名独立 reviewer 提交 | reviewerId 不同，各 24 项，schema 合法，不能复制同一判断冒充独立 |
+| A12 | adjudicator 汇总 48 项 | 含义保留至少 44/48、每样本至少 15/16、critical=0、neither=0 |
+| A13 | 用户打开 ASR 设置 | 看见下载量、安装后磁盘、CPU/RAM/显存、质量标签和 requested/effective |
+| A14 | 用户点击安装并观察弹窗 | 下载、校验、自检、安装、取消和离线恢复状态来自真实 Runtime job |
+| A15 | 用户在 Side Panel/Workspace 使用候选 | 四视口无溢出；键盘主路径可达；Axe serious/critical=0 |
+| A16 | 审计者扫描公开产物 | Cookie、原始音频、私有路径、进程参数和 secret 0 命中 |
+| A17 | 审计者执行 PRD/架构/假绿检视 | 0b 未越界为媒体获取/视频理解；失败门槛与回退状态一致 |
+| A18 | 新独立 session 审查单一候选 | Fatal=0、Major=0；审查输入哈希与实施 session 分离 |
+
+出门结果只有两种：A01..A18 和 A12 同时通过时，允许把该 provider 标记为 `qualified` 并返回 V3-2-0/A06 复验；任一项失败则 `V3-2-0b FAIL / REPLAN`，effective model 回退 Tiny，V3-2-1..7 继续 NO-GO。模型安装成功、单 reviewer、23/24 或平均分通过均不能替代固定门槛。
+
+#### 8.20.10 V3-2-0b-5.3 固定窗口恢复专项门禁
+
+唯一验收入口为 `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0b-provider-qualification/subphases/v3-2-0b-5.3/acceptance-plan.md` 的 `FW01..FW20`。固定场景是三个原始真实 120 秒 WAV 各切 8 个 15 秒 chunk，必须 24/24 非空、0 gap/overlap、单并发顺序推理、local/global 时间戳有效、0 文本重写、0 partial retry reuse。
+
+资源与体验门槛为 8 cores、8 GiB、无 GPU、asset<=512 MiB，三样本总 wall time 各自不超过 `16360/14760/16280ms`。机器门禁未全通过不得生成 review bundle；通过后仍必须由两个不同 reviewer 完成 48 判断并满足 >=44/48、每样本>=15/16、critical=0、neither=0。
+
+以下直接拒绝：只补 sample03/bin2、复用 5.2 诊断、跨 run 拼接、并发 8 进程、把空 chunk 标静音、相邻文本复制/模型外改写、只报平均耗时、复用 reviewer、公开音频/正文/私有路径，以及 cleanup 失败仍成功。
+
+2026-09-22 真实验收：FW01..FW10 的合同与实现前置通过；sample01/02 8/8 非空且延迟合格；sample03/chunk4 在 RMS=1498.877 的非零窗口输出 0 segment，FW11 失败。故该 run 在 FW11 停止，后续合并/质量/独立出门门槛不能升级为 PASS，FW18..FW20 不启动；结论为 `V3-2-0b-5.3 FAIL / REPLAN`，不得生成 review bundle 或 qualified 状态。
+
+#### 8.20.11 V3-2-0c 路线 C 最小 Spike 门禁
+
+固定 SC01..SC15 只判断供应链、三个真实窗口、CPU/内存/磁盘、seccomp 断网、SRT 结构、遗漏恢复、清理和公开隐私。权威 run 3/3 非空且时间戳合法，资产 `258371224` bytes、peak RSS 最大 `325156864` bytes，结论 `SPIKE_FEASIBLE`。该门禁明确不含语义质量、24-bin、双 reviewer、Settings 或跨平台，因此 `productionQualified=false`，不能替代 V3-2-A06。

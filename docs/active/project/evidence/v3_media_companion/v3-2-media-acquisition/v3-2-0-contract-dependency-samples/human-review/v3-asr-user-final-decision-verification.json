@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "v3-asr-user-final-decision-verification/v1",
+  "verifiedOn": "2026-09-21",
+  "reviewSha256": "29313674ac457dd8df72b9f84834e8379968884a6704777d1e157f02de785d77",
+  "decisionSha256": "4b91470a8efc0eab14d570b800ef5860f69484ed653abb11a3b27b4d6fe38c85",
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "checkId": "F01_REVIEW_SCHEMA",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "checkId": "F02_REVIEW_SHA",
+      "actual": "29313674ac457dd8df72b9f84834e8379968884a6704777d1e157f02de785d77",
+      "expected": "29313674ac457dd8df72b9f84834e8379968884a6704777d1e157f02de785d77",
+      "passed": true
+    },
+    {
+      "checkId": "F03_BUNDLE_BINDING",
+      "actual": "868c2ca3e8be7032501c39e93b6be86be1333b28fb70ec5d45b9b0f17be7d8d0",
+      "expected": "868c2ca3e8be7032501c39e93b6be86be1333b28fb70ec5d45b9b0f17be7d8d0",
+      "passed": true
+    },
+    {
+      "checkId": "F04_FIXED_DENOMINATOR",
+      "actual": {
+        "judgments": 24,
+        "uniqueBins": 24,
+        "complete": true
+      },
+      "expected": {
+        "judgments": 24,
+        "uniqueBins": 24,
+        "complete": true
+      },
+      "passed": true
+    },
+    {
+      "checkId": "F05_PRODUCTION_MEANING",
+      "actual": {
+        "count": 23,
+        "perSample": {
+          "BV1sMNtzJE5B": 7,
+          "BV1xz4y1S7yF": 8,
+          "BV1Bb411w741": 8
+        }
+      },
+      "expected": {
+        "count": 23,
+        "perSample": {
+          "BV1sMNtzJE5B": 7,
+          "BV1xz4y1S7yF": 8,
+          "BV1Bb411w741": 8
+        }
+      },
+      "passed": true
+    },
+    {
+      "checkId": "F06_OUTCOME_COUNTS",
+      "actual": {
+        "critical": 1,
+        "neither": 1,
+        "productionPreferred": 16,
+        "baselinePreferred": 4,
+        "equivalent": 3
+      },
+      "expected": {
+        "critical": 1,
+        "neither": 1,
+        "productionPreferred": 16,
+        "baselinePreferred": 4,
+        "equivalent": 3
+      },
+      "passed": true
+    },
+    {
+      "checkId": "F07_FAIL_CLOSED",
+      "actual": "FAIL_REPLAN",
+      "expected": "FAIL_REPLAN",
+      "passed": true
+    },
+    {
+      "checkId": "F08_NO_FABRICATED_EVIDENCE",
+      "actual": {
+        "secondReviewFabricated": false,
+        "adjudicationFabricated": false
+      },
+      "expected": {
+        "secondReviewFabricated": false,
+        "adjudicationFabricated": false
+      },
+      "passed": true
+    },
+    {
+      "checkId": "F09_STAGE_STATUS",
+      "actual": {
+        "d08": "FAIL_REPLAN",
+        "v3_2_0": "FAIL_REOPENED",
+        "v3_2_1_plus": "BLOCKED"
+      },
+      "expected": {
+        "d08": "FAIL_REPLAN",
+        "v3_2_0": "FAIL_REOPENED",
+        "v3_2_1_plus": "BLOCKED"
+      },
+      "passed": true
+    }
+  ],
+  "decisionVerified": true,
+  "productPassed": false,
+  "stageStatus": {
+    "d08": "FAIL_REPLAN",
+    "v3_2_0": "FAIL_REOPENED",
+    "v3_2_1_plus": "BLOCKED"
+  }
+}

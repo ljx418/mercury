@@ -181,9 +181,11 @@ export async function launchExtension(profilePath) {
   const windowsChrome = process.env.NAVIA_BROWSER_EXECUTABLE || path.join(repoRoot, ".tmp/chrome-for-testing/chrome-win64/chrome.exe");
   if (fs.existsSync(windowsChrome) && windowsChrome.toLowerCase().endsWith(".exe")) {
     const port = 11_300 + Math.floor(Math.random() * 500);
+    const forcedDeviceScaleFactor = process.env.NAVIA_T01_FORCE_DEVICE_SCALE_FACTOR;
     const child = spawn(windowsChrome, [
       ...(headless ? ["--headless=new", "--hide-scrollbars"] : ["--window-position=40,40"]),
-      "--mute-audio",
+      ...(forcedDeviceScaleFactor ? [`--force-device-scale-factor=${forcedDeviceScaleFactor}`] : []),
+      ...(process.env.NAVIA_CHROME_MUTE_AUDIO === "0" ? [] : ["--mute-audio"]),
       "--disable-gpu",
       "--no-first-run",
       "--no-default-browser-check",
@@ -238,6 +240,7 @@ export async function launchExtension(profilePath) {
   }
 
   const context = await chromium.launchPersistentContext(profilePath, {
+    ...(fs.existsSync(windowsChrome) ? { executablePath: windowsChrome } : {}),
     headless,
     viewport: { width: 1280, height: 900 },
     ignoreDefaultArgs: ["--disable-extensions"],

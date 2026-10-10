@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "v3-5-4-real-chrome-sanitized/v1",
+  "runId": "v3-5-4-real-20261009T071402Z",
+  "sampleUrl": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+  "passed": true,
+  "checkSummary": { "total": 31, "passed": 31, "failed": 0 },
+  "askResults": [
+    { "kind": "transcript_grounded", "status": "answered", "citationCount": 2, "visibleTextSha256": "ba2359d67697b4382d150ea7d240bba62801d5762a3300b31d0a6eb8b1f0929b" },
+    { "kind": "visual_grounded", "status": "answered", "citationCount": 2, "visibleTextSha256": "69bbfad7bdf86dc72b5ff47bad8eb6d27df9f8bbfdd07ed792d6513c60d04dc4" },
+    { "kind": "insufficient_evidence", "status": "insufficient_evidence", "citationCount": 0, "visibleTextSha256": "afbe6103d7cd36bdc805e5f0541b0677316885f66bad2e5db54c8cf8598269a8" }
+  ],
+  "seekResults": [
+    { "origin": "outline", "outcome": "located", "deltaMs": 0 },
+    { "origin": "timeline", "outcome": "located", "deltaMs": 77 },
+    { "origin": "mindmap", "outcome": "located", "deltaMs": 75 },
+    { "origin": "ask_citation", "outcome": "located", "deltaMs": 80 },
+    { "origin": "evidence_drawer", "outcome": "located", "deltaMs": 100 }
+  ],
+  "exports": [
+    { "format": "json_bundle", "byteLength": 7156, "artifactSha256": "ab0de356f695fd045d7b45e4bcfd3263b3ccbac074f0956716f9a085da97a251", "memberCount": 1 },
+    { "format": "markdown_zip", "byteLength": 3654, "artifactSha256": "3d13ddb017ca3b3ae5556cc4b40a0225704e3f33b410b7b6cb1480ca016ab888", "memberCount": 6 }
+  ],
+  "runtimeArtifactSummary": { "persistentPrivateEvidenceFiles": 4, "persistentPrivateExportFiles": 4, "temporaryMediaFiles": 0, "asrTemporaryFiles": 0 },
+  "secretScan": { "scannedFiles": 108, "scannedBytes": 4024994, "hitCount": 0, "passed": true },
+  "cleanup": { "profileDeleted": true, "secureTaskRootDeleted": true, "noActiveOffscreen": true },
+  "rawResultSha256": "7fb730512f8068903a299f24cf955ee704d5b454b2c6290ecf6339295128400b",
+  "rawSecretScanSha256": "aa46e192c737001ced0b35f1c739df109e5410c573b4815ca7f9c1c72b36e1c3"
+}

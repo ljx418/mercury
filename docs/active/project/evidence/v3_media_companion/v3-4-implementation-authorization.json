@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "v3-4-implementation-authorization/v1",
+  "authorizedBy": "conversation_user",
+  "authorizedAt": "2026-10-08T10:32:03Z",
+  "authorizationTextSha256": "31f3a2e46dae1a680473c295b173c9781d3c502a55af5f05c721157f2a28734e",
+  "scope": {
+    "implementationStages": ["V3-4-0", "V3-4-1", "V3-4-2", "V3-4-3", "V3-4-4", "V3-4-5", "V3-4-6", "V3-4-7"],
+    "portal": "bilibili",
+    "cookieUse": "task_scoped_authenticated_download",
+    "cloudVisionProvider": "minimax-cn-openai-vision",
+    "cloudVisionModel": "MiniMax-M3",
+    "selectedFrameUploadLimit": 8,
+    "allowedCloudPayload": "selected_frame_only",
+    "forbiddenCloudPayloads": ["raw_video", "audio", "full_transcript", "ocr_text"]
+  },
+  "retention": {
+    "temporaryVideo": "delete_after_acceptance_receipt",
+    "temporaryAudio": "delete_after_acceptance_receipt",
+    "candidateFrames": "delete_after_acceptance_receipt",
+    "developmentScreenshots": "delete_after_stage_acceptance",
+    "publicEvidence": "hash_and_typed_receipt_only"
+  },
+  "failurePolicy": "no_seal_and_cleanup"
+}

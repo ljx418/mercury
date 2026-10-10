@@ -13,9 +13,39 @@ import { canSubmitChatInput, shouldSubmitOnKeyDown } from "../../src/chatInputSh
 import { createChatProviderTestCollector, type ChatProviderTestStatus } from "../../src/settingsDiagnostics";
 import { chatStreamOptions, resolveChatProviderDraft } from "../../src/chatProviderSelection";
 import { TurnNavigatorView } from "../../src/TurnNavigatorView";
-import { KnowledgeQuickSurface, type QuickWorkspaceRequest } from "../../src/modules/knowledge_workspace/KnowledgeQuickSurface";
+import type { QuickWorkspaceRequest } from "../../src/modules/knowledge_workspace/KnowledgeQuickSurface";
 import { LocalRuntimeAccess, type LocalRuntimeAccessChange } from "../../src/modules/knowledge_workspace/LocalRuntimeAccess";
-import { SaveToKnowledgeCard } from "../../src/modules/knowledge_workspace/SaveToKnowledgeCard";
+import { KnowledgeDraftCard } from "../../src/modules/knowledge_workspace/KnowledgeDraftCard";
+import { KnowledgeItemsPanel } from "../../src/modules/knowledge_workspace/KnowledgeItemsPanel";
+import { MediaCompanionLaunchCard } from "../../src/modules/media_companion/MediaCompanionLaunchCard";
+import type { MediaCredentialLeaseUiState } from "../../src/modules/media_companion/MediaCredentialLeaseCard";
+import { AsrModelSettingsPanel } from "../../src/modules/media_companion/settings/AsrModelSettingsPanel";
+import { VisionProviderSettingsPanel } from "../../src/modules/media_companion/settings/VisionProviderSettingsPanel";
+import { resolveMediaPortalAdapter } from "../../src/modules/media_companion/MediaPortalRegistry";
+import { MediaCaptureMessageClient, TrustedTabCaptureCard } from "../../src/modules/media_companion/capture";
+import {
+  MediaAcquisitionClient,
+  MediaAcquisitionStatusCard,
+  MediaTranscriptQuickCard,
+  mediaSourceIdentity,
+  useMediaAcquisitionTask,
+  waitForMediaTranscript,
+  createChromeMediaContextCollector,
+  type MediaAcquisitionUiState
+} from "../../src/modules/media_companion/acquisition";
+import {
+  BILIBILI_CONSENT_SCOPE_ITEMS,
+  BILIBILI_SESSION_POLICY_DEFINITION,
+  PortalCredentialChannelClient,
+  PortalCredentialMessageClient,
+  PortalPermissionClient,
+  PortalSessionMessageClient,
+  createBilibiliBrowserSessionRegistry,
+  isPortalCredentialLease,
+  type MediaConsentPolicyRecord,
+  type PortalCredentialLease,
+  type PortalSessionCapability
+} from "../../src/modules/media_companion/session";
 import {
   getHistorySessions,
   getSessionDisplayTitle,
@@ -28,10 +58,19 @@ import {
   checkPiSidecarHealth,
   createKnowledgeStatusPoller,
   askKnowledgeSources,
+  bootstrapMediaCredentialChannel,
+  bootstrapMediaCaptureGrant,
+  createMediaAcquisition,
+  cancelMediaTranscriptProjection,
+  executeMediaAcquisition,
   createChatSession,
   deleteProvider,
   forgetKnowledgeSource,
   getKnowledgeServiceStatus,
+  getMediaCaptureEligibility,
+  materializeMediaOutlineTask,
+  materializeVisualMediaOutlineTask,
+  recordMediaCaptureRouteFailure,
   getKnowledgeGraph,
   getKnowledgeSource,
   getChatSessionMessages,
@@ -43,12 +82,20 @@ import {
   isRuntimeRequestError,
   isStaleRuntimeRequestError,
   listChatSessions,
+  listMediaOutlineTasks,
   listKnowledgeSources,
   listKnowledgeWorkspaces,
   patchSettings,
   revokeKnowledgePermission,
   restoreChatSessionMessages,
   saveCurrentPageToKnowledge,
+  createV3KnowledgeDraft,
+  updateV3KnowledgeDraft,
+  cancelV3KnowledgeDraft,
+  saveV3KnowledgeDraft,
+  listV3KnowledgeItems,
+  updateV3KnowledgeItem,
+  deleteV3KnowledgeItem,
   streamRuntimeChat,
   submitRuntimePageContext,
   testProvider,
@@ -66,12 +113,41 @@ import {
   type ForgetSourceResult,
   type LLMProviderConfig,
   type MercurySettings,
+  type MediaAcquisitionInput,
+  type MediaOutlineTask,
   type PiSidecarHealth,
   type ProviderTestResult,
-  type RuntimeStatus
+  type RuntimeStatus,
+  type V3KnowledgeDraft,
+  type V3KnowledgeItem
 } from "../../src/runtimeClient";
 
 declare const __NAVIA_E2E_BRIDGE__: boolean;
+const showDevelopmentNavigation = import.meta.env.DEV;
+
+const mediaSessionRegistry = createBilibiliBrowserSessionRegistry();
+const mediaPermissionClient = new PortalPermissionClient({
+  registry: mediaSessionRegistry,
+  permissionsApi: chrome.permissions
+});
+const mediaSessionMessageClient = new PortalSessionMessageClient({
+  sendMessage: (message) => chrome.runtime.sendMessage(message)
+});
+const mediaCredentialMessageClient = new PortalCredentialMessageClient({
+  sendMessage: (message) => chrome.runtime.sendMessage(message)
+});
+const mediaCredentialChannelClient = new PortalCredentialChannelClient({
+  runtime: { createChannel: bootstrapMediaCredentialChannel },
+  messages: mediaCredentialMessageClient
+});
+const mediaCaptureMessageClient = new MediaCaptureMessageClient((message) => chrome.runtime.sendMessage(message));
+const collectCurrentMediaContext = createChromeMediaContextCollector();
+const mediaAcquisitionClient = new MediaAcquisitionClient({
+  collectCurrentContext: collectCurrentMediaContext,
+  create: createMediaAcquisition,
+  execute: executeMediaAcquisition,
+  recordPublicSubtitleFailure: recordMediaCaptureRouteFailure
+});
 
 type SideView = "chat" | "knowledge" | "agent" | "debug" | "settings";
 type ModeState = "chat" | "agent_checking" | "agent_ready" | "agent_unavailable";
@@ -112,6 +188,78 @@ function App() {
   const [sessionSwitchError, setSessionSwitchError] = useState<string | null>(null);
   const [pageContext, setPageContext] = useState<ExtractedPageContext | null>(null);
   const [pageContextState, setPageContextState] = useState<PageContextState>("unknown");
+  const [mediaSessionAdapterId, setMediaSessionAdapterId] = useState<string | null>(null);
+  const [mediaConsentPolicy, setMediaConsentPolicy] = useState<MediaConsentPolicyRecord | null>(null);
+  const [mediaSessionCapability, setMediaSessionCapability] = useState<PortalSessionCapability | null>(null);
+  const [mediaSessionBusy, setMediaSessionBusy] = useState(false);
+  const [mediaSessionError, setMediaSessionError] = useState<string | null>(null);
+  const [mediaRuntimeConnected, setMediaRuntimeConnected] = useState(false);
+  const [mediaRuntimeStatus, setMediaRuntimeStatus] = useState<LocalRuntimeAccessChange["status"]>("connecting");
+  const [mediaRuntimeError, setMediaRuntimeError] = useState<string | null>(null);
+  const [mediaRuntimeRetrySignal, setMediaRuntimeRetrySignal] = useState(0);
+  const [mediaCredentialState, setMediaCredentialState] = useState<MediaCredentialLeaseUiState>("idle");
+  const [mediaCredentialLease, setMediaCredentialLease] = useState<PortalCredentialLease | null>(null);
+  const [mediaCredentialError, setMediaCredentialError] = useState<string | null>(null);
+  const [mediaCaptureEligibility, setMediaCaptureEligibility] = useState<Awaited<ReturnType<typeof getMediaCaptureEligibility>> | null>(null);
+  const [mediaCaptureState, setMediaCaptureState] = useState<"awaiting_user" | "starting" | "capturing" | "stopping" | "transcribing" | "succeeded" | "failed">("awaiting_user");
+  const [mediaCaptureError, setMediaCaptureError] = useState<string | null>(null);
+  const [mediaAcquisitionState, setMediaAcquisitionState] = useState<MediaAcquisitionUiState>("idle");
+  const [mediaAcquisitionInput, setMediaAcquisitionInput] = useState<MediaAcquisitionInput | null>(null);
+  const [mediaAcquisitionFailure, setMediaAcquisitionFailure] = useState<string | null>(null);
+  const [mediaAcquisitionSourceIdentity, setMediaAcquisitionSourceIdentity] = useState<string | null>(null);
+  const [restoredMediaTaskId, setRestoredMediaTaskId] = useState<string | null>(null);
+  const [mediaResumeChecked, setMediaResumeChecked] = useState(false);
+  const [mediaTaskActionState, setMediaTaskActionState] = useState<"cancelling" | "retrying" | null>(null);
+  const [mediaOutlineTask, setMediaOutlineTask] = useState<MediaOutlineTask | null>(null);
+  const [mediaOutlineState, setMediaOutlineState] = useState<"idle" | "materializing" | "ready" | "failed">("idle");
+  const [mediaOutlineError, setMediaOutlineError] = useState<string | null>(null);
+  const mediaTaskAuthority = useMediaAcquisitionTask({
+    taskId: mediaCredentialLease?.taskId ?? restoredMediaTaskId,
+    sourceIdentity: mediaAcquisitionSourceIdentity
+  });
+
+  const materializeCurrentMediaTask = useCallback(async (taskId: string) => {
+    setMediaOutlineState("materializing");
+    setMediaOutlineError(null);
+    let visualLease: PortalCredentialLease | null = null;
+    try {
+      const result = await mediaCredentialChannelClient.establish({
+        taskId,
+        adapterId: BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
+        policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+        policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
+        credentialNameSetSha256: BILIBILI_SESSION_POLICY_DEFINITION.credentialNameSetSha256
+      });
+      if (!result.ok || !isPortalCredentialLease(result.value)) {
+        throw new Error(result.ok ? "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED" : result.failureCode);
+      }
+      visualLease = result.value;
+      const task = await materializeVisualMediaOutlineTask(taskId, visualLease.leaseId);
+      setMediaOutlineTask(task);
+      setRestoredMediaTaskId(task.taskId);
+      setMediaOutlineState("ready");
+    } catch (error) {
+      const visualFailure = error instanceof Error ? error.message : "V3_MEDIA_VISUAL_MATERIALIZE_FAILED";
+      try {
+        const degraded = await materializeMediaOutlineTask(taskId);
+        setMediaOutlineTask(degraded);
+        setMediaOutlineState("ready");
+        setMediaOutlineError(visualFailure);
+      } catch (fallbackError) {
+        setMediaOutlineTask(null);
+        setMediaOutlineState("failed");
+        setMediaOutlineError(fallbackError instanceof Error ? fallbackError.message : visualFailure);
+      }
+    } finally {
+      if (visualLease) await mediaCredentialMessageClient.revokeLease(visualLease.leaseId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const projection = mediaTaskAuthority.projection;
+    if (projection?.state !== "succeeded" || mediaOutlineTask?.taskId === projection.taskId || mediaOutlineState === "materializing") return;
+    void materializeCurrentMediaTask(projection.taskId);
+  }, [mediaTaskAuthority.projection?.taskId, mediaTaskAuthority.projection?.state, mediaOutlineState, mediaOutlineTask?.taskId, materializeCurrentMediaTask]);
   const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeServiceStatus | null>(null);
   const [knowledgeStatusLoading, setKnowledgeStatusLoading] = useState(false);
   const [knowledgeStatusError, setKnowledgeStatusError] = useState<string | null>(null);
@@ -136,6 +284,12 @@ function App() {
   const [governanceLoading, setGovernanceLoading] = useState(false);
   const [governanceError, setGovernanceError] = useState<string | null>(null);
   const [forgetResult, setForgetResult] = useState<ForgetSourceResult | null>(null);
+  const [v3KnowledgeDraft, setV3KnowledgeDraft] = useState<V3KnowledgeDraft | null>(null);
+  const [v3KnowledgeItems, setV3KnowledgeItems] = useState<V3KnowledgeItem[]>([]);
+  const [selectedV3KnowledgeItem, setSelectedV3KnowledgeItem] = useState<V3KnowledgeItem | null>(null);
+  const [v3KnowledgeSort, setV3KnowledgeSort] = useState("updated_desc");
+  const [v3KnowledgeBusy, setV3KnowledgeBusy] = useState(false);
+  const [v3KnowledgeError, setV3KnowledgeError] = useState<string | null>(null);
   const [chatTurnState, setChatTurnState] = useState<ChatTurnState>("idle");
   const [pageSubmitted, setPageSubmitted] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<string>("未提交页面上下文");
@@ -145,6 +299,7 @@ function App() {
   const [settingsStatus, setSettingsStatus] = useState<"idle" | "loading" | "saving" | "testing" | "error">("idle");
   const [settingsMessage, setSettingsMessage] = useState("尚未加载设置。");
   const [settingsDiagnosticEvent, setSettingsDiagnosticEvent] = useState<AgentEvent | null>(null);
+  const [settingsSection, setSettingsSection] = useState<"chat" | "media">("chat");
   const [sidecarHealth, setSidecarHealth] = useState<PiSidecarHealth | null>(null);
   const [providerTestResult, setProviderTestResult] = useState<ProviderTestResult | null>(null);
   const [providerDraft, setProviderDraft] = useState({
@@ -173,6 +328,7 @@ function App() {
   const overflowRafRef = useRef<number | null>(null);
   const overflowDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mediaAutoStartAttemptedRef = useRef(false);
   const e2eStateRef = useRef<Record<string, unknown>>({});
   const e2eHandlersRef = useRef<E2EHandlers>({});
   const canChat = runtimeStatus === "online" && streamStatus !== "streaming";
@@ -186,6 +342,7 @@ function App() {
   const messageGroups = useMemo(() => groupMessagesByTurn(chatView.messages), [chatView.messages]);
 
   function normalizeView(value: string | null | undefined): SideView {
+    if ((value === "agent" || value === "debug") && !showDevelopmentNavigation) return "chat";
     if (value === "agent" || value === "debug" || value === "settings" || value === "chat" || value === "knowledge") return value;
     return "chat";
   }
@@ -222,6 +379,316 @@ function App() {
       setRuntimeStatus("online");
       void refreshKnowledgeStatus();
       void refreshKnowledgeWorkspace();
+    }
+  }
+
+  function handleMediaRuntimeAccessChange(change: LocalRuntimeAccessChange) {
+    setMediaRuntimeConnected(change.status === "connected");
+    setMediaRuntimeStatus(change.status);
+    setMediaRuntimeError(change.error ?? null);
+    if (change.status !== "connected") {
+      setMediaCredentialState("idle");
+      setMediaCredentialLease(null);
+      setMediaCredentialError(null);
+      setMediaAcquisitionState("idle");
+      setMediaAcquisitionInput(null);
+      setMediaAcquisitionFailure(null);
+      setMediaCaptureEligibility(null);
+    }
+  }
+
+  async function refreshMediaSession(adapterId = mediaSessionAdapterId) {
+    if (!adapterId) return;
+    setMediaSessionBusy(true);
+    setMediaSessionError(null);
+    try {
+      const policyResponse = await mediaSessionMessageClient.getPolicy(adapterId);
+      if (!policyResponse.ok) throw new Error(policyResponse.failureCode);
+      setMediaConsentPolicy(policyResponse.value);
+      if (policyResponse.value.status !== "granted") {
+        setMediaSessionCapability(null);
+        setMediaCredentialState("idle");
+        setMediaCredentialLease(null);
+        setMediaCredentialError(null);
+        setMediaAcquisitionState("idle");
+        setMediaAcquisitionInput(null);
+        setMediaAcquisitionFailure(null);
+        setMediaCaptureEligibility(null);
+        return;
+      }
+      const capabilityResponse = await mediaSessionMessageClient.inspectCapability(
+        adapterId,
+        policyResponse.value.policyRevision
+      );
+      if (!capabilityResponse.ok) throw new Error(capabilityResponse.failureCode);
+      if (!capabilityResponse.value.ok) throw new Error(capabilityResponse.value.failureCode);
+      setMediaSessionCapability(capabilityResponse.value.capability);
+    } catch (error) {
+      setMediaSessionCapability(null);
+      setMediaSessionError(error instanceof Error ? error.message : "会话候选检查失败");
+    } finally {
+      setMediaSessionBusy(false);
+    }
+  }
+
+  function authorizeMediaSession() {
+    if (!mediaSessionAdapterId || mediaSessionBusy) return;
+    mediaAutoStartAttemptedRef.current = false;
+    const adapterId = mediaSessionAdapterId;
+    const permissionRequest = mediaPermissionClient.request(adapterId);
+    setMediaSessionBusy(true);
+    setMediaSessionError(null);
+    void permissionRequest
+      .then(async (permissionState) => {
+        const response = permissionState.namedPermissionGranted && permissionState.hostPermissionGranted
+          ? await mediaSessionMessageClient.recordGrant(adapterId)
+          : await mediaSessionMessageClient.recordDenial(adapterId);
+        if (!response.ok) throw new Error(response.failureCode);
+        setMediaConsentPolicy(response.value);
+        await refreshMediaSession(adapterId);
+      })
+      .catch((error) => {
+        setMediaSessionError(error instanceof Error ? error.message : "浏览器权限请求失败");
+      })
+      .finally(() => setMediaSessionBusy(false));
+  }
+
+  async function denyMediaSession() {
+    if (!mediaSessionAdapterId || mediaSessionBusy) return;
+    setMediaSessionBusy(true);
+    setMediaSessionError(null);
+    try {
+      const response = await mediaSessionMessageClient.recordDenial(mediaSessionAdapterId);
+      if (!response.ok) throw new Error(response.failureCode);
+      setMediaConsentPolicy(response.value);
+      setMediaSessionCapability(null);
+      setMediaCredentialState("idle");
+      setMediaCredentialLease(null);
+      setMediaCredentialError(null);
+      setMediaAcquisitionState("idle");
+      setMediaAcquisitionInput(null);
+      setMediaAcquisitionFailure(null);
+      setMediaCaptureEligibility(null);
+    } catch (error) {
+      setMediaSessionError(error instanceof Error ? error.message : "无法保存授权决定");
+    } finally {
+      setMediaSessionBusy(false);
+    }
+  }
+
+  async function revokeMediaSession() {
+    if (!mediaSessionAdapterId || mediaSessionBusy) return;
+    setMediaSessionBusy(true);
+    setMediaSessionError(null);
+    try {
+      const response = await mediaSessionMessageClient.revokePolicy(mediaSessionAdapterId);
+      if (!response.ok) throw new Error(response.failureCode);
+      setMediaConsentPolicy(response.value);
+      setMediaSessionCapability(null);
+      setMediaCredentialState("idle");
+      setMediaCredentialLease(null);
+      setMediaCredentialError(null);
+      setMediaAcquisitionState("idle");
+      setMediaAcquisitionInput(null);
+      setMediaAcquisitionFailure(null);
+      setMediaCaptureEligibility(null);
+      mediaAutoStartAttemptedRef.current = false;
+    } catch (error) {
+      setMediaSessionError(error instanceof Error ? error.message : "撤销授权失败");
+    } finally {
+      setMediaSessionBusy(false);
+    }
+  }
+
+  async function establishMediaCredentialLease() {
+    if (
+      mediaSessionAdapterId !== BILIBILI_SESSION_POLICY_DEFINITION.adapterId
+      || mediaConsentPolicy?.status !== "granted"
+      || mediaSessionCapability?.status !== "available"
+      || !mediaRuntimeConnected
+      || mediaCredentialState === "establishing"
+    ) return;
+    setMediaCredentialState("establishing");
+    setMediaCredentialLease(null);
+    setMediaCredentialError(null);
+    try {
+      const policyResponse = await mediaSessionMessageClient.getPolicy(BILIBILI_SESSION_POLICY_DEFINITION.adapterId);
+      if (!policyResponse.ok || policyResponse.value.status !== "granted") {
+        if (policyResponse.ok) setMediaConsentPolicy(policyResponse.value);
+        throw new Error("V3_MEDIA_POLICY_NOT_GRANTED");
+      }
+      const capabilityResponse = await mediaSessionMessageClient.inspectCapability(
+        BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
+        policyResponse.value.policyRevision
+      );
+      if (!capabilityResponse.ok || !capabilityResponse.value.ok || capabilityResponse.value.capability.status !== "available") {
+        throw new Error(capabilityResponse.ok && !capabilityResponse.value.ok
+          ? capabilityResponse.value.failureCode
+          : "V3_MEDIA_SESSION_PERMISSION_REQUIRED");
+      }
+      setMediaConsentPolicy(policyResponse.value);
+      setMediaSessionCapability(capabilityResponse.value.capability);
+      const result = await mediaCredentialChannelClient.establish({
+        taskId: `media_task_${crypto.randomUUID().replace(/-/g, "")}`,
+        adapterId: BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
+        policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+        policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
+        credentialNameSetSha256: BILIBILI_SESSION_POLICY_DEFINITION.credentialNameSetSha256
+      });
+      if (!result.ok) throw new Error(result.failureCode);
+      if (!isPortalCredentialLease(result.value)) throw new Error("V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED");
+      setMediaCredentialLease(result.value);
+      setRestoredMediaTaskId(null);
+      setMediaOutlineTask(null);
+      setMediaOutlineState("idle");
+      setMediaOutlineError(null);
+      setMediaCredentialState("ready");
+      setMediaCaptureEligibility(null);
+      setMediaAcquisitionState("starting");
+      try {
+        const acquisition = await mediaAcquisitionClient.start(result.value, {
+          policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+          policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
+        });
+        setMediaAcquisitionInput(acquisition.execution.input);
+        setMediaAcquisitionSourceIdentity(mediaSourceIdentity(acquisition.context));
+        setMediaAcquisitionFailure(acquisition.failureCode);
+        setMediaAcquisitionState(acquisition.status);
+        setMediaCaptureEligibility(acquisition.eligibility);
+        if (acquisition.execution.transcript) void monitorMediaTranscript(acquisition.execution.transcript.taskId);
+      } catch (error) {
+        setMediaAcquisitionState("failed");
+        setMediaAcquisitionFailure(isRuntimeRequestError(error)
+          ? error.code ?? error.message
+          : error instanceof Error ? error.message : "V3_MEDIA_TASK_INVALID");
+      }
+    } catch (error) {
+      setMediaCredentialState("failed");
+      setMediaCredentialError(error instanceof Error ? error.message : "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED");
+    }
+  }
+
+  function retryAutomaticMediaFlow() {
+    mediaAutoStartAttemptedRef.current = false;
+    setMediaCredentialState("idle");
+    setMediaCredentialLease(null);
+    setMediaCredentialError(null);
+    setMediaAcquisitionState("idle");
+    setMediaAcquisitionInput(null);
+    setMediaAcquisitionFailure(null);
+    setMediaRuntimeRetrySignal((value) => value + 1);
+    void refreshMediaSession();
+  }
+
+  async function monitorMediaTranscript(taskId: string) {
+    setMediaAcquisitionState("transcribing");
+    try {
+      const task = await waitForMediaTranscript(taskId);
+      if (task.state !== "succeeded") throw new Error(task.result?.failureCode ?? "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED");
+      setMediaAcquisitionState("succeeded");
+      setMediaCaptureState("succeeded");
+    } catch (error) {
+      setMediaAcquisitionState("failed");
+      setMediaCaptureState("failed");
+      setMediaAcquisitionFailure(error instanceof Error ? error.message : "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED");
+    }
+  }
+
+  async function refreshMediaCaptureEligibility(taskId = mediaCredentialLease?.taskId) {
+    if (!taskId || !mediaRuntimeConnected) return;
+    try {
+      setMediaCaptureEligibility(await getMediaCaptureEligibility(taskId));
+    } catch {
+      setMediaCaptureEligibility(null);
+    }
+  }
+
+  async function startTrustedTabCapture(event: React.MouseEvent<HTMLButtonElement>) {
+    const trustedClick = event.nativeEvent.isTrusted;
+    const userActivation = navigator.userActivation?.isActive === true;
+    if (!trustedClick || !userActivation || !mediaCaptureEligibility?.captureFallbackEligible || !mediaCredentialLease) {
+      setMediaCaptureState("failed");
+      setMediaCaptureError("V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN");
+      return;
+    }
+    setMediaCaptureState("starting");
+    setMediaCaptureError(null);
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (typeof tab?.id !== "number" || !tab.url?.startsWith("https://www.bilibili.com/video/")) throw new Error("V3_MEDIA_CAPTURE_TAB_INVALID");
+      const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))))
+        .map((byte) => byte.toString(16).padStart(2, "0")).join("");
+      const grant = await bootstrapMediaCaptureGrant({
+        taskId: mediaCredentialLease.taskId,
+        adapterId: mediaCredentialLease.adapterId,
+        pageIdentitySha256: await hash(tab.url),
+        tabId: tab.id,
+        tabIdSha256: await hash(String(tab.id)),
+        surface: "side_panel"
+      });
+      const response = await mediaCaptureMessageClient.start({
+        trustedClick,
+        userActivation,
+        grant: grant.grant,
+        ticket: grant.ticket,
+        sourceIdentity: mediaAcquisitionSourceIdentity ?? `portal:${mediaCredentialLease.adapterId}:current:current:current`,
+        acquisitionRecordId: `mar_${crypto.randomUUID().replace(/-/g, "")}`
+      });
+      if (!response.ok) throw new Error(response.failureCode);
+      setMediaCaptureState("capturing");
+    } catch (error) {
+      setMediaCaptureState("failed");
+      setMediaCaptureError(error instanceof Error ? error.message : "V3_MEDIA_CAPTURE_START_FAILED");
+    }
+  }
+
+  async function stopTrustedTabCapture(reason: "completed" | "cancelled") {
+    setMediaCaptureState("stopping");
+    const response = await mediaCaptureMessageClient.stop(reason);
+    if (!response.ok) {
+      setMediaCaptureState("failed");
+      setMediaCaptureError(response.failureCode);
+      return false;
+    }
+    if (response.state === "transcribing") {
+      setMediaCaptureState("transcribing");
+      void monitorMediaTranscript(response.transcript.taskId);
+    } else {
+      setMediaCaptureState("awaiting_user");
+    }
+    return true;
+  }
+
+  async function cancelCurrentMediaTask() {
+    const projection = mediaTaskAuthority.projection;
+    if (!projection || mediaTaskActionState) return;
+    const startedAt = Date.now();
+    setMediaTaskActionState("cancelling");
+    setMediaCaptureError(null);
+    try {
+      if (projection.state === "capturing" && !(await stopTrustedTabCapture("cancelled"))) return;
+      await cancelMediaTranscriptProjection(projection.taskId);
+      setMediaCaptureState("awaiting_user");
+    } catch (error) {
+      setMediaCaptureError(error instanceof Error ? error.message : "V3_MEDIA_TASK_CANCEL_FAILED");
+    } finally {
+      const remaining = 600 - (Date.now() - startedAt);
+      if (remaining > 0) await new Promise((resolve) => setTimeout(resolve, remaining));
+      setMediaTaskActionState(null);
+    }
+  }
+
+  async function retryCurrentMediaTask() {
+    if (mediaTaskActionState) return;
+    setMediaTaskActionState("retrying");
+    setMediaCaptureError(null);
+    setMediaAcquisitionFailure(null);
+    setMediaCaptureEligibility(null);
+    setMediaCaptureState("awaiting_user");
+    try {
+      await establishMediaCredentialLease();
+    } finally {
+      setMediaTaskActionState(null);
     }
   }
 
@@ -282,6 +749,111 @@ function App() {
       setKnowledgeSaveError(error instanceof Error ? error.message : "保存到知识库失败。");
     } finally {
       setKnowledgeSaving(false);
+    }
+  }
+
+  async function createKnowledgeDraftFromPage() {
+    if (!pageContext || runtimeStatus !== "online") {
+      setV3KnowledgeError(pageContext ? "请先启动本机 Runtime。" : "请先读取当前页面。");
+      return;
+    }
+    setV3KnowledgeBusy(true);
+    setV3KnowledgeError(null);
+    try {
+      setV3KnowledgeDraft(await createV3KnowledgeDraft(pageContext));
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "知识草稿创建失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function persistKnowledgeDraft() {
+    if (!v3KnowledgeDraft) return;
+    setV3KnowledgeBusy(true);
+    setV3KnowledgeError(null);
+    try {
+      setV3KnowledgeDraft(await updateV3KnowledgeDraft(v3KnowledgeDraft));
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "知识草稿更新失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function cancelKnowledgeDraft() {
+    if (!v3KnowledgeDraft) return;
+    setV3KnowledgeBusy(true);
+    try {
+      setV3KnowledgeDraft(await cancelV3KnowledgeDraft(v3KnowledgeDraft.draftId));
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "知识草稿取消失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function confirmKnowledgeDraft() {
+    if (!v3KnowledgeDraft) return;
+    setV3KnowledgeBusy(true);
+    setV3KnowledgeError(null);
+    try {
+      const updated = await updateV3KnowledgeDraft(v3KnowledgeDraft);
+      const result = await saveV3KnowledgeDraft(updated.draftId);
+      setV3KnowledgeDraft(result.draft);
+      await refreshV3KnowledgeItems(v3KnowledgeSort, result.item.itemId);
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "保存到 Know 失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function refreshV3KnowledgeItems(sort = v3KnowledgeSort, preferredItemId?: string) {
+    if (runtimeStatus !== "online") {
+      setV3KnowledgeItems([]);
+      setSelectedV3KnowledgeItem(null);
+      setV3KnowledgeError("请先启动本机 Runtime。");
+      return;
+    }
+    setV3KnowledgeBusy(true);
+    setV3KnowledgeError(null);
+    try {
+      const items = await listV3KnowledgeItems(sort);
+      setV3KnowledgeItems(items);
+      setV3KnowledgeSort(sort);
+      setSelectedV3KnowledgeItem(items.find((item) => item.itemId === (preferredItemId ?? selectedV3KnowledgeItem?.itemId)) ?? items[0] ?? null);
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "Know 加载失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function persistV3KnowledgeItem() {
+    if (!selectedV3KnowledgeItem) return;
+    setV3KnowledgeBusy(true);
+    try {
+      const item = await updateV3KnowledgeItem(selectedV3KnowledgeItem);
+      setSelectedV3KnowledgeItem(item);
+      await refreshV3KnowledgeItems(v3KnowledgeSort, item.itemId);
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "知识条目保存失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
+    }
+  }
+
+  async function removeV3KnowledgeItem() {
+    if (!selectedV3KnowledgeItem || !window.confirm("仅删除本机 Know 中的这个条目？此操作不是 Durable Forget。")) return;
+    setV3KnowledgeBusy(true);
+    try {
+      await deleteV3KnowledgeItem(selectedV3KnowledgeItem.itemId);
+      await refreshV3KnowledgeItems(v3KnowledgeSort);
+    } catch (error) {
+      setV3KnowledgeError(error instanceof Error ? error.message : "知识条目删除失败。");
+    } finally {
+      setV3KnowledgeBusy(false);
     }
   }
 
@@ -1055,6 +1627,39 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    setMediaResumeChecked(false);
+    if (mediaRuntimeConnected && mediaSessionAdapterId) {
+      void collectCurrentMediaContext().then(async (context) => {
+        const sourceIdentity = mediaSourceIdentity(context);
+        if (!active) return;
+        setMediaAcquisitionSourceIdentity(sourceIdentity);
+        const tasks = await listMediaOutlineTasks();
+        if (!active) return;
+        const restored = tasks.find((task) => task.sourceIdentity === sourceIdentity && ["ready", "degraded"].includes(task.state)) ?? null;
+        if (restored) {
+          setRestoredMediaTaskId(restored.taskId);
+          setMediaOutlineTask(restored);
+          setMediaOutlineState("ready");
+          mediaAutoStartAttemptedRef.current = true;
+        } else {
+          setRestoredMediaTaskId(null);
+          mediaAutoStartAttemptedRef.current = false;
+        }
+        setMediaResumeChecked(true);
+      }).catch(() => {
+        if (active) {
+          setMediaAcquisitionSourceIdentity(null);
+          setMediaResumeChecked(true);
+        }
+      });
+    } else {
+      setMediaResumeChecked(true);
+    }
+    return () => { active = false; };
+  }, [mediaRuntimeConnected, mediaSessionAdapterId]);
+
   async function executeE2ECommand(command: unknown): Promise<Record<string, unknown>> {
     if (!isE2ECommand(command)) throw new Error("Invalid E2E command.");
     const handlers = e2eHandlersRef.current;
@@ -1128,6 +1733,65 @@ function App() {
     checkRuntime();
     void loadSettings();
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    let syncRevision = 0;
+    const syncActiveMediaAdapter = async () => {
+      const revision = ++syncRevision;
+      const url = await getActiveTabUrl();
+      if (!active || revision !== syncRevision) return;
+      if (!url) {
+        setMediaSessionAdapterId(null);
+        setMediaAcquisitionSourceIdentity(null);
+        setMediaResumeChecked(true);
+        return;
+      }
+      const pageAdapter = resolveMediaPortalAdapter(url);
+      const sessionAdapter = pageAdapter ? mediaSessionRegistry.resolve(pageAdapter.adapterId) : null;
+      if (!sessionAdapter) {
+        setMediaSessionAdapterId(null);
+        setMediaAcquisitionSourceIdentity(null);
+        setMediaResumeChecked(true);
+        return;
+      }
+      setMediaSessionAdapterId(sessionAdapter.definition.adapterId);
+      await refreshMediaSession(sessionAdapter.definition.adapterId);
+    };
+    const onTabUpdated: Parameters<typeof chrome.tabs.onUpdated.addListener>[0] = (_tabId, change) => {
+      if (change.url || change.status === "complete") void syncActiveMediaAdapter();
+    };
+    const onTabActivated = () => { void syncActiveMediaAdapter(); };
+    chrome.tabs.onUpdated.addListener(onTabUpdated);
+    chrome.tabs.onActivated.addListener(onTabActivated);
+    void syncActiveMediaAdapter();
+    return () => {
+      active = false;
+      chrome.tabs.onUpdated.removeListener(onTabUpdated);
+      chrome.tabs.onActivated.removeListener(onTabActivated);
+    };
+  }, []);
+
+  useEffect(() => {
+    const ready = mediaSessionAdapterId === BILIBILI_SESSION_POLICY_DEFINITION.adapterId
+      && mediaConsentPolicy?.status === "granted"
+      && mediaSessionCapability?.status === "available"
+      && mediaRuntimeConnected
+      && mediaResumeChecked
+      && mediaCredentialState === "idle"
+      && mediaAcquisitionState === "idle";
+    if (!ready || mediaAutoStartAttemptedRef.current) return;
+    mediaAutoStartAttemptedRef.current = true;
+    void establishMediaCredentialLease();
+  }, [
+    mediaSessionAdapterId,
+    mediaConsentPolicy?.status,
+    mediaSessionCapability?.status,
+    mediaRuntimeConnected,
+    mediaResumeChecked,
+    mediaCredentialState,
+    mediaAcquisitionState
+  ]);
 
   useEffect(() => {
     const poller = createKnowledgeStatusPoller({
@@ -1238,7 +1902,7 @@ function App() {
 
   useEffect(() => {
     if (runtimeStatus !== "online" || activeView !== "knowledge") return;
-    void refreshKnowledgeWorkspace();
+    void refreshV3KnowledgeItems();
   }, [activeView, runtimeStatus]);
 
   return (
@@ -1304,7 +1968,7 @@ function App() {
         ) : null}
 
         {activeView === "chat" ? (
-          <section className="chat-stage">
+          <section className="chat-stage" data-testid="chat-scroll-panel" tabIndex={0}>
             <section className="current-page-card" data-testid="current-page-context-card" aria-label="Current page context">
               <div className="current-page-copy">
                 <span className="current-page-kicker">当前上下文</span>
@@ -1316,18 +1980,69 @@ function App() {
                 <span>{pageContext?.domain ?? "host page"}</span>
               </div>
             </section>
-            <SaveToKnowledgeCard
-              runtimeStatus={runtimeStatus}
-              pageContext={pageContext}
-              serviceStatus={knowledgeStatus}
-              serviceLoading={knowledgeStatusLoading}
-              serviceError={knowledgeStatusError}
-              source={knowledgeSource}
-              operation={knowledgeOperation}
-              saving={knowledgeSaving}
-              saveError={knowledgeSaveError}
-              onRefreshStatus={() => void refreshKnowledgeStatus()}
-              onSave={() => void saveCurrentPageToKnowledgeBase()}
+            {mediaSessionAdapterId ? (
+              <>
+                <MediaCompanionLaunchCard
+                  portalLabel={mediaSessionAdapterId === "bilibili" ? "B站" : mediaSessionAdapterId}
+                  policy={mediaConsentPolicy}
+                  capability={mediaSessionCapability}
+                  scopes={mediaSessionAdapterId === "bilibili" ? BILIBILI_CONSENT_SCOPE_ITEMS : []}
+                  sessionBusy={mediaSessionBusy}
+                  sessionError={mediaSessionError}
+                  runtimeStatus={mediaRuntimeStatus}
+                  runtimeError={mediaRuntimeError}
+                  credentialState={mediaCredentialState}
+                  credentialError={mediaCredentialError}
+                  acquisitionState={mediaAcquisitionState}
+                  acquisitionError={mediaAcquisitionFailure ?? mediaTaskAuthority.error}
+                  onEnable={authorizeMediaSession}
+                  onRetry={retryAutomaticMediaFlow}
+                  onRevoke={() => void revokeMediaSession()}
+                />
+                <LocalRuntimeAccess
+                  title="本机 Runtime 安全会话"
+                  mode="automatic"
+                  retrySignal={mediaRuntimeRetrySignal}
+                  onChange={handleMediaRuntimeAccessChange}
+                />
+                {mediaTaskAuthority.projection ? <MediaTranscriptQuickCard
+                  projection={mediaTaskAuthority.projection}
+                  outlineTask={mediaOutlineTask}
+                  outlineState={mediaOutlineState}
+                  outlineError={mediaOutlineError}
+                  actionState={mediaTaskActionState}
+                  credentialBinding={mediaCredentialLease ? `${mediaCredentialLease.leaseId}:${mediaCredentialLease.envelopeId}` : undefined}
+                  onOpenWorkspace={() => void chrome.tabs.create({
+                    url: chrome.runtime.getURL(`workspace.html#/media/tasks/${mediaTaskAuthority.projection!.taskId}`)
+                  })}
+                  onRetryOutline={() => void materializeCurrentMediaTask(mediaTaskAuthority.projection!.taskId)}
+                  onCancel={() => void cancelCurrentMediaTask()}
+                  onRetry={() => void retryCurrentMediaTask()}
+                /> : <MediaAcquisitionStatusCard
+                  state={mediaAcquisitionState}
+                  input={mediaAcquisitionInput}
+                  failureCode={mediaAcquisitionFailure ?? mediaTaskAuthority.error}
+                />}
+                {mediaCaptureEligibility?.captureFallbackEligible ? <TrustedTabCaptureCard
+                  failures={mediaCaptureEligibility.failures}
+                  state={mediaCaptureState}
+                  error={mediaCaptureError}
+                  onStart={(event) => void startTrustedTabCapture(event)}
+                  onFinish={() => void stopTrustedTabCapture("completed")}
+                  onCancel={() => void cancelCurrentMediaTask()}
+                /> : null}
+              </>
+            ) : null}
+            <KnowledgeDraftCard
+              draft={v3KnowledgeDraft}
+              busy={v3KnowledgeBusy}
+              error={v3KnowledgeError}
+              canCreate={runtimeStatus === "online" && Boolean(pageContext)}
+              onCreate={() => void createKnowledgeDraftFromPage()}
+              onChange={setV3KnowledgeDraft}
+              onSaveEdits={() => void persistKnowledgeDraft()}
+              onCancel={() => void cancelKnowledgeDraft()}
+              onConfirm={() => void confirmKnowledgeDraft()}
             />
             <div className="messages-frame">
               <div className="messages" aria-live="polite" ref={messagesRef}>
@@ -1358,7 +2073,12 @@ function App() {
             </div>
 
             <div className="composer-stack">
-              <div className="toolbar panel-strip pill-strip" data-testid="native-action-strip" aria-label="Navia quick actions">
+              <div
+                className="toolbar panel-strip pill-strip"
+                data-testid="native-action-strip"
+                aria-label="Navia quick actions"
+                tabIndex={0}
+              >
                 <button data-testid="read-current-page" disabled={runtimeStatus !== "online"} onClick={captureCurrentPage} type="button">读取当前页面</button>
                 <button data-testid="submit-page-context" disabled={runtimeStatus !== "online"} onClick={submitPageContext} type="button">提交上下文</button>
                 <button data-testid="summarize-page" disabled={!canStartChatAction} onClick={() => sendChat("总结当前页面", "summarize_page")} type="button">总结</button>
@@ -1432,30 +2152,24 @@ function App() {
         ) : null}
 
         {activeView === "knowledge" ? (
-          <><LocalRuntimeAccess workspaceId={selectedKnowledgeWorkspaceId} onChange={handleKnowledgeRuntimeAccessChange} />
-          <KnowledgeQuickSurface
-            runtimeStatus={runtimeStatus}
-            pageContext={pageContext}
-            serviceStatus={knowledgeStatus}
-            serviceLoading={knowledgeStatusLoading}
-            serviceError={knowledgeStatusError}
-            currentPageSource={knowledgeSource}
-            selectedSource={selectedKnowledgeSource}
-            operation={knowledgeOperation}
-            saving={knowledgeSaving}
-            saveError={knowledgeSaveError}
-            workspaces={knowledgeWorkspaces}
-            selectedWorkspaceId={selectedKnowledgeWorkspaceId}
-            sourcesLoading={knowledgeWorkspaceLoading}
-            sourcesError={knowledgeWorkspaceError}
-            workspaceActionError={knowledgeWorkspaceError}
-            onRefreshStatus={() => void refreshKnowledgeStatus()}
-            onRefreshSources={() => void refreshKnowledgeWorkspace()}
-            onSave={() => void saveCurrentPageToKnowledgeBase()}
-            onSelectWorkspace={(workspaceId) => void selectKnowledgeWorkspace(workspaceId)}
-            onOpenWorkspace={(request) => void openKnowledgeWorkspace(request)}
-          />
-          </>
+          <section className="view-panel knowledge-view-panel" data-testid="knowledge-view-panel" tabIndex={0}>
+            <KnowledgeItemsPanel
+              items={v3KnowledgeItems}
+              selected={selectedV3KnowledgeItem}
+              sort={v3KnowledgeSort}
+              busy={v3KnowledgeBusy}
+              error={v3KnowledgeError}
+              onSort={(sort) => void refreshV3KnowledgeItems(sort)}
+              onSelect={setSelectedV3KnowledgeItem}
+              onChange={setSelectedV3KnowledgeItem}
+              onSave={() => void persistV3KnowledgeItem()}
+              onDelete={() => void removeV3KnowledgeItem()}
+              onOpenSource={() => {
+                const source = selectedV3KnowledgeItem?.sourceRefs[0];
+                if (source?.url) void chrome.tabs.create({ url: source.timestampMs ? `${source.url}#t=${Math.floor(source.timestampMs / 1000)}` : source.url });
+              }}
+            />
+          </section>
         ) : null}
 
         {activeView === "debug" ? (
@@ -1536,10 +2250,16 @@ function App() {
           <section className="view-panel">
             <div className="panel-heading panel-heading-tight">
               <div>
-                <h2>LLM 设置</h2>
-                <p className="muted">次级配置区，可在此保存、测试或删除 Provider。</p>
+                <h2>{settingsSection === "chat" ? "模型设置" : "媒体与语音"}</h2>
+                <p className="muted">{settingsSection === "chat" ? "配置聊天 Provider 与模型。" : "管理本地 ASR 模型、资源占用和离线恢复。"}</p>
               </div>
             </div>
+            <div className="settings-section-tabs" role="tablist" aria-label="设置分类">
+              <button type="button" role="tab" aria-selected={settingsSection === "chat"} className={settingsSection === "chat" ? "active" : ""} onClick={() => setSettingsSection("chat")}>聊天模型</button>
+              <button type="button" role="tab" aria-selected={settingsSection === "media"} className={settingsSection === "media" ? "active" : ""} onClick={() => setSettingsSection("media")}>媒体与语音</button>
+            </div>
+            {settingsSection === "media" ? <><VisionProviderSettingsPanel runtimeStatus={runtimeStatus} /><AsrModelSettingsPanel runtimeStatus={runtimeStatus} /></> : (
+            <>
             <div className="settings-summary">
               <div>
                 <dt>当前 Provider</dt>
@@ -1705,6 +2425,8 @@ function App() {
                 </p>
               ) : null}
             </div>
+            </>
+            )}
           </section>
         ) : null}
       </section>
@@ -1730,7 +2452,7 @@ function App() {
           <span className="tool-glyph" aria-hidden="true">K</span>
           <span className="tool-label">Know</span>
         </button>
-        <button
+        {showDevelopmentNavigation ? <button
           className={`tool-button ${activeView === "agent" ? "active" : ""}`}
           data-testid="nav-agent-tab"
           type="button"
@@ -1739,8 +2461,8 @@ function App() {
         >
           <span className="tool-glyph" aria-hidden="true">A</span>
           <span className="tool-label">Agent</span>
-        </button>
-        <button
+        </button> : null}
+        {showDevelopmentNavigation ? <button
           className={`tool-button ${activeView === "debug" ? "active" : ""}`}
           data-testid="nav-debug-tab"
           type="button"
@@ -1749,7 +2471,7 @@ function App() {
         >
           <span className="tool-glyph" aria-hidden="true">D</span>
           <span className="tool-label">Debug</span>
-        </button>
+        </button> : null}
         <button
           className={`tool-button ${activeView === "settings" ? "active" : ""}`}
           data-testid="nav-settings-tab"
@@ -1863,7 +2585,19 @@ const T01_E2E_TEST_IDS = new Set([
   "save-current-source",
   "quick-source-identity",
   "open-workspace",
-  "view-source"
+  "view-source",
+  "media-companion-launch",
+  "media-companion-enable",
+  "media-companion-retry",
+  "media-connection-settings",
+  "media-consent-card",
+  "media-consent-authorize",
+  "media-consent-refresh",
+  "media-consent-revoke",
+  "media-credential-card",
+  "media-credential-start",
+  "media-credential-status",
+  "media-credential-ready"
 ]);
 
 function executeT01DomCommand(command: Extract<E2ECommand, { action: "t01_dom" }>): Record<string, unknown> {

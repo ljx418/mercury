@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "v3-asr-fixed-window-failure-diagnostic/v1",
+  "stage": "V3-2-0b-5.3-5",
+  "runId": "v3-2-0b-5.3-20260922T110455Z",
+  "status": "failed_current_gate",
+  "invalidatedEvidenceSha256": "abbdc22b2bafd9c4be9b41ced6ea5e914535082c0bcda867e22693fad5488e96",
+  "completedSamples": [
+    {"sampleId":"v3-asr-comparison-01","chunkCount":8,"elapsedMs":8240,"maximumElapsedMs":16360,"peakRssBytes":257540096},
+    {"sampleId":"v3-asr-comparison-02","chunkCount":8,"elapsedMs":8380,"maximumElapsedMs":14760,"peakRssBytes":257261568}
+  ],
+  "failedSample": {
+    "sampleId": "v3-asr-comparison-03",
+    "failedChunkIndex": 4,
+    "chunkStartMs": 60000,
+    "chunkEndMs": 75000,
+    "rms": 1498.877,
+    "nonzeroFrames": 239852,
+    "failureCode": "V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY",
+    "diagnosticStderrSha256": "39a732a49957c64d427c859630f877436b4c95429ac04193d7f762d623da5540"
+  },
+  "parameterMatrix": [
+    {"mode":"vad15","segmentCount":0,"outputSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"mode":"vad30","segmentCount":0,"outputSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"mode":"no_vad","segmentCount":0,"outputSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+  ],
+  "contextDiagnostics": [
+    {"window":"60000..75000","segmentRanges":[],"outputSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"window":"57500..77500","segmentRanges":[[0,15000],[15000,19980]],"outputSha256":"3769b06f2e811fb0467d9f3f9d3878b250d33700afa536bfe695e9589501a892"},
+    {"window":"45000..75000","segmentRanges":[[190,15190],[15190,29980]],"outputSha256":"4abe2f7a0e1e0fdd0d26f50a20cfaad56b7e8ab9b2b435270253fa45be16ecd3"},
+    {"window":"60000..90000","segmentRanges":[[15000,29980]],"outputSha256":"a6d7a670a80728f1d145300ab2b4d7e77ab5d53e35303b42788eac2a5079fce0"},
+    {"window":"52500..82500","segmentRanges":[[0,15000],[15000,29980]],"outputSha256":"586fcd9f380ec596632d07ee70b2e5b8ba4dffdb48897cf4ec1c98aaded77a98"}
+  ],
+  "cleanup": {"activeProcessCount":0,"taskResidualCount":0,"publicSecretHitCount":0,"oldSourceHashesUnchanged":true},
+  "classificationCorrection": {
+    "immutableRunAlsoReported": "V3_ASR_FW_SOURCE_DENOMINATOR_CHANGED",
+    "reason": "runner treated early sample termination as a source denominator change",
+    "authoritativeRootFailure": "V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY",
+    "runnerFixedForFutureRuns": true
+  },
+  "containsTranscriptText": false,
+  "containsAudio": false,
+  "containsPrivateAbsolutePath": false
+}

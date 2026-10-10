@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "v3-asr-provider-qualification-policy-registry/v1",
+  "stage": "V3-2-0b",
+  "requirements": [
+    {"requirementId":"V3-2-0B-R01","requirementKey":"schema_meta","failureCode":"V3_ASR_QUAL_SCHEMA_INVALID"},
+    {"requirementId":"V3-2-0B-R02","requirementKey":"closed_candidate_manifest","failureCode":"V3_ASR_QUAL_MANIFEST_OPEN_WORLD"},
+    {"requirementId":"V3-2-0B-R03","requirementKey":"runtime_asset_identity","failureCode":"V3_ASR_QUAL_RUNTIME_IDENTITY_MISMATCH"},
+    {"requirementId":"V3-2-0B-R04","requirementKey":"model_asset_identity","failureCode":"V3_ASR_QUAL_MODEL_IDENTITY_MISMATCH"},
+    {"requirementId":"V3-2-0B-R05","requirementKey":"license_provenance","failureCode":"V3_ASR_QUAL_LICENSE_UNRESOLVED"},
+    {"requirementId":"V3-2-0B-R06","requirementKey":"remote_code_disabled","failureCode":"V3_ASR_QUAL_REMOTE_CODE_FORBIDDEN"},
+    {"requirementId":"V3-2-0B-R07","requirementKey":"low_resource_baseline","failureCode":"V3_ASR_QUAL_RESOURCE_BASELINE_EXCEEDED"},
+    {"requirementId":"V3-2-0B-R08","requirementKey":"provider_adapter_boundary","failureCode":"V3_ASR_QUAL_PROVIDER_BOUNDARY_BYPASSED"},
+    {"requirementId":"V3-2-0B-R09","requirementKey":"timestamped_transcript","failureCode":"V3_ASR_QUAL_TIMESTAMP_CONTRACT_FAILED"},
+    {"requirementId":"V3-2-0B-R10","requirementKey":"fixed_real_samples","failureCode":"V3_ASR_QUAL_SAMPLE_DENOMINATOR_CHANGED"},
+    {"requirementId":"V3-2-0B-R11","requirementKey":"fixed_window_and_bins","failureCode":"V3_ASR_QUAL_WINDOW_OR_BIN_DRIFT"},
+    {"requirementId":"V3-2-0B-R12","requirementKey":"blind_label_separation","failureCode":"V3_ASR_QUAL_LABEL_LEAK"},
+    {"requirementId":"V3-2-0B-R13","requirementKey":"two_independent_reviews","failureCode":"V3_ASR_QUAL_REVIEW_DENOMINATOR_NOT_MET"},
+    {"requirementId":"V3-2-0B-R14","requirementKey":"quality_threshold","failureCode":"V3_ASR_QUAL_QUALITY_GATE_FAILED"},
+    {"requirementId":"V3-2-0B-R15","requirementKey":"cleanup_and_secret_scan","failureCode":"V3_ASR_QUAL_PRIVATE_DATA_RETAINED"},
+    {"requirementId":"V3-2-0B-R16","requirementKey":"settings_resource_disclosure","failureCode":"V3_ASR_QUAL_RESOURCE_COPY_MISMATCH"},
+    {"requirementId":"V3-2-0B-R17","requirementKey":"real_runtime_ui_chain","failureCode":"V3_ASR_QUAL_UI_RUNTIME_CHAIN_UNPROVEN"},
+    {"requirementId":"V3-2-0B-R18","requirementKey":"independent_exit_audit","failureCode":"V3_ASR_QUAL_INDEPENDENT_AUDIT_NOT_PASSED"}
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "v3-media-acquisition-policy-registry/v1",
+  "revision": 1,
+  "status": "v3_2_1_preimplementation_candidate",
+  "prerequisite": {
+    "stage": "V3-1.3",
+    "decision": "PASS",
+    "auditPath": "docs/active/project/evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-independent-implementation-exit-audit.md"
+  },
+  "registeredAdapters": [
+    {
+      "adapterId": "bilibili",
+      "pageRegistryAdapterId": "bilibili",
+      "credentialPolicyId": "bilibili-media-consent/v1",
+      "supportedPagePattern": "https://www.bilibili.com/video/*",
+      "allowedMediaKinds": ["subtitle", "audio", "video"],
+      "drmOrProtectedMediaPolicy": "reject_without_bypass"
+    }
+  ],
+  "chromeManifestPolicy": {
+    "schemaVersion": "chrome-manifest-permissions/v1",
+    "minimumChromeVersion": 116,
+    "requiredPermissions": ["activeTab", "scripting", "sidePanel", "storage", "tabs", "offscreen", "tabCapture"],
+    "optionalPermissions": ["cookies"],
+    "requiredHostPermissions": ["http://127.0.0.1:17861/*", "http://localhost:17861/*"],
+    "optionalHostPermissions": ["https://*.bilibili.com/*"],
+    "webAccessibleMatches": ["https://www.bilibili.com/*"],
+    "forbiddenPatterns": ["<all_urls>", "http://*/*", "https://*/*"],
+    "backgroundCaptureAutostartAllowed": false
+  },
+  "routePolicy": {
+    "orderedRoutes": [
+      "credentialed_subtitle",
+      "credentialed_media_asr",
+      "public_or_page_subtitle",
+      "trusted_tab_capture_asr"
+    ],
+    "parallelRouteRaceAllowed": false,
+    "firstSuccessfulRouteIsAuthoritative": true,
+    "silentRouteSkippingAllowed": false,
+    "fallbackRequiresMachineReason": true,
+    "productionSuccessRoutes": [
+      "credentialed_subtitle",
+      "credentialed_media_asr",
+      "public_or_page_subtitle",
+      "trusted_tab_capture_asr"
+    ]
+  },
+  "credentialPolicy": {
+    "leaseAuthority": "PortalCredentialLease",
+    "sameTaskRequired": true,
+    "leaseExtensionAllowed": false,
+    "leasePersistenceAllowed": false,
+    "cookieFileAllowedOnlyFor": ["credentialed_subtitle", "credentialed_media_asr"],
+    "cookieFileDirectoryMode": "0700",
+    "cookieFileMode": "0600",
+    "cookieFileNamePolicy": "cryptographic_random_no_task_or_account_identity",
+    "cookieFilePathMayEnterPublicEvidence": false
+  },
+  "capturePolicy": {
+    "authority": "MediaCaptureGrant",
+    "minimumChromeVersion": 116,
+    "trustedSurfaces": ["side_panel", "workspace"],
+    "requiresFreshUserGesture": true,
+    "grantTtlSeconds": 30,
+    "oneShot": true,
+    "offscreenReason": "USER_MEDIA",
+    "maximumConcurrentOffscreenDocuments": 1,
+    "streamIdMustBeConsumedImmediately": true,
+    "preserveTabAudioPlaybackRequired": true,
+    "backgroundAutostartAllowed": false,
+    "crossTabReuseAllowed": false,
+    "maximumCaptureSeconds": 900,
+    "stopOnTabClose": true,
+    "stopOnNavigation": true,
+    "stopOnConsentRevocation": true,
+    "rawAudioPersistenceAllowed": false
+  },
+  "temporaryArtifactPolicy": {
+    "taskDirectoryMode": "0700",
+    "fileMode": "0600",
+    "maximumAudioBytes": 536870912,
+    "maximumVideoBytes": 2147483648,
+    "maximumSingleTaskBytes": 2684354560,
+    "publicAbsolutePathAllowed": false,
+    "crossTaskReuseAllowed": false,
+    "terminalStatesRequiringCleanup": ["succeeded", "degraded", "blocked", "failed", "cancelled"],
+    "cleanupRequiredOn": [
+      "completion",
+      "failure",
+      "cancel",
+      "page_close",
+      "runtime_offline",
+      "lease_expiry",
+      "consent_revocation"
+    ],
+    "successWithResidualAllowed": false
+  },
+  "localAsrPolicy": {
+    "adapterInterface": "LocalAsrAdapter",
+    "candidateEngine": "funasr-llamacpp",
+    "candidateVersion": "runtime-llamacpp-v0.2.6",
+    "candidateModel": "funasr-sensevoice-small-q8",
+    "candidateDevice": "cpu",
+    "candidateComputeType": "q8",
+    "cloudUploadAllowed": false,
+    "segmentTimestampRequired": true,
+    "segmentHashRequired": true,
+    "confidenceRequired": true,
+    "emptyTranscriptMaySucceed": false,
+    "productionProfileMustFreezeModelRevisionAndWeightsSha256": true
+  },
+  "toolingPolicy": {
+    "downloader": {
+      "tool": "yt-dlp",
+      "channel": "stable",
+      "exactVersionAndExecutableSha256FrozenAt": "V3-2-0",
+      "selfUpdateAllowed": false,
+      "arbitraryExecOrPluginAllowed": false
+    },
+    "mediaProcessor": {
+      "tool": "ffmpeg",
+      "candidateVersion": "6.1.1",
+      "exactExecutableSha256FrozenAt": "V3-2-0",
+      "networkInputAllowed": false,
+      "shellInterpolationAllowed": false
+    }
+  },
+  "failureCodes": [
+    "V3_MEDIA_TASK_INVALID",
+    "V3_MEDIA_CONSENT_REQUIRED",
+    "V3_MEDIA_LEASE_REQUIRED",
+    "V3_MEDIA_LEASE_TASK_MISMATCH",
+    "V3_MEDIA_LEASE_EXPIRED",
+    "V3_MEDIA_SUBTITLE_UNAVAILABLE",
+    "V3_MEDIA_PLATFORM_REJECTED",
+    "V3_MEDIA_ROUTE_ORDER_INVALID",
+    "V3_MEDIA_TEMP_FILE_MODE_INVALID",
+    "V3_MEDIA_CAPTURE_GRANT_REQUIRED",
+    "V3_MEDIA_CAPTURE_GRANT_INVALID",
+    "V3_MEDIA_CAPTURE_GRANT_EXPIRED",
+    "V3_MEDIA_CAPTURE_TAB_MISMATCH",
+    "V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN",
+    "V3_MEDIA_CAPTURE_STOPPED",
+    "V3_MEDIA_ASR_UNAVAILABLE",
+    "V3_MEDIA_ASR_OUTPUT_INVALID",
+    "V3_MEDIA_TRANSCRIPT_EMPTY",
+    "V3_MEDIA_TRANSCRIPT_PROVENANCE_INVALID",
+    "V3_MEDIA_CROSS_TASK_REUSE",
+    "V3_MEDIA_CANCEL_NOT_HONORED",
+    "V3_MEDIA_RUNTIME_OFFLINE",
+    "V3_MEDIA_CLEANUP_INCOMPLETE",
+    "V3_MEDIA_PUBLIC_ARTIFACT_SECRET"
+  ],
+  "futurePortalRule": {
+    "unregisteredAdaptersFailClosed": true,
+    "inheritBilibiliCredentialPolicy": false,
+    "requiresOwnPermissionsSecretPolicyAndProductionMatrix": true
+  }
+}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navia V3-5 人工体验验收</title>
+  <style>
+    :root { color-scheme: light; --ink:#10211f; --muted:#526763; --line:#bfd1cd; --surface:#fff; --wash:#eef5f3; --accent:#007a67; --danger:#a63838; --warn:#8a5a00; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#f7faf9; font-family:Inter,"Microsoft YaHei",system-ui,sans-serif; letter-spacing:0; }
+    button,input,textarea { font:inherit; }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    .bar,.layout { width:min(1180px,calc(100% - 32px)); margin:auto; }
+    .bar { padding:22px 0 18px; display:flex; align-items:flex-start; justify-content:space-between; gap:24px; }
+    h1 { margin:2px 0 8px; font-size:28px; }
+    h2 { margin:0; font-size:20px; }
+    p { line-height:1.65; }
+    .eyebrow { margin:0; color:var(--accent); font-size:12px; font-weight:800; text-transform:uppercase; }
+    .meta { color:var(--muted); font-size:13px; overflow-wrap:anywhere; }
+    .status { flex:0 0 auto; padding:8px 12px; border:1px solid #e0b25e; color:#6f4800; background:#fff7e6; font-weight:700; }
+    .layout { display:grid; grid-template-columns:260px minmax(0,1fr); gap:28px; padding:28px 0 72px; }
+    aside { position:sticky; top:16px; align-self:start; }
+    nav { display:grid; gap:6px; }
+    nav a { padding:9px 10px; color:var(--ink); text-decoration:none; border-left:3px solid transparent; }
+    nav a:hover,nav a:focus { border-color:var(--accent); background:var(--wash); outline:none; }
+    .progress { margin-top:20px; padding-top:18px; border-top:1px solid var(--line); }
+    progress { width:100%; accent-color:var(--accent); }
+    main { min-width:0; display:grid; gap:18px; }
+    .intro,.step,.submit { background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:22px; }
+    .intro ul { line-height:1.8; padding-left:20px; }
+    .step-head { display:flex; gap:14px; align-items:flex-start; }
+    .num { width:42px; height:42px; display:grid; place-items:center; flex:0 0 auto; background:var(--ink); color:#fff; font-weight:800; border-radius:4px; }
+    .step h2 { margin:0 0 4px; }
+    .step-grid { margin-top:18px; display:grid; grid-template-columns:minmax(260px,0.9fr) minmax(280px,1.1fr); gap:20px; }
+    .instructions { display:grid; gap:14px; align-content:start; }
+    .fact { padding-left:12px; border-left:3px solid var(--accent); }
+    .fact strong { display:block; margin-bottom:5px; }
+    .fact p { margin:0; color:var(--muted); }
+    figure { margin:0; min-width:0; }
+    figure img { display:block; width:100%; max-height:520px; object-fit:contain; object-position:top; border:1px solid var(--line); background:var(--wash); }
+    figcaption { margin-top:7px; color:var(--muted); font-size:12px; }
+    fieldset { margin:18px 0 0; border:0; padding:0; }
+    legend { font-weight:800; margin-bottom:9px; }
+    .choices { display:flex; flex-wrap:wrap; gap:8px; }
+    .choices label { position:relative; }
+    .choices input { position:absolute; opacity:0; pointer-events:none; }
+    .choices span { display:block; min-width:92px; padding:9px 13px; text-align:center; border:1px solid var(--line); border-radius:4px; cursor:pointer; font-weight:700; }
+    .choices input:focus-visible + span { outline:3px solid #69b8aa; outline-offset:2px; }
+    .choices input:checked + span { color:#fff; background:var(--accent); border-color:var(--accent); }
+    .choices input[value="FAIL"]:checked + span { background:var(--danger); border-color:var(--danger); }
+    .choices input[value="BLOCKED"]:checked + span { background:var(--warn); border-color:var(--warn); }
+    textarea,input[type="text"] { width:100%; border:1px solid var(--line); border-radius:4px; padding:10px; background:#fff; color:var(--ink); }
+    textarea { min-height:76px; resize:vertical; margin-top:10px; }
+    .submit { border-top:4px solid var(--accent); }
+    .submit-grid { display:grid; grid-template-columns:1fr auto; gap:14px; align-items:end; }
+    .submit button { min-height:44px; border:0; border-radius:4px; padding:10px 16px; background:var(--accent); color:#fff; font-weight:800; cursor:pointer; }
+    .submit button:disabled { background:#8fa39f; cursor:not-allowed; }
+    #validation { min-height:24px; margin:12px 0 0; font-weight:700; }
+    #validation.error { color:var(--danger); }
+    code { overflow-wrap:anywhere; }
+    @media (max-width:820px) { .layout { grid-template-columns:1fr; } aside { position:static; } nav { grid-template-columns:repeat(5,1fr); } nav a { text-align:center; border-left:0; border-bottom:3px solid transparent; padding:8px 2px; font-size:12px; } .step-grid,.submit-grid { grid-template-columns:1fr; } }
+    @media (max-width:440px) { .bar,.layout { width:min(100% - 20px,1180px); } .bar { display:block; } .status { display:inline-block; margin-top:8px; } .intro,.step,.submit { padding:16px; } nav { grid-template-columns:repeat(2,1fr); } h1 { font-size:23px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <header><div class="bar">
+    <div><p class="eyebrow">V3-5 · Human review</p><h1>Navia 视频伴读人工体验验收</h1><div class="meta">Run <code>v3-5-product-20261009T085637Z</code><br>Bundle <code>e22e266ce2dc62202285897581bf6cb1b13cade51639cfe1d4d84c72ef64ed9f</code></div></div>
+    <div class="status">等待真实人类审查</div>
+  </div></header>
+  <div class="layout">
+    <aside aria-label="验收导航">
+      <nav id="step-nav"></nav>
+      <div class="progress"><strong id="progress-label">已判断 0 / 10</strong><progress id="progress" max="10" value="0"></progress></div>
+    </aside>
+    <main>
+      <section class="intro">
+        <h2>开始前</h2>
+        <ul>
+          <li>启动“Navia 本机伴侣”，在 Chrome 打开指定 B站视频，再打开 Navia Side Panel。</li>
+          <li>截图是本次 fresh build 的定位参考，不代表该项已通过；请以你现场看到和操作到的结果为准。</li>
+          <li>无需粘贴 Cookie、API key、听写内容、读取日志或核对哈希。</li>
+          <li>无法执行选 BLOCKED；执行后不符合预期选 FAIL；只有完全符合才选 PASS。</li>
+        </ul>
+        <p><a href="https://www.bilibili.com/video/BV1ZpYd66ELP" target="_blank" rel="noreferrer">打开固定验收视频 BV1ZpYd66ELP</a></p>
+      </section>
+      <div id="steps"></div>
+      <section class="submit" id="submit">
+        <h2>回填并导出</h2>
+        <p>所有判断由本页根据你的输入生成。页面不会自动选择 PASS，也不会上传结果。</p>
+        <div class="submit-grid"><label><strong>审查者 ID</strong><input id="reviewer-id" type="text" maxlength="128" autocomplete="off" placeholder="请输入你的审查者标识"></label><button id="export" type="button" disabled>下载验收结果 JSON</button></div>
+        <p id="validation" role="status" aria-live="polite">请完成全部 10 项并填写审查者 ID。</p>
+      </section>
+    </main>
+  </div>
+  <script>
+    const binding = Object.freeze({
+      bundleSha256: "e22e266ce2dc62202285897581bf6cb1b13cade51639cfe1d4d84c72ef64ed9f",
+      runId: "v3-5-product-20261009T085637Z",
+      buildTreeSha256: "e7ad9c05f402b30f69923df44d02150e9c0fbc9d07e2272fba066bec036ba33d"
+    });
+    const steps = [
+      {id:"H01",title:"确认当前视频身份",image:"screenshots/side-panel-420x900.png",action:"打开固定 B站视频和 Navia，确认识别的是当前单 P 视频。",pass:"标题/作者/分 P/约 792 秒与页面一致；没有公开字幕时明确说明回退，不出现旧 Mock 状态。",fail:"识别成其他页面、身份缺失、显示 Mock 或把无字幕说成已有字幕。"},
+      {id:"H02",title:"理解并确认五项授权",image:"screenshots/side-panel-420x900.png",action:"阅读五项 scope；尝试撤销与重新授权，再点击开始分析。",pass:"本地/云端处理、撤销影响和资源消耗可理解；界面不要求手工 Cookie，也不展示 Cookie 值。",fail:"授权范围含糊、撤销无反馈、出现 Cookie/API key/私有路径。"},
+      {id:"H03",title:"观察真实采集与转写",image:"screenshots/side-panel-420x900.png",action:"启动任务；如提示标签页捕获，按按钮确认一次，观察路线、进度、清理和终态。",pass:"可信点击前不捕获；显示真实路线、等待与 CPU/内存/临时磁盘影响；最终进入明确终态。",fail:"自动越权捕获、无限 loading、路线与实际不符，或失败被显示为成功。"},
+      {id:"H04",title:"抽查大纲与时间线",image:"screenshots/workspace-1280x900.png",action:"打开完整工作台，在大纲和时间线各抽查至少两个条目及其引用。",pass:"结构可读，章节与视频内容大体一致，关键结论有可见引用，没有明显拼接或无证据断言。",fail:"内容不可读、明显偏题、关键结论无引用，或引用属于其他任务。"},
+      {id:"H05",title:"检查多模态证据",image:"screenshots/workspace-1280x900.png",action:"从章节或证据入口分别打开 Transcript、Frame、OCR、Vision 证据。",pass:"类型标签、缩略图/文字和时间关系可理解；视觉证据与对应画面一致。",fail:"证据类型互相冒充、图片与描述不符、时间或任务身份错误。"},
+      {id:"H06",title:"操作视频导图",image:"screenshots/workspace-1280x900.png",action:"进入导图，展开节点并打开一个节点引用。",pass:"节点层级与大纲一致，引用可打开且仍绑定同一任务。",fail:"导图空白/不可操作、节点与大纲冲突或引用断裂。"},
+      {id:"H07",title:"验证有据回答与诚实拒答",image:"screenshots/workspace-768x900.png",action:"提出一个视频可回答的问题，再问一个证据不支持的问题。",pass:"前者回答并给出同任务引用；后者明确证据不足，不编造。",fail:"无引用回答、引用错任务、视觉问题只拿转写冒充，或无证据仍给肯定答案。"},
+      {id:"H08",title:"执行五类播放反跳",image:"screenshots/workspace-768x900.png",action:"分别从大纲、时间线、导图、问答引用和证据页点击时间入口。",pass:"5 次都在同一 B站分 P 跳到预期附近；页面不一致或播放器不可用时明确失败。",fail:"跳到错误视频/分 P、无动作却显示成功，或误差明显超过约 2 秒。"},
+      {id:"H09",title:"检查取消与故障恢复",image:"screenshots/side-panel-360x900.png",action:"新建一次任务并在运行中取消；再观察一次可恢复 Provider/Runtime 故障提示。",pass:"取消后进入清理和唯一终态；故障不抢焦点、不无限等待，并给出清晰恢复动作。",fail:"取消后仍持续运行、残留 loading、重复终态、错误提示不可理解或泄露私有信息。"},
+      {id:"H10",title:"导出两种本地文件",image:"screenshots/workspace-1280x900.png",action:"进入导出，分别下载 Markdown ZIP 与 JSON 并打开。",pass:"两种文件均可打开、属于当前任务；界面明确尚未导入知识库，不宣称 V4/完整外脑已完成。",fail:"文件损坏/错任务、导出含私密信息，或出现“已保存到知识库”等越界声明。"}
+    ];
+    const nav=document.querySelector("#step-nav"), root=document.querySelector("#steps"), reviewer=document.querySelector("#reviewer-id"), exportButton=document.querySelector("#export"), validation=document.querySelector("#validation");
+    for(const step of steps){
+      const link=document.createElement("a"); link.href=`#${step.id}`; link.textContent=step.id; nav.append(link);
+      const section=document.createElement("section"); section.className="step"; section.id=step.id;
+      section.innerHTML=`<div class="step-head"><span class="num">${step.id.slice(1)}</span><div><p class="eyebrow">${step.id}</p><h2>${step.title}</h2></div></div><div class="step-grid"><div class="instructions"><div class="fact"><strong>现场操作</strong><p>${step.action}</p></div><div class="fact"><strong>PASS 标准</strong><p>${step.pass}</p></div><div class="fact"><strong>FAIL / BLOCKED</strong><p>${step.fail} 无法完成操作时选 BLOCKED。</p></div></div><figure><img src="${step.image}" alt="${step.id} 当前 fresh build 定位截图"><figcaption>定位参考：${step.image}。请以现场操作结果为准。</figcaption></figure></div><fieldset><legend>${step.id} 判断</legend><div class="choices">${["PASS","FAIL","BLOCKED"].map(value=>`<label><input type="radio" name="${step.id}" value="${value}"><span>${value}</span></label>`).join("")}</div><textarea maxlength="2000" data-note="${step.id}" aria-label="${step.id} 备注" placeholder="记录你实际看到的结果；可留空"></textarea></fieldset>`;
+      root.append(section);
+    }
+    function state(){
+      const judgments=steps.map(step=>({requirementId:step.id,decision:document.querySelector(`input[name="${step.id}"]:checked`)?.value??null,screenshotRefs:[step.image],note:document.querySelector(`[data-note="${step.id}"]`).value.trim()}));
+      const complete=judgments.every(item=>item.decision)&&reviewer.value.trim();
+      const decided=judgments.filter(item=>item.decision).length;
+      document.querySelector("#progress").value=decided; document.querySelector("#progress-label").textContent=`已判断 ${decided} / 10`;
+      exportButton.disabled=!complete;
+      validation.className=complete?"":"error"; validation.textContent=complete?"输入完整，可以导出。":"请完成全部 10 项并填写审查者 ID。";
+      return judgments;
+    }
+    document.addEventListener("input",state); document.addEventListener("change",state);
+    exportButton.addEventListener("click",()=>{
+      const judgments=state(); if(exportButton.disabled)return;
+      const decisions=judgments.map(item=>item.decision);
+      const overallDecision=decisions.includes("BLOCKED")?"BLOCKED":decisions.includes("FAIL")?"FAIL":"PASS";
+      const submission={schemaVersion:"v3-media-human-review/v1",...binding,reviewerId:reviewer.value.trim(),reviewerRole:"independent_human_reviewer",submittedAt:new Date().toISOString(),judgments,overallDecision};
+      const blob=new Blob([JSON.stringify(submission,null,2)+"\n"],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`v3-5-human-review-${overallDecision.toLowerCase()}.json`; a.click(); URL.revokeObjectURL(url);
+      validation.className=""; validation.textContent=`已导出 ${overallDecision} submission；请将文件交回项目审计。`;
+    });
+    state();
+  </script>
+</body>
+</html>

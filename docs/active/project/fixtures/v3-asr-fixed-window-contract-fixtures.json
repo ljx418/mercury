@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "v3-asr-fixed-window-contract-fixtures/v1",
+  "stage": "V3-2-0b-5.3",
+  "positiveInstances": [
+    {"instanceId":"V3-2-0B-FW-P01","source":"contracts/v3-asr-fixed-window-candidate-manifest.json","expectedSchemaResult":"pass","evidenceClass":"document_candidate_not_authorized"}
+  ],
+  "negativeCases": [
+    {"caseId":"V3-2-0B-FW-N01","requirementId":"V3-2-0B-FW-R01","requirementKey":"schema_meta","failureCode":"V3_ASR_FW_SCHEMA_INVALID","target":"schema","mutation":"remove_$schema","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N02","requirementId":"V3-2-0B-FW-R02","requirementKey":"parent_lineage","failureCode":"V3_ASR_FW_LINEAGE_MISMATCH","target":"candidate_manifest","mutation":"replace_parent_manifest_sha256","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N03","requirementId":"V3-2-0B-FW-R03","requirementKey":"fixed_source_samples","failureCode":"V3_ASR_FW_SOURCE_DENOMINATOR_CHANGED","target":"candidate_manifest","mutation":"remove_sample_03","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N04","requirementId":"V3-2-0B-FW-R04","requirementKey":"deterministic_chunk_plan","failureCode":"V3_ASR_FW_CHUNK_PLAN_DRIFT","target":"candidate_manifest","mutation":"set_chunk_duration_14000","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N05","requirementId":"V3-2-0B-FW-R05","requirementKey":"exact_pcm_format","failureCode":"V3_ASR_FW_AUDIO_FORMAT_INVALID","target":"candidate_manifest","mutation":"set_sample_01_source_frame_count_1919983","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N06","requirementId":"V3-2-0B-FW-R06","requirementKey":"chunk_hash_binding","failureCode":"V3_ASR_FW_CHUNK_HASH_MISMATCH","target":"fixed_window_run","mutation":"replace_chunk_02_sha256","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N07","requirementId":"V3-2-0B-FW-R07","requirementKey":"no_overlap_or_gap","failureCode":"V3_ASR_FW_CHUNK_COVERAGE_INVALID","target":"candidate_manifest","mutation":"set_second_boundary_start_14000","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N08","requirementId":"V3-2-0B-FW-R08","requirementKey":"sequential_single_concurrency","failureCode":"V3_ASR_FW_CONCURRENCY_VIOLATION","target":"candidate_manifest","mutation":"set_max_concurrency_8","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N09","requirementId":"V3-2-0B-FW-R09","requirementKey":"closed_provider_boundary","failureCode":"V3_ASR_FW_PROVIDER_BOUNDARY_BYPASSED","target":"architecture_manifest","mutation":"portal_executes_native_binary","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N10","requirementId":"V3-2-0B-FW-R10","requirementKey":"no_text_rewrite","failureCode":"V3_ASR_FW_TEXT_REWRITE_FORBIDDEN","target":"orchestrator_trace","mutation":"copy_adjacent_chunk_text","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N11","requirementId":"V3-2-0B-FW-R11","requirementKey":"per_chunk_nonempty","failureCode":"V3_ASR_FW_CHUNK_TRANSCRIPT_EMPTY","target":"fixed_window_run","mutation":"set_chunk_18_segment_count_zero","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N12","requirementId":"V3-2-0B-FW-R12","requirementKey":"local_timestamp_contract","failureCode":"V3_ASR_FW_LOCAL_TIMESTAMP_INVALID","target":"private_segment_result","mutation":"set_local_end_15001","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N13","requirementId":"V3-2-0B-FW-R13","requirementKey":"global_offset_merge","failureCode":"V3_ASR_FW_GLOBAL_TIMESTAMP_INVALID","target":"merged_result","mutation":"duplicate_global_segment_id","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N14","requirementId":"V3-2-0B-FW-R14","requirementKey":"no_partial_retry_reuse","failureCode":"V3_ASR_FW_PARTIAL_REUSE_FORBIDDEN","target":"attempt_lineage","mutation":"reuse_chunks_0_to_2_from_previous_attempt","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N15","requirementId":"V3-2-0B-FW-R15","requirementKey":"cleanup_barrier","failureCode":"V3_ASR_FW_PRIVATE_DATA_RETAINED","target":"fixed_window_run","mutation":"set_chunk_file_count_one","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N16","requirementId":"V3-2-0B-FW-R16","requirementKey":"low_resource_baseline","failureCode":"V3_ASR_FW_RESOURCE_BASELINE_EXCEEDED","target":"fixed_window_run","mutation":"set_peak_rss_above_8gib","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N17","requirementId":"V3-2-0B-FW-R17","requirementKey":"latency_regression","failureCode":"V3_ASR_FW_LATENCY_REGRESSION_EXCEEDED","target":"fixed_window_run","mutation":"set_sample_02_elapsed_14761","expected":"reject"},
+    {"caseId":"V3-2-0B-FW-N18","requirementId":"V3-2-0B-FW-R18","requirementKey":"blind_review_denominator","failureCode":"V3_ASR_FW_REVIEW_DENOMINATOR_NOT_MET","target":"review_bundle","mutation":"duplicate_reviewer_id","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N19","requirementId":"V3-2-0B-FW-R19","requirementKey":"quality_threshold","failureCode":"V3_ASR_FW_QUALITY_GATE_FAILED","target":"adjudication","mutation":"set_neither_acceptable_one_with_pass_true","expected":"semantic_reject"},
+    {"caseId":"V3-2-0B-FW-N20","requirementId":"V3-2-0B-FW-R20","requirementKey":"independent_exit_audit","failureCode":"V3_ASR_FW_INDEPENDENT_AUDIT_NOT_PASSED","target":"stage_gate","mutation":"promote_without_independent_exit_audit","expected":"semantic_reject"}
+  ]
+}

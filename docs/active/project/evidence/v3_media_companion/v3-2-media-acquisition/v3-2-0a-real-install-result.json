@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "v3-asr-real-install-public-evidence/v1",
+  "runId": "v3-asr-real-install-20260921T113807Z",
+  "model": {
+    "modelId": "faster-whisper-small",
+    "providerId": "faster_whisper_local",
+    "repository": "Systran/faster-whisper-small",
+    "revision": "536b0662742c02347bc0e980a01041f333bce120",
+    "license": "MIT"
+  },
+  "sourcePolicy": {
+    "catalogControlled": true,
+    "clientSuppliedUrlAccepted": false,
+    "initialHost": "huggingface.co",
+    "verifiedRedirectHostClass": "*.cdn.hf.co",
+    "lookalikeSuffixRejectedByTest": true
+  },
+  "installation": {
+    "state": "ready",
+    "failureCode": null,
+    "bytesCompleted": 486212372,
+    "bytesTotal": 486212372,
+    "elapsedSeconds": 1223.408,
+    "stageSequenceObserved": [
+      "checking",
+      "downloading",
+      "verifying",
+      "self_testing",
+      "installing",
+      "ready"
+    ],
+    "atomicPublish": true,
+    "localModelLoadSelfTest": true,
+    "resultSha256": "a23a2f068cde18954291a3ad5906e784df27db18ff74f48abbb1c768628069f0"
+  },
+  "files": [
+    {
+      "path": "config.json",
+      "byteLength": 2370,
+      "sha256": "b55496ac7940a7ae47d2c01eab40edfd8701feec1229d9cce3b40014383fb828"
+    },
+    {
+      "path": "model.bin",
+      "byteLength": 483546902,
+      "sha256": "3e305921506d8872816023e4c273e75d2419fb89b24da97b4fe7bce14170d671"
+    },
+    {
+      "path": "tokenizer.json",
+      "byteLength": 2203239,
+      "sha256": "fb7b63191e9bb045082c79fd742a3106a12c99513ab30df4a0d47fa6cb6fd0ab"
+    },
+    {
+      "path": "vocabulary.txt",
+      "byteLength": 459861,
+      "sha256": "34ce3fe1c5041027b3f8d42912270993f986dbc4bb34cf27f951e34a1e453913"
+    }
+  ],
+  "fileSetSha256": "5055de3688ab0cad50e26befd98abed6aaf2b632a2d867ce69ce5633faa938aa",
+  "restart": {
+    "modelPathReady": true,
+    "requestedModelId": "faster-whisper-small",
+    "effectiveModelId": "faster-whisper-small",
+    "fallbackActive": false
+  },
+  "disclosure": "The model directory is private and ignored. This record contains no absolute path, Cookie, audio, transcript, or account data.",
+  "qualityBoundary": {
+    "installationQualified": true,
+    "v3_2_A06Passed": false,
+    "reason": "The existing human comparison remains failed and is not changed by installation success."
+  }
+}

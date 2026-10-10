@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "v3-5-2-real-chrome/v1",
+  "runId": "v3-5-2-real-20261008T140231Z",
+  "sampleUrl": "https://www.bilibili.com/video/BV13W41137qV",
+  "buildTreeSha256": "a83372d2c161a2f9e03475461c9efe635aa5cd3bc3f550c5768c1d0f1309973c",
+  "checks": {
+    "eightCanonicalRoutes": true,
+    "backForwardRestored": true,
+    "legacyRouteReplaced": true,
+    "invalidRouteRecovered": true,
+    "sidePanelReopenedSameTask": true,
+    "canonicalWorkspaceSameTask": true,
+    "noCookieOrPrivatePathVisible": true,
+    "noRuntimeMediaResidue": true,
+    "profileDeleted": true,
+    "secretScanZeroHits": true,
+    "secureTaskRootDeleted": true
+  },
+  "routes": ["task_library", "task_overview", "outline", "timeline", "mindmap", "ask", "export", "evidence"],
+  "routeModes": { "direct": 8, "reload": 8, "backForward": true, "legacyReplace": true, "sidePanelReopen": true },
+  "taskBindings": { "completedTaskId": "media_task_ad9625c1a49c4ee3bd7f5c3e9086b7b6" },
+  "runtimeArtifactSummary": { "persistentPrivateEvidenceFiles": 1, "temporaryMediaFiles": 0, "asrTemporaryFiles": 0 },
+  "secretScan": { "scannedFiles": 102, "scannedBytes": 3973469, "hitCount": 0, "passed": true },
+  "sourceResultSha256": "315a6a0c88ebb52e5d93cbec9e56d45fed53f20208754ea54efd99a640788a53",
+  "sourceSecretScanSha256": "c484603f8847a1ec74586d5fd7924ba578395b42a80610df85f05c64a278a24d",
+  "passed": true
+}

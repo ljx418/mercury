@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "v3-bilinote-migration-allowlist/v1",
+  "status": "document_freeze_reference_only",
+  "upstream": {
+    "repository": "https://github.com/JefferyHcool/BiliNote",
+    "commit": "be3889395afb5346aa4339ae933d3ba2e08f25a8",
+    "license": "MIT",
+    "licensePath": "LICENSE",
+    "licenseSha256": "8fc50b37788f8b6c448bf06a9dba55f6f50b4274d6fee2e4a95e91e239f5ced8"
+  },
+  "policy": {
+    "default": "deny",
+    "dirtyWorkingTreeAllowed": false,
+    "copyAuthorization": "not_authorized_in_v3_0",
+    "allowedAction": "reference_only",
+    "futureCopyRequires": [
+      "stage_specific_user_authorization",
+      "source_and_target_file_mapping",
+      "preserved_mit_attribution",
+      "independent_preimplementation_audit"
+    ]
+  },
+  "allowedSources": [
+    {
+      "path": "backend/app/routers/note.py",
+      "sha256": "d9e1dee82e96260c34994aba3c35f158eef9f90f086a1620fc4a15b0aec97a43",
+      "byteLength": 12847,
+      "purpose": "background task and status polling flow",
+      "action": "reference_only"
+    },
+    {
+      "path": "backend/app/services/note.py",
+      "sha256": "58e0c0569fb4974f6c90d8ce9231147858334468910cbc6af6f54282159f99cf",
+      "byteLength": 29909,
+      "purpose": "subtitle-first and ASR-fallback orchestration study",
+      "action": "reference_only"
+    },
+    {
+      "path": "backend/app/utils/video_reader.py",
+      "sha256": "e838a1c5b91fb5d6bf569a721a477aa58e9f26dcf6948ca3fb24a06e627204d5",
+      "byteLength": 7801,
+      "purpose": "FFmpeg frame sampling and adjacent-frame deduplication study",
+      "action": "reference_only"
+    },
+    {
+      "path": "backend/app/gpt/prompt_builder.py",
+      "sha256": "be13479c72b486d49411022678430366e1dfdf4cc8190ef0a6f10e9c060df74e",
+      "byteLength": 5413,
+      "purpose": "timestamp and screenshot prompt-boundary study",
+      "action": "reference_only"
+    },
+    {
+      "path": "backend/app/utils/screenshot_marker.py",
+      "sha256": "b9c478074c6c1e5dc8fb31a5db767c4fa1c0aab51483f000cbf51660862e81bf",
+      "byteLength": 494,
+      "purpose": "marker failure-mode study; markers are not Navia authority",
+      "action": "reference_only"
+    },
+    {
+      "path": "backend/app/utils/note_helper.py",
+      "sha256": "5da90775b957e1dc9715b3eaa7ba8c616d3b3d915cb35f7bdc51f1ae9db645d6",
+      "byteLength": 2407,
+      "purpose": "platform timestamp-link rendering study",
+      "action": "reference_only"
+    }
+  ],
+  "explicitlyDenied": [
+    {
+      "path": "backend/app/services/cookie_manager.py",
+      "reason": "plaintext or long-lived cookie configuration is incompatible with Navia credential leases"
+    },
+    {
+      "path": "config/downloader.json",
+      "reason": "persistent raw cookie values are forbidden"
+    },
+    {
+      "pathPrefix": "BillNote_frontend/",
+      "reason": "BiliNote application shell is outside the V3 migration boundary"
+    },
+    {
+      "pathPrefix": "backend/app/db/",
+      "reason": "BiliNote account and database topology is outside the V3 migration boundary"
+    },
+    {
+      "pathPrefix": "local_dirty_diff",
+      "reason": "only bytes from the frozen clean commit may be studied"
+    }
+  ]
+}

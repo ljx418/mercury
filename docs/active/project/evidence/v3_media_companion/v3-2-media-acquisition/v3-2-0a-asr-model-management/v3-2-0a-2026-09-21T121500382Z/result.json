@@ -1,0 +1,240 @@
+{
+  "schemaVersion": "v3-asr-settings-real-chrome/v1",
+  "runId": "v3-2-0a-2026-09-21T121500382Z",
+  "generatedAt": "2026-09-21T12:15:43.733Z",
+  "implementationBoundary": {
+    "realRuntimeCatalogAndBundledTiny": true,
+    "realChromeExtensionBuild": true,
+    "installDialogTransport": "playwright-route-intercepted-ui-contract; backend real-byte lifecycle is covered by pytest",
+    "claimsV3_2A06": false
+  },
+  "summary": {
+    "total": 17,
+    "passed": 17,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "id": "catalog_requested_effective_visible",
+      "passed": true,
+      "detail": {
+        "requested": "faster-whisper-tiny",
+        "effective": "faster-whisper-tiny"
+      }
+    },
+    {
+      "id": "tiny_quality_boundary_visible",
+      "passed": true,
+      "detail": "fallback-only boundary"
+    },
+    {
+      "id": "small_failed_gate_visible",
+      "passed": true,
+      "detail": "small remains failed_current_gate"
+    },
+    {
+      "id": "qualification_models_not_installable",
+      "passed": true,
+      "detail": "only disabled select button rendered"
+    },
+    {
+      "id": "sidepanel_360_no_root_overflow",
+      "passed": true,
+      "detail": {
+        "documentClientWidth": 360,
+        "documentScrollWidth": 360,
+        "bodyScrollWidth": 360,
+        "rootScrollWidth": 360
+      }
+    },
+    {
+      "id": "sidepanel_360_axe_blocking_zero",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "sidepanel_420_no_root_overflow",
+      "passed": true,
+      "detail": {
+        "documentClientWidth": 420,
+        "documentScrollWidth": 420,
+        "bodyScrollWidth": 420,
+        "rootScrollWidth": 420
+      }
+    },
+    {
+      "id": "sidepanel_420_axe_blocking_zero",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "install_dialog_receives_focus",
+      "passed": true,
+      "detail": "dialog is active element"
+    },
+    {
+      "id": "install_progress_exposes_real_fields",
+      "passed": true,
+      "detail": "bytes, speed and ETA visible"
+    },
+    {
+      "id": "install_dialog_axe_blocking_zero",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "cancel_and_escape_focus_return",
+      "passed": true,
+      "detail": "focus returned to invoking install button"
+    },
+    {
+      "id": "offline_import_keyboard_opens_picker",
+      "passed": true,
+      "detail": "trusted Enter produced file chooser"
+    },
+    {
+      "id": "workspace_768_no_root_overflow",
+      "passed": true,
+      "detail": {
+        "documentClientWidth": 768,
+        "documentScrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "rootScrollWidth": null
+      }
+    },
+    {
+      "id": "workspace_768_axe_blocking_zero",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "workspace_1280_no_root_overflow",
+      "passed": true,
+      "detail": {
+        "documentClientWidth": 1280,
+        "documentScrollWidth": 1280,
+        "bodyScrollWidth": 1280,
+        "rootScrollWidth": null
+      }
+    },
+    {
+      "id": "workspace_1280_axe_blocking_zero",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "layouts": [
+    {
+      "surface": "sidepanel",
+      "width": 360,
+      "documentClientWidth": 360,
+      "documentScrollWidth": 360,
+      "bodyScrollWidth": 360,
+      "rootScrollWidth": 360
+    },
+    {
+      "surface": "sidepanel",
+      "width": 420,
+      "documentClientWidth": 420,
+      "documentScrollWidth": 420,
+      "bodyScrollWidth": 420,
+      "rootScrollWidth": 420
+    },
+    {
+      "surface": "workspace-regression",
+      "width": 768,
+      "documentClientWidth": 768,
+      "documentScrollWidth": 768,
+      "bodyScrollWidth": 768,
+      "rootScrollWidth": null
+    },
+    {
+      "surface": "workspace-regression",
+      "width": 1280,
+      "documentClientWidth": 1280,
+      "documentScrollWidth": 1280,
+      "bodyScrollWidth": 1280,
+      "rootScrollWidth": null
+    }
+  ],
+  "accessibility": [
+    {
+      "surface": "sidepanel",
+      "width": 360,
+      "violations": []
+    },
+    {
+      "surface": "sidepanel",
+      "width": 420,
+      "violations": []
+    },
+    {
+      "surface": "install_dialog",
+      "width": 420,
+      "violations": []
+    },
+    {
+      "surface": "workspace-regression",
+      "width": 768,
+      "violations": []
+    },
+    {
+      "surface": "workspace-regression",
+      "width": 1280,
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "screenshots/sidepanel-asr-settings-360x900.png",
+      "sha256": "a17c92a9057aeb4d4da8aec101045041c84387f0cbcdcfcaf1de2f01c8087a21",
+      "byteLength": 83423,
+      "viewport": {
+        "width": 360,
+        "height": 900
+      },
+      "url": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/sidepanel.html#settings"
+    },
+    {
+      "path": "screenshots/sidepanel-asr-settings-420x900.png",
+      "sha256": "306ee46cf3a24250d39f842e2f3a78e6b1c44257cc6c3aec69319a096d1bcf25",
+      "byteLength": 84303,
+      "viewport": {
+        "width": 420,
+        "height": 900
+      },
+      "url": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/sidepanel.html#settings"
+    },
+    {
+      "path": "screenshots/sidepanel-asr-install-progress-420x900.png",
+      "sha256": "5ebde93f09a7b59cb5d0380f82f2c3090575fdc76b57d0dc77e38cf88adae3e6",
+      "byteLength": 76795,
+      "viewport": {
+        "width": 420,
+        "height": 900
+      },
+      "url": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/sidepanel.html#settings"
+    },
+    {
+      "path": "screenshots/workspace-regression-768x900.png",
+      "sha256": "5f038b3030a96ea18a98d2bb2b22a29e95ee0cbab5f9ca9ab908f48448f81824",
+      "byteLength": 38916,
+      "viewport": {
+        "width": 768,
+        "height": 900
+      },
+      "url": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    },
+    {
+      "path": "screenshots/workspace-regression-1280x900.png",
+      "sha256": "d3559eb0cfaf46a6396918df75df98cbd6ffc41b8a4c9038dc4429000d3a2575",
+      "byteLength": 41779,
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "url": "chrome-extension://lmaehaoccfhkoojpplmngdnbiflopphg/workspace.html#/knowledge/sources?workspaceId=ws_default"
+    }
+  ],
+  "passed": true
+}

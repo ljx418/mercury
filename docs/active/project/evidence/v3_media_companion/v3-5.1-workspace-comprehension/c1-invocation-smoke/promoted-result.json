@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "v3-5-7-one-step-smoke/v1",
+  "runId": "v3-5.1-c1-final-20261011T001500Z",
+  "sampleUrl": "https://www.bilibili.com/video/BV1ZpYd66ELP",
+  "checks": {
+    "onePrimaryEntry": true,
+    "noManualRuntimeConnect": true,
+    "noManualCredentialStart": true,
+    "noManualConsentRefresh": true,
+    "autoFlowReachedMediaState": true,
+    "noPolicyFailureVisible": true,
+    "profileDeleted": true,
+    "secretScanZeroHits": true,
+    "secureTaskRootDeleted": true
+  },
+  "passed": true,
+  "states": [],
+  "nativeSidePanelMethod": "extension_page_user_gesture+e2e_bridge",
+  "oneStepObservation": {
+    "surface": "native_side_panel",
+    "reached": "processing"
+  }
+}

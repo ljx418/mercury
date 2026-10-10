@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "v3-asr-user-final-human-decision/v1",
+  "decidedOn": "2026-09-21",
+  "bundleSha256": "868c2ca3e8be7032501c39e93b6be86be1333b28fb70ec5d45b9b0f17be7d8d0",
+  "review": {
+    "path": "human-review/v3-asr-review-123.json",
+    "sha256": "29313674ac457dd8df72b9f84834e8379968884a6704777d1e157f02de785d77",
+    "reviewerId": "123",
+    "submittedAt": "2026-09-21T07:54:18.611Z",
+    "schemaValid": true,
+    "judgmentCount": 24,
+    "uniqueBinCount": 24
+  },
+  "authority": {
+    "type": "explicit_user_final_decision",
+    "instruction": "以此结论作为最终结论进行验收",
+    "passDenominatorSatisfied": false,
+    "secondReviewFabricated": false,
+    "adjudicationFabricated": false,
+    "handling": "A user-final rejection may stop the gate early; it cannot be converted into a pass."
+  },
+  "productionCandidateMetrics": {
+    "labelMap": {
+      "BV1sMNtzJE5B": {
+        "candidateA": "production_small",
+        "candidateB": "independent_base"
+      },
+      "BV1xz4y1S7yF": {
+        "candidateA": "independent_base",
+        "candidateB": "production_small"
+      },
+      "BV1Bb411w741": {
+        "candidateA": "production_small",
+        "candidateB": "independent_base"
+      }
+    },
+    "productionMeaningPreservedCount": 23,
+    "denominator": 24,
+    "productionMeaningPreservedRate": 0.958333,
+    "perSample": [
+      {
+        "bvid": "BV1sMNtzJE5B",
+        "preserved": 7,
+        "total": 8
+      },
+      {
+        "bvid": "BV1xz4y1S7yF",
+        "preserved": 8,
+        "total": 8
+      },
+      {
+        "bvid": "BV1Bb411w741",
+        "preserved": 8,
+        "total": 8
+      }
+    ],
+    "criticalMeaningErrorCount": 1,
+    "neitherAcceptableCount": 1,
+    "productionPreferredCount": 16,
+    "baselinePreferredCount": 4,
+    "equivalentCount": 3
+  },
+  "frozenPassThresholds": {
+    "productionMeaningPreserved": "at least 44/48",
+    "perSampleMinimum": "at least 15/16",
+    "criticalMeaningErrorCount": 0,
+    "neitherAcceptableCount": 0
+  },
+  "failureCodes": [
+    "V3_ASR_INDEPENDENT_DENOMINATOR_NOT_MET",
+    "V3_ASR_PER_SAMPLE_MINIMUM_NOT_MET",
+    "V3_ASR_CRITICAL_MEANING_ERROR",
+    "V3_ASR_NEITHER_ACCEPTABLE"
+  ],
+  "decision": "FAIL_REPLAN",
+  "stageStatus": {
+    "d08": "FAIL_REPLAN",
+    "v3_2_0": "FAIL_REOPENED",
+    "v3_2_1_plus": "BLOCKED"
+  },
+  "nextRequiredAction": "Return to the ASR model/decode-profile ADR; generate a new immutable comparison run and obtain new human evidence."
+}

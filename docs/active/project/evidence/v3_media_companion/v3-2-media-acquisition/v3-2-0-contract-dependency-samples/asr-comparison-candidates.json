@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "v3-asr-comparison-candidates/v1",
+  "window": { "startMs": 30000, "endMs": 150000, "durationMs": 120000, "binDurationMs": 15000 },
+  "candidates": [
+    { "sampleId": "v3-asr-comparison-01", "bvid": "BV1sMNtzJE5B", "url": "https://www.bilibili.com/video/BV1sMNtzJE5B", "partIndex": 1, "cid": "30592600559", "title": "第181期 北北对谈" },
+    { "sampleId": "v3-asr-comparison-02", "bvid": "BV1xz4y1S7yF", "url": "https://www.bilibili.com/video/BV1xz4y1S7yF?p=1", "partIndex": 1, "cid": "286754257", "title": "陈晓专访：兄弟好久不见" },
+    { "sampleId": "v3-asr-comparison-03", "bvid": "BV1Bb411w741", "url": "https://www.bilibili.com/video/BV1Bb411w741?p=1", "partIndex": 1, "cid": "61744125", "title": "Eason 你快乐吗？" }
+  ]
+}

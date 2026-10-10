@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "v3-vision-dependency-manifest/v1",
+  "engineId": "rapidocr-onnxruntime-cpu",
+  "engineVersion": "3.9.2",
+  "executionBackend": "onnxruntime-cpu",
+  "offlineRequired": true,
+  "gpuRequired": false,
+  "threadLimit": 4,
+  "packages": [
+    {
+      "packageId": "rapidocr",
+      "version": "3.9.2",
+      "license": "Apache-2.0",
+      "wheel": "rapidocr-3.9.2-py3-none-any.whl",
+      "wheelSha256": "04d6b8d151f823d930bd91910555f57bea897c0c44fa6794267b94cf9c1ef9a0",
+      "source": "https://pypi.org/project/rapidocr/3.9.2/",
+      "installedVersion": "3.9.2",
+      "metadataLicense": "Apache-2.0"
+    },
+    {
+      "packageId": "onnxruntime",
+      "version": "1.28.0",
+      "license": "MIT",
+      "wheel": "onnxruntime-1.28.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "wheelSha256": "0a83bdb70d143cede762b677789bf2a7acca54b3fb82565601d5c30695aa933c",
+      "source": "https://pypi.org/project/onnxruntime/1.28.0/",
+      "installedVersion": "1.28.0",
+      "metadataLicense": "MIT License"
+    },
+    {
+      "packageId": "opencv-python",
+      "version": "5.0.0.93",
+      "license": "Apache-2.0",
+      "wheel": "opencv_python-5.0.0.93-cp37-abi3-manylinux_2_28_x86_64.whl",
+      "wheelSha256": "c8de2dec111122a02e8beb28e16c31904992dfd6186560b142a92c71403c1039",
+      "source": "https://pypi.org/project/opencv-python/5.0.0.93/",
+      "installedVersion": "5.0.0.93",
+      "metadataLicense": "Apache 2.0"
+    }
+  ],
+  "assets": [
+    {
+      "assetId": "PP-OCRv6_det_small",
+      "pathWithinWheel": "models/PP-OCRv6_det_small.onnx",
+      "bytes": 9929594,
+      "sha256": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f",
+      "modelFamily": "PP-OCRv6"
+    },
+    {
+      "assetId": "PP-OCRv6_rec_small",
+      "pathWithinWheel": "models/PP-OCRv6_rec_small.onnx",
+      "bytes": 21234383,
+      "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884",
+      "modelFamily": "PP-OCRv6"
+    },
+    {
+      "assetId": "ch_ppocr_mobile_v2.0_cls_mobile",
+      "pathWithinWheel": "models/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "bytes": 585532,
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+      "modelFamily": "PP-OCRv2-cls"
+    }
+  ],
+  "assetBytes": 31749509,
+  "sourcePolicy": "assets_bundled_in_pinned_rapidocr_wheel",
+  "contentSha256": "3cff6d5868824c357d0609671669511a507bb25fef64ed4030450ebb8f73d81f"
+}

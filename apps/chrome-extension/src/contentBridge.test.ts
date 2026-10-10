@@ -8,6 +8,7 @@ import {
   IN_PAGE_SIDEBAR_HOST_ID,
   JUMPBACK_MESSAGE_TYPE,
   LEGACY_INJECTED_HOST_ID,
+  MEDIA_COLLECT_CONTEXT_MESSAGE_TYPE,
   PAGE_CONTEXT_MESSAGE_TYPE,
   performJumpback
 } from "./contentBridge";
@@ -17,6 +18,7 @@ describe("content page context bridge", () => {
     document.body.innerHTML = "";
     document.documentElement.removeAttribute("style");
     document.documentElement.removeAttribute("data-navia-content-bridge-ready");
+    document.documentElement.removeAttribute("data-navia-content-bridge-mode");
     document.body.removeAttribute("style");
     document.body.removeAttribute("data-navia-original-margin-right");
     window.localStorage.removeItem("navia.inpageSidebarState");
@@ -81,6 +83,63 @@ describe("content page context bridge", () => {
     } finally {
       globalThis.chrome = originalChrome;
     }
+  });
+
+  it("registers a bridge without in-page UI for ordinary-page action injection", () => {
+    const listeners: Array<Parameters<typeof chrome.runtime.onMessage.addListener>[0]> = [];
+    const originalChrome = globalThis.chrome;
+    globalThis.chrome = {
+      runtime: {
+        onMessage: {
+          addListener(listener: Parameters<typeof chrome.runtime.onMessage.addListener>[0]) {
+            listeners.push(listener);
+          }
+        }
+      }
+    } as typeof chrome;
+
+    try {
+      initializeContentBridge(document, "https://example.com/article", { mode: "bridge_only" });
+      expect(listeners).toHaveLength(1);
+      expect(document.documentElement.getAttribute("data-navia-content-bridge-mode")).toBe("bridge_only");
+      expect(document.getElementById(IN_PAGE_SIDEBAR_HOST_ID)).toBeNull();
+      expect(document.getElementById(IN_PAGE_LAUNCHER_ID)).toBeNull();
+    } finally {
+      globalThis.chrome = originalChrome;
+    }
+  });
+
+  it("collects a generic media context through the product message handler", async () => {
+    document.head.innerHTML = `
+      <script>window.__INITIAL_STATE__={"videoData":{"bvid":"BV1ZpYd66ELP","cid":41828944992,"title":"真实标题","duration":792,"owner":{"name":"真实作者"},"pages":[{"page":1,"cid":41828944992,"part":"P1","duration":792}]}};</script>
+      <script>window.__playinfo__={"data":{"subtitle":{"subtitles":[]}}};</script>
+    `;
+    document.body.innerHTML = "<video></video>";
+    const video = document.querySelector("video") as HTMLVideoElement;
+    Object.defineProperties(video, {
+      duration: { configurable: true, value: 792 },
+      currentTime: { configurable: true, writable: true, value: 8 },
+      paused: { configurable: true, value: true }
+    });
+    const handler = createPageContextMessageHandler(document, "https://www.bilibili.com/video/BV1ZpYd66ELP");
+    const response = await new Promise<unknown>((resolve) => {
+      expect(handler(
+        { type: MEDIA_COLLECT_CONTEXT_MESSAGE_TYPE },
+        {} as chrome.runtime.MessageSender,
+        resolve as (response?: unknown) => void
+      )).toBe(true);
+    });
+    expect(response).toMatchObject({
+      ok: true,
+      adapterId: "bilibili",
+      value: {
+        platform: "bilibili",
+        mediaId: "BV1ZpYd66ELP",
+        playbackUnitId: "41828944992",
+        transcriptAvailability: "unavailable"
+      }
+    });
+    expect(JSON.stringify(response)).not.toMatch(/"bvid"|"cid"/);
   });
 
   it("retries in-page sidebar injection when the content script runs before body exists", async () => {

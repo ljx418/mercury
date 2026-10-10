@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "v3-3-4-real-governed-vlm-acceptance/v1",
+  "executedAt": "2026-10-08T06:36:40.541799Z",
+  "passed": true,
+  "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+  "input": {
+    "mediaId": "BV1ZpYd66ELP",
+    "timestampMs": 4000,
+    "frameSha256": "74e8a2d24cc6ba58553d09d2e8e81fb29d54c6768a029ce530b4b4129ba6d315",
+    "frameBytes": 535519,
+    "widthPx": 852,
+    "heightPx": 480
+  },
+  "provider": {
+    "providerId": "minimax-cn-openai-vision",
+    "modelId": "MiniMax-M3"
+  },
+  "consent": {
+    "scope": "selected_frame_cloud_vision",
+    "decisionIdSha256": "215abddd704621be7ac1aa4444ab69753b139d746087cac4d4f0dd4dad7317ef",
+    "dispatchSequence": 0,
+    "authorizedDispatchCount": 1,
+    "postRevocationDispatchCount": 0,
+    "postRevokeFailureCode": "VISION_CONSENT_REVOKED"
+  },
+  "observation": {
+    "requestSha256": "e50c8f7a2ffad28d812b69e1a04459bf89757a572b92db1e48d4ea7022414d74",
+    "responseSha256": "683b58eb816d3384b832d13c9cf288f0824645ed789c909d9b6ac5696b9e4f8e",
+    "captionSha256": "4428fb6f800f37648354936757f1231dc43524cb19e82829dfb4cb6538e07295",
+    "captionCharacters": 403,
+    "usage": {
+      "inputImageCount": 1,
+      "inputBytes": 535519,
+      "inputTokens": 554,
+      "outputTokens": 94,
+      "estimatedCostUsd": null
+    },
+    "status": "succeeded"
+  },
+  "providerDispatchCount": 1,
+  "pregrantFailureCode": "VISION_CONSENT_REQUIRED",
+  "secretMaterialIncluded": false,
+  "rawFrameIncluded": false,
+  "cookieSeedPersisted": false,
+  "privateMediaPersisted": false,
+  "publicAbsolutePathCount": 0
+}

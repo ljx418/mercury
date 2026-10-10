@@ -23,7 +23,7 @@ export function SourceLibraryPanel({ workspace, sources, onSelectSource }: {
         <label><span>搜索来源</span><input aria-label="搜索来源" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="标题、URL 或 Source ID" /></label>
         <label><span>构建状态</span><select value={status} onChange={(event) => setStatus(event.target.value)}><option value="all">全部</option><option value="trace_ready">Trace ready</option><option value="building">Building</option><option value="failed">Failed</option><option value="degraded">Degraded</option></select></label>
       </div>
-      <div className="source-table" role="list">
+      <div className="source-table" role={visible.length ? "list" : undefined}>
         {visible.map((source) => (
           <button
             className="source-list-row"
@@ -37,8 +37,8 @@ export function SourceLibraryPanel({ workspace, sources, onSelectSource }: {
             <span className={`source-state source-state-${source.status}`}>{source.status}</span>
           </button>
         ))}
-        {!visible.length ? <p className="empty-copy">没有符合当前筛选条件的来源。</p> : null}
       </div>
+      {!visible.length ? <p className="empty-copy">没有符合当前筛选条件的来源。</p> : null}
     </section>
   );
 }

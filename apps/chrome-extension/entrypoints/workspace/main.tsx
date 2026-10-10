@@ -42,6 +42,7 @@ import { PermissionRootManager } from "../../src/modules/knowledge_workspace/Per
 import { ForgetSourceDialog } from "../../src/modules/knowledge_workspace/ForgetSourceDialog";
 import { DataServiceStatusCard } from "../../src/modules/knowledge_workspace/DataServiceStatusCard";
 import { LocalRuntimeAccess, type LocalRuntimeAccessChange } from "../../src/modules/knowledge_workspace/LocalRuntimeAccess";
+import { MediaWorkspaceShell, resolveMediaWorkspaceRoute } from "../../src/modules/media_companion/product";
 
 type AuthorityResolver = (route: WorkspaceRoute) => Promise<WorkspaceAuthorityResolution>;
 
@@ -54,6 +55,20 @@ const ROUTE_LABELS: Record<WorkspaceRouteIntent, string> = {
 };
 
 function App() {
+  const [mediaRoute, setMediaRoute] = useState(() => window.location.hash);
+  useEffect(() => {
+    const onHashChange = () => setMediaRoute(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+  const mediaResolution = resolveMediaWorkspaceRoute(mediaRoute);
+  useEffect(() => {
+    if (mediaResolution?.ok && mediaResolution.legacyReplacement) {
+      window.history.replaceState(null, "", mediaResolution.legacyReplacement);
+      setMediaRoute(mediaResolution.legacyReplacement);
+    }
+  }, [mediaResolution?.ok && mediaResolution.legacyReplacement]);
+  if (mediaResolution) return <MediaWorkspaceShell resolution={mediaResolution} />;
   return (
     <WorkspaceRouter>
       {(router) => <WorkspacePage router={router} />}

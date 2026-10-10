@@ -1,5 +1,20 @@
 # Navia / 伴航 V1 架构设计文档
 
+> **2026-10-07 当前 L0 权威**：V3 架构收敛为“用户显式启动本机伴侣 → Chrome 扩展 Chat/Know → 统一网页/媒体上下文 → 来源证据 → KnowledgeDraft → 用户确认 → 本地知识存储”。扩展不得自动启动 Runtime；Agent 不属于 V3 运行时或一级导航。机器架构源为 `design/v3-chat-know-l0-architecture.json`，可审查图为 `design/v3-chat-know-l0-architecture.html`，设计说明为 `design/v3-chat-know-product-convergence.md`。后续历史架构与该边界冲突时，以此为准。
+
+## 0. V3 Chat + Know 零层架构
+
+| 层 | 实体 | 责任 | V3 状态 |
+|---|---|---|---|
+| 用户与进程 | Desktop Companion Launcher | 显式启停、一次配对、短时会话入口 | 待新增 |
+| 浏览器产品 | Extension Shell / Chat / Know / Settings | 当前上下文、显式知识管理、辅助配置 | 需收敛 |
+| 适配器 | WebPageAdapter / MediaPortalAdapter | 输出统一 `ContextEnvelope`；B站为首个视频实现 | 部分实现 |
+| 本地业务 | Runtime API / Perception / KnowledgeExtractor | 感知、问答、来源证据与草稿 | 部分实现/待新增 |
+| 数据 | LocalKnowledgeStore | `KnowledgeItem` CRUD、标签、排序、归档 | 需收敛 |
+| 远期 | Agent Domain | 未来经受治理接口访问知识 | V5+ |
+
+禁止从 UI 直接调用模型、门户私有接口或数据库；Chat/Know 必须经过 Runtime 合同。视频能力只能作为 Chat 的上下文适配器，不得形成第二套证据或知识存储。
+
 > 2026-09-15 T04.1/PX-6 实现状态：`raw -> ArtifactReader -> DerivedFacts -> shared validation -> pending Human -> Report -> Package -> raw Invocation -> resolved Invocation` 已在 detached acceptance snapshot 完成 R4-P/R4-E；T04.1 独立审计为 Fatal 0 / Major 0 / Minor 0。P7 已新增 `CandidateBinding -> raw-byte/facts/AST revalidation -> MachineExitAudit -> ReviewRequest/EvidenceIndex -> machine-only archive`，候选 `px6-machine-exit-20260914t164500z` 已获 PX6-0..5 机器阶段 `LIMITED PASS`（独立审计 Fatal 0 / Major 0 / Minor 0）。PX6-6 真人 H01..H07 仍 pending；PX6-7 production finalizer 在独立终审 ArtifactRef 尚未冻结前 fail-closed，Human/G7/final 不得自动签署。
 
 > 2026-09-10 RKM文档补强：目标认证矩阵、三类独立同意、RKM内部中止及共享支持关系见 [RKM架构](design/v2-real-knowledge-maintenance-architecture.md) 和合同3.3/3.4。新图04给出三类同意横向比较，验收7提供S->E反向映射；这些新增目标尚未实现。
@@ -2253,18 +2268,19 @@ E09 Mock仍只用于测试；H01-RDS 已增加限定的真实 `DataServiceKnowle
 
 ## 22. V3 Media Companion 目标架构
 
-`V3 Media Companion` 在 V1 current-page companion reading 和 V2 knowledge asset 路线之后，把 Navia 扩展到视频页伴随体验。目标不是把 V1 的 DOM 抽取简单套到视频页，也不是立即接入真实多模态模型，而是先设计可审计、可反跳、可降级的视频页媒体上下文架构。
+`V3 Media Companion` 在 V1 current-page companion reading 之后独立推进，把 Navia 扩展到视频页伴随体验。V2/PX-6/RKM 暂停且不再作为 V3 前置；V3 通过本地 `MediaTaskStore` 和导出形成闭环，V4 再接入知识持久化、Query、Graph、Durable Forget 和维护。
 
 V3 分层目标：
 
 ```text
 Host video page
-  -> Content Script Media Collector
+  -> MediaPortalRegistry -> selected MediaPortalAdapter
   -> MediaPageContext
   -> A Media Page Perception
-  -> D Adapter / Governance / Trace
-  -> C Media Mindmap
-  -> B Media Companion Renderer
+  -> Runtime media pipeline / MediaTaskStore
+  -> D Adapter / Governance / Trace (ASR + vision + synthesis)
+  -> A VideoOutline / C Media Mindmap
+  -> B Side Panel + Media Workspace
   -> Content Script media jumpback / timestamp seek / source marker
   -> V3 evidence package
 ```
@@ -2274,38 +2290,52 @@ Host video page
 | 状态 | 实体 | 当前实现 | V3 目标 |
 |---|---|---|---|
 | 已实现保持 | `apps/chrome-extension/src/pageContext.ts` | 读取网页 DOM、metadata、selection | 作为普通网页感知基线；V3 需新增 media-specific collector，不把普通 DOM context 当作视频理解完成 |
-| 待新增 | Content Script Media Collector | 尚无独立媒体页采集层 | 读取 video URL、平台、标题、作者、简介、时长、当前播放时间、字幕 / 转录入口、章节、评论 / 弹幕可见文本 |
-| 待新增 | `MediaPageContext` | 尚无媒体上下文合同 | 规划 `platform`、`videoId`、`duration`、`currentTime`、`transcriptAvailability`、`timelineSources`、`degradedReason` |
+| 已实现（V3-1.1 外部限定 PASS） | `MediaPortalRegistry` / `MediaPortalAdapter` | 12 页真实 Chrome 矩阵已通过 | 通过窄域 URL matcher 选择 adapter；统一页面 identity、公开能力、播放器时间与 seek；未注册门户 fail closed |
+| 已实现（V3-1.1 外部限定 PASS） | `BilibiliMediaPortalAdapter` | 已读取 B站 bvid/cid/分P并映射为通用字段 | B站 DOM/API 继续只留在 adapter 内；不承诺会话或字幕正文 |
+| 已实现（V3-1.1 外部限定 PASS） | `MediaPageContext` | 已固定通用媒体页字段 | 继续禁止平台专用字段泄漏到 UI/Runtime |
 | 待新增 | A Media Page Perception | A 当前只做网页 page reading | 生成 transcript-first digest、timeline events、media source refs、quality report 和 low-signal degraded |
 | 保持边界 | D Adapter / Governance / Trace | ToolResult / Artifact / Event / Trace 边界 | 未来 ASR / VLM / Gemini Video 必须经 Adapter 和治理接入；B 不得直连模型 |
 | 待新增 | C Media Mindmap | 当前 C 生成网页 Mindmap / nodeSourceMap | 规划基于 transcript/timeline 的 Media Mindmap、章节图、主题图和证据绑定 |
 | 待新增 | B Media Companion Renderer | 当前 B 展示 Chat、Mindmap、Source Evidence | 规划视频概览卡、章节时间轴、Media Mindmap、截图证据卡、字幕问答和 timestamp jumpback controls |
-| 待新增 | Video frame evidence capture | 当前只有网页截图 / source marker 证据 | 规划目标时间点视频截图证据；V3.0 只证明可见帧和时间点，不声明 VLM 已理解画面 |
+| 待新增 | Video frame / OCR / VLM evidence | 当前只有网页截图 / source marker 证据 | FFmpeg/OpenCV 关键帧、本地 RapidOCR、授权云端 `MediaVisionProvider`，三类证据分型 |
 | 待新增 | Media Jumpback | 当前 source jumpback 面向 DOM / textQuote / fallback | 规划 seek 到 timestamp、打开章节、定位 transcript segment、fallback / blocked 状态 |
-| 需新增 / 未来候选 | `LocalAsrAdapter` / VLM / OCR / Gemini Video Adapter | V1 明确禁止媒体流理解 | V3.0 仅新增显式 `chrome.tabCapture` 当前标签页音频到本地 ASR；通用/云端 ASR、VLM、OCR 和视频帧理解仍留在 V3.x，并冻结授权、采样、隐私、成本、延迟和 EventStore 回放 |
+| 已实现（V3-1.2 QUALIFIED PASS） | `PortalSessionRegistry` / `PortalSessionAdapter` / `PortalSessionBroker` | 通用调度、policy 和无秘密 capability 已通过真实 Chrome 会话矩阵 | 保持未注册 adapter fail closed；无运行时远程代码；`serverValidated=false` 不得扩大声明 |
+| 已实现（V3-1.2 QUALIFIED PASS） | `BilibiliPortalSessionAdapter` | 可见用户授权后最小读当前 profile 的白名单 Cookie，只返回候选会话能力 | 值不离开 adapter 调用栈；V3-1.2 registry 原始字节保持只读 |
+| 已实现（V3-1.3 PASS） | `PortalCredentialChannel` / `PortalCredentialLease` | 20 秒单任务 channel + 60 秒 Runtime 内存租约已通过真实 Chrome/Runtime 独立出门审查 | 作为 V3-2 acquisition 的唯一 credential authority；公开元数据禁止秘密值，V3-2 不得延长、复制或持久化 lease |
+| 部分已实现、其余待新增 | `AsrProviderCatalog` / `AsrModelManager` / `BilibiliMediaAcquirer` / `LocalAsrAdapter` / frame pipeline / `MediaVisionProvider` | V3-2-0a 模型目录、选择、安装、回退和 Settings 已获独立 `LIMITED PASS`；媒体获取与生产转写尚未实现 | 首版以租约获取凭据字幕/临时媒体；公开字幕与显式 `chrome.tabCapture` 回退；本地 OCR 和授权云端 VLM；直播、通用文件和云端 ASR 后置 |
+| 待新增 | `MediaTaskStore` / export | 无媒体任务权威 | 保存本地任务、状态和证据；导出 Markdown ZIP/JSON，知识导入固定延后到 V4 |
 
-V3.0 B站字幕优先、本地 ASR 回退数据流：
+V3 首版 B站受控会话主路径与双回退数据流：
 
 ```text
 Bilibili video page
-  -> BilibiliMediaCollector: bvid / cid / part / metadata / player time / subtitle availability
+  -> MediaPortalRegistry -> BilibiliMediaPortalAdapter
+  -> adapter internal: bvid / cid / part / metadata / player time / subtitle availability
   -> MediaPageContext
-  -> subtitle resolver -> MediaTranscript
-  -> if subtitle unavailable: trusted user click -> MediaCaptureController -> LocalAsrAdapter -> MediaTranscript
+  -> UI PortalPermissionClient -> Background PortalSessionBroker
+  -> PortalSessionRegistry -> BilibiliPortalSessionAdapter
+  -> V3-1.2 PortalSessionCapability(serverValidated=false)
+  -> V3-1.3 one-shot envelope -> same-task PortalCredentialLease(adapterId=bilibili)
+  -> Runtime BilibiliMediaAcquirer -> credentialed subtitle or task-scoped temporary audio/video
+  -> fallback 1: public/page subtitle
+  -> fallback 2: trusted user click -> MediaCaptureController -> LocalAsrAdapter
+  -> MediaTranscript + MediaAcquisitionRecord
+  -> frame sampler -> local OCR -> governed cloud MediaVisionProvider
   -> A: VideoOutline + timeline source refs + quality report
   -> D: ToolResult / Artifact / Event / Trace mapping
   -> C: MediaMindmapProjection from the same VideoOutline
   -> B: video overview + timeline + evidence cards + ask-video chat
   -> MediaJumpbackController: timestamp seek or fallback / blocked
-  -> explicit save -> runtimeClient -> real data_service adapter
+  -> MediaTaskStore -> local Markdown ZIP / JSON export
+  -> V4 Knowledge Adapter (future, not a V3 gate)
 ```
 
-YouTube 不参与这条首批出门链路；`V3-Y1` 只能在 `V3-B6` 后把 YouTube collector 映射到同一 `MediaPageContext`、`MediaTranscript` 和 `VideoOutline`，不得另建平行事实模型。
+YouTube、小红书不参与这条首批出门链路；后续阶段只能新增 `YouTubeMediaPortalAdapter`、`XiaohongshuMediaPortalAdapter` 等页面实现，并映射到同一 `MediaPageContext`、`MediaTranscript` 和 `VideoOutline`。`contracts/v3-media-portal-registry.json` 是页面 adapter 的 build-time closed-set 机器权威；`contracts/v3-media-session-policy-registry.json` 是会话 adapter 的独立闭集权威。每个新门户必须新增自己的 session adapter、optional permission、secret 名称政策和登录/未登录真实矩阵，不得另建平行事实模型，也不得继承 B站的 credential policy 或 PASS。
 
-V3.x 多模态候选数据流：
+V3 首版多模态数据流：
 
 ```text
-User-authorized media sample
+Persisted consent + selected media sample
   -> ASR transcript / VLM frame caption / OCR block / sampled frame refs
   -> D Adapter governance: permission, budget, privacy, trace
   -> A Media Perception merges multimodal evidence with transcript-first context
@@ -2314,41 +2344,57 @@ User-authorized media sample
 
 关键架构规则：
 
-- V3.0 不得把无字幕 / 无转录 / 无可见文本的视频标记为 understood；必须 degraded 或 blocked。
-- 视频截图证据只表示某个 timestamp 的可见帧；截图内容语义理解必须等待 V3.x 多模态合同。
+- V3 首版不得把无字幕 / 无转录 / 无可见文本的视频标记为 understood；必须 degraded 或 blocked。
+- `vision_frame` 才允许支持画面语义结论；普通 timestamp 截图只证明可见画面。OCR、字幕和 VLM 证据不可互相冒充。
 - Timestamp seek、transcript highlight、DOM source marker、fallback 和 blocked 必须在 UI、JSON、HTML 报告和截图 metadata 中一致。
-- 未来 ASR / VLM / OCR / Gemini Video / live input 只能作为 D Adapter Layer 后的受控能力，不允许 A 或 B 直接调用。
-- 不得自动下载视频流，不得绕过平台访问限制，不得把登录态自动化写成产品浏览器自动操作。
+- ASR / VLM / OCR 只能作为 Runtime 与 D Adapter Layer 后的受控能力，不允许 A、B 或 content script 直接调用；直播和通用文件仍属后续。
+- 只允许在用户授权和短租约内获取当前会话本来有权访问的任务期媒体；不得持久化 Cookie 值、跨任务复用或绕过平台限制，不得把登录态自动化写成产品浏览器自动操作。
+- `MediaPortalAdapter` 是防腐层，不是任意脚本插件系统。adapter 只能返回冻结合同，不能直接调用 Runtime、Provider 或持久存储；新增 adapter 必须更新 registry、窄域权限、平台 identity 语义和真实验收，不允许运行时加载未审计远程代码。
+- 路线 A 固定为：B站详情页窄域静态 content script + 窄域 web-accessible resource；其他普通网页只在 action/command 用户手势后使用 `activeTab` 和原生 Side Panel。不得用 `http://*/*`、`https://*/*` 等价替代 `<all_urls>`。
 
 V3 架构出门条件：
 
-- PRD、架构、开发计划、验收计划、stage gate 和 drawio 必须都区分 `V3.0 B站字幕优先 + 显式本地 ASR fallback` 与 `V3.x 通用多模态`；旧的 transcript-only 定义不得覆盖 §22.1 起的当前设计。
+- PRD、架构、开发计划、验收计划、stage gate 和 drawio 必须共同冻结 `V3 受控 Cookie 会话主路径 + 公开字幕/tabCapture 回退 + 本地 ASR + 选定关键帧本地 OCR + 授权云端 VLM`；直播、通用文件、云端 ASR 和全量画面理解属于后续，旧的 no-cookie 或 transcript-only 定义不得覆盖 §22.1 起的当前设计。
 - drawio 架构页必须展示具体实体：Content Script Media Collector、MediaPageContext、A Media Page Perception、D Adapter/Governance、C Media Mindmap、B Media Companion Renderer、VideoFrameEvidenceRef、MediaJumpbackTarget 和 evidence package。
-- 任何声明 `ASR/VLM/Gemini Video ready` 的文档必须先定义用户授权、隐私、采样、延迟、成本、EventStore / Trace 和 false-green audit；否则 No-Go。
+- 任何声明首版本地 ASR、本地 OCR 或授权云端 VLM 通过的证据，必须先定义并实测用户授权、隐私、采样、延迟、成本、EventStore / Trace 和 false-green audit；不得扩大为 Gemini Video、直播或全量视频理解 ready。
 
 ### 22.1 B站优先的具体代码实体
 
-V3.0 首批实体和所有权冻结如下：
+V3 首批实体和所有权冻结如下：
 
 | 实体 | 目标位置 | 所有者与职责 | 状态 |
 |---|---|---|---|
-| `BilibiliMediaCollector` | `apps/chrome-extension/src/modules/media_companion/` | B-local/content-script helper；读取当前页 bvid、cid、分P、时长、播放器时间、页内字幕可用性 | 未开发 |
-| `MediaPageContext` | V3 合同 + `apps/.../media_companion/` | 当前媒体页结构化输入；不能用普通 `PageContext` 冒充 | 未开发 |
-| `MediaCaptureController` | `apps/chrome-extension/entrypoints/background/` | 仅处理用户手势发起的 `chrome.tabCapture` 生命周期；不持久化音频 | 未开发 |
+| `MediaPortalAdapter` / `MediaPortalRegistry` | `apps/chrome-extension/src/modules/media_companion/` | 通用 adapter 合同与显式 registry；按 URL 选择唯一 adapter，未注册或冲突时拒绝 | V3-1.1 外部限定 PASS |
+| `BilibiliMediaPortalAdapter` | `apps/chrome-extension/src/modules/media_companion/adapters/bilibili/` | 读取当前页 bvid、cid、分P、时长、播放器时间、页内字幕能力并映射通用字段 | V3-1.1 外部限定 PASS |
+| `MediaPageContext` | V3 合同 + `apps/.../media_companion/` | 当前媒体页通用结构化输入；不能用普通 `PageContext` 或平台原始对象冒充 | V3-1.1 外部限定 PASS |
+| `PortalPermissionClient` | `apps/.../media_companion/session/` | 只在 Side Panel/Workspace 真实点击处理器内请求 registry 冻结的 optional permissions | V3-1.2 QUALIFIED PASS |
+| `PortalSessionAdapter` / `PortalSessionRegistry` / `PortalSessionBroker` | `apps/.../media_companion/session/` | 通用会话能力调度；不含平台字段或秘密值 | V3-1.2 QUALIFIED PASS |
+| `BilibiliPortalSessionAdapter` | `apps/.../media_companion/session/bilibili/` | 通过可选 `cookies` 与窄域 host permission 读白名单 Cookie；只派生候选 capability，不持久化值 | V3-1.2 QUALIFIED PASS |
+| `PortalCredentialChannelClient` / `PortalCredentialMessageRouter` | `apps/.../media_companion/session/credential/` + Background | UI 用既有内存 bearer 创建短期 channel；Background 只接受精确产品页面 sender | V3-1.3 PASS |
+| `CredentialChannelStore` / `CredentialLeaseStore` | `services/local-runtime/navia_runtime/modules/media_companion/` | 256-bit ticket、首次请求消费、20 秒 channel、60 秒进程内 lease、重启清空 | V3-1.3 PASS |
+| `PortalCredentialLease` | V3 公开合同 | 通用无秘密租约元数据；browser-session binding 不是 profile 路径/hash；公开 leaseId 不是访问能力 | V3-1.3 PASS |
+| `BilibiliMediaAcquirer` | `services/local-runtime/navia_runtime/modules/media_companion/` | 在租约内获取凭据字幕和任务期临时音频/视频；随机 `0600` cookiefile；终态清理 | 未开发 |
+| `MediaAcquisitionRecord` | V3 合同 | 固定主路径/回退路线、下载类型、状态和机器可读原因 | 未开发 |
+| `MediaCaptureController` | `apps/chrome-extension/entrypoints/background/` | 仅作为最终回退处理用户手势发起的 `chrome.tabCapture` 生命周期；不持久化音频 | 未开发 |
 | `MediaCaptureGrant` | V3 合同 | 固定 tabId、范围、授权时点、撤销和清理结果 | 未开发 |
 | `LocalAsrAdapter` | `services/local-runtime/navia_runtime/modules/media_companion/` | D Adapter 后的本地转写；输出分段、置信度、时间和 hash | 未开发 |
-| `MediaIngestRun` | Runtime/EventStore | 长任务状态、取消、失败、恢复与 artifact refs | 未开发 |
-| `VideoOutline` / `TimelineSegment` | V3 合同 + A | 图文大纲与导图的唯一语义权威 | 未开发 |
-| `MediaMindmapProjection` | C `modules/mindmap/` 的 V3 扩展 | 只从 `VideoOutline` 派生导图，不自行总结视频 | 未开发 |
+| `MediaTask` / `MediaTaskStore` | Runtime SQLite media context | versioned aggregate、状态机、event/outbox 同事务、取消、恢复和本地 artifact refs | 实施级文档/Schema 候选；代码未开发 |
+| `MediaFramePipeline` / `LocalOcrAdapter` | Runtime media context | FFmpeg/OpenCV 选帧、RapidOCR、本地清理 | 实施级文档/Schema 候选；代码未开发 |
+| `MediaVisionProvider` | D Adapter/Governance | capability 型云端视觉接口；参考适配器兼容 OpenAI 多模态协议，不绑定厂商 | 实施级文档候选；真实 provider/model 未冻结，代码未开发 |
+| `VideoOutline` / `TimelineSegment` | V3 合同 + A | 图文大纲与导图的唯一语义权威 | 实施级文档/Schema 候选；代码未开发 |
+| `MediaMindmapProjection` | C `modules/mindmap/` 的 V3 扩展 | 只从 `VideoOutline` 派生导图，不自行总结视频 | 实施级文档/Schema 候选；代码未开发 |
 | `MediaCompanionRenderer` | B `src/modules/media_companion/` | 概览、时间轴、导图、证据与任务状态 | 未开发 |
 | `MediaJumpbackController` | Content Script | 用户点击后 seek；返回 located/fallback/blocked | 未开发 |
 
 具体调用关系：
 
 ```text
-trusted user click
--> Background MediaCaptureController
--> chrome.tabCapture current tab audio
+user click start
+-> PortalPermissionClient -> PortalSessionBroker -> BilibiliPortalSessionAdapter
+-> one-shot envelope (V3-1.3) -> PortalCredentialLease(adapterId=bilibili)
+-> Runtime BilibiliMediaAcquirer -> credentialed subtitle / temporary audio+video
+-> if unavailable: public/page subtitle
+-> if still unavailable: trusted click -> MediaCaptureController -> chrome.tabCapture current tab audio
 -> Runtime LocalAsrAdapter
 -> MediaTranscript artifact + EventStore trace
 -> A MediaPagePerception -> VideoOutline
@@ -2358,22 +2404,180 @@ trusted user click
 -> user click -> MediaJumpbackController -> HTMLVideoElement.currentTime
 ```
 
-字幕路径不需要 capture grant，但仍必须记录字幕来源、语言、段落时间和原始字节 hash。ASR 路径必须有 grant；缺 grant、失去 tab、媒体停止、Runtime 离线或用户取消均为显式终态。
+凭据路径必须有同 task、未过期租约和五项授权；字幕路径仍须记录来源、语言、段落时间和原始字节 hash。只有 tabCapture ASR 路径必须有 capture grant，且 `MediaTask.captureGrant` 是唯一事实源，`MediaAcquisitionRecord` 不复制它；缺租约/grant、Cookie 失效、平台拒绝、失去 tab、媒体停止、Runtime 离线或用户取消均为显式终态。
 
 ### 22.2 BiliNote 技术迁移边界
 
-Navia 采纳 BiliNote 的“字幕优先、ASR fallback、后台任务、时间戳图文笔记”流程，但不采用 `*Content-*` / `*Screenshot-*` marker 作为权威合同，也不在 V3.0 自动下载媒体流。`VideoOutline` 同时派生 Markdown-like article 和 Media Mindmap，所有节点通过 `MediaEvidenceRef` 绑定到字幕/ASR/metadata/timestamp。
+Navia 采纳 BiliNote 的“Cookie/字幕、下载后 ASR、后台任务、抽帧、时间戳图文笔记”能力链，但不采用其明文 `CookieConfigManager`、全局下载配置或 `*Content-*` / `*Screenshot-*` marker 作为权威合同。媒体只在用户授权、短租约和任务临时目录内获取并强制清理。`VideoOutline` 同时派生 Markdown-like article 和 Media Mindmap，所有节点通过 `MediaEvidenceRef` 绑定到字幕/ASR/metadata/timestamp。
 
-### 22.3 H01-RDS 前置层
+### 22.3 V3 本地任务与 V4 知识边界
 
-V3 artifact 持久化路径必须是：
+V3 artifact 路径必须是：
 
 ```text
-B Renderer -> runtimeClient -> Navia Runtime -> real data_service adapter -> data_service
+B Renderer -> runtimeClient -> Navia Runtime -> MediaTaskStore -> local export
+V4 Knowledge Adapter (future) <- explicit user-selected V3 export
 ```
 
-`MockKnowledgeServiceAdapter` 只能作为默认测试实现。H01-RDS 候选通过 `NAVIA_KNOWLEDGE_ADAPTER=data_service` 显式选择真实 adapter；已完成真实服务状态、source import/build/trace、跨 Runtime 重启读取和同一快照重复保存零 build。真实 Chrome 三入口的一致 `workspaceId/sourceId` 仍是 H01 人工出门项。未实现的 Ask/Graph/Forget 能力保持 capability=false 与 fail-closed，不能由 Mock 与真实来源混合返回。
+V3 不调用 `MockKnowledgeServiceAdapter` 或 `DataServiceKnowledgeAdapter` 完成媒体出门。`MediaTaskStore` 是独立本地聚合根，以 `sourceIdentity=portal:<adapterId>:<mediaId>:<playbackUnitId>:<partId>` 幂等定位任务；B站映射为 `portal:bilibili:<bvid>:<cid>:<partId>`。导出合同固定 `knowledgeImportStatus=deferred_to_v4`，防止本地文件被误报为真实知识持久化。
 
-H01-RDS 的代码入口冻结为 `modules/memory/data_service_adapter.py::DataServiceKnowledgeAdapter` 和 `build_knowledge_adapter_from_env()`。浏览器只把用户已读取的 `cleaned_text` 作为带 UTF-8 长度与 SHA-256 的 `contentSnapshot` 发给 Local Runtime；只有 Runtime 的 `DataServiceHttpClient` 可调用 localhost data_service。前端不得读取 `NAVIA_DATA_SERVICE_API_KEY`，也不得直接调用 `/api/workspaces/*`。
+V4 启动时必须重新冻结 Knowledge Adapter，只接受用户主动选择的 V3 导出，不允许反向让 V3 前端写知识事实。已封存 H01/PX-6 证据、代码和失败状态保持原样，但不参与 V3 分母。
 
-真实导入内容使用稳定 canonical envelope：`title + originUrl + pageId + sourceType + contentSnapshot.sha256 + snapshot text`。因此相同正文但不同 URL 不会折叠为同一来源；同 URL、同快照跨入口保持同一 content-addressed source。经合同约束的 `sourceRefs` 作为 `naviaSourceRefs` 写入下游 metadata，使 Runtime 重启后仍能恢复非空 trace，不依赖进程内存或直接读取 DS 私有目录。
+### 22.4 授权、Provider 与清理
+
+`MediaConsentPolicy` 持久到主动撤销，scope 固定为 B站会话访问、任务期临时媒体、本地音频、本地画面和选定帧云端视觉。每个主路径任务需要短期 `PortalCredentialLease(adapterId=bilibili)`；只有 tabCapture 回退需要本次可信点击产生的 `MediaCaptureGrant`。`MediaVisionProvider` 必须声明 vision capability，并在 production profile 绑定 provider/model/base URL hash 和真实响应 hash；API key 不进入证据。
+
+Cookie 值只存在于浏览器 Cookie Store、进程内存和任务期随机 `0600` cookiefile，不进入配置、数据库、EventStore、Trace、日志或公开证据。完成、失败、取消、租约到期或撤销时删除 cookiefile 和临时媒体；ASR 终态删除原始音频；OCR/VLM 终态删除非证据帧。任一清理失败时任务不得进入 `completed`。
+
+### 22.5 Cookie 秘密传输与最小权限
+
+路线 A 将页面桥接与会话秘密权限分离：静态 content script 只匹配 `https://www.bilibili.com/video/*`，用于自动入口、页面 identity 和播放器控制。Chrome MV3 要求 `web_accessible_resources.matches` 使用 origin 级 pattern，因此只开放到 `https://www.bilibili.com/*`；该项只允许页面加载扩展内列出的资源，不会在非视频路径注入 content script。会话访问仍采用运行时可选 `cookies` 加 `https://*.bilibili.com/*`。其他普通网页只有 action/command 用户手势后的 `activeTab` 与原生 Side Panel，不得扩大到 `<all_urls>` 或等价全站模式。
+
+`PortalPermissionClient` 只能在 Side Panel/Workspace 可见按钮的真实用户 click handler 内调用 `chrome.permissions.request`；Background `PortalSessionBroker` 不请求权限，只复核 `permissions.contains`、调度 build-time `PortalSessionRegistry` 中的独立 session adapter，并返回无秘密 `PortalSessionCapability`。
+
+`BilibiliPortalSessionAdapter` 即使获得域权限，也只读取版本化名称白名单：`SESSDATA`、`bili_jct`、`DedeUserID`、`DedeUserID__ckMd5`、`sid`、`buvid3`、`buvid4`、`buvid_fp`、`b_nut`。新增名称必须回到 V3-1 合同修订与安全审计，不能在实现中静默放宽。未来门户的 session adapter 必须有自己的权限、secret 名称政策和租约实现；注册页面 adapter 不会自动授予 credential 能力。V3-1.2 仅返回 `serverValidated=false` 的浏览器内候选能力；一次性 envelope 与租约属于 V3-1.3。
+
+秘密 envelope 没有持久实例文件；持久 JSON Schema 只描述无秘密的 channel/lease/audit 公共记录。进程内 `BilibiliCredentialEnvelope` 使用以下两步协议：
+
+```text
+Side Panel/Workspace trusted click
+-> exact extension Origin + existing in-memory Runtime bearer
+-> POST /v1/media/credential-channels
+-> 256-bit one-shot channel ticket, TTL <= 20s, task/adapter/policy/binding scoped
+-> trusted extension message to Background; content script and generic runtime proxy denied
+-> Background rechecks policy + permissions + capability
+-> chrome.cookies.getAll({ domain: ".bilibili.com" })
+-> filter by frozen cookie-name allowlist; require non-empty SESSDATA
+-> dedicated no-store/no-redirect fetch with BilibiliCredentialEnvelope
+-> Runtime consumes ticket on first request, validates <= 32768 bytes, stores credentials in process memory <= 60s
+-> response to Background includes transient revocation capability; UI/evidence sees PortalCredentialLease metadata only
+```
+
+channel bootstrap 必须独立校验 `NAVIA_LOCAL_FILES_TOKEN` 和精确 `chrome-extension://<NAVIA_LOCAL_FILES_EXTENSION_ID>`；当前允许任意 `chrome-extension://` 的通用 CORS 规则不是认证。主 bearer 不进入 Background；UI 只把单任务短期 ticket 交给 Background。lease exchange 不经过 `runtimeClient`、`navia.runtimeFetch`、SSE 或任何会记录 body 的 E2E observation。
+
+该 endpoint 必须关闭 request-body access log、EventStore payload、Trace argument、exception dump 和 retry-body persistence；任何响应丢失或 transport failure 都不得重发同一 body，而是销毁旧引用并创建新 channel/envelope。生产审计在进程内以本次 Cookie 值扫描所有持久/公开 artifact，只输出命中计数和名称集合 hash，不保存值或可逆 hash。permission/Cookie 变化和用户撤销主动删除 lease；Runtime 重启清空全部 channel/replay cache/lease；Background 崩溃后的残余窗口由 60 秒 TTL 限制。浏览器 session binding 是 service-worker 启动时随机值的 domain-separated hash，不得包含 profile 路径、账号或 Cookie 值。
+
+V3-1.3 的机器权威为 `contracts/v3-media-credential-transport-policy-registry.json`、`contracts/v3_media_credential_lease_contracts.schema.json` 和 `fixtures/v3-media-credential-lease-contract-fixtures.json`。详细开发、验收和威胁模型位于 `evidence/v3_media_companion/v3-1-page-session-baseline/v3-1.3-credential-lease-*.md`。该阶段已通过独立实施出门审查；其 PASS 只提供 V3-2 的 credential authority，不等于媒体获取或视频理解通过。
+
+### 22.6 原型权威与 BiliNote 来源清单
+
+V3 当前产品实现基线只有普通网页读取、Side Panel/Workspace 外壳和可能显示的 V2 mock 状态；这些实体在图纸中标为“已实现保留”，但不得提升为媒体任务实现。目标交互权威是确定性 HTML/CSS 原型，AI 位图只能作非事实视觉探索，不能增加合同中不存在的素材库、笔记、知识库或项目存储能力。
+
+`design/v3-bilinote-migration-allowlist.json` 绑定 BiliNote clean commit、MIT license hash 和六个 `reference_only` 源文件的原始字节 hash。清单外默认拒绝；本地 dirty diff、明文 Cookie 管理、账号/数据库和应用壳不得进入 Navia。任何未来 `copy` 或 `rewrite` 必须在对应 V3 子阶段补充源到目标映射、许可证归属和独立实施前审计。
+
+### 22.7 V3-2 acquisition 分层与权威
+
+V3-2 采用单向无环分层：
+
+```text
+Side Panel / Workspace MediaAcquisitionClient
+-> loopback Runtime acquisition API
+-> MediaAcquisitionCoordinator
+-> registered MediaAcquirer (BilibiliMediaAcquirer only)
+-> SubtitleResolver | YtDlpMediaDownloader | trusted Capture stream
+-> LocalAsrAdapter
+-> MediaTranscript
+-> cleanup barrier
+-> public acquisition/ASR/transcript/cleanup/privacy records
+```
+
+只有 `MediaAcquisitionCoordinator` 决定 route、attempt sequence、终态和清理；UI、B站 plugin、下载器、ASR adapter、Background 和 Offscreen 都不能各自维护平行任务事实。通用层不得出现 bvid/cid/B站 Cookie 名，B站字段只允许存在于 `acquisition/bilibili/` plugin。未来 YouTube、小红书实现必须注册新的 `MediaAcquirer`，拥有独立权限、secret policy 和生产矩阵，不能继承 B站 PASS。
+
+Capture 使用第二条专用能力链：可见 UI 可信点击向 Runtime 创建一次性 ticket；Background 复核 sender/tab/page；`chrome.tabCapture.getMediaStreamId()` 的结果只交给 Offscreen；Offscreen 经专用 WebSocket 将顺序 chunk 送到同 task Runtime。主 bearer、Cookie、streamId 和 ticket 不进入通用 `runtimeClient`、content script、SSE 或持久记录。
+
+V3-2 Schema 只描述无秘密公共记录；任务私有内存和目录承载 lease 解封结果、cookiefile、ticket、streamId、原始媒体和临时路径。cleanup receipt 是五种终态的强制屏障，不是事后报告。机器权威和完整实体表见 `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-contract-and-api-spec.md`。当前 V3-2-0a 模型管理经独立实施出门审查为 `LOCAL LIMITED PASS`，SenseVoiceSmall Q8 已冻结为 `development_baseline`，V3-2-1 acquisition core 为 `LIMITED PASS`。生产 transcript 仍未完成，当前顺序阻塞是 V3-2-2 有效授权会话和 Revision 3 真实 12 页输入，而不是已经移入 V4 的跨模型 A06 比较。
+
+### 22.8 V3-2-0a ASR Provider 与模型管理分层
+
+新增链路保持 UI 不直连模型或下载源：
+
+```text
+Settings / AsrModelSettingsPanel
+-> runtimeClient ASR methods
+-> Runtime /v1/asr/catalog|settings|installations|models
+-> AsrProviderCatalog (immutable model/source/revision/hash/resource profile)
+-> AsrModelManager (job/state/cancel/restart recovery)
+-> private staging -> verify -> local load self-test -> atomic publish
+-> requestedModelId/effectiveModelId/fallbackReason
+-> future LocalAsrAdapter (只消费 ready model path)
+```
+
+具体代码实体为 `services/local-runtime/navia_runtime/modules/media_companion/asr/catalog.py`、`model_manager.py`、`scripts/prepare_bundled_asr.py`、`navia_runtime/asr_import.py`、`app.py` 的 `/v1/asr/*` 路由、`apps/chrome-extension/src/runtimeClient.ts` 和 `settings/AsrModelSettingsPanel.tsx`。模型权重位于 Git 忽略的 Runtime 控制目录；公共状态不返回绝对路径、Cookie、音频或 transcript。
+
+Provider 接口以 catalog 的 `providerId` 隔离引擎：Tiny 保留为技术安全兜底，Faster-Whisper Small 与 Paraformer 保留失败研究状态；`funasr-sensevoice-small-q8` 是 V3 的 `development_baseline`，只有 verified/ready 的固定 revision/hash 可被 `LocalAsrAdapter` 选择。未来新增 provider 必须冻结 engine/version/license/assets/self-test 和资源实测，不得让设置页加载任意 Python 类或任意远程代码。门户扩展与 ASR provider 正交：YouTube、小红书复用 `MediaTranscript` 与模型管理 API，但仍需各自 `MediaPortalAdapter/MediaAcquirer`、权限和真实样本门禁。
+
+安全边界为 HTTPS 官方源 allowlist、受校验重定向、固定文件集合/字节/SHA-256、受控 `.navia-asrpack`、zip-slip/link/超限拒绝、`0700/0600` 私有目录、取消/重启清理和 verified-ready 才可切换。Tiny 的低资源自检与 Small 的安装成功都不是 V3-2-A06 质量通过证据。
+
+### 22.9 V3-2-0b Provider 资格恢复架构
+
+V3-2-0b 在既有模型管理层与未来 `LocalAsrAdapter` 之间增加受治理的 Provider 资格层，不让 UI、门户 adapter 或 acquisition coordinator 直接管理原生进程：
+
+```text
+AsrModelSettingsPanel
+-> runtimeClient（只传 modelId/jobId）
+-> AsrModelManager（安装、校验、原子发布、requested/effective）
+-> AsrProviderRegistry（build-time closed providerId）
+-> FunAsrLlamaCppProviderAdapter（已实现；当前质量失败）
+-> NativeAsrProcessHost（已实现；无 shell、固定 argv、超时/内存/进程组）
+-> funasr-llamacpp + Paraformer Q8 + FSMN-VAD
+-> TimestampedTranscript
+-> 既有匿名比较 bundle / 两名独立 reviewer / Adjudication
+```
+
+候选资产由 `v3-asr-provider-qualification-candidate-manifest.json` 锁定；Runtime 与 Windows/Linux 可执行包、ASR/VAD 权重分别校验固定字节和 SHA-256。`NativeAsrProcessHost` 只能读取 Runtime 私有模型目录和本次任务私有音频，必须禁用任意远程代码、任意工作目录、shell 展开和继承秘密环境变量。stdout 只允许解析协议化结果，stderr 先脱敏再进入私有诊断，进程退出、取消、超时和 Runtime 重启均执行进程组清理。
+
+Provider 资格与门户采集保持正交：B站、未来 YouTube 或小红书的 `MediaAcquirer` 只提供相同 `TaskAudioRef`；任何平台不得选择 provider 或继承另一个门户的权限。资格通过只把 `funasr_edge_local` 标为可供 `LocalAsrAdapter` 选择，不能证明媒体获取、V3-2 四路线或视频理解通过。
+
+状态权威：candidate manifest 的文档生命周期为 `document_candidate_not_qualified`；产品 catalog 则显示 Tiny=`fallback_only`、Small=`failed_current_gate`、Paraformer Q8=`not_evaluated/qualification_pending/production_qualified`。只有同一 run 的真实推理、低资源观测、48 项双人判断、清理/秘密扫描和独立出门审查全部通过，stage-gate owner 才可写 `production_qualified`；失败时 effective model 回退到已验证 Tiny，并保留失败原因。
+
+### 22.10 V3-2-0b-5.3 固定窗口恢复架构
+
+长窗遗漏的恢复实体位于 Provider 之上、portal/acquisition 之下：
+
+```text
+BilibiliMediaAcquirer | future YouTubeMediaAcquirer | future XiaohongshuMediaAcquirer
+-> portal-specific policy and credential boundary
+-> TaskAudioRef (portal-neutral)
+-> FixedWindowAsrOrchestrator
+-> FixedWindowPlan / ChunkAudioRef
+-> FunAsrLlamaCppProviderAdapter
+-> NativeAsrProcessHost
+-> ChunkInferenceResult
+-> local timestamp validation + deterministic offset merge
+-> FixedWindowSampleResult
+```
+
+`FixedWindowAsrOrchestrator` 是唯一允许切片、调度、合并和执行 cleanup barrier 的实体。切片固定为 120000ms 输入上的 8 个 `[i*15000,(i+1)*15000)` 区间，0 overlap、0 gap、concurrency=1。Provider 仍只负责单次模型调用，ProcessHost 仍只负责受限原生进程；UI 和门户不得直接执行 binary、改变 plan 或访问 chunk 路径。
+
+私有值对象保存 source/chunk hash、local segment、attempt lineage 和清理状态；公开 evidence 只保存 hash、计数、边界、资源和 FailureCode，不保存音频、正文、绝对路径或凭据。任一 chunk 失败后，新 attempt 必须从 chunk 0 开始，禁止复用成功 chunk、跨 run 拼接或复制相邻文本。
+
+性能是架构门禁而非观测信息：三样本固定窗口 wall time 分别不得超过 `16360/14760/16280ms`，并保持 RSS<=8 GiB、asset<=512 MiB、无 GPU和断网。若逐 chunk 进程启动超过 2x，只能返回 ADR 评估持久 worker 或新 Provider；未经重冻结不得并行 8 进程或降低阈值。
+
+本层只开放 `TaskAudioRef -> timestamped result`，所以门户扩展不会污染 ASR。新增门户必须在自己的 adapter 内解决 URL identity、权限和凭据，不能继承 B站 PASS；固定窗口 PASS 也不能证明任何门户媒体获取成功。
+
+### 22.11 V3-2-0c SenseVoice 路线 C Spike 边界
+
+路线 C 复用 `TaskAudioRef -> AsrProviderRegistry -> LocalAsrAdapter -> NativeAsrProcessHost`，只替换 closed candidate descriptor、官方 binary/model identity 和输出 parser；门户、Cookie transport、采集协调器与 UI 均不参与 spike。推理进程固定 8 cores/8 GiB/no-GPU，并由 seccomp 在 syscall 层拒绝网络。
+
+当前只存在隔离 runner 与私有资产，不存在产品 provider 注册。真实 3-window spike 为 `SPIKE_FEASIBLE`，但近整窗单 segment 暂不能承担语音级时间权威。生产接入必须另建合同，将 VAD/SRT 粒度、24-bin 质量、跨平台资产、安装生命周期、requested/effective/fallback 和 cleanup 纳入同一门禁。
+
+### 22.12 V3-2-5..7 产品、故障与出门分层
+
+三个阶段保持单向数据流，不能由 UI、fault runner 或 package generator 写回业务事实：
+
+```text
+Side Panel MediaTranscriptQuickCard ----+
+                                         +-> MediaAcquisitionClient -> Runtime task API
+Workspace MediaTranscriptWorkspacePage -+                         -> MediaAcquisitionCoordinator
+                                                                   -> MediaTranscript + CleanupReceipt
+
+test-only FaultProfile -> boundary adapter failure -> Runtime task terminal/cleanup
+production runner -> raw collector -> independent verifier -> ExitCandidate(false/pending)
+                                                        -> external reviewer -> stage decision
+```
+
+V3-2-5 的 `useMediaAcquisitionTask` 只缓存传输状态并按 task revision 丢弃陈旧响应；Side Panel 与 Workspace 均不得生成 selected route、progress、transcript 或终态。`MediaCaptureConsentAction` 只从可见 trusted click 启动既有 capture authority 链。
+
+V3-2-6 的 fault profile 只存在于签名隔离测试配置，固定 F01..F14，每个故障使用独立 task/root。生产 API、Extension message、用户 URL 和普通环境变量不能选择 faultClass。验证器必须二次采样终态后 observation/artifact 计数，并从文件、进程、track、socket、DB/trace 六面证明清理。
+
+V3-2-7 从全新 build/profile/runtime/task root 运行 12 页 `6+3+1+1+1`。collector 只收原始观察，verifier 复算 A01..A20，package 工具只做 public/private 分类和 canonical seal。`v3_media_transcript_exit_v1.schema.json` 强制候选保持 `v3_2Passed=false`、`independentAuditStatus=pending`；不同 session 的独立审查结论不能回写 sealed candidate。

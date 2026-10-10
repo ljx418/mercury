@@ -1,0 +1,159 @@
+{
+  "productAcceptance": {
+    "schemaVersion": "v3-media-product-acceptance/v1",
+    "runId": "v3-5-product-20261006T150000Z",
+    "buildTreeSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "taskBinding": {
+      "taskId": "media_task_11111111111111111111111111111111",
+      "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:987654:part-1",
+      "taskRevision": 7,
+      "outlineId": "outline_22222222222222222222222222222222",
+      "evidenceCatalogSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "mediaDurationMs": 792000
+    },
+    "surfaces": [
+      { "surface": "side_panel", "viewport": "360x900", "screenshotSha256": "0101010101010101010101010101010101010101010101010101010101010101", "rootOverflow": false, "axeSerious": 0, "axeCritical": 0, "keyboardPassed": true },
+      { "surface": "side_panel", "viewport": "420x900", "screenshotSha256": "0202020202020202020202020202020202020202020202020202020202020202", "rootOverflow": false, "axeSerious": 0, "axeCritical": 0, "keyboardPassed": true },
+      { "surface": "workspace", "viewport": "768x900", "screenshotSha256": "0303030303030303030303030303030303030303030303030303030303030303", "rootOverflow": false, "axeSerious": 0, "axeCritical": 0, "keyboardPassed": true },
+      { "surface": "workspace", "viewport": "1280x900", "screenshotSha256": "0404040404040404040404040404040404040404040404040404040404040404", "rootOverflow": false, "axeSerious": 0, "axeCritical": 0, "keyboardPassed": true }
+    ],
+    "routes": [
+      { "routeId": "/media/tasks", "mode": "direct", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId", "mode": "reload", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/outline", "mode": "back", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/timeline", "mode": "reopen", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/mindmap", "mode": "direct", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/ask", "mode": "reload", "taskId": "media_task_11111111111111111111111111111111", "outcome": "restored", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/evidence/:evidenceId", "mode": "invalid", "taskId": null, "outcome": "recovered_to_task_library", "runtimeRead": true },
+      { "routeId": "/media/tasks/:taskId/export", "mode": "forbidden", "taskId": null, "outcome": "blocked", "runtimeRead": true }
+    ],
+    "askResults": [
+      { "questionId": "question_3333333333333333", "questionType": "grounded", "status": "answered", "answer": "示例有证据答案。", "evidenceIds": ["mtr_44444444444444444444444444444444"] },
+      { "questionId": "question_5555555555555555", "questionType": "unsupported", "status": "insufficient_evidence", "answer": "", "evidenceIds": [] }
+    ],
+    "seekObservations": [
+      { "origin": "outline", "requestedMs": 100000, "observedMs": 100500, "deltaMs": 500, "outcome": "located", "pageIdentityMatched": true, "observedAt": "2026-10-06T15:10:00Z" },
+      { "origin": "timeline", "requestedMs": 200000, "observedMs": 200500, "deltaMs": 500, "outcome": "located", "pageIdentityMatched": true, "observedAt": "2026-10-06T15:11:00Z" },
+      { "origin": "mindmap", "requestedMs": 300000, "observedMs": 300500, "deltaMs": 500, "outcome": "located", "pageIdentityMatched": true, "observedAt": "2026-10-06T15:12:00Z" },
+      { "origin": "ask_citation", "requestedMs": 400000, "observedMs": 400500, "deltaMs": 500, "outcome": "located", "pageIdentityMatched": true, "observedAt": "2026-10-06T15:13:00Z" },
+      { "origin": "evidence_drawer", "requestedMs": 500000, "observedMs": 500500, "deltaMs": 500, "outcome": "located", "pageIdentityMatched": true, "observedAt": "2026-10-06T15:14:00Z" }
+    ],
+    "exports": [
+      { "format": "markdown_zip", "artifactSha256": "6666666666666666666666666666666666666666666666666666666666666666", "memberIndexSha256": "7777777777777777777777777777777777777777777777777777777777777777", "byteLength": 4096, "knowledgeImportStatus": "deferred_to_v4" },
+      { "format": "json_bundle", "artifactSha256": "8888888888888888888888888888888888888888888888888888888888888888", "memberIndexSha256": "9999999999999999999999999999999999999999999999999999999999999999", "byteLength": 2048, "knowledgeImportStatus": "deferred_to_v4" }
+    ],
+    "accessibility": { "axeScanCount": 4, "serious": 0, "critical": 0, "keyboardScenarioCount": 8, "keyboardPassed": true },
+    "requirements": [
+      { "requirementId": "V3-5-A01", "passed": true, "evidenceSha256": "1010101010101010101010101010101010101010101010101010101010101010" },
+      { "requirementId": "V3-5-A02", "passed": true, "evidenceSha256": "1111111111111111111111111111111111111111111111111111111111111111" },
+      { "requirementId": "V3-5-A03", "passed": true, "evidenceSha256": "1212121212121212121212121212121212121212121212121212121212121212" },
+      { "requirementId": "V3-5-A04", "passed": true, "evidenceSha256": "1313131313131313131313131313131313131313131313131313131313131313" },
+      { "requirementId": "V3-5-A05", "passed": true, "evidenceSha256": "1414141414141414141414141414141414141414141414141414141414141414" },
+      { "requirementId": "V3-5-A06", "passed": true, "evidenceSha256": "1515151515151515151515151515151515151515151515151515151515151515" },
+      { "requirementId": "V3-5-A07", "passed": true, "evidenceSha256": "1616161616161616161616161616161616161616161616161616161616161616" },
+      { "requirementId": "V3-5-A08", "passed": true, "evidenceSha256": "1717171717171717171717171717171717171717171717171717171717171717" },
+      { "requirementId": "V3-5-A09", "passed": true, "evidenceSha256": "1818181818181818181818181818181818181818181818181818181818181818" },
+      { "requirementId": "V3-5-A10", "passed": true, "evidenceSha256": "1919191919191919191919191919191919191919191919191919191919191919" },
+      { "requirementId": "V3-5-A11", "passed": true, "evidenceSha256": "2020202020202020202020202020202020202020202020202020202020202020" },
+      { "requirementId": "V3-5-A12", "passed": true, "evidenceSha256": "2121212121212121212121212121212121212121212121212121212121212121" },
+      { "requirementId": "V3-5-A13", "passed": true, "evidenceSha256": "2222222222222222222222222222222222222222222222222222222222222222" },
+      { "requirementId": "V3-5-A14", "passed": true, "evidenceSha256": "2323232323232323232323232323232323232323232323232323232323232323" },
+      { "requirementId": "V3-5-A15", "passed": true, "evidenceSha256": "2424242424242424242424242424242424242424242424242424242424242424" },
+      { "requirementId": "V3-5-A16", "passed": true, "evidenceSha256": "2525252525252525252525252525252525252525252525252525252525252525" },
+      { "requirementId": "V3-5-A17", "passed": true, "evidenceSha256": "2626262626262626262626262626262626262626262626262626262626262626" },
+      { "requirementId": "V3-5-A18", "passed": true, "evidenceSha256": "2727272727272727272727272727272727272727272727272727272727272727" }
+    ],
+    "machinePassed": true
+  },
+  "humanReview": {
+    "schemaVersion": "v3-media-human-review/v1",
+    "bundleSha256": "3030303030303030303030303030303030303030303030303030303030303030",
+    "runId": "v3-5-product-20261006T150000Z",
+    "buildTreeSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "reviewerId": "fixture-reviewer",
+    "reviewerRole": "independent_human_reviewer",
+    "submittedAt": "2026-10-06T16:00:00Z",
+    "judgments": [
+      { "requirementId": "H01", "decision": "PASS", "screenshotRefs": ["screenshots/H01.png"], "note": "fixture only" },
+      { "requirementId": "H02", "decision": "PASS", "screenshotRefs": ["screenshots/H02.png"], "note": "fixture only" },
+      { "requirementId": "H03", "decision": "PASS", "screenshotRefs": ["screenshots/H03.png"], "note": "fixture only" },
+      { "requirementId": "H04", "decision": "PASS", "screenshotRefs": ["screenshots/H04.png"], "note": "fixture only" },
+      { "requirementId": "H05", "decision": "PASS", "screenshotRefs": ["screenshots/H05.png"], "note": "fixture only" },
+      { "requirementId": "H06", "decision": "PASS", "screenshotRefs": ["screenshots/H06.png"], "note": "fixture only" },
+      { "requirementId": "H07", "decision": "PASS", "screenshotRefs": ["screenshots/H07.png"], "note": "fixture only" },
+      { "requirementId": "H08", "decision": "PASS", "screenshotRefs": ["screenshots/H08.png"], "note": "fixture only" },
+      { "requirementId": "H09", "decision": "PASS", "screenshotRefs": ["screenshots/H09.png"], "note": "fixture only" },
+      { "requirementId": "H10", "decision": "PASS", "screenshotRefs": ["screenshots/H10.png"], "note": "fixture only" }
+    ],
+    "overallDecision": "PASS"
+  },
+  "finalizationCandidate": {
+    "schemaVersion": "v3-media-finalization/v1",
+    "recordType": "finalization_candidate",
+    "candidateId": "v3_final_33333333333333333333333333333333",
+    "runId": "v3-6-production-20261006T170000Z",
+    "buildTreeSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "registrySha256": "3434343434343434343434343434343434343434343434343434343434343434",
+    "classificationCounts": { "subtitle": 6, "asr": 3, "multipart": 1, "restricted": 1, "lowSignal": 1 },
+    "sampleCount": 12,
+    "samples": [
+      { "sampleId": "v3-sample-01", "sourceIdentity": "portal:bilibili:BV01:cid01:part-1", "canonicalUrlSha256": "0101010101010101010101010101010101010101010101010101010101010101", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1111111111111111111111111111111111111111111111111111111111111111" },
+      { "sampleId": "v3-sample-02", "sourceIdentity": "portal:bilibili:BV02:cid02:part-1", "canonicalUrlSha256": "0202020202020202020202020202020202020202020202020202020202020202", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1212121212121212121212121212121212121212121212121212121212121212" },
+      { "sampleId": "v3-sample-03", "sourceIdentity": "portal:bilibili:BV03:cid03:part-1", "canonicalUrlSha256": "0303030303030303030303030303030303030303030303030303030303030303", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1313131313131313131313131313131313131313131313131313131313131313" },
+      { "sampleId": "v3-sample-04", "sourceIdentity": "portal:bilibili:BV04:cid04:part-1", "canonicalUrlSha256": "0404040404040404040404040404040404040404040404040404040404040404", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1414141414141414141414141414141414141414141414141414141414141414" },
+      { "sampleId": "v3-sample-05", "sourceIdentity": "portal:bilibili:BV05:cid05:part-1", "canonicalUrlSha256": "0505050505050505050505050505050505050505050505050505050505050505", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1515151515151515151515151515151515151515151515151515151515151515" },
+      { "sampleId": "v3-sample-06", "sourceIdentity": "portal:bilibili:BV06:cid06:part-1", "canonicalUrlSha256": "0606060606060606060606060606060606060606060606060606060606060606", "expectedClass": "subtitle", "terminalStatus": "succeeded", "resultSha256": "1616161616161616161616161616161616161616161616161616161616161616" },
+      { "sampleId": "v3-sample-07", "sourceIdentity": "portal:bilibili:BV07:cid07:part-1", "canonicalUrlSha256": "0707070707070707070707070707070707070707070707070707070707070707", "expectedClass": "asr", "terminalStatus": "succeeded", "resultSha256": "1717171717171717171717171717171717171717171717171717171717171717" },
+      { "sampleId": "v3-sample-08", "sourceIdentity": "portal:bilibili:BV08:cid08:part-1", "canonicalUrlSha256": "0808080808080808080808080808080808080808080808080808080808080808", "expectedClass": "asr", "terminalStatus": "succeeded", "resultSha256": "1818181818181818181818181818181818181818181818181818181818181818" },
+      { "sampleId": "v3-sample-09", "sourceIdentity": "portal:bilibili:BV09:cid09:part-1", "canonicalUrlSha256": "0909090909090909090909090909090909090909090909090909090909090909", "expectedClass": "asr", "terminalStatus": "succeeded", "resultSha256": "1919191919191919191919191919191919191919191919191919191919191919" },
+      { "sampleId": "v3-sample-10", "sourceIdentity": "portal:bilibili:BV10:cid10:part-2", "canonicalUrlSha256": "1010101010101010101010101010101010101010101010101010101010101010", "expectedClass": "multipart", "terminalStatus": "succeeded", "resultSha256": "2020202020202020202020202020202020202020202020202020202020202020" },
+      { "sampleId": "v3-sample-11", "sourceIdentity": "portal:bilibili:BV11:cid11:part-1", "canonicalUrlSha256": "1111111111111111111111111111111111111111111111111111111111111111", "expectedClass": "restricted", "terminalStatus": "blocked", "resultSha256": "2121212121212121212121212121212121212121212121212121212121212121" },
+      { "sampleId": "v3-sample-12", "sourceIdentity": "portal:bilibili:BV12:cid12:part-1", "canonicalUrlSha256": "1212121212121212121212121212121212121212121212121212121212121212", "expectedClass": "low_signal", "terminalStatus": "degraded", "resultSha256": "2222222222222222222222222222222222222222222222222222222222222222" }
+    ],
+    "requirements": [
+      { "requirementId": "V3-6-A01", "passed": true, "evidenceSha256": "4141414141414141414141414141414141414141414141414141414141414141" },
+      { "requirementId": "V3-6-A02", "passed": true, "evidenceSha256": "4242424242424242424242424242424242424242424242424242424242424242" },
+      { "requirementId": "V3-6-A03", "passed": true, "evidenceSha256": "4343434343434343434343434343434343434343434343434343434343434343" },
+      { "requirementId": "V3-6-A04", "passed": true, "evidenceSha256": "4444444444444444444444444444444444444444444444444444444444444444" },
+      { "requirementId": "V3-6-A05", "passed": true, "evidenceSha256": "4545454545454545454545454545454545454545454545454545454545454545" },
+      { "requirementId": "V3-6-A06", "passed": true, "evidenceSha256": "4646464646464646464646464646464646464646464646464646464646464646" },
+      { "requirementId": "V3-6-A07", "passed": true, "evidenceSha256": "4747474747474747474747474747474747474747474747474747474747474747" },
+      { "requirementId": "V3-6-A08", "passed": true, "evidenceSha256": "4848484848484848484848484848484848484848484848484848484848484848" },
+      { "requirementId": "V3-6-A09", "passed": true, "evidenceSha256": "4949494949494949494949494949494949494949494949494949494949494949" },
+      { "requirementId": "V3-6-A10", "passed": true, "evidenceSha256": "5050505050505050505050505050505050505050505050505050505050505050" },
+      { "requirementId": "V3-6-A11", "passed": true, "evidenceSha256": "5151515151515151515151515151515151515151515151515151515151515151" },
+      { "requirementId": "V3-6-A12", "passed": true, "evidenceSha256": "5252525252525252525252525252525252525252525252525252525252525252" },
+      { "requirementId": "V3-6-A13", "passed": true, "evidenceSha256": "5353535353535353535353535353535353535353535353535353535353535353" },
+      { "requirementId": "V3-6-A14", "passed": true, "evidenceSha256": "5454545454545454545454545454545454545454545454545454545454545454" },
+      { "requirementId": "V3-6-A15", "passed": true, "evidenceSha256": "5555555555555555555555555555555555555555555555555555555555555555" },
+      { "requirementId": "V3-6-A16", "passed": true, "evidenceSha256": "5656565656565656565656565656565656565656565656565656565656565656" },
+      { "requirementId": "V3-6-A17", "passed": true, "evidenceSha256": "5757575757575757575757575757575757575757575757575757575757575757" },
+      { "requirementId": "V3-6-A18", "passed": true, "evidenceSha256": "5858585858585858585858585858585858585858585858585858585858585858" },
+      { "requirementId": "V3-6-A19", "passed": true, "evidenceSha256": "5959595959595959595959595959595959595959595959595959595959595959" },
+      { "requirementId": "V3-6-A20", "passed": true, "evidenceSha256": "6060606060606060606060606060606060606060606060606060606060606060" }
+    ],
+    "humanReviewSha256": "6161616161616161616161616161616161616161616161616161616161616161",
+    "humanReviewStatus": "PASS",
+    "publicPackageSha256": "6262626262626262626262626262626262626262626262626262626262626262",
+    "secretHitCount": 0,
+    "residualCount": 0,
+    "sealSha256": "6363636363636363636363636363636363636363636363636363636363636363",
+    "machinePassed": true,
+    "finalPassed": false,
+    "auditStatus": "pending_independent_audit"
+  },
+  "finalDisposition": {
+    "schemaVersion": "v3-media-finalization/v1",
+    "recordType": "final_disposition",
+    "candidateId": "v3_final_33333333333333333333333333333333",
+    "candidateSha256": "6464646464646464646464646464646464646464646464646464646464646464",
+    "reviewerSessionSha256": "6565656565656565656565656565656565656565656565656565656565656565",
+    "reviewedAt": "2026-10-06T18:00:00Z",
+    "fatalCount": 0,
+    "majorCount": 0,
+    "minorCount": 0,
+    "decision": "PASS",
+    "finalPassed": true,
+    "allowedClaim": "V3 Bilibili-first media companion passed the frozen subtitle/local-ASR/keyframe/OCR/authorized-cloud-VLM acceptance matrix."
+  }
+}

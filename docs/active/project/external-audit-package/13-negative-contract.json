@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "v3-5.1-document-verification/v1",
+  "schemaMetaPassed": true,
+  "positiveSchemaPassed": true,
+  "positiveSemanticErrors": [],
+  "negativeTotal": 20,
+  "negativePassed": 20,
+  "failed": [],
+  "results": [
+    {
+      "caseId": "V351-N01",
+      "expectedFailureCode": "V351_IDENTITY_MISMATCH",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "caseId": "V351-N02",
+      "expectedFailureCode": "V351_CHAPTER_ORDER_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_CHAPTER_ORDER_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N03",
+      "expectedFailureCode": "V351_CHAPTER_OVERLAP",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_CHAPTER_OVERLAP"
+      ]
+    },
+    {
+      "caseId": "V351-N04",
+      "expectedFailureCode": "V351_EVIDENCE_ORPHAN",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_EVIDENCE_ORPHAN"
+      ]
+    },
+    {
+      "caseId": "V351-N05",
+      "expectedFailureCode": "V351_FRAME_KIND_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_FRAME_KIND_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N06",
+      "expectedFailureCode": "V351_PROJECTION_IDENTITY_MISMATCH",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_PROJECTION_IDENTITY_MISMATCH"
+      ]
+    },
+    {
+      "caseId": "V351-N07",
+      "expectedFailureCode": "V351_TIMELINE_CHAPTER_ORPHAN",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_TIMELINE_CHAPTER_ORPHAN"
+      ]
+    },
+    {
+      "caseId": "V351-N08",
+      "expectedFailureCode": "V351_FRAME_KIND_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_FRAME_KIND_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N09",
+      "expectedFailureCode": "V351_MINDMAP_ROOT_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_MINDMAP_CYCLE",
+        "V351_MINDMAP_DEPTH_INVALID",
+        "V351_MINDMAP_ROOT_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N10",
+      "expectedFailureCode": "V351_MINDMAP_CYCLE",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_MINDMAP_CYCLE",
+        "V351_MINDMAP_DEPTH_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N11",
+      "expectedFailureCode": "V351_MINDMAP_DEPTH_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_MINDMAP_DEPTH_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N12",
+      "expectedFailureCode": "V351_ASK_CITATION_ORPHAN",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_ASK_CITATION_ORPHAN"
+      ]
+    },
+    {
+      "caseId": "V351-N13",
+      "expectedFailureCode": "V351_VISUAL_CITATION_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_VISUAL_CITATION_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N14",
+      "expectedFailureCode": "V351_INSUFFICIENT_ANSWER_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_ANSWER_EMPTY",
+        "V351_INSUFFICIENT_ANSWER_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N15",
+      "expectedFailureCode": "V351_CRITICAL_MEANING_ERROR",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_CRITICAL_MEANING_ERROR"
+      ]
+    },
+    {
+      "caseId": "V351-N16",
+      "expectedFailureCode": "V351_SEEK_DELTA_MISMATCH",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_SEEK_DELTA_MISMATCH"
+      ]
+    },
+    {
+      "caseId": "V351-N17",
+      "expectedFailureCode": "V351_SEEK_COVERAGE_INSUFFICIENT",
+      "passed": true,
+      "schemaErrorCount": 1,
+      "semanticErrors": [
+        "V351_SEEK_COVERAGE_INSUFFICIENT"
+      ]
+    },
+    {
+      "caseId": "V351-N18",
+      "expectedFailureCode": "V351_CLOUD_SCOPE_INVALID",
+      "passed": true,
+      "schemaErrorCount": 0,
+      "semanticErrors": [
+        "V351_CLOUD_SCOPE_INVALID"
+      ]
+    },
+    {
+      "caseId": "V351-N19",
+      "expectedFailureCode": "V351_RAW_MEDIA_UPLOAD_FORBIDDEN",
+      "passed": true,
+      "schemaErrorCount": 1,
+      "semanticErrors": [
+        "V351_RAW_MEDIA_UPLOAD_FORBIDDEN"
+      ]
+    },
+    {
+      "caseId": "V351-N20",
+      "expectedFailureCode": "V351_REMOTE_SCRIPT_FORBIDDEN",
+      "passed": true,
+      "schemaErrorCount": 1,
+      "semanticErrors": [
+        "V351_REMOTE_SCRIPT_FORBIDDEN"
+      ]
+    }
+  ]
+}

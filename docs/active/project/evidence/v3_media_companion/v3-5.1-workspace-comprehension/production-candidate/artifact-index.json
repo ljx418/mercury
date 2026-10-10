@@ -1,0 +1,187 @@
+{
+  "schemaVersion": "v3-5.1-production-artifact-index/v1",
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "artifactCount": 36,
+  "artifacts": [
+    {
+      "path": "cleanup-manifest.json",
+      "bytes": 450,
+      "sha256": "94522b5b6cd773c74ddc58273d319f2a8e05cc4abc96a3c9c59553778bd9e816"
+    },
+    {
+      "path": "failed-browser-run-20261010T163000Z.md",
+      "bytes": 908,
+      "sha256": "d2ae6d7bbeb6b5f998291ca96f5afe8a0f76c6a60ef111af5337c88067e79b8a"
+    },
+    {
+      "path": "failed-browser-run-20261010T164500Z.md",
+      "bytes": 859,
+      "sha256": "eb30df586b4d121f5717b5905f01cf2fe5cc9059073f0a78cb417bdd3c6193f9"
+    },
+    {
+      "path": "failed-browser-run-20261010T165500Z.md",
+      "bytes": 811,
+      "sha256": "547884c1b4fb000ab020029ce5433cde92908a4a7a6574a9754c7b90f2830a62"
+    },
+    {
+      "path": "failed-browser-run-20261010T171500Z.md",
+      "bytes": 1344,
+      "sha256": "0a3b0a74d6332747cb503d38472d853bd46b2d33ec582f8d011376be304aeb95"
+    },
+    {
+      "path": "failed-browser-run-20261010T173000Z.md",
+      "bytes": 1106,
+      "sha256": "0ac8d96e937b66f6c187c1b69eaffffec8da1bedf6028fa8f0ba07acaf25008f"
+    },
+    {
+      "path": "failed-browser-run-20261010T174500Z.md",
+      "bytes": 837,
+      "sha256": "791f3fd4c964682b137a81925cdec8488c8ed8e9a3c25881804b9451bde7fcd2"
+    },
+    {
+      "path": "failed-browser-run-20261010T180000Z.md",
+      "bytes": 787,
+      "sha256": "41b336ed3384e27a55a22a1663c0adbbb4630587e6c8ad2a049a7bc1e8587c90"
+    },
+    {
+      "path": "failed-browser-run-20261010T181500Z.md",
+      "bytes": 887,
+      "sha256": "c08a6fa33c58a684afee447e1c5b67ed5efc068d2844e2b8202caaedaff20cd9"
+    },
+    {
+      "path": "failed-run-20261010T160000Z.md",
+      "bytes": 787,
+      "sha256": "28de02dfda51e8bc5425dc7d2a3f5bf073e40f462318fee11fd65a87eca334b9"
+    },
+    {
+      "path": "failed-run-20261010T170000Z.md",
+      "bytes": 798,
+      "sha256": "8cab821df9f0c80006325cd826225b72e489390186717c00338ded7eee4b2fcf"
+    },
+    {
+      "path": "failed-run-20261010T183000Z.md",
+      "bytes": 780,
+      "sha256": "111a87632567763a08570f87d0d7807913a77eabde7ee908afb9058b614daebb"
+    },
+    {
+      "path": "generate-human-review-page.py",
+      "bytes": 11414,
+      "sha256": "a3800f23b2fbf594eb799c0ca526301eea4a0efce3cd714d2c467f1972dbe17e"
+    },
+    {
+      "path": "human-review/README.md",
+      "bytes": 1211,
+      "sha256": "8a30585873fe0780e2a37bbda8cd9de28552dedbd648572da731379fea050ebd"
+    },
+    {
+      "path": "human-review/index.html",
+      "bytes": 35067,
+      "sha256": "fc7ad7d81008113f6f2918a9165eb2a18d94c15033bb9f3bfdedb023c2b22bd2"
+    },
+    {
+      "path": "human-review/review-submission.schema.json",
+      "bytes": 2506,
+      "sha256": "10302410c53761874ddd6006d3260b6bfc53a274888c360c5bcac7813a31f7dd"
+    },
+    {
+      "path": "independent-implementation-audit-request.md",
+      "bytes": 2306,
+      "sha256": "ea2e87244234181093abd13602939b0d28c3a47fe03b570726eab7fe70f8270a"
+    },
+    {
+      "path": "independent-implementation-exit-audit-round1.md",
+      "bytes": 20343,
+      "sha256": "53ee0cf602c329e7b34c1fde6a0f1ede81e70481efb6be4cae248846d4a1f6ed"
+    },
+    {
+      "path": "module-handoff.md",
+      "bytes": 1028,
+      "sha256": "ae349e30fc0e8e2b278cd6b53dc04258d0ad3681764057c3d86f79159eaff1b6"
+    },
+    {
+      "path": "regression-result.json",
+      "bytes": 1547,
+      "sha256": "78450d9ef73db755cfb65773210f29e1c9b740491ec721871bf78d94938674d3"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/browser-verification-result.json",
+      "bytes": 6246,
+      "sha256": "42d5e06c9bab752350db762663f33c3ad80cb277d13c66c8d4dfa84de8a85590"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-1.json",
+      "bytes": 149330,
+      "sha256": "c7f1fdb9b99e1ff1d07c8b23295ed55504d920e77dca1be1151910156a1a558b"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-2.json",
+      "bytes": 85970,
+      "sha256": "bdc09e1c4d91f0ba91a683399220f820a1c55d86b04b4d5eabdf731c2a0162a2"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-3.json",
+      "bytes": 93278,
+      "sha256": "0bfe92ad4372130bb73e525611cb53010c4a4d1feb3093e6e0ca420e3c50ff50"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-core-1.json",
+      "bytes": 172685,
+      "sha256": "acae39a596827941d1c4bc7222a8ae63f02cbbb78602166bd2ccb750a2987d09"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-core-2.json",
+      "bytes": 101146,
+      "sha256": "7829caf64e49f14d2e7f3a36e03e8551c7e09978d91432908003313bb837d232"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/candidate-core-3.json",
+      "bytes": 107009,
+      "sha256": "2e4a2a8ce795f7db1682fed23bd705cacace92f588d76765d98321dbe16fa4f6"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/negative-contract-verification-result.json",
+      "bytes": 4792,
+      "sha256": "86465f552a293916797d9edd38897b84de8df96d63414b2eb0e17e26c4160b88"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/production-verification-result.json",
+      "bytes": 1868,
+      "sha256": "e05157aac2a8f191aa413b5a250c9ff420b971cc3998b155608c14b756c87550"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/runtime.stderr.log",
+      "bytes": 354,
+      "sha256": "33ff49585645b18e67dde17c375a6ab9a1f323b64582ccd77a5172ba471d46d7"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/runtime.stdout.log",
+      "bytes": 29182,
+      "sha256": "bd1cea6365627b9d705c91788688dd6ef32ea1bace565bd32afc457b644cc8d3"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/secret-scan-result.json",
+      "bytes": 331,
+      "sha256": "daa3b38de4536de171003ab6962be796b0e75a36684c77358f82fe1eb1808f21"
+    },
+    {
+      "path": "runs/v3-5.1-production-candidate-20261010T210000Z/workspace-core-manifest.json",
+      "bytes": 2073,
+      "sha256": "b7a08834f7ce4622786a0f3a81a1c4b83a816a65563b0dd97f33a04a8449f987"
+    },
+    {
+      "path": "v3-5.1-production-false-green-audit.md",
+      "bytes": 1693,
+      "sha256": "393ca3ca55d947a32e7ba259926177fabdaae35a0031e5ea93e852f2c3199dae"
+    },
+    {
+      "path": "v3-5.1-production-internal-exit-audit.md",
+      "bytes": 1422,
+      "sha256": "35e3f1b3ee2b0cde88ecc9a839e6d787a4936c746384e29b93e8e116ce556732"
+    },
+    {
+      "path": "v3-5.1-production-prd-review.md",
+      "bytes": 1752,
+      "sha256": "37bcfb28b62320e4fa378993d810ae3ecfbe41797975f9a48eef6d7afb165420"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "v3-5.1-production-candidate-verification/v1",
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "schemaMetaPassed": true,
+  "candidateCount": 3,
+  "crossCandidateIsolation": true,
+  "browserVerificationPassed": true,
+  "machinePassed": true,
+  "humanQualityReviewPresent": false,
+  "humanQualityReviewValid": false,
+  "humanQualityReviewSha256": null,
+  "humanQualityReviewErrors": [],
+  "results": [
+    {
+      "candidateIndex": 1,
+      "candidateSha256": "c7f1fdb9b99e1ff1d07c8b23295ed55504d920e77dca1be1151910156a1a558b",
+      "schemaErrorCount": 0,
+      "schemaErrors": [],
+      "semanticErrors": [],
+      "playbackObservationCount": 10,
+      "originCounts": {
+        "ask_citation": 2,
+        "chapter": 2,
+        "frame": 2,
+        "mindmap_node": 2,
+        "moment": 2
+      },
+      "browserHashMatches": true,
+      "passed": true
+    },
+    {
+      "candidateIndex": 2,
+      "candidateSha256": "bdc09e1c4d91f0ba91a683399220f820a1c55d86b04b4d5eabdf731c2a0162a2",
+      "schemaErrorCount": 0,
+      "schemaErrors": [],
+      "semanticErrors": [],
+      "playbackObservationCount": 10,
+      "originCounts": {
+        "ask_citation": 2,
+        "chapter": 2,
+        "frame": 2,
+        "mindmap_node": 2,
+        "moment": 2
+      },
+      "browserHashMatches": true,
+      "passed": true
+    },
+    {
+      "candidateIndex": 3,
+      "candidateSha256": "0bfe92ad4372130bb73e525611cb53010c4a4d1feb3093e6e0ca420e3c50ff50",
+      "schemaErrorCount": 0,
+      "schemaErrors": [],
+      "semanticErrors": [],
+      "playbackObservationCount": 10,
+      "originCounts": {
+        "ask_citation": 2,
+        "chapter": 2,
+        "frame": 2,
+        "mindmap_node": 2,
+        "moment": 2
+      },
+      "browserHashMatches": true,
+      "passed": true
+    }
+  ],
+  "status": "HUMAN_REVIEW_PENDING",
+  "passed": false
+}

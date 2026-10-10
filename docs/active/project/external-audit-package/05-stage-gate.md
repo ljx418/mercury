@@ -2,7 +2,7 @@
 
 > **2026-10-07 上位边界**：本文件及既有 `V3-0..V3-7` 媒体计划继续有效，不被 Chat + Know 收敛方案替换。B站媒体子链成为 Chat 当前上下文的技术主干；新增 `V3-1.4` 本机伴侣、`V3-4.1` KnowledgeDraft/Know 投影，并在既有 V3-5..V3-7 上追加整合验收。V3 总门禁同时读取 `design/v3-chat-know-product-convergence.md`、`v3-chat-know-development-plan.md` 和 `v3-chat-know-acceptance-plan.md`。媒体 LIMITED PASS 不等于 Chat/Know 或 V3 PASS；原合同、12 页分母、H01-H10 与历史证据均不得缩减或改写。
 
-日期：2026-10-08。状态：`V3-1.4 LIMITED PASS / SenseVoice development baseline / V3-2 LIMITED PASS / V3-3 LIMITED PASS (single-run 10 OCR + 8 VLM) / V3-4 V2 DOCUMENT PASS + EXPLICIT IMPLEMENTATION/FRAME AUTHORIZATION REQUIRED / V3-5..V3-7 BLOCKED BY PREDECESSOR`。
+日期：2026-10-10。状态：`V3-1.4 LIMITED PASS / V3-2 LIMITED PASS / V3-3 LIMITED PASS / V3-4 LIMITED PASS / V3-5 functional flow implemented but formal H01..H10 pending / V3-5.1 MACHINE CANDIDATE PASS + HUMAN QUALITY REVIEW PENDING / V3-6..V3-7 BLOCKED`。
 
 ## 1. 范围与当前事实
 
@@ -269,3 +269,11 @@ V3-7 完成后：`V3 Bilibili-first media companion passed the frozen subtitle/l
 - 新增 `v3_media_transcript_exit_v1.schema.json`、positive fixture 与 19 项合同/假绿测试；联合 V3-3..7 定向合同回归 55 passed，Runtime 全量 407 passed。该结果只证明文档可表达、拒绝所列假绿且未破坏既有 Runtime，不证明 UI、fault tooling、collector/verifier/package 已实现。
 - 外部独立文档审查 `v3-2-5-7-independent-document-audit.md` 已完成，最终包 19/19 payload hash、Schema、三个 positive、19 项合同测试及补充负例均通过，结论 Fatal=0/Major=0/Minor=0。
 - 当前决定：`V3-2-5..7 DOCUMENT PASS / IMPLEMENTATION BLOCKED BY PREDECESSORS`。V3-2-5 依赖 V3-2-4 PASS；V3-2-6 依赖 V3-2-5；V3-2-7 依赖 V3-2-6 和 tooling freeze。H01..H10 继续只在 V3-5。
+
+## 26. V3-5.1 三视频生产机器候选（2026-10-10）
+
+- 唯一候选 run：`v3-5.1-production-candidate-20261010T210000Z`。三条真实 B站视频均完成 SenseVoice 全长转写、8 个分布式真实帧、MiniMax-M3 画面理解、12 章节、时间线、三层导图和 12 问。
+- 真实 Chrome 对每候选五类入口各执行 2 次播放器 readback，总计 30 次；四视口无根溢出，Axe serious/critical=0，首交互最大 171 ms，主线程最长 181 ms，0 remote script/eval。
+- Runtime 679、Extension 351、Workspace targeted 6、typecheck/build 全绿；raw media/audio/transcript/OCR 云上传 0，selected-frame upload 24，临时媒体和自动化截图残留 0。
+- 内部假绿审计发现 Ask 的 `criticalMeaningError=false` / `citationSupported=true` 由生产者写入，不能单独作为含义正确的证据。production verifier 已追加独立人类质量 submission 门禁：无提交时固定 `machinePassed=true / status=HUMAN_REVIEW_PENDING / passed=false / exitCode=3`。
+- 当前决定：`V3-5.1 MACHINE CANDIDATE PASS / HUMAN QUALITY REVIEW PENDING`。固定候选 3 x 12 问与锚点五步体验未由人类提交，旧 V3-5 H01..H10 正式 submission 也仍 pending；因此 V3-5.1 未 LIMITED PASS，V3-6/V3-7 不得启动。

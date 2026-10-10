@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent, type WheelEvent } from "react";
 import {
   downloadMediaEvidenceThumbnail,
   type MediaComprehensionChapter,
@@ -38,6 +38,10 @@ export function InteractiveTimelineView({ task, projection }: { task: MediaOutli
   const [cursorMs, setCursorMs] = useState<number | null>(null);
   const [activeChapterId, setActiveChapterId] = useState<string | null>(null);
   const duration = Math.max(1, projection.task.mediaDurationMs);
+  const layout = useMemo(
+    () => layoutTimelineMoments(projection.timeline.moments.map((moment) => moment.timestampMs), duration),
+    [projection.timeline.contentSha256, duration],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -85,12 +89,12 @@ export function InteractiveTimelineView({ task, projection }: { task: MediaOutli
       <button type="button" onClick={fit}>适应全片</button>
       <output aria-live="polite">{zoom.toFixed(1)}×{cursorMs === null ? "" : ` · 播放 ${formatTime(cursorMs)}`}</output>
     </div>
-    <div className="media-timeline-viewport" ref={viewport} tabIndex={0} aria-label="可滚轮横移和鼠标拖动的章节时间线" onWheel={wheel} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
-      <div className="media-timeline-track" style={{ width: `${zoom * 100}%` }}>
+    <div className="media-timeline-viewport" style={{ height: `${layout.trackHeightPx + 18}px` }} ref={viewport} tabIndex={0} aria-label="可滚轮横移和鼠标拖动的章节时间线" onWheel={wheel} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerEnd} onPointerCancel={pointerEnd}>
+      <div className="media-timeline-track" style={{ width: `${layout.widthPx * zoom}px`, height: `${layout.trackHeightPx}px` }}>
         <TimeRuler durationMs={duration} />
         <div className="media-timeline-bands" aria-hidden="true">{projection.outline.chapters.map((chapter) => <span key={chapter.chapterId} className={activeChapterId === chapter.chapterId ? "active" : ""} style={{ left: percent(chapter.startMs, duration), width: percent(chapter.endMs - chapter.startMs, duration) }} />)}</div>
         {cursorMs !== null ? <span className="media-playback-cursor" style={{ left: percent(cursorMs, duration) }} aria-hidden="true" /> : null}
-        <div className="media-timeline-moments">{projection.timeline.moments.map((moment, index) => <div className={`media-timeline-moment kind-${moment.kind}`} style={{ left: percent(moment.timestampMs, duration), top: `${48 + (index % 3) * 100}px` }} key={moment.momentId}>
+        <div className="media-timeline-moments">{projection.timeline.moments.map((moment, index) => <div className={`media-timeline-moment kind-${moment.kind}`} style={{ left: `${layout.positions[index].leftPx}px`, top: `${layout.positions[index].topPx}px` }} data-timeline-lane={layout.positions[index].lane} key={moment.momentId}>
           <ComprehensionSeekButton task={task} timestampMs={moment.timestampMs} origin={moment.kind === "frame" ? "frame" : "moment"} label={moment.title} compact />
           {moment.frameEvidenceId ? <FrameThumbnail taskId={task.taskId} evidenceId={moment.frameEvidenceId} alt={`${moment.title}代表画面`} /> : null}
           <time>{formatTime(moment.timestampMs)}</time>
@@ -99,6 +103,40 @@ export function InteractiveTimelineView({ task, projection }: { task: MediaOutli
     </div>
     <p className="media-interaction-hint">在时间线内滚轮横移，按住空白处拖动；按钮、方向键滚动与“适应全片”提供等价操作。</p>
   </section>;
+}
+
+export function layoutTimelineMoments(timestamps: number[], durationMs: number): {
+  widthPx: number;
+  trackHeightPx: number;
+  positions: Array<{ leftPx: number; topPx: number; lane: number }>;
+} {
+  const cardWidth = 172;
+  let widthPx = Math.max(900, timestamps.length * 90);
+  let lanes: number[] = [];
+  let assigned: number[] = [];
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    lanes = [];
+    assigned = [];
+    for (const timestamp of timestamps) {
+      const left = Math.max(0, Math.min(widthPx - cardWidth, timestamp * widthPx / Math.max(1, durationMs)));
+      let lane = lanes.findIndex((lastLeft) => left - lastLeft >= cardWidth);
+      if (lane < 0) { lane = lanes.length; lanes.push(left); }
+      else lanes[lane] = left;
+      assigned.push(lane);
+    }
+    if (lanes.length <= 3) break;
+    widthPx = Math.ceil(widthPx * 1.35);
+  }
+  const laneCount = Math.max(1, lanes.length);
+  return {
+    widthPx,
+    trackHeightPx: 58 + laneCount * 100,
+    positions: timestamps.map((timestamp, index) => ({
+      leftPx: Math.max(0, Math.min(widthPx - cardWidth, timestamp * widthPx / Math.max(1, durationMs))),
+      topPx: 48 + assigned[index] * 100,
+      lane: assigned[index],
+    })),
+  };
 }
 
 
@@ -111,6 +149,30 @@ export function InteractiveMindmapView({ task, projection }: { task: MediaOutlin
   const children = useMemo(() => new Map(projection.mindmap.nodes.map((node) => [node.nodeId, projection.mindmap.nodes.filter((item) => item.parentNodeId === node.nodeId)])), [projection.mindmap.contentSha256]);
   const root = projection.mindmap.nodes.find((node) => node.kind === "root")!;
   const toggle = (id: string) => setExpanded((value) => { const next = new Set(value); next.has(id) ? next.delete(id) : next.add(id); return next; });
+  const treeKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const item = (event.target as HTMLElement).closest<HTMLElement>("[role='treeitem']");
+    if (!item) return;
+    const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("[role='treeitem']"));
+    const index = items.indexOf(item);
+    let next: HTMLElement | undefined;
+    if (event.key === "ArrowDown") next = items[index + 1];
+    else if (event.key === "ArrowUp") next = items[index - 1];
+    else if (event.key === "Home") next = items[0];
+    else if (event.key === "End") next = items.at(-1);
+    if (next) {
+      event.preventDefault();
+      next.focus();
+      return;
+    }
+    const nodeId = item.dataset.treeNodeId;
+    if (nodeId && event.key === "ArrowRight" && !expanded.has(nodeId)) {
+      event.preventDefault();
+      toggle(nodeId);
+    } else if (nodeId && event.key === "ArrowLeft" && expanded.has(nodeId)) {
+      event.preventDefault();
+      toggle(nodeId);
+    }
+  };
   const fit = () => { setZoom(1); if (viewport.current) { viewport.current.scrollLeft = 0; viewport.current.scrollTop = 0; } };
   const pointerDown = (event: ReactPointerEvent<HTMLDivElement>) => { if (event.button !== 0 || (event.target as HTMLElement).closest("button, a")) return; drag.current = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, left: event.currentTarget.scrollLeft, top: event.currentTarget.scrollTop }; event.currentTarget.setPointerCapture(event.pointerId); };
   const pointerMove = (event: ReactPointerEvent<HTMLDivElement>) => { if (!drag.current || drag.current.pointerId !== event.pointerId) return; event.currentTarget.scrollLeft = drag.current.left - (event.clientX - drag.current.startX); event.currentTarget.scrollTop = drag.current.top - (event.clientY - drag.current.startY); };
@@ -127,7 +189,17 @@ export function InteractiveMindmapView({ task, projection }: { task: MediaOutlin
         </article>)}</div>
       </div>
     </div>
-    <div className="media-mindmap-accessible" role="tree" aria-label="导图键盘视图"><div role="treeitem" aria-level={1} tabIndex={0}>{root.label}</div>{chapterNodes.map((chapter) => <div role="treeitem" aria-level={2} aria-expanded={expanded.has(chapter.nodeId)} tabIndex={0} key={`tree-${chapter.nodeId}`}><button type="button" onClick={() => toggle(chapter.nodeId)}>{chapter.label}</button>{expanded.has(chapter.nodeId) ? (children.get(chapter.nodeId) ?? []).map((node) => <div role="treeitem" aria-level={3} tabIndex={0} key={`tree-${node.nodeId}`}>{node.label}</div>) : null}</div>)}</div>
+    <div className="media-mindmap-accessible" role="tree" aria-label="导图键盘视图" onKeyDown={treeKeyDown}>
+      <div role="treeitem" aria-level={1} tabIndex={0}>{root.label}</div>
+      {chapterNodes.map((chapter) => <div role="treeitem" aria-level={2} aria-expanded={expanded.has(chapter.nodeId)} tabIndex={0} data-tree-node-id={chapter.nodeId} key={`tree-${chapter.nodeId}`}>
+        <button type="button" aria-label={`${expanded.has(chapter.nodeId) ? "折叠" : "展开"}${chapter.label}`} onClick={() => toggle(chapter.nodeId)}>{chapter.label}</button>
+        {chapter.timestampMs !== null ? <ComprehensionSeekButton task={task} timestampMs={chapter.timestampMs} origin="mindmap_node" label="定位章节" compact /> : null}
+        {expanded.has(chapter.nodeId) ? <div role="group">{(children.get(chapter.nodeId) ?? []).map((node) => <div role="treeitem" aria-level={3} tabIndex={0} key={`tree-${node.nodeId}`}>
+          <span>{node.label}</span>
+          {node.timestampMs !== null ? <ComprehensionSeekButton task={task} timestampMs={node.timestampMs} origin="mindmap_node" label="定位关键点" compact /> : null}
+        </div>)}</div> : null}
+      </div>)}
+    </div>
   </section>;
 }
 
@@ -164,7 +236,7 @@ function ComprehensionSeekButton({ task, timestampMs, origin, label, compact = f
   const [receipt, setReceipt] = useState<MediaSeekReceipt | null>(null);
   const [busy, setBusy] = useState(false);
   const seek = async () => { setBusy(true); try { setReceipt(await new MediaJumpbackController().seek(task.sourceIdentity, timestampMs, origin)); } finally { setBusy(false); } };
-  return <span className={`media-seek-control${compact ? " compact" : ""}`}><button type="button" data-seek-ms={timestampMs} data-seek-origin={origin} onClick={(event) => { event.stopPropagation(); void seek(); }} disabled={busy}>{busy ? "定位中…" : label}</button>{receipt ? <small role="status" data-seek-outcome={receipt.outcome}>{receipt.outcome === "located" ? `已定位 · ${receipt.deltaMs}ms` : `未定位 · ${receipt.failureCode}`}</small> : null}</span>;
+  return <span className={`media-seek-control${compact ? " compact" : ""}`}><button type="button" data-seek-ms={timestampMs} data-seek-origin={origin} onClick={(event) => { event.stopPropagation(); void seek(); }} disabled={busy}>{busy ? "定位中…" : label}</button>{receipt ? <small role="status" data-seek-outcome={receipt.outcome} data-seek-requested-ms={receipt.requestedMs} data-seek-observed-ms={receipt.observedMs} data-seek-delta-ms={receipt.deltaMs} data-seek-observed-at={receipt.observedAt}>{receipt.outcome === "located" ? `已定位 · ${receipt.deltaMs}ms` : `未定位 · ${receipt.failureCode}`}</small> : null}</span>;
 }
 
 

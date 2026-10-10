@@ -1,0 +1,62 @@
+{
+  "createdAt": "2026-10-10T08:40:34.737200Z",
+  "results": [
+    {
+      "askCount": 12,
+      "bvid": "BV1sMNtzJE5B",
+      "candidateCore": "candidate-core-1.json",
+      "candidateCoreSha256": "54745189f396f457be200cc7ca6f390c0a04acf5abc303ae3f1046944329baa2",
+      "chapterCount": 12,
+      "evidenceCount": 158,
+      "mindmapNodeCount": 60,
+      "sampleId": "v3-5.1-sample-01",
+      "selectedFrameUploadCount": 8,
+      "slot": 0,
+      "taskId": "media_task_a60e14706b9464a68033a55bd240adb7",
+      "timelineMomentCount": 39,
+      "visualTempActiveTaskCount": 0
+    },
+    {
+      "askCount": 12,
+      "bvid": "BV1PA4m1w7ya",
+      "candidateCore": "candidate-core-2.json",
+      "candidateCoreSha256": "85f39199980117e32701190597b1c39e35af68f0afc2a89fda6f99775dbe5d61",
+      "chapterCount": 12,
+      "evidenceCount": 38,
+      "mindmapNodeCount": 54,
+      "sampleId": "v3-5.1-sample-02",
+      "selectedFrameUploadCount": 8,
+      "slot": 1,
+      "taskId": "media_task_572068b315fe473b0a7a2f06719ad931",
+      "timelineMomentCount": 41,
+      "visualTempActiveTaskCount": 0
+    },
+    {
+      "askCount": 12,
+      "bvid": "BV1ZpYd66ELP",
+      "candidateCore": "candidate-core-3.json",
+      "candidateCoreSha256": "61ebf6d82a5b8e6f3f7847c02b09f53498c32928b2657006ab0c21e6350894c0",
+      "chapterCount": 12,
+      "evidenceCount": 57,
+      "mindmapNodeCount": 58,
+      "sampleId": "v3-5.1-sample-03",
+      "selectedFrameUploadCount": 8,
+      "slot": 2,
+      "taskId": "media_task_b387c85cd26fed76e494363f51463361",
+      "timelineMomentCount": 40,
+      "visualTempActiveTaskCount": 0
+    }
+  ],
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "schemaVersion": "v3-5.1-workspace-candidate-core-run/v1",
+  "sourceTranscriptRunId": "v3-5.1-production-candidate-20261010T210000Z-asr",
+  "summary": {
+    "candidateCount": 3,
+    "crossRunArtifactCount": 0,
+    "groundedTextCloudUploadCount": 0,
+    "humanTranscriptInputCount": 0,
+    "rawMediaUploadCount": 0,
+    "selectedFrameUploadCount": 24,
+    "visualTempResidualCount": 0
+  }
+}

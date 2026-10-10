@@ -144,6 +144,7 @@ class MediaProductMaterializer:
                 self._vision_providers,
                 self._vision_adapters,
             )
+            ocr_adapter = LocalOcrAdapter(self._visual_sandbox)
             evidence = self._compact_segments(task_id, segments)
             duration_ms = max(int(item["endMs"]) for item in segments)
             for global_timestamp_ms in self._distributed_frame_timestamps(duration_ms):
@@ -167,7 +168,7 @@ class MediaProductMaterializer:
                 frame_evidence_id = "mev_" + hashlib.sha256(
                     f"{task_id}:selected-frame:{global_timestamp_ms}:{frame.artifact.sha256}".encode()
                 ).hexdigest()[:32]
-                ocr = LocalOcrAdapter(self._visual_sandbox).observe(task_id, frame.artifact)
+                ocr = ocr_adapter.observe(task_id, frame.artifact)
                 vision = governed.dispatch(SelectedVisionFrame(
                     task_id,
                     frame_evidence_id,
@@ -196,11 +197,14 @@ class MediaProductMaterializer:
             consent_granted = False
             task = self._store.transition(task_id, task["revision"], "synthesizing")
             self._persist_private_evidence(evidence)
+            source_title = projection.get("sourceTitle")
+            if not isinstance(source_title, str) or not source_title.strip():
+                source_title = identity.media_id
             bundle = self._generator.generate(
                 task_id=task_id,
                 source_identity=source_identity,
                 revision=task["revision"] + 1,
-                source_title=identity.media_id,
+                source_title=source_title.strip()[:240],
                 evidence=evidence,
                 state="ready",
             )

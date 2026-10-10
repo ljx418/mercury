@@ -23,6 +23,7 @@ class Projection:
         return {
             "taskId": task_id,
             "sourceIdentity": SOURCE,
+            "sourceTitle": "真实视频标题",
             "state": "succeeded",
             "terminal": True,
             "segments": [
@@ -96,8 +97,10 @@ def test_visual_materializer_commits_typed_evidence_and_cleans_media(tmp_path: P
             return SimpleNamespace(artifact=artifact, width_px=640, height_px=360)
 
     class Ocr:
+        initialization_count = 0
+
         def __init__(self, owned):
-            pass
+            Ocr.initialization_count += 1
 
         def observe(self, task_id, artifact):
             return SimpleNamespace(blocks=(SimpleNamespace(text="真实画面文字"),))
@@ -138,12 +141,16 @@ def test_visual_materializer_commits_typed_evidence_and_cleans_media(tmp_path: P
         vision_providers=object(),
         vision_adapters=object(),
     )
+    monkeypatch.setattr(service, "_distributed_frame_timestamps", lambda duration_ms: (25_000, 25_000))
     result = service.materialize_visual(TASK, "pcl_" + "b" * 32)
     assert result["state"] == "ready"
+    assert result["projections"]["outline"]["title"] == "真实视频标题"
     kinds = {item["kind"] for item in result["projections"]["evidenceCatalog"]}
     assert {"transcript", "frame", "ocr_block", "vision_caption"} <= kinds
     assert result["projections"]["outline"]["taskRevision"] == result["revision"]
     assert consent.state == "revoked"
+    assert Ocr.initialization_count == 1
+    assert sum(item["kind"] == "frame" for item in result["projections"]["evidenceCatalog"]) == 2
     assert sandbox.active_task_count() == 0
     assert not list((tmp_path / "visual").rglob("*.media"))
     assert not list((tmp_path / "visual").rglob("*.png"))

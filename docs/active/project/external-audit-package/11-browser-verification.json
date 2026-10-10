@@ -1,0 +1,226 @@
+{
+  "schemaVersion": "v3-5.1-production-browser-verification/v1",
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "extensionId": "nlmgmnejkpkfigagmokcofnmpcdkepib",
+  "candidateCount": 3,
+  "selectedFrameCloudUploadCount": 24,
+  "rawMediaCloudUploadCount": 0,
+  "groundedTextCloudUploadCount": 0,
+  "screenshotPersistedCount": 0,
+  "passed": true,
+  "results": [
+    {
+      "candidateIndex": 1,
+      "bvid": "BV1sMNtzJE5B",
+      "taskId": "media_task_a60e14706b9464a68033a55bd240adb7",
+      "candidateSha256": "c7f1fdb9b99e1ff1d07c8b23295ed55504d920e77dca1be1151910156a1a558b",
+      "playbackObservationCount": 10,
+      "uiVerification": {
+        "wheelPan": true,
+        "pointerDrag": true,
+        "zoom": true,
+        "fit": true,
+        "chapterBands": true,
+        "playbackCursor": true,
+        "frameCards": true,
+        "mindmapPanZoomCollapse": true,
+        "keyboardTree": true,
+        "viewportWidths": [
+          360,
+          420,
+          768,
+          1280
+        ],
+        "axeSerious": 0,
+        "axeCritical": 0
+      },
+      "resourceVerification": {
+        "baselineRamGiB": 8,
+        "gpuRequired": false,
+        "interactiveMs": 171,
+        "maxMainThreadBlockMs": 176,
+        "remoteScriptCount": 0,
+        "evalCount": 0
+      },
+      "viewportChecks": [
+        {
+          "width": 360,
+          "overflowFree": true,
+          "screenshotSha256": "f6a6aababdf975b3fc675725668ad9134d3ddce8f01e251eb1a0f159dd210b56",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 420,
+          "overflowFree": true,
+          "screenshotSha256": "1adb47a5c481830d83a98526c9e3f1e3c109faf8f374333699e8a9c3257404c8",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 768,
+          "overflowFree": true,
+          "screenshotSha256": "12235e8500a0049b6ae91d1c7ad4c2eb54f8e3a90e5cc00f809d9a613684cc4f",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 1280,
+          "overflowFree": true,
+          "screenshotSha256": "784a006a95c6f81d811bf0682b6e9bfeb25c986112f476460bdf16f1b4d64bf7",
+          "screenshotPersisted": false
+        }
+      ],
+      "routeTimes": [
+        171,
+        104,
+        90,
+        84,
+        5,
+        87,
+        87,
+        92,
+        85
+      ]
+    },
+    {
+      "candidateIndex": 2,
+      "bvid": "BV1PA4m1w7ya",
+      "taskId": "media_task_572068b315fe473b0a7a2f06719ad931",
+      "candidateSha256": "bdc09e1c4d91f0ba91a683399220f820a1c55d86b04b4d5eabdf731c2a0162a2",
+      "playbackObservationCount": 10,
+      "uiVerification": {
+        "wheelPan": true,
+        "pointerDrag": true,
+        "zoom": true,
+        "fit": true,
+        "chapterBands": true,
+        "playbackCursor": true,
+        "frameCards": true,
+        "mindmapPanZoomCollapse": true,
+        "keyboardTree": true,
+        "viewportWidths": [
+          360,
+          420,
+          768,
+          1280
+        ],
+        "axeSerious": 0,
+        "axeCritical": 0
+      },
+      "resourceVerification": {
+        "baselineRamGiB": 8,
+        "gpuRequired": false,
+        "interactiveMs": 90,
+        "maxMainThreadBlockMs": 151,
+        "remoteScriptCount": 0,
+        "evalCount": 0
+      },
+      "viewportChecks": [
+        {
+          "width": 360,
+          "overflowFree": true,
+          "screenshotSha256": "d7b5761255a01f9c08ebab6af881a19e5e0a5a3e2e10492ae7fd2c0baafa1100",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 420,
+          "overflowFree": true,
+          "screenshotSha256": "32d7a604c0b923c242b120b3783b0daee246346b46eabff9df91ffc6d4adbeb4",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 768,
+          "overflowFree": true,
+          "screenshotSha256": "152aec4e3c12c74fc0ab661960aa7462c2c68c8ed45560cca6abcd1aeea7c67b",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 1280,
+          "overflowFree": true,
+          "screenshotSha256": "569ddf6f6387d701ef268ceb39af29506e3e9e904c7f7ba50070a9dd723793f8",
+          "screenshotPersisted": false
+        }
+      ],
+      "routeTimes": [
+        90,
+        83,
+        39,
+        34,
+        6,
+        83,
+        85,
+        36,
+        37
+      ]
+    },
+    {
+      "candidateIndex": 3,
+      "bvid": "BV1ZpYd66ELP",
+      "taskId": "media_task_b387c85cd26fed76e494363f51463361",
+      "candidateSha256": "0bfe92ad4372130bb73e525611cb53010c4a4d1feb3093e6e0ca420e3c50ff50",
+      "playbackObservationCount": 10,
+      "uiVerification": {
+        "wheelPan": true,
+        "pointerDrag": true,
+        "zoom": true,
+        "fit": true,
+        "chapterBands": true,
+        "playbackCursor": true,
+        "frameCards": true,
+        "mindmapPanZoomCollapse": true,
+        "keyboardTree": true,
+        "viewportWidths": [
+          360,
+          420,
+          768,
+          1280
+        ],
+        "axeSerious": 0,
+        "axeCritical": 0
+      },
+      "resourceVerification": {
+        "baselineRamGiB": 8,
+        "gpuRequired": false,
+        "interactiveMs": 85,
+        "maxMainThreadBlockMs": 181,
+        "remoteScriptCount": 0,
+        "evalCount": 0
+      },
+      "viewportChecks": [
+        {
+          "width": 360,
+          "overflowFree": true,
+          "screenshotSha256": "b36d1b2e01036dc6e6f59e1cd92595bb2f5b91a3dae7b8ca43e45f653bef522d",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 420,
+          "overflowFree": true,
+          "screenshotSha256": "cc1a4fe4db12079495de94122f9e824d3faea2a71bcb1eec8edf3d659ddba59b",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 768,
+          "overflowFree": true,
+          "screenshotSha256": "ffac6b5e7085a7af2d2e79808f8fbe08b185007a59f523be7d9b1deca6e2cd30",
+          "screenshotPersisted": false
+        },
+        {
+          "width": 1280,
+          "overflowFree": true,
+          "screenshotSha256": "1c8c07393ba5af2f1ceb0dada79ac0d862313ced6471c264c3c8bf7ff914dcdc",
+          "screenshotPersisted": false
+        }
+      ],
+      "routeTimes": [
+        76,
+        84,
+        38,
+        33,
+        6,
+        85,
+        84,
+        39,
+        33
+      ]
+    }
+  ]
+}

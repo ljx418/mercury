@@ -271,7 +271,7 @@ code { overflow-wrap: anywhere; }
 .media-chapter-list { display: grid; gap: 10px; }
 .media-chapter-list details { border: 1px solid #c8d9d5; border-radius: 7px; background: #fff; overflow: hidden; }
 .media-chapter-list summary { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 12px; align-items: center; padding: 15px; cursor: pointer; }
-.media-chapter-list summary > span { color: #ad7115; font: 900 18px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.media-chapter-list summary > span { color: #80510d; font: 900 18px ui-monospace, SFMono-Regular, Menlo, monospace; }
 .media-chapter-list summary div { display: grid; gap: 3px; }
 .media-chapter-list summary time { color: #60716c; font-size: 11px; }
 .media-chapter-list summary strong { font-size: 16px; }
@@ -287,7 +287,7 @@ code { overflow-wrap: anywhere; }
 .media-frame-placeholder span { font: 900 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
 .media-frame-card figcaption { display: flex; justify-content: space-between; gap: 8px; align-items: start; color: #556761; font-size: 11px; }
 .media-frame-unavailable { display: grid; place-content: center; min-height: 150px; padding: 18px; border: 1px dashed #a7bab5; background: #f3f7f6; text-align: center; }
-.media-frame-unavailable span { color: #ad7115; font-size: 11px; font-weight: 900; }
+.media-frame-unavailable span { color: #80510d; font-size: 11px; font-weight: 900; }
 .media-frame-unavailable p { margin: 6px 0 0; color: #566762; }
 .media-evidence-links { display: flex; flex-wrap: wrap; gap: 7px; }
 .media-evidence-links a { padding: 7px 9px; border: 1px solid #c8d9d5; border-radius: 4px; color: #075d4d; background: #f8fbfa; font-size: 11px; text-decoration: none; }

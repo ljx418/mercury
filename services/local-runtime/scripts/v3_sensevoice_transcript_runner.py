@@ -40,6 +40,25 @@ from navia_runtime.modules.media_companion.acquisition.transcript_lineage import
 from navia_runtime.modules.media_companion.asr import FunAsrLlamaCppProviderAdapter
 from navia_runtime.modules.media_companion.bilibili_policy import BILIBILI_CREDENTIAL_ENVELOPE_POLICY, BILIBILI_CREDENTIAL_TRANSPORT_POLICY
 from navia_runtime.modules.media_companion.credential_transport import CredentialChannelStore, CredentialLeaseStore
+from navia_runtime.modules.media_companion.comprehension import MediaComprehensionService
+from navia_runtime.modules.media_companion.product_materializer import MediaProductMaterializer
+from navia_runtime.modules.media_companion.product_services import MediaAskService
+from navia_runtime.modules.media_companion.task_store import MediaTaskStore
+from navia_runtime.modules.media_companion.workspace_candidate import (
+    build_ask_benchmark,
+    build_candidate_core,
+    candidate_core_sha256,
+)
+from navia_runtime.modules.media_companion.vision.provider_settings import (
+    MINIMAX_ADAPTER_KIND,
+    MINIMAX_CN_API_BASE,
+    MINIMAX_CN_MODEL_IDS,
+    MINIMAX_CN_PROVIDER_ID,
+    MemorySecretStore,
+    VisionProviderAdapterRegistry,
+    VisionProviderStore,
+)
+from navia_runtime.modules.adapters.media_vision import VisionConsentStore
 
 
 LEGACY_SOURCE_RUN_ID = "v3-2-route-b3-20261007T014759Z"
@@ -91,7 +110,7 @@ def normalized_credentials(path: Path) -> list[dict[str, object]]:
     return credentials
 
 
-def issue_task_lease(task_id: str, credentials: list[dict[str, object]]) -> CredentialLeaseStore:
+def issue_task_lease(task_id: str, credentials: list[dict[str, object]]) -> tuple[CredentialLeaseStore, str]:
     origin = f"chrome-extension://{'a' * 32}"
     binding = hashlib.sha256(f"{task_id}:authorized-browser-session".encode()).hexdigest()
     channels = CredentialChannelStore(policies=(BILIBILI_CREDENTIAL_TRANSPORT_POLICY,))
@@ -103,7 +122,7 @@ def issue_task_lease(task_id: str, credentials: list[dict[str, object]]) -> Cred
     }, origin)
     channel = channels.consume(token)
     leases = CredentialLeaseStore((BILIBILI_CREDENTIAL_ENVELOPE_POLICY,))
-    leases.issue(channel, {
+    _, public = leases.issue(channel, {
         "schemaVersion": BILIBILI_CREDENTIAL_ENVELOPE_POLICY.envelope_schema_version,
         "envelopeId": f"pce_{secrets.token_hex(16)}", "channelId": public["channelId"], "taskId": task_id,
         "adapterId": "bilibili", "sessionAdapterId": BILIBILI_CREDENTIAL_ENVELOPE_POLICY.session_adapter_id,
@@ -113,7 +132,42 @@ def issue_task_lease(task_id: str, credentials: list[dict[str, object]]) -> Cred
         "credentialNameSetSha256": BILIBILI_CREDENTIAL_ENVELOPE_POLICY.credential_name_set_sha256,
         "issuedAt": channel["issuedAt"], "expiresAt": channel["expiresAt"], "credentials": credentials,
     })
-    return leases
+    return leases, public["leaseId"]
+
+
+class StaticTranscriptProjection:
+    def __init__(self, task_id: str, source_identity: str, source_title: str, segments: list[dict[str, object]]) -> None:
+        self.value = {
+            "taskId": task_id,
+            "sourceIdentity": source_identity,
+            "sourceTitle": source_title,
+            "state": "succeeded",
+            "terminal": True,
+            "segments": copy.deepcopy(list(segments)),
+        }
+
+    def get(self, task_id: str) -> dict[str, object]:
+        if task_id != self.value["taskId"]:
+            raise KeyError(task_id)
+        return copy.deepcopy(self.value)
+
+
+def configure_workspace_vision(db_path: Path, api_key: str) -> tuple[VisionProviderStore, VisionProviderAdapterRegistry]:
+    providers = VisionProviderStore(db_path, MemorySecretStore())
+    providers.upsert(MINIMAX_CN_PROVIDER_ID, {
+        "adapterKind": MINIMAX_ADAPTER_KIND,
+        "name": "MiniMax Vision（中国区）",
+        "baseUrl": MINIMAX_CN_API_BASE,
+        "model": MINIMAX_CN_MODEL_IDS[0],
+        "apiKey": api_key,
+    })
+    providers.update_test_status(MINIMAX_CN_PROVIDER_ID, {
+        "status": "ok",
+        "model": MINIMAX_CN_MODEL_IDS[0],
+        "evidence": "selected_frame_dispatch_is_the_production_capability_probe",
+    })
+    providers.select(MINIMAX_CN_PROVIDER_ID)
+    return providers, VisionProviderAdapterRegistry()
 
 
 class AcceptanceCapabilityAcquirer:
@@ -167,9 +221,17 @@ def main() -> int:
     parser.add_argument("--fresh-registry", type=Path)
     parser.add_argument("--allow-public-fallback", action="store_true")
     parser.add_argument("--diagnostic-output", type=Path)
+    parser.add_argument("--workspace-run-root", type=Path)
+    parser.add_argument("--workspace-private-root", type=Path)
+    parser.add_argument("--vision-key", type=Path)
     args = parser.parse_args()
+    workspace_enabled = any((args.workspace_run_root, args.workspace_private_root, args.vision_key))
+    if workspace_enabled and not all((args.workspace_run_root, args.workspace_private_root, args.vision_key)):
+        raise ValueError("V351_WORKSPACE_ARGUMENTS_INCOMPLETE")
     if args.run_root.exists() or args.private_root.exists():
         raise FileExistsError("V3_TRANSCRIPT_RUN_EXISTS")
+    if workspace_enabled and (args.workspace_run_root.exists() or args.workspace_private_root.exists()):
+        raise FileExistsError("V351_WORKSPACE_RUN_EXISTS")
     raw = json.loads(args.raw.read_text(encoding="utf-8"))
     if args.fresh_registry is None:
         observations = {item["bvid"]: item for item in raw["observations"]}
@@ -224,6 +286,26 @@ def main() -> int:
         lambda: FunAsrLlamaCppProviderAdapter(args.install_root, asr_root, model_id="funasr-sensevoice-small-q8"),
         coordinator.complete,
     )
+    workspace_store = None
+    workspace_private_evidence = None
+    workspace_visual_sandbox = None
+    workspace_vision_consent = None
+    workspace_providers = None
+    workspace_adapters = None
+    workspace_results: list[dict[str, object]] = []
+    if workspace_enabled:
+        args.workspace_run_root.mkdir(parents=True)
+        args.workspace_private_root.mkdir(parents=True, mode=0o700)
+        args.workspace_private_root.chmod(0o700)
+        workspace_store = MediaTaskStore(args.workspace_private_root / "workspace.sqlite3")
+        workspace_private_evidence = args.workspace_private_root / "product-evidence"
+        workspace_visual_sandbox = TaskArtifactSandbox(args.workspace_private_root / "visual-temp")
+        workspace_vision_consent = VisionConsentStore(args.workspace_private_root / "vision-consent.sqlite3")
+        vision_key = args.vision_key.read_text(encoding="utf-8").strip()
+        workspace_providers, workspace_adapters = configure_workspace_vision(
+            args.workspace_private_root / "vision-provider.sqlite3", vision_key
+        )
+        vision_key = ""
     results = []
     lineage_entries = []
     try:
@@ -237,7 +319,7 @@ def main() -> int:
                 consent_policy_id="bilibili-media-consent/v1", consent_policy_revision=1,
             )
             coordinator.create(request)
-            leases = issue_task_lease(task_id, credentials)
+            leases, _ = issue_task_lease(task_id, credentials)
             wrapper = AcceptanceCapabilityAcquirer(
                 BilibiliMediaAcquirer(downloader=downloader),
                 definition.fault_class or "subtitle_body_empty",
@@ -266,6 +348,61 @@ def main() -> int:
                 raise RuntimeError(f"V3_TRANSCRIPT_TASK_FAILED:{definition.sample_id}:{receipt['result']}")
             transcript = receipt["result"]
             private_segments = service.private_segments(task_id)
+            if workspace_enabled:
+                visual_leases, visual_lease_id = issue_task_lease(task_id, credentials)
+                visual_downloader = YtDlpMediaDownloader(
+                    workspace_visual_sandbox,
+                    yt_dlp=args.yt_dlp,
+                    yt_dlp_sha256="1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6",
+                    ffmpeg=args.ffmpeg,
+                    ffmpeg_sha256="ed16af623947494a72e284b6eb8ff225f2da22b38b5d5069c2fd4b4ba3384e41",
+                )
+                materializer = MediaProductMaterializer(
+                    workspace_store,
+                    StaticTranscriptProjection(task_id, source_identity, str(observation.get("title") or definition.bvid), private_segments),
+                    workspace_private_evidence,
+                    lease_store=visual_leases,
+                    visual_sandbox=workspace_visual_sandbox,
+                    visual_downloader=visual_downloader,
+                    vision_consent=workspace_vision_consent,
+                    vision_providers=workspace_providers,
+                    vision_adapters=workspace_adapters,
+                )
+                product_task = materializer.materialize_visual(task_id, visual_lease_id)
+                comprehension = MediaComprehensionService(workspace_store, workspace_private_evidence)
+                projection = comprehension.get(task_id, product_task["revision"])
+                asks = build_ask_benchmark(
+                    MediaAskService(workspace_store, workspace_private_evidence),
+                    task_id,
+                    product_task["revision"],
+                )
+                selected_count = sum(item["kind"] == "vision_caption" for item in projection["evidenceCatalog"])
+                candidate_core = build_candidate_core(
+                    projection,
+                    asks,
+                    selected_frame_upload_count=selected_count,
+                )
+                candidate_path = args.workspace_run_root / f"candidate-core-{index + 1}.json"
+                candidate_path.write_text(
+                    json.dumps(candidate_core, ensure_ascii=True, sort_keys=True, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+                workspace_results.append({
+                    "slot": index,
+                    "sampleId": definition.sample_id,
+                    "bvid": definition.bvid,
+                    "taskId": task_id,
+                    "candidateCore": candidate_path.name,
+                    "candidateCoreSha256": candidate_core_sha256(candidate_core),
+                    "selectedFrameUploadCount": selected_count,
+                    "evidenceCount": len(candidate_core["evidenceCatalog"]),
+                    "chapterCount": len(candidate_core["outline"]["chapters"]),
+                    "timelineMomentCount": len(candidate_core["timeline"]["moments"]),
+                    "mindmapNodeCount": len(candidate_core["mindmap"]["nodes"]),
+                    "askCount": len(candidate_core["askBenchmark"]),
+                    "visualTempActiveTaskCount": workspace_visual_sandbox.active_task_count(),
+                })
+                visual_leases.clear()
             segment_receipts = [
                 {
                     "segmentId": segment["segmentId"], "startMs": segment["startMs"], "endMs": segment["endMs"],
@@ -366,6 +503,37 @@ def main() -> int:
             raise RuntimeError("V3_TRANSCRIPT_ACCEPTANCE_DENOMINATOR_FAILED")
         output = args.run_root / "transcript-result.json"
         output.write_text(json.dumps(result, ensure_ascii=True, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        if workspace_enabled:
+            workspace_manifest = {
+                "schemaVersion": "v3-5.1-workspace-candidate-core-run/v1",
+                "runId": args.workspace_run_root.name,
+                "sourceTranscriptRunId": args.run_root.name,
+                "createdAt": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+                "results": workspace_results,
+                "summary": {
+                    "candidateCount": len(workspace_results),
+                    "selectedFrameUploadCount": sum(int(item["selectedFrameUploadCount"]) for item in workspace_results),
+                    "rawMediaUploadCount": 0,
+                    "groundedTextCloudUploadCount": 0,
+                    "visualTempResidualCount": workspace_visual_sandbox.active_task_count(),
+                    "humanTranscriptInputCount": 0,
+                    "crossRunArtifactCount": 0,
+                },
+            }
+            if workspace_manifest["summary"] != {
+                "candidateCount": 3,
+                "selectedFrameUploadCount": sum(int(item["selectedFrameUploadCount"]) for item in workspace_results),
+                "rawMediaUploadCount": 0,
+                "groundedTextCloudUploadCount": 0,
+                "visualTempResidualCount": 0,
+                "humanTranscriptInputCount": 0,
+                "crossRunArtifactCount": 0,
+            } or any(int(item["selectedFrameUploadCount"]) < 1 for item in workspace_results):
+                raise RuntimeError("V351_WORKSPACE_ACCEPTANCE_DENOMINATOR_FAILED")
+            (args.workspace_run_root / "workspace-core-manifest.json").write_text(
+                json.dumps(workspace_manifest, ensure_ascii=True, sort_keys=True, indent=2) + "\n",
+                encoding="utf-8",
+            )
         print(json.dumps(result["summary"], sort_keys=True))
         return 0
     finally:

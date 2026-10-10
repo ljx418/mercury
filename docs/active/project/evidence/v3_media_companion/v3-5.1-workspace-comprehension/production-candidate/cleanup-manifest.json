@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-5.1-production-cleanup/v1",
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "runtimeListenerCount": 0,
+  "chromeProfileProcessCount": 0,
+  "temporaryMediaFileCount": 0,
+  "persistedAutomationScreenshotCount": 0,
+  "privateReviewArtifact": {
+    "fileCount": 280,
+    "bytes": 10955416,
+    "selectedFrameCount": 24,
+    "purpose": "fixed-candidate human review only",
+    "public": false
+  },
+  "passed": true
+}

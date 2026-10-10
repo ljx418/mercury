@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "v3-5.1-production-regression/v1",
+  "runId": "v3-5.1-production-candidate-20261010T210000Z",
+  "runtime": {
+    "command": "services/local-runtime/.venv/bin/pytest -q",
+    "passed": 679,
+    "failed": 0,
+    "warnings": 1,
+    "exitCode": 0
+  },
+  "extension": {
+    "command": "npm test -- --run",
+    "testFilesPassed": 52,
+    "testsPassed": 351,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "targetedWorkspace": {
+    "testFilesPassed": 1,
+    "testsPassed": 6,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "targetedRuntime": {
+    "command": "cd services/local-runtime && PYTHONPATH=. .venv/bin/pytest -q tests/test_v3_workspace_candidate.py tests/test_v3_media_product_materializer.py tests/test_v3_vision_provider_settings.py",
+    "passed": 19,
+    "failed": 0,
+    "warnings": 1,
+    "exitCode": 0
+  },
+  "invalidRuntimeCommandAttempts": {
+    "count": 2,
+    "failure": "ModuleNotFoundError during collection because PYTHONPATH was omitted",
+    "productResult": "not_applicable"
+  },
+  "typecheck": { "exitCode": 0 },
+  "productionBuild": { "exitCode": 0, "warning": "bundle chunk size warning only" },
+  "humanReviewPage": {
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "rootOverflow": false,
+    "questionJudgmentCount": 36,
+    "experienceJudgmentCount": 5,
+    "pageErrorCount": 0
+  },
+  "fixedCandidateRuntimeLauncher": {
+    "companionStatusHttp": 200,
+    "sessionBootstrapAvailable": true,
+    "unauthenticatedProjectionHttp": 401,
+    "stoppedCleanly": true,
+    "exitCode": 0
+  },
+  "passed": true
+}

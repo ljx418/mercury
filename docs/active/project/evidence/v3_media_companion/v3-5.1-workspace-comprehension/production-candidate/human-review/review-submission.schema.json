@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-5.1-human-quality-review/v1",
+  "title": "Navia V3-5.1 fixed-candidate human quality review",
+  "type": "object",
+  "required": ["schemaVersion", "runId", "candidateSha256", "reviewerId", "reviewerRole", "submittedAt", "askJudgments", "experienceJudgments", "overallDecision"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "v3-5.1-human-quality-review/v1" },
+    "runId": { "const": "v3-5.1-production-candidate-20261010T210000Z" },
+    "candidateSha256": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "prefixItems": [
+        { "const": "c7f1fdb9b99e1ff1d07c8b23295ed55504d920e77dca1be1151910156a1a558b" },
+        { "const": "bdc09e1c4d91f0ba91a683399220f820a1c55d86b04b4d5eabdf731c2a0162a2" },
+        { "const": "0bfe92ad4372130bb73e525611cb53010c4a4d1feb3093e6e0ca420e3c50ff50" }
+      ],
+      "items": false
+    },
+    "reviewerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "reviewerRole": { "const": "independent_human_reviewer" },
+    "submittedAt": { "type": "string", "format": "date-time" },
+    "askJudgments": {
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "items": { "$ref": "#/$defs/AskJudgment" }
+    },
+    "experienceJudgments": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/ExperienceJudgment" }
+    },
+    "overallDecision": { "enum": ["PASS", "FAIL", "BLOCKED"] }
+  },
+  "$defs": {
+    "AskJudgment": {
+      "type": "object",
+      "required": ["candidateIndex", "questionId", "criticalMeaningError", "citationSupported", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "candidateIndex": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "questionId": { "type": "string", "pattern": "^question_[a-f0-9]{8}$" },
+        "criticalMeaningError": { "type": "boolean" },
+        "citationSupported": { "type": "boolean" },
+        "note": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "ExperienceJudgment": {
+      "type": "object",
+      "required": ["requirementId", "decision", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "requirementId": { "enum": ["UX01", "UX02", "UX03", "UX04", "UX05"] },
+        "decision": { "enum": ["PASS", "FAIL", "BLOCKED"] },
+        "note": { "type": "string", "maxLength": 2000 }
+      }
+    }
+  }
+}

@@ -184,7 +184,7 @@ function SeekButton({ task, timestampMs, origin, label }: { task: MediaOutlineTa
     catch { setReceipt({ origin, requestedMs: timestampMs, observedMs: 0, deltaMs: timestampMs, outcome: "blocked", pageIdentityMatched: false, observedAt: new Date().toISOString(), failureCode: "V3_MEDIA_PORTAL_UNSUPPORTED" }); }
     finally { setBusy(false); }
   };
-  return <span className="media-seek-control"><button type="button" data-seek-ms={timestampMs} data-seek-origin={origin} onClick={() => void seek()} disabled={busy}>{busy ? "跳转中…" : label}</button>{receipt ? <small role="status" data-seek-outcome={receipt.outcome}>{receipt.outcome === "located" ? `已定位 · 误差 ${receipt.deltaMs}ms` : `未定位 · ${receipt.failureCode}`}</small> : null}</span>;
+  return <span className="media-seek-control"><button type="button" data-seek-ms={timestampMs} data-seek-origin={origin} onClick={() => void seek()} disabled={busy}>{busy ? "跳转中…" : label}</button>{receipt ? <small role="status" data-seek-outcome={receipt.outcome} data-seek-requested-ms={receipt.requestedMs} data-seek-observed-ms={receipt.observedMs} data-seek-delta-ms={receipt.deltaMs} data-seek-observed-at={receipt.observedAt}>{receipt.outcome === "located" ? `已定位 · 误差 ${receipt.deltaMs}ms` : `未定位 · ${receipt.failureCode}`}</small> : null}</span>;
 }
 
 function AskVideoPanel({ task }: { task: MediaOutlineTask }) {

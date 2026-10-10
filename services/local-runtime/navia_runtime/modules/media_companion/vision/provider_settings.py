@@ -743,8 +743,9 @@ class MiniMaxChatVisionAdapter:
                 candidate = re.sub(r"^```(?:json)?\s*|\s*```$", "", candidate, flags=re.IGNORECASE)
             parsed = json.loads(candidate)
             raw_usage = result.get("usage")
-            if result.get("model") != provider["model"] or not isinstance(parsed, dict) or set(parsed) != {"caption"} or not isinstance(parsed["caption"], str) or not 1 <= len(parsed["caption"].strip()) <= 1000 or not isinstance(raw_usage, dict):
+            if result.get("model") != provider["model"] or not isinstance(parsed, dict) or set(parsed) != {"caption"} or not isinstance(parsed["caption"], str) or not parsed["caption"].strip() or not isinstance(raw_usage, dict):
                 raise ValueError("vision_response")
+            caption = parsed["caption"].strip()[:1000].rstrip()
             usage = {"inputTokens": raw_usage.get("prompt_tokens"), "outputTokens": raw_usage.get("completion_tokens"), "estimatedCostUsd": None}
             if any(value is not None and type(value) is not int for value in (usage["inputTokens"], usage["outputTokens"])):
                 raise ValueError("vision_usage")
@@ -755,7 +756,7 @@ class MiniMaxChatVisionAdapter:
             raise VisionProviderError(code, "视觉 Provider 请求失败。", 503) from exc
         except (httpx.HTTPError, ValueError, json.JSONDecodeError) as exc:
             raise VisionProviderError("VISION_RESPONSE_INVALID", "视觉 Provider 返回无效响应。", 502) from exc
-        return {"caption": parsed["caption"].strip(), "model": result["model"], "usage": usage, "latencyMs": round((time.monotonic() - started) * 1000)}
+        return {"caption": caption, "model": result["model"], "usage": usage, "latencyMs": round((time.monotonic() - started) * 1000)}
 
 
 class VisionProviderAdapterRegistry:

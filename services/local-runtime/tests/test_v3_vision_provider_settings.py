@@ -234,6 +234,28 @@ def test_minimax_neutral_provider_test_uses_official_multimodal_shape() -> None:
     assert SECRET not in json.dumps(result)
 
 
+def test_minimax_frame_analysis_bounds_valid_overlong_caption() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["max_completion_tokens"] == 500
+        return httpx.Response(200, json={
+            "model": MINIMAX_MODEL_IDS[0],
+            "choices": [{"message": {"content": json.dumps({"caption": "可" * 1151})}}],
+            "usage": {"prompt_tokens": 20, "completion_tokens": 400, "total_tokens": 420},
+            "base_resp": {"status_code": 0, "status_msg": ""},
+        })
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    result = MiniMaxChatVisionAdapter(lambda: client).analyze_frame({
+        "baseUrl": MINIMAX_API_BASE,
+        "model": MINIMAX_MODEL_IDS[0],
+        "apiKey": SECRET,
+    }, b"selected-frame")
+
+    assert result["caption"] == "可" * 1000
+    assert result["usage"] == {"inputTokens": 20, "outputTokens": 400, "estimatedCostUsd": None}
+
+
 def test_minimax_auth_failure_reports_region_mismatch() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(401, json={"error": {"message": "invalid api key (2049)"}})

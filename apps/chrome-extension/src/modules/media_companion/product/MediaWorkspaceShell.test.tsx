@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { MediaComprehensionProjection, MediaOutlineTask } from "../../../runtimeClient";
 import { MediaWorkspaceShell } from "./MediaWorkspaceShell";
 import { resolveMediaWorkspaceRoute } from "./MediaWorkspaceRouter";
+import { layoutTimelineMoments } from "./ComprehensionViews";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -173,6 +174,29 @@ describe("MediaWorkspaceShell", () => {
     }
     expect(host.textContent).toContain("关键点一");
     expect(getComprehension).toHaveBeenCalled();
+
+    const treeItems = Array.from(host.querySelectorAll<HTMLElement>("[role='treeitem']"));
+    treeItems[0].focus();
+    await act(async () => treeItems[0].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true })));
+    expect(document.activeElement).toBe(treeItems[1]);
+    await act(async () => treeItems[1].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })));
+    expect(treeItems[1].getAttribute("aria-expanded")).toBe("false");
+    await act(async () => treeItems[1].dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })));
+    expect(treeItems[1].getAttribute("aria-expanded")).toBe("true");
+    expect(treeItems[1].querySelector("[data-seek-origin='mindmap_node']")).not.toBeNull();
     await act(async () => root.unmount());
+  });
+
+  it("places dense timeline moments into non-overlapping deterministic lanes", () => {
+    const layout = layoutTimelineMoments([170, 94_782, 189_394, 284_006, 425_361, 566_715, 665_068], 5_985_610);
+    expect(layout.widthPx).toBeGreaterThanOrEqual(900);
+    expect(layout.positions).toHaveLength(7);
+    for (let left = 0; left < layout.positions.length; left += 1) {
+      for (let right = left + 1; right < layout.positions.length; right += 1) {
+        if (layout.positions[left].lane !== layout.positions[right].lane) continue;
+        expect(Math.abs(layout.positions[left].leftPx - layout.positions[right].leftPx)).toBeGreaterThanOrEqual(172);
+      }
+    }
+    expect(layoutTimelineMoments([0, 0, 0, 0], 1_000).positions.map((item) => item.lane)).toEqual([0, 1, 2, 3]);
   });
 });

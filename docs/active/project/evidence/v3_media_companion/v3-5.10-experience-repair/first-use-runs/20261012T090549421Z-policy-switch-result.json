@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "v3-stage-a-policy-switch-evidence/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "fixture": "real_bilibili_v1_then_test_only_v2_policy_revision",
+  "oldTaskId": "media_task_3b5e3df36d1642e8b44481346e01623f",
+  "newTaskId": "media_task_e98a32a92fe54b44b9aa308f756f5eda",
+  "conflictVisibleBeforeClick": true,
+  "switchResponseDropped": true,
+  "beforeClick": {
+    "task_id": "media_task_3b5e3df36d1642e8b44481346e01623f",
+    "state": "published",
+    "consent_policy_revision": 1
+  },
+  "switchRows": [
+    {
+      "old_task_id": "media_task_3b5e3df36d1642e8b44481346e01623f",
+      "new_task_id": "media_task_e98a32a92fe54b44b9aa308f756f5eda",
+      "old_policy_revision": 1,
+      "new_policy_revision": 2
+    }
+  ],
+  "oldProductUnchanged": true,
+  "oldOutlineHashUnchanged": true,
+  "newProductState": "degraded",
+  "sidepanelTaskId": "media_task_e98a32a92fe54b44b9aa308f756f5eda",
+  "secondTaskId": "media_task_e98a32a92fe54b44b9aa308f756f5eda",
+  "viewportChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 26477
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 26793
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 36044
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 273612
+    }
+  ]
+}

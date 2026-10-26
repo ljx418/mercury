@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [
+    {
+      "case": "B27",
+      "xhrAborted": true,
+      "abortProof": "runtime-partial-terminal",
+      "deleteObserved": true,
+      "statusConverged": true,
+      "identityContained": true,
+      "residue": {
+        "storageImportId": 0,
+        "storageBearer": 0,
+        "storageUploadToken": 0,
+        "fileName": 0,
+        "importId": 0,
+        "token": 0
+      },
+      "sequence": 3,
+      "terminalState": "cancelled",
+      "importId": "media_import_80b650f2106117a87077f31cbe89f4e6",
+      "eventsDigest": "fnv1a32:026578ac"
+    },
+    {
+      "case": "B29",
+      "byteLength": 104329514,
+      "allocatedRatio": 1,
+      "sha256": "0b283602d3d61683ad940b3621c3dffbbede48d055dea5ba8dcff15156a2b7ba",
+      "ffprobeSha256": "31ce754d798891051ef33794ee9acf59393aaf2f201007e59907704499780c87",
+      "nonEmptySegments": 23,
+      "distinctFrameCount": 3,
+      "importId": "media_import_16bf8cd8fd1091a6e3e35cda941cae30",
+      "taskId": "media_task_dd7280cc48824a9d9ec6f2b91614a236",
+      "productId": "outline_b9d14d43cdc04ea74ca974b428f6b608",
+      "progressMonotonic": true,
+      "writerSliceMaxBytes": 256000,
+      "terminalSequence": 9,
+      "cleanupCount": 1,
+      "residue": {
+        "source": 0,
+        "sandbox": 0
+      },
+      "uploads": 1,
+      "eventsDigest": "fnv1a32:93b4af4a"
+    }
+  ],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B30",
+    "failure": "The local-import card did not become eligible. state={\"launchStatus\":\"当前输入不可用\",\"launchDetail\":\"字幕和本机媒体获取均失败。浏览器音频采集仍为实验能力，本版本不会自动启动。\",\"diagnostic\":null,\"controls\":[\"media-companion-launch\",\"<redacted>\",\"media-consent-revoke\",\"<redacted>\",\"media-transcript-open\",\"media-transcript-cancel\"]}",
+    "ownedResidue": null
+  }
+}

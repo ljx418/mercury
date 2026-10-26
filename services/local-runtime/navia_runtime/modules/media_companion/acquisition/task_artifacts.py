@@ -10,11 +10,14 @@ import stat
 from dataclasses import dataclass
 from pathlib import Path
 
+from ..task_store import process_start_token
+
 
 TASK_ID_RE = re.compile(r"^media_task_[a-f0-9]{32}$")
 DIRECTORY_TOKEN_RE = re.compile(r"^task_[a-f0-9]{32}$")
 OWNER_FILE = ".navia-owner.json"
-OWNER_MARKER = "navia-media-task-artifact/v1"
+OWNER_MARKER = "navia-media-task-artifact/v2"
+LEGACY_OWNER_MARKER = "navia-media-task-artifact/v1"
 KIND_SUFFIX = {
     "audio": ".wav",
     "video": ".media",
@@ -83,6 +86,9 @@ class TaskArtifactSandbox:
         self._validate_task_id(task_id)
         if task_id in self._task_roots:
             return
+        owner_start = process_start_token(os.getpid())
+        if owner_start is None:
+            raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task process identity is unavailable.")
         while True:
             directory = self.root / f"task_{secrets.token_hex(16)}"
             try:
@@ -94,6 +100,8 @@ class TaskArtifactSandbox:
             "schemaVersion": OWNER_MARKER,
             "directoryToken": directory.name,
             "taskId": task_id,
+            "ownerPid": os.getpid(),
+            "ownerStart": owner_start,
         }
         owner_path = directory / OWNER_FILE
         owner_bytes = json.dumps(owner, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -183,6 +191,32 @@ class TaskArtifactSandbox:
         self._assert_private_regular_file(destination)
         return ArtifactRef(task_id, artifact_id, kind, byte_length, digest.hexdigest())
 
+    def import_private_file(self, task_id: str, kind: str, source: Path) -> ArtifactRef:
+        """Copy an owned private cache file into a task sandbox without loading it into memory."""
+        if kind not in KIND_SUFFIX:
+            raise TaskArtifactError("V3_MEDIA_TASK_INVALID", "Artifact kind is outside the closed set.")
+        directory = self._task_root(task_id)
+        source = Path(source).resolve()
+        metadata = source.lstat()
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_nlink != 1 or metadata.st_mode & 0o077:
+            raise TaskArtifactError("V3_MEDIA_TEMP_FILE_MODE_INVALID", "Imported artifact is not a private regular file.")
+        byte_length = metadata.st_size
+        current = self._task_bytes(directory)
+        limit = self.maximum_video_bytes if kind == "video" else self.maximum_audio_bytes if kind == "audio" else self.maximum_task_bytes
+        if byte_length <= 0 or byte_length > limit or current + byte_length > self.maximum_task_bytes:
+            raise TaskArtifactError("V3_MEDIA_TASK_INVALID", "Imported artifact quota would be exceeded.")
+        staging = self.create_private_temp(task_id, suffix=KIND_SUFFIX[kind])
+        try:
+            with source.open("rb") as reader, staging.open("wb") as writer:
+                shutil.copyfileobj(reader, writer, length=1024 * 1024)
+                writer.flush()
+                os.fsync(writer.fileno())
+            self._chmod(staging, 0o600)
+            return self.publish_private_temp(task_id, kind, staging)
+        except Exception:
+            staging.unlink(missing_ok=True)
+            raise
+
     def remove_private_temp(self, task_id: str, path: Path) -> None:
         directory = self._task_root(task_id)
         path = Path(path)
@@ -221,9 +255,39 @@ class TaskArtifactSandbox:
         path.unlink()
 
     def cleanup(self, task_id: str) -> dict[str, int | bool]:
+        self._validate_task_id(task_id)
         directory = self._task_roots.get(task_id)
         if directory is None:
-            return {"residualCount": 0, "removed": False}
+            removed = False
+            for entry in self.root.iterdir():
+                if entry.name in {"visual-products", "product-evidence", "product-exports"} and entry.is_dir() and not entry.is_symlink():
+                    continue
+                try:
+                    owner = self._validate_owned_directory(entry)
+                    for child in entry.iterdir():
+                        self._assert_private_regular_file(child)
+                except (OSError, TaskArtifactError) as exc:
+                    raise TaskArtifactError(
+                        "V3_MEDIA_CLEANUP_INCOMPLETE", "Unverifiable task artifacts prevent recovery."
+                    ) from exc
+                if owner["taskId"] != task_id:
+                    continue
+                if owner["schemaVersion"] != OWNER_MARKER:
+                    raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Legacy task ownership cannot be verified.")
+                pid = owner["ownerPid"]
+                if process_start_token(pid) is not None:
+                    raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task owner may still be running.")
+                try:
+                    os.kill(pid, 0)
+                except ProcessLookupError:
+                    pass
+                except OSError as exc:
+                    raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task owner liveness is unknown.") from exc
+                else:
+                    raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task owner may still be running.")
+                shutil.rmtree(entry)
+                removed = True
+            return {"residualCount": 0, "removed": removed}
         self._validate_owned_directory(directory, task_id=task_id)
         for entry in directory.iterdir():
             self._assert_private_regular_file(entry)
@@ -267,7 +331,12 @@ class TaskArtifactSandbox:
             owner = json.loads(owner_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task owner manifest is invalid.") from exc
-        if set(owner) != {"schemaVersion", "directoryToken", "taskId"} or owner.get("schemaVersion") != OWNER_MARKER or owner.get("directoryToken") != directory.name or not TASK_ID_RE.fullmatch(str(owner.get("taskId", ""))):
+        base_keys = {"schemaVersion", "directoryToken", "taskId"}
+        valid_keys = (owner.get("schemaVersion") == OWNER_MARKER and set(owner) == base_keys | {"ownerPid", "ownerStart"}
+                      and type(owner.get("ownerPid")) is int and owner["ownerPid"] > 0
+                      and isinstance(owner.get("ownerStart"), str) and owner["ownerStart"].isdigit())
+        legacy_keys = owner.get("schemaVersion") == LEGACY_OWNER_MARKER and set(owner) == base_keys
+        if not (valid_keys or legacy_keys) or owner.get("directoryToken") != directory.name or not TASK_ID_RE.fullmatch(str(owner.get("taskId", ""))):
             raise TaskArtifactError("V3_MEDIA_CLEANUP_INCOMPLETE", "Task owner manifest is not authoritative.")
         if task_id is not None and owner["taskId"] != task_id:
             raise TaskArtifactError("V3_MEDIA_CROSS_TASK_REUSE", "Task owner manifest belongs to another task.")
@@ -281,6 +350,20 @@ class TaskArtifactSandbox:
                 for child in entry.iterdir():
                     self._assert_private_regular_file(child)
             except (OSError, TaskArtifactError):
+                continue
+            if owner["schemaVersion"] != OWNER_MARKER:
+                continue
+            pid = owner["ownerPid"]
+            observed_start = process_start_token(pid)
+            if observed_start is not None:
+                continue
+            try:
+                os.kill(pid, 0)
+            except ProcessLookupError:
+                pass
+            except OSError:
+                continue
+            else:
                 continue
             shutil.rmtree(entry)
             recovered += 1

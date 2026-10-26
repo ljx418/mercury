@@ -1,17 +1,22 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
+from concurrent.futures import Future, ThreadPoolExecutor
 import os
 import secrets
 import signal
+import threading
 import time
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
+from weakref import WeakValueDictionary
 
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse, Response, StreamingResponse
+from starlette.requests import ClientDisconnect
 
 from navia_runtime import __version__
 from navia_runtime.contracts import AgentEventType, ErrorCode, agent_event, failure, new_id, success, utc_now
@@ -35,6 +40,42 @@ from navia_runtime.modules.companion import CompanionFailure, CompanionSessionBr
 from navia_runtime.modules.media_companion.bilibili_policy import (
     BILIBILI_CREDENTIAL_ENVELOPE_POLICY,
     BILIBILI_CREDENTIAL_TRANSPORT_POLICY,
+)
+from navia_runtime.modules.media_companion.local_import import (
+    ImportError as LocalMediaImportError,
+)
+from navia_runtime.modules.media_companion.local_import import (
+    observations as local_import_observations,
+)
+from navia_runtime.modules.media_companion.local_import.contracts import (
+    MAX_IMPORT_BYTES as LOCAL_IMPORT_MAX_BYTES,
+    MAX_DURATION_MS as LOCAL_IMPORT_MAX_DURATION_MS,
+    WRITER_SLICE_BYTES as LOCAL_IMPORT_WRITER_SLICE_BYTES,
+    public_status as local_import_public_status,
+    validate_create_body as validate_local_import_create_body,
+)
+from navia_runtime.modules.media_companion.local_import.manager import (
+    ImportSession,
+    TokenRegistry,
+)
+from navia_runtime.modules.media_companion.local_import.orchestrator import (
+    LocalImportOrchestrator,
+)
+from navia_runtime.modules.media_companion.local_import.preparer import (
+    LocalMediaPreparer,
+)
+from navia_runtime.modules.media_companion.local_import.runtime import (
+    LocalImportManager,
+)
+from navia_runtime.modules.media_companion.local_import.store import (
+    LocalMediaImportStore,
+)
+from navia_runtime.modules.media_companion.dependencies import (
+    MediaDependencyError,
+    MediaDependencyManager,
+)
+from navia_runtime.modules.media_companion.dependencies.manager import (
+    default_managed_root,
 )
 from navia_runtime.modules.media_companion.asr import (
     AsrModelManager,
@@ -66,7 +107,14 @@ from navia_runtime.modules.media_companion.transcript_projection import MediaTra
 from navia_runtime.modules.media_companion.task_store import MediaTaskStore, MediaTaskStoreError
 from navia_runtime.modules.media_companion.product_materializer import MediaProductMaterializer
 from navia_runtime.modules.media_companion.product_services import MediaAskService, MediaExportService
-from navia_runtime.modules.media_companion.comprehension import MediaComprehensionService
+from navia_runtime.modules.media_companion.media_cache import MediaCacheError, MediaDownloadCache
+from navia_runtime.modules.media_companion.portal_settings import (
+    MediaPortalSettingsError,
+    MediaPortalSettingsStore,
+    PreferredCredentialResolver,
+)
+from navia_runtime.modules.media_companion.comprehension import DeepSeekStrictGroundedSynthesisProvider, MediaComprehensionService, MiniMaxGroundedSynthesisProvider
+from navia_runtime.modules.media_companion.input_authority import MediaInputAuthority
 from navia_runtime.modules.adapters.media_vision import VisionConsentStore
 from navia_runtime.modules.media_companion.vision import (
     SecretStoreError,
@@ -74,6 +122,7 @@ from navia_runtime.modules.media_companion.vision import (
     VisionProviderError,
     VisionProviderAdapterRegistry,
     VisionProviderStore,
+    MINIMAX_ADAPTER_KIND,
     create_system_secret_store,
 )
 from starlette.concurrency import run_in_threadpool
@@ -145,19 +194,28 @@ def default_media_asr_task_root() -> Path:
     return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "navia/media-asr-tasks"
 
 
+def default_media_download_cache_root() -> Path:
+    configured = os.environ.get("NAVIA_MEDIA_DOWNLOAD_CACHE_ROOT")
+    if configured:
+        return Path(configured)
+    return Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "navia/media-downloads"
+
+
 event_store = SQLiteEventStore(default_db_path())
 event_stream = InMemoryEventStream()
 session_store = SQLiteSessionStore(default_db_path())
-settings_store = SettingsStore(default_db_path())
-provider_registry = ProviderRegistry(settings_store)
 try:
     vision_secret_store = create_system_secret_store()
 except SecretStoreError:
     vision_secret_store = UnavailableSecretStore()
+settings_store = SettingsStore(default_db_path(), vision_secret_store)
+provider_registry = ProviderRegistry(settings_store)
 vision_provider_store = VisionProviderStore(
     Path(os.environ.get("NAVIA_VISION_PROVIDER_DB_PATH", default_db_path())),
     vision_secret_store,
 )
+media_portal_settings_store = MediaPortalSettingsStore(default_db_path(), vision_secret_store)
+media_download_cache = MediaDownloadCache(default_media_download_cache_root(), default_db_path())
 vision_provider_adapter = VisionProviderAdapterRegistry()
 pi_sidecar_client = PiSidecarClient()
 v2_artifact_store = V2ArtifactStore(default_db_path())
@@ -172,12 +230,38 @@ media_credential_channel_store = CredentialChannelStore(
 media_credential_lease_store = CredentialLeaseStore(
     policies=(BILIBILI_CREDENTIAL_ENVELOPE_POLICY,),
 )
+media_credential_resolver = PreferredCredentialResolver(media_portal_settings_store, media_credential_lease_store)
 asr_model_manager = AsrModelManager(
     default_asr_root(),
+
     bundled_root=default_asr_bundled_root(),
 )
-media_acquisition_coordinator = MediaAcquisitionCoordinator(TaskArtifactSandbox(default_media_task_root()))
+
+# WP-A: the Runtime is the ONLY owner of media dependency readiness. The
+# manager verifies the four frozen dependencies, owns the single repair job and
+# publishes content-addressed generations.
+media_dependency_manager = MediaDependencyManager(
+    asr_manager=asr_model_manager,
+    managed_root=default_managed_root(default_db_path()),
+)
 media_outline_task_store = MediaTaskStore(default_db_path())
+# WP-B: the local-import store is the durable truth; the manager owns the
+# in-process upload token, the streaming writer and cancellation. Neither ever
+# sees a client file name, a client path, a URL or a client-supplied hash.
+local_media_import_store = LocalMediaImportStore(default_db_path())
+local_media_import_manager = LocalImportManager(local_media_import_store)
+local_media_import_manager._media_root = str(default_media_task_root() / "local-imports")
+
+media_acquisition_coordinator = MediaAcquisitionCoordinator(
+    TaskArtifactSandbox(default_media_task_root()), authority_store=media_outline_task_store
+)
+# C3: the eligibility query is the PRODUCTION coordinator's, not a fake. The
+# import surface may allocate a record, a token, a quota, a sandbox or a
+# writer only after the coordinator has proved the task/source eligible.
+local_media_import_manager._eligibility_resolver = (
+    media_acquisition_coordinator.local_import_eligibility
+)
+media_execute_locks: WeakValueDictionary[str, asyncio.Lock] = WeakValueDictionary()
 media_capture_grant_service = MediaCaptureGrantService()
 runtime_capture_sink = RuntimeCaptureSink(media_acquisition_coordinator.sandbox)
 
@@ -189,6 +273,7 @@ def build_media_downloader(
     sandbox: TaskArtifactSandbox,
     *,
     yt_dlp_path: Path | None = None,
+    strict: bool = False,
 ):
     """Build the frozen local downloader for a private task sandbox."""
     yt_dlp = yt_dlp_path or Path(
@@ -203,19 +288,60 @@ def build_media_downloader(
                 yt_dlp_sha256=V3_YT_DLP_SHA256,
                 ffmpeg=ffmpeg,
                 ffmpeg_sha256=V3_FFMPEG_SHA256,
+                media_cache=media_download_cache,
             )
         except (OSError, MediaAcquisitionError):
+            if strict:
+                raise
             return None
+    if strict:
+        raise MediaAcquisitionError("V3_MEDIA_RUNTIME_OFFLINE", "Frozen media tools are unavailable.", status=503)
     return None
 
 
-def build_media_acquirers() -> dict[str, Any]:
-    """Build only audited local adapters; missing tools preserve the capture fallback."""
-    return {"bilibili": BilibiliMediaAcquirer(downloader=build_media_downloader(media_acquisition_coordinator.sandbox))}
+def resolve_managed_yt_dlp(snapshot: Any = None) -> Path | None:
+    """Resolve yt-dlp for ONE task snapshot.
+
+    The snapshot is the ONLY dependency owner for a task. When a task holds a
+    lease, a newly published generation must not swap the binary underneath it.
+    """
+    if snapshot is not None:
+        candidate = snapshot.yt_dlp.get("path")
+        return Path(candidate) if isinstance(candidate, str) else None
+    override = os.environ.get("NAVIA_MEDIA_YT_DLP_PATH")
+    if override:
+        return Path(override)
+    return default_db_path().parent / "tools/yt-dlp"
 
 
-def create_sensevoice_provider():
-    model_root = asr_model_manager.model_path(V3_BASELINE_ASR_MODEL_ID)
+def build_media_acquirers(snapshot: Any = None) -> dict[str, Any]:
+    """Build only audited local adapters; missing tools preserve the capture fallback.
+
+    `snapshot` is the task's verified dependency snapshot. It is read once by
+    `execute_media_acquisition` and threaded through unchanged.
+    """
+    return {
+        "bilibili": BilibiliMediaAcquirer(
+            downloader=build_media_downloader(
+                media_acquisition_coordinator.sandbox,
+                yt_dlp_path=resolve_managed_yt_dlp(snapshot),
+                strict=snapshot is not None,
+            )
+        )
+    }
+
+
+def create_sensevoice_provider(snapshot: Any = None):
+    """Resolve the SenseVoice provider from the task snapshot when one exists.
+
+    SenseVoice stays DELEGATED to `asr_model_manager`: this never installs it
+    and never copies its state, it only reads the effective model.
+    """
+    model_root = None
+    if snapshot is not None:
+        model_root = asr_model_manager.model_path(V3_BASELINE_ASR_MODEL_ID)
+    else:
+        model_root = asr_model_manager.model_path(V3_BASELINE_ASR_MODEL_ID)
     if model_root is None:
         raise AsrProviderError("V3_MEDIA_TRANSCRIPT_MODEL_MISMATCH", "Frozen SenseVoice model is not installed and verified.")
     return FunAsrLlamaCppProviderAdapter(
@@ -225,14 +351,23 @@ def create_sensevoice_provider():
     )
 
 
+media_audio_stager = TaskAudioStager(
+    media_acquisition_coordinator.sandbox, default_media_asr_task_root(), default_db_path()
+)
 media_transcript_service = SenseVoiceTranscriptService(
-    TaskAudioStager(media_acquisition_coordinator.sandbox, default_media_asr_task_root()),
+    media_audio_stager,
     create_sensevoice_provider,
     media_acquisition_coordinator.complete,
+    media_acquisition_coordinator.cancel,
+    # WP-B: on the explicit local route the ASR stage is ONE OF TWO consumers of
+    # the shared input, so it submits a terminal receipt and never cleans it.
+    deferred_routes=frozenset({"explicit_local_media_asr"}),
+    barrier_terminal=lambda task_id: media_local_import_orchestrator.transcript_terminal(task_id),
 )
 media_transcript_projection_service = MediaTranscriptProjectionService(
     media_acquisition_coordinator,
     media_transcript_service,
+    media_outline_task_store,
 )
 media_visual_sandbox = TaskArtifactSandbox(default_media_task_root() / "visual-products")
 media_vision_consent_store = VisionConsentStore(default_db_path())
@@ -240,29 +375,250 @@ media_product_materializer = MediaProductMaterializer(
     media_outline_task_store,
     media_transcript_projection_service,
     default_media_task_root() / "product-evidence",
-    lease_store=media_credential_lease_store,
+    lease_store=media_credential_resolver,
     visual_sandbox=media_visual_sandbox,
-    visual_downloader=build_media_downloader(
+    # WP-A: there is NO second global dependency owner. The visual downloader is
+    # resolved from the same per-task snapshot the acquisition and transcript
+    # paths use, so a new generation cannot hot-swap a running task.
+    visual_downloader_resolver=lambda snapshot: build_media_downloader(
         media_visual_sandbox,
-        yt_dlp_path=Path(
-            os.environ.get(
-                "NAVIA_MEDIA_VISUAL_YT_DLP_PATH",
-                os.environ.get("NAVIA_MEDIA_YT_DLP_PATH", default_db_path().parent / "tools/yt-dlp"),
-            )
-        ),
+        yt_dlp_path=resolve_managed_yt_dlp(snapshot),
     ),
+    snapshot_resolver=lambda task_id: media_dependency_manager.leased_snapshot(task_id),
     vision_consent=media_vision_consent_store,
     vision_providers=vision_provider_store,
     vision_adapters=vision_provider_adapter,
 )
+# WP-B C4: ONE Runtime-owned orchestrator drives T1..T4 for the explicit local
+# route. It reuses the SAME per-task dependency snapshot as acquisition,
+# transcript and visual, and the SAME coordinator, sandbox and stager — there is
+# no second source authority and no second media owner anywhere below.
+def _local_import_preparer(task_id: str, source_identity: str, media: Path) -> LocalMediaPreparer:
+    """Prepare from the SAME per-task snapshot every other route uses.
+
+    There is no second tool source: the ffmpeg/ffprobe entries come from the
+    leased snapshot, and an unleased task yields no entry at all, so the
+    preparer fails closed instead of resolving a tool from anywhere else.
+    """
+    import_id = media.parent.name
+    base = default_media_task_root() / "local-imports" / import_id
+    leased = media_dependency_manager.leased_snapshot(task_id)
+    snapshot: dict[str, Any] = {
+        "generation": getattr(leased, "generation", ""),
+        "ffmpeg": dict(leased.ffmpeg) if leased is not None else {},
+        "ffprobe": dict(leased.ffprobe) if leased is not None else {},
+    }
+    return LocalMediaPreparer(
+        task_id=task_id,
+        source_identity=source_identity,
+        snapshot=snapshot,
+        input_root=base / "input",
+        audio_root=base / "audio",
+        visual_root=base / "visual",
+    )
+
+
+media_local_import_orchestrator = LocalImportOrchestrator(
+    store=local_media_import_store,
+    manager=local_media_import_manager,
+    coordinator=media_acquisition_coordinator,
+    stager=media_audio_stager,
+    sandbox=media_acquisition_coordinator.sandbox,
+    media_root=Path(local_media_import_manager._media_root),
+    preparer_factory=_local_import_preparer,
+    snapshot_resolver=media_dependency_manager.leased_snapshot,
+    transcript_service=media_transcript_service,
+    materializer=media_product_materializer,
+    # AC1: the startup repair for a durable imported product whose visual
+    # terminal receipt never became durable.
+    product_reconciler=media_product_materializer.reconcile_visual_terminal,
+)
+# C4/C7: the real materializer reads the imported receipt and reports its own
+# terminal state, so the barrier — and only the barrier — owns the release.
+media_product_materializer._imported_visual_receipt_resolver = (
+    media_local_import_orchestrator.imported_visual_receipt
+)
+# The frozen public `media` projection is assembled from the DURABLE barrier
+# record, so `ready` can only ever show a preparation that survived a restart.
+local_media_import_manager._prepared_resolver = media_local_import_orchestrator.prepared_media
+media_product_materializer._visual_terminal = media_local_import_orchestrator.visual_terminal
+
+
+def _local_import_frame_root(task_id: str) -> Path | None:
+    """The owned root the local preparer rendered this task's frames into."""
+    import_id = media_local_import_orchestrator.import_id_for_task(task_id)
+    if import_id is None:
+        return None
+    return default_media_task_root() / "local-imports" / import_id / "visual"
+
+
+media_product_materializer._imported_frame_root = _local_import_frame_root
+
+_local_import_orchestration: dict[str, Future] = {}
+
+
+def schedule_local_import_orchestration(import_id: str) -> None:
+    """Start the frozen handoff for one durable EOF, off the request thread.
+
+    The future is OWNED: whatever happens inside it, the import settles into a
+    frozen terminal state, so the UI's polling always converges instead of
+    waiting for a state that will never arrive.
+    """
+    with _local_import_orchestration_lock:
+        existing = _local_import_orchestration.get(import_id)
+        if existing is not None and not existing.done():
+            return
+        future = _local_import_executor.submit(media_local_import_orchestrator.run, import_id)
+        _local_import_orchestration[import_id] = future
+        future.add_done_callback(_settle_local_import_orchestration)
+
+
+def _settle_local_import_orchestration(future) -> None:
+    """Map a failed orchestration onto a frozen terminal failure.
+
+    ffprobe/ffmpeg, bind, stage and materializer errors all become one of the
+    frozen codes, the record is persisted with it, the active resources are
+    closed and the task's import slot is released.
+    """
+    try:
+        future.result()
+    except Exception as error:  # noqa: BLE001 - the failure must be persisted
+        code = getattr(error, "code", "")
+        if not isinstance(code, str) or not code.startswith("V3_MEDIA_IMPORT_"):
+            code = "V3_MEDIA_IMPORT_WRITE_FAILED"
+        logging.getLogger(__name__).warning(
+            "local import orchestration failed: code=%s", code
+        )
+        try:
+            media_local_import_orchestrator.settle_failure(code)
+        except Exception:  # noqa: BLE001
+            logging.getLogger(__name__).exception(
+                "local import failure settlement failed"
+            )
+
+
+def wait_for_local_import_orchestration(import_id: str, timeout: float = 600.0):
+    """Block until one import's handoff finished; used by tests and shutdown."""
+    future = _local_import_orchestration.get(import_id)
+    if future is None:
+        return None
+    return future.result(timeout=timeout)
+
+
+_local_import_executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="local-import")
+_local_import_orchestration_lock = threading.Lock()
+
+
+async def _reconcile_local_imports_on_startup() -> None:
+    """FC3: TWO recoveries, chosen by whether a barrier is open.
+
+    * an import whose BARRIER is open is reconciled by the ORCHESTRATOR: its
+      shared input still belongs to the two-consumer barrier, and only the
+      barrier knows what may be released;
+    * an import with NO barrier is an interrupted upload. The MANAGER turns it
+      into a persisted terminal failure, so GET keeps answering with the truth.
+
+    Nothing is restored from a previous process: no upload token, no writer, no
+    worker, no handle. Only facts a predecessor committed may be acted on.
+    """
+    logger = logging.getLogger(__name__)
+    try:
+        open_barriers = {
+            entry["importId"] for entry in media_local_import_orchestrator.barriers.list_open()
+        }
+        interrupted = local_media_import_manager.reconcile_after_restart(skip=open_barriers)
+        for import_id in interrupted:
+            logger.warning("local import interrupted before its barrier existed: %s", import_id)
+        for entry in media_local_import_orchestrator.reconcile():
+            logger.warning("local import reconciled on startup: %s", entry)
+    except Exception:  # noqa: BLE001 - startup must never crash the Runtime
+        logger.exception("local import startup reconciliation failed")
+
+
+app.router.on_startup.append(_reconcile_local_imports_on_startup)
+
+
 media_ask_service = MediaAskService(
     media_outline_task_store,
     default_media_task_root() / "product-evidence",
 )
+
+
+def create_grounded_media_synthesis_provider() -> MiniMaxGroundedSynthesisProvider:
+    configured_chat = settings_store.get_settings().get("chatProvider") or {}
+    selected_llm_id = configured_chat.get("llmProviderId")
+    selected_llm = (
+        settings_store.get_provider(selected_llm_id, include_secret=True)
+        if isinstance(selected_llm_id, str) and selected_llm_id
+        else None
+    )
+    if selected_llm and selected_llm.get("type") == "deepseek":
+        test_status = selected_llm.get("testStatus") or {}
+        capabilities = test_status.get("capabilities") or {}
+        if selected_llm.get("defaultModel") != "deepseek-chat":
+            raise MediaTaskStoreError(
+                "V352_SYNTHESIS_PROVIDER_UNSUPPORTED",
+                "DeepSeek 结构化视频理解仅支持已验证的 deepseek-chat。",
+                status=409,
+            )
+        if test_status.get("status") != "ok" or capabilities.get("structuredOutput") != "deepseek_beta_strict_tool_v1":
+            raise MediaTaskStoreError(
+                "V352_SYNTHESIS_PROVIDER_NOT_VERIFIED",
+                "请先在设置中完成 DeepSeek 严格结构能力测试。",
+                status=409,
+            )
+        return DeepSeekStrictGroundedSynthesisProvider({
+            "id": selected_llm["id"],
+            "model": selected_llm["defaultModel"],
+            "baseUrl": selected_llm["baseUrl"],
+            "apiKey": selected_llm["apiKey"],
+        })
+    provider_id = vision_provider_store.selected_provider_id()
+    if not provider_id:
+        raise MediaTaskStoreError("V352_SYNTHESIS_PROVIDER_MISSING", "请先在设置中配置并验证 MiniMax 画面理解模型。", status=409)
+    provider = vision_provider_store.get(provider_id, include_secret=True)
+    if provider is None or provider.get("adapterKind") != MINIMAX_ADAPTER_KIND:
+        raise MediaTaskStoreError("V352_SYNTHESIS_PROVIDER_UNSUPPORTED", "当前模型不支持结构化视频理解。", status=409)
+    if (provider.get("testStatus") or {}).get("status") != "ok":
+        raise MediaTaskStoreError("V352_SYNTHESIS_PROVIDER_NOT_VERIFIED", "请先完成模型能力测试。", status=409)
+    return MiniMaxGroundedSynthesisProvider(provider)
+
+
+# GC-B5R: the ONE input authority of the media chain, composed HERE in the
+# composition root from the REAL owners: the task store's source authority,
+# the local-import store's durable binding, the acquisition coordinator's live
+# task and the dependency manager's verified snapshot.
+def _current_media_dependency_generation(task_id: str) -> str | None:
+    """The CURRENT verified dependency generation of a task.
+
+    The dependency manager is the ONLY owner of a verified snapshot. A task
+    that holds a lease keeps it; a task that does not (a Runtime restart) gets
+    a NEWLY VERIFIED snapshot, exactly like the local-import path does. When no
+    current generation can be verified the answer is None and the authority
+    refuses the local route before any Provider is asked.
+    """
+    snapshot = media_dependency_manager.leased_snapshot(task_id)
+    if snapshot is None:
+        snapshot = media_dependency_manager.acquire_snapshot(task_id)
+    generation = getattr(snapshot, "generation", None)
+    return generation if isinstance(generation, str) and generation else None
+
+
+media_input_authority = MediaInputAuthority(
+    task_store=media_outline_task_store,
+    local_import_store=local_media_import_store,
+    coordinator=media_acquisition_coordinator,
+    generation_resolver=_current_media_dependency_generation,
+)
+
 media_comprehension_service = MediaComprehensionService(
     media_outline_task_store,
     default_media_task_root() / "product-evidence",
+    synthesis_provider_factory=create_grounded_media_synthesis_provider,
+    input_authority=media_input_authority,
 )
+media_ask_service.set_comprehension(media_comprehension_service)
+media_ask_service.set_grounded_provider_factory(create_grounded_media_synthesis_provider)
 media_export_service = MediaExportService(
     media_outline_task_store,
     media_ask_service,
@@ -275,11 +631,27 @@ runtime_projection = {"state": "waiting_user"}
 @app.middleware("http")
 async def origin_allowlist(request: Request, call_next):
     origin = request.headers.get("origin")
-    privileged_media_path = request.url.path.startswith("/v1/media/credential-") or request.url.path.startswith("/v1/media/capture-grants")
+    privileged_media_path = (
+        request.url.path.startswith("/v1/media/credential-")
+        or request.url.path.startswith("/v1/media/capture-grants")
+        or request.url.path.startswith("/v1/media/portal-settings")
+        or request.url.path.startswith("/v1/media/cache")
+        or request.url.path.startswith("/v1/media/dependencies")
+        or request.url.path.startswith("/v1/media/dependency-installations")
+        or request.url.path.startswith("/v1/media/local-imports")
+    )
     privileged_companion_path = request.url.path.startswith("/v1/companion/")
     privileged_vision_path = request.url.path.startswith("/v1/vision/")
     allowed_origin = media_credential_authenticator.is_exact_origin(origin) if privileged_media_path or privileged_companion_path or privileged_vision_path else is_allowed_origin(origin)
+    local_import_path = request.url.path.startswith("/v1/media/local-imports")
     if origin and not allowed_origin:
+        if local_import_path:
+            return JSONResponse(
+                status_code=403,
+                content=LocalMediaImportError(
+                    "ORIGIN_MISMATCH", "Origin is not allowed for local imports."
+                ).to_envelope(request.headers.get("x-request-id")),
+            )
         if privileged_media_path:
             return media_credential_error_response(
                 MediaCredentialFailure("V3_MEDIA_RUNTIME_ORIGIN_MISMATCH", 403)
@@ -298,7 +670,10 @@ async def origin_allowlist(request: Request, call_next):
                 details={"origin": origin},
             ),
         )
-    if request.method == "OPTIONS":
+    # WP-B: the local-import surface owns its OWN preflight, because the
+    # frozen contract allows a different method and header set than the global
+    # one. Every other OPTIONS keeps the global 204 short-circuit.
+    if request.method == "OPTIONS" and not local_import_path:
         response = Response(status_code=204)
     else:
         knowledge_path = request.url.path.startswith("/v1/knowledge/")
@@ -312,11 +687,16 @@ async def origin_allowlist(request: Request, call_next):
             except PermissionFailure as error:
                 return permission_error_response(request, error)
         response = await call_next(request)
-    if allowed_origin and origin:
+    if allowed_origin and origin and not local_import_path:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Methods"] = "GET,POST,PATCH,DELETE,OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type,X-Request-Id,Authorization,Idempotency-Key"
         response.headers["Access-Control-Max-Age"] = "600"
+        response.headers["Vary"] = "Origin"
+    elif local_import_path and origin and allowed_origin:
+        # The local-import surface answers with its OWN frozen CORS shape, and
+        # the exact allow-origin is mandatory for the browser to reach it.
+        response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Vary"] = "Origin"
     if privileged_vision_path:
         response.headers["Cache-Control"] = "no-store"
@@ -653,6 +1033,124 @@ def delete_vision_provider(provider_id: str, request: Request):
         return vision_error_response(error, request)
 
 
+def media_settings_error_response(error: MediaPortalSettingsError | MediaCacheError, request: Request) -> JSONResponse:
+    response = JSONResponse(
+        status_code=error.status,
+        content={
+            "ok": False, "data": None,
+            "error": {"code": error.code, "message": str(error)},
+            "requestId": request.headers.get("x-request-id"),
+        },
+    )
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.get("/v1/media/portal-settings/bilibili")
+def get_bilibili_portal_settings(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    response = JSONResponse(content=success({"settings": media_portal_settings_store.status()}))
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
+
+@app.put("/v1/media/portal-settings/bilibili")
+async def save_bilibili_portal_settings(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"enabled", "cookieText"} or type(body.get("enabled")) is not bool or not isinstance(body.get("cookieText"), str):
+            raise MediaPortalSettingsError("V3_MEDIA_COOKIE_INPUT_INVALID", "Cookie 设置字段无效。")
+        settings = await run_in_threadpool(
+            media_portal_settings_store.save, body["cookieText"], enabled=body["enabled"]
+        )
+        response = JSONResponse(content=success({"settings": settings}))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaPortalSettingsError as error:
+        return media_settings_error_response(error, request)
+
+
+@app.patch("/v1/media/portal-settings/bilibili")
+async def toggle_bilibili_portal_settings(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"enabled"} or type(body.get("enabled")) is not bool:
+            raise MediaPortalSettingsError("V3_MEDIA_COOKIE_INPUT_INVALID", "启用状态无效。")
+        settings = media_portal_settings_store.set_enabled(body["enabled"])
+        return success({"settings": settings}, request_id=request.headers.get("x-request-id"))
+    except MediaPortalSettingsError as error:
+        return media_settings_error_response(error, request)
+
+
+@app.post("/v1/media/portal-settings/bilibili/test")
+def test_bilibili_portal_settings(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        return success(
+            {"settings": media_portal_settings_store.test()}, request_id=request.headers.get("x-request-id")
+        )
+    except MediaPortalSettingsError as error:
+        return media_settings_error_response(error, request)
+
+
+@app.delete("/v1/media/portal-settings/bilibili")
+def delete_bilibili_portal_settings(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        settings = media_portal_settings_store.delete()
+        cleared = media_download_cache.clear()
+        return success({"settings": settings, "cache": cleared}, request_id=request.headers.get("x-request-id"))
+    except MediaPortalSettingsError as error:
+        return media_settings_error_response(error, request)
+
+
+@app.get("/v1/media/cache")
+def get_media_cache_status(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    return success({"cache": media_download_cache.status()}, request_id=request.headers.get("x-request-id"))
+
+
+@app.patch("/v1/media/cache")
+async def configure_media_cache(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"maximumBytes", "retentionHours"}:
+            raise MediaCacheError("V3_MEDIA_CACHE_SETTINGS_INVALID", "缓存设置字段无效。")
+        cache = media_download_cache.configure(body["maximumBytes"], body["retentionHours"])
+        return success({"cache": cache}, request_id=request.headers.get("x-request-id"))
+    except MediaCacheError as error:
+        return media_settings_error_response(error, request)
+
+
+@app.delete("/v1/media/cache")
+def clear_media_cache(request: Request):
+    denied = authenticate_vision_request(request)
+    if denied is not None:
+        return denied
+    cleared = media_download_cache.clear()
+    return success(
+        {"cleared": cleared, "cache": media_download_cache.status()},
+        request_id=request.headers.get("x-request-id"),
+    )
+
+
 @app.post("/v1/media/credential-channels", status_code=201)
 async def create_media_credential_channel(request: Request):
     try:
@@ -796,10 +1294,24 @@ CAPTURE_START_FIELDS = {
 async def media_capture_stream(websocket: WebSocket):
     origin = websocket.headers.get("origin")
     if not media_credential_authenticator.is_exact_origin(origin):
+        import hashlib
+        expected_origin = media_credential_authenticator.configured_extension_origin() or ""
+        logger.warning(
+            "V3 capture websocket diagnostic code=V3_MEDIA_CAPTURE_ORIGIN_MISMATCH "
+            "observedOriginSha256=%s expectedOriginSha256=%s",
+            hashlib.sha256((origin or "").encode("utf-8")).hexdigest(),
+            hashlib.sha256(expected_origin.encode("utf-8")).hexdigest(),
+        )
         await websocket.close(code=4403, reason="V3_MEDIA_CAPTURE_ORIGIN_MISMATCH")
         return
     await websocket.accept()
     terminal = False
+    # R4: cleanup ownership follows the CONNECTION. A handshake that never
+    # reached `begin()` — a replayed ticket, a bad binding, an Origin-free
+    # second socket — must not abort a capture owned by somebody else. The
+    # sink is a process singleton, so an unconditional `finally` here let any
+    # rejected connection tear down an unrelated in-flight capture.
+    owns_capture = False
     try:
         start = await websocket.receive_json()
         if not isinstance(start, dict) or set(start) != CAPTURE_START_FIELDS or start.get("type") != "start":
@@ -815,6 +1327,7 @@ async def media_capture_stream(websocket: WebSocket):
             channels=start["channels"],
             sample_width_bytes=start["sampleWidthBytes"],
         )
+        owns_capture = True
         await websocket.send_json({"type": "started", "grant": grant})
         sequence = 0
         while True:
@@ -862,17 +1375,33 @@ async def media_capture_stream(websocket: WebSocket):
                 await websocket.send_json({"type": "cancelled", "reason": command["reason"], "cleanup": cleanup})
                 await websocket.close(code=1000)
                 return
+            logger.warning(
+                "V3 capture rejected text command type=%s reason=%s keys=%s",
+                command.get("type"), command.get("reason"), sorted(command),
+            )
             raise CaptureSinkFailure("V3_MEDIA_CAPTURE_STREAM_INVALID")
     except WebSocketDisconnect:
         pass
     except (MediaCaptureFailure, CaptureSinkFailure) as error:
+        if owns_capture:
+            observation = runtime_capture_sink.observation()
+            logger.warning(
+                "V3 capture failed code=%s capturedMs=%s chunks=%s bytes=%s "
+                "nonZeroSamples=%s peakAbsSample=%s",
+                error.code,
+                observation["capturedMs"],
+                observation["chunkCount"],
+                observation["byteLength"],
+                observation["nonZeroSampleCount"],
+                observation["peakAbsSample"],
+            )
         try:
             await websocket.send_json({"type": "failed", "failureCode": error.code})
             await websocket.close(code=4409)
         except RuntimeError:
             pass
     finally:
-        if not terminal:
+        if not terminal and owns_capture:
             runtime_capture_sink.abort()
 
 
@@ -907,6 +1436,9 @@ MEDIA_ACQUISITION_REQUEST_FIELDS = {
 @app.post("/v1/media/acquisitions", status_code=201)
 async def create_media_acquisition(request: Request):
     try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
         body = await request_json_or_empty(request)
         if set(body) != MEDIA_ACQUISITION_REQUEST_FIELDS:
             raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media acquisition request fields do not match the frozen contract.")
@@ -914,8 +1446,105 @@ async def create_media_acquisition(request: Request):
         response = JSONResponse(status_code=201, content=success({"task": task}, request_id=request.headers.get("x-request-id")))
         response.headers["Cache-Control"] = "no-store"
         return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
     except (KeyError, TypeError, ValueError):
         return media_acquisition_error_response(MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media acquisition request is invalid."), request)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.post("/v1/media/acquisitions/resolve")
+async def resolve_media_acquisition(request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        body = await request_json_or_empty(request)
+        if set(body) != MEDIA_ACQUISITION_REQUEST_FIELDS:
+            raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media source resolution fields do not match the contract.")
+        resolved = media_acquisition_coordinator.resolve(request_from_payload(body))
+        response = JSONResponse(
+            status_code=201 if resolved["disposition"] == "created" else 200,
+            content=success(resolved, request_id=request.headers.get("x-request-id")),
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except (KeyError, TypeError, ValueError):
+        return media_acquisition_error_response(MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Media source resolution is invalid."), request)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.post("/v1/media/acquisitions/replace-policy")
+async def replace_media_acquisition_policy(request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        body = await request_json_or_empty(request)
+        expected = MEDIA_ACQUISITION_REQUEST_FIELDS | {
+            "expectedPreviousTaskId", "expectedPreviousConsentPolicyId",
+            "expectedPreviousConsentPolicyRevision", "confirmation",
+        }
+        if not isinstance(body, dict) or set(body) != expected:
+            raise MediaAcquisitionError("V3_MEDIA_POLICY_SWITCH_INVALID", "Policy switch fields are invalid.")
+        resolved = media_acquisition_coordinator.replace_published_policy(
+            request_from_payload(body), old_task_id=body["expectedPreviousTaskId"],
+            old_policy_id=body["expectedPreviousConsentPolicyId"],
+            old_policy_revision=body["expectedPreviousConsentPolicyRevision"],
+            confirmation=body["confirmation"],
+        )
+        response = JSONResponse(
+            status_code=201 if resolved["disposition"] == "created" else 200,
+            content=success(resolved, request_id=request.headers.get("x-request-id")),
+        )
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except (KeyError, TypeError, ValueError):
+        return media_acquisition_error_response(MediaAcquisitionError("V3_MEDIA_POLICY_SWITCH_INVALID", "Policy switch request is invalid."), request)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.post("/v1/media/acquisitions/recover")
+async def recover_media_acquisition(request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        body = await request_json_or_empty(request)
+        if set(body) != {"sourceIdentity"} or not isinstance(body["sourceIdentity"], str):
+            raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Recovery requires one exact media source identity.")
+        recovered = media_acquisition_coordinator.recover_interrupted(
+            body["sourceIdentity"], media_product_materializer.cleanup_abandoned,
+            media_audio_stager.recover_cleanup,
+        )
+        response = JSONResponse(content=success(recovered, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
+    except MediaAcquisitionError as error:
+        return media_acquisition_error_response(error, request)
+
+
+@app.get("/v1/media/source-authority")
+def get_media_source_authority(sourceIdentity: str, request: Request):
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+        authority = media_acquisition_coordinator.source_authority(sourceIdentity)
+        response = JSONResponse(content=success({"authority": authority}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
     except MediaAcquisitionError as error:
         return media_acquisition_error_response(error, request)
 
@@ -923,9 +1552,14 @@ async def create_media_acquisition(request: Request):
 @app.get("/v1/media/acquisitions/{task_id}")
 def get_media_acquisition(task_id: str, request: Request):
     try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
         response = JSONResponse(content=success({"task": media_acquisition_coordinator.get(task_id)}, request_id=request.headers.get("x-request-id")))
         response.headers["Cache-Control"] = "no-store"
         return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
     except MediaAcquisitionError as error:
         return media_acquisition_error_response(error, request)
 
@@ -938,39 +1572,68 @@ async def execute_media_acquisition(task_id: str, request: Request):
         )
         if await request.body():
             raise MediaAcquisitionError("V3_MEDIA_TASK_INVALID", "Execute does not accept a request body.")
-        result = await run_in_threadpool(
-            media_acquisition_coordinator.acquire_input,
-            task_id,
-            lease_store=media_credential_lease_store,
-            acquirers=build_media_acquirers(),
-            preserve_expected_failures=True,
-        )
-        if result.get("outcome") == "awaiting_public_subtitle":
-            outcome = result
-        else:
-            transcript = None
-            if result.get("route") == "credentialed_media_asr":
-                reference = media_acquisition_coordinator.audio_reference(task_id)
-                transcript = media_transcript_service.create(TranscriptTask(reference))
-                transcript = media_transcript_service.start(transcript["taskId"])
-            elif result.get("route") == "credentialed_subtitle":
-                media_acquisition_coordinator.complete(task_id)
-            outcome = {
-                "outcome": "input_acquired",
-                "input": result,
-                "failures": media_acquisition_coordinator.capture_eligibility(task_id)["failures"],
-                "transcript": transcript,
-            }
+        lock_key = f"{id(media_acquisition_coordinator)}:{task_id}"
+        lock = media_execute_locks.get(lock_key)
+        if lock is None:
+            lock = asyncio.Lock()
+            media_execute_locks[lock_key] = lock
+        async with lock:
+            task_before = media_acquisition_coordinator.get(task_id)
+            result = media_acquisition_coordinator.selected_input(task_id) if task_before["state"] == "succeeded" else None
+            if result is None:
+                # WP-A: bind ONE verified dependency snapshot for this task
+                # before any route runs, and use it for acquisition, visual and
+                # transcript. A newly published generation cannot swap a tool
+                # under a task that already started.
+                task_dependency_snapshot = media_dependency_manager.acquire_snapshot(task_id)
+                result = await run_in_threadpool(
+                    media_acquisition_coordinator.acquire_input,
+                    task_id,
+                    lease_store=(
+                        media_credential_resolver
+                        if media_portal_settings_store.status()["enabled"]
+                        else media_credential_lease_store
+                    ),
+                    acquirers=build_media_acquirers(task_dependency_snapshot),
+                    preserve_expected_failures=True,
+                )
+            if result.get("outcome") == "awaiting_public_subtitle":
+                outcome = result
+            else:
+                transcript = None
+                if result.get("route") == "credentialed_media_asr":
+                    try:
+                        transcript = media_transcript_service.get(task_id)
+                    except AsrProviderError as error:
+                        if error.code != "V3_MEDIA_TRANSCRIPT_TASK_INVALID":
+                            raise
+                    except AttributeError:
+                        pass
+                    if transcript is None:
+                        reference = media_acquisition_coordinator.audio_reference(task_id)
+                        transcript = media_transcript_service.create(TranscriptTask(reference))
+                    transcript = media_transcript_service.start(transcript["taskId"])
+                elif result.get("route") == "credentialed_subtitle" and task_before["state"] != "succeeded":
+                    media_acquisition_coordinator.complete(task_id)
+                outcome = {
+                    "outcome": "input_acquired",
+                    "input": result,
+                    "failures": media_acquisition_coordinator.capture_eligibility(task_id)["failures"],
+                    "transcript": transcript,
+                }
         response = JSONResponse(content={"ok": True, "data": {"task": media_acquisition_coordinator.get(task_id), **outcome}})
         response.headers["Cache-Control"] = "no-store"
         return response
     except MediaCredentialFailure as error:
+        media_dependency_manager.release_lease(task_id)
         return media_credential_error_response(error)
     except TaskArtifactError as error:
+        media_dependency_manager.release_lease(task_id)
         return media_acquisition_error_response(
             MediaAcquisitionError(error.code, str(error), status=500), request
         )
     except MediaAcquisitionError as error:
+        media_dependency_manager.release_lease(task_id)
         return media_acquisition_error_response(error, request)
 
 
@@ -1018,6 +1681,8 @@ def cancel_media_task_projection(task_id: str, request: Request):
             transcript = None
         if transcript is not None and transcript["state"] not in {"succeeded", "failed", "cancelled"}:
             media_transcript_service.cancel(task_id)
+        elif media_acquisition_coordinator.get(task_id)["state"] == "succeeded":
+            media_product_materializer.cancel(task_id)
         elif media_acquisition_coordinator.get(task_id)["state"] not in {
             "succeeded", "degraded", "blocked", "failed", "cancelled"
         }:
@@ -1028,6 +1693,8 @@ def cancel_media_task_projection(task_id: str, request: Request):
         return response
     except MediaCredentialFailure as error:
         return media_credential_error_response(error)
+    except MediaTaskStoreError as error:
+        return media_outline_error_response(error, request)
     except MediaAcquisitionError as error:
         return media_acquisition_error_response(error, request)
 
@@ -1040,6 +1707,39 @@ def authenticate_media_outline_request(request: Request) -> JSONResponse | None:
     return None
 
 
+@app.get("/v1/media/local-import-observations/{import_id}")
+def get_local_import_observations(import_id: str, request: Request):
+    """WP-B — the E2E-ONLY, READ-ONLY local-import observation channel.
+
+    It is UNAVAILABLE unless the explicit owned-E2E flag is set, so a
+    production Runtime and a default startup never expose it. It authenticates
+    the exact extension origin and a live companion session, and it only
+    reports NUMBERS the product already produced. It creates, uploads,
+    cancels, polls, binds, materializes and cleans nothing.
+    """
+    if not local_import_observations.enabled():
+        # Absent, not forbidden: an ordinary Runtime has no such surface.
+        return JSONResponse(status_code=404, content={"ok": False, "data": None, "error": None})
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        record = local_media_import_store.get(import_id)
+    except LocalMediaImportError:
+        return JSONResponse(status_code=404, content={"ok": False, "data": None, "error": None})
+    media_root = Path(local_media_import_manager._media_root) / import_id
+    snapshot = local_import_observations.build_snapshot(
+        import_id,
+        source_root=media_root,
+        sandbox_root=default_media_task_root() / record["taskId"],
+    )
+    response = JSONResponse(
+        content=success(snapshot, request_id=request.headers.get("x-request-id")),
+        headers={"Cache-Control": "no-store"},
+    )
+    return response
+
+
 @app.post("/v1/media/outline-tasks", status_code=201)
 async def create_media_outline_task(request: Request):
     denied = authenticate_media_outline_request(request)
@@ -1049,7 +1749,12 @@ async def create_media_outline_task(request: Request):
         body = await request_json_or_empty(request)
         if set(body) != {"sourceIdentity"} or not isinstance(body.get("sourceIdentity"), str):
             raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Only sourceIdentity may be submitted.")
-        task_id = f"media_task_{secrets.token_hex(16)}"
+        # Route A: one authoritative task per media source. Acquisition
+        # resolution may already have reserved the source task before the
+        # outline row exists; reuse that ID instead of manufacturing a second
+        # task that would immediately become historical/read-only.
+        authority = media_outline_task_store.source_authority(body["sourceIdentity"])
+        task_id = authority["task_id"] if authority is not None else f"media_task_{secrets.token_hex(16)}"
         task = media_outline_task_store.create(task_id, body["sourceIdentity"])
         response = JSONResponse(status_code=201, content=success({"task": task}, request_id=request.headers.get("x-request-id")))
         response.headers["Cache-Control"] = "no-store"
@@ -1103,6 +1808,37 @@ def get_media_workspace_comprehension(task_id: str, request: Request, revision: 
         return media_outline_error_response(error, request)
 
 
+@app.post("/v1/media/tasks/{task_id}/comprehension/synthesize")
+async def synthesize_media_workspace_comprehension(task_id: str, request: Request):
+    denied = authenticate_media_outline_request(request)
+    if denied is not None:
+        return denied
+    try:
+        media_outline_task_store.require_current_authority(task_id)
+        body = await request_json_or_empty(request)
+        if set(body) != {"expectedRevision", "consent", "style"} or type(body.get("expectedRevision")) is not int or body.get("consent") is not True or not isinstance(body.get("style"), str):
+            raise MediaTaskStoreError(
+                "V3510B_CONSENT_REQUIRED",
+                "expectedRevision and explicit task consent are required.",
+                status=403,
+            )
+        projection = await run_in_threadpool(
+            media_comprehension_service.synthesize,
+            task_id,
+            body["expectedRevision"],
+            True,
+            body["style"],
+        )
+        media_ask_service.invalidate(task_id, body["expectedRevision"])
+        response = JSONResponse(content=success({"projection": projection}, request_id=request.headers.get("x-request-id")))
+        response.headers["Cache-Control"] = "no-store"
+        return response
+    except (MediaTaskStoreError, VisionProviderError, SecretStoreError) as error:
+        if isinstance(error, MediaTaskStoreError):
+            return media_outline_error_response(error, request)
+        return vision_error_response(error, request)
+
+
 @app.get("/v1/media/tasks/{task_id}/evidence/{evidence_id}/thumbnail")
 def get_media_workspace_thumbnail(task_id: str, evidence_id: str, request: Request):
     denied = authenticate_media_outline_request(request)
@@ -1141,12 +1877,14 @@ async def materialize_visual_media_outline_task(task_id: str, request: Request):
         return denied
     try:
         body = await request_json_or_empty(request)
-        if set(body) != {"credentialLeaseId"} or not isinstance(body.get("credentialLeaseId"), str):
-            raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "A task-bound credential lease is required.")
+        if set(body) not in (set(), {"credentialLeaseId"}) or (
+            "credentialLeaseId" in body and not isinstance(body.get("credentialLeaseId"), str)
+        ):
+            raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Persistent settings or a task-bound credential lease is required.")
         task = await run_in_threadpool(
             media_product_materializer.materialize_visual,
             task_id,
-            body["credentialLeaseId"],
+            body.get("credentialLeaseId"),
         )
         response = JSONResponse(content=success({"task": task}, request_id=request.headers.get("x-request-id")))
         response.headers["Cache-Control"] = "no-store"
@@ -1163,6 +1901,7 @@ async def ask_media_outline_task(task_id: str, request: Request):
     if denied is not None:
         return denied
     try:
+        media_outline_task_store.require_current_authority(task_id)
         body = await request_json_or_empty(request)
         if set(body) != {"expectedRevision", "question"} or type(body.get("expectedRevision")) is not int:
             raise MediaTaskStoreError("ASK_QUESTION_INVALID", "expectedRevision and question are required.")
@@ -1202,6 +1941,7 @@ async def export_media_outline_task(task_id: str, request: Request):
     if denied is not None:
         return denied
     try:
+        media_outline_task_store.require_current_authority(task_id)
         body = await request_json_or_empty(request)
         if set(body) != {"expectedRevision", "format"} or type(body.get("expectedRevision")) is not int:
             raise MediaTaskStoreError("EXPORT_FORMAT_INVALID", "expectedRevision and format are required.")
@@ -1239,6 +1979,7 @@ async def cancel_media_outline_task(task_id: str, request: Request):
     if denied is not None:
         return denied
     try:
+        media_outline_task_store.require_current_authority(task_id)
         body = await request_json_or_empty(request)
         if set(body) != {"expectedRevision"} or type(body.get("expectedRevision")) is not int:
             raise MediaTaskStoreError("TASK_REVISION_CONFLICT", "expectedRevision is required.")
@@ -1254,6 +1995,7 @@ async def retry_media_outline_task(task_id: str, request: Request):
     if denied is not None:
         return denied
     try:
+        media_outline_task_store.require_current_authority(task_id)
         body = await request_json_or_empty(request)
         if set(body) != {"expectedRevision"} or type(body.get("expectedRevision")) is not int:
             raise MediaTaskStoreError("TASK_REVISION_CONFLICT", "expectedRevision is required.")
@@ -1266,9 +2008,14 @@ async def retry_media_outline_task(task_id: str, request: Request):
 @app.delete("/v1/media/acquisitions/{task_id}")
 def cancel_media_acquisition(task_id: str, request: Request):
     try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
         response = JSONResponse(content=success({"task": media_acquisition_coordinator.cancel(task_id)}, request_id=request.headers.get("x-request-id")))
         response.headers["Cache-Control"] = "no-store"
         return response
+    except MediaCredentialFailure as error:
+        return media_credential_error_response(error)
     except MediaAcquisitionError as error:
         return media_acquisition_error_response(error, request)
 
@@ -1378,6 +2125,360 @@ def cancel_media_transcript(task_id: str, request: Request):
         return response
     except AsrProviderError as error:
         return media_transcript_error_response(error, request)
+
+
+# ---------------------------------------------------------------------------
+# WP-A media dependency readiness API
+#
+# Exactly four authenticated loopback routes. The success envelope is the
+# frozen `{ok,data,error,request_id}` shape and the status lives directly in
+# `data`; a job lives in `data.job`.
+# ---------------------------------------------------------------------------
+
+
+def dependency_failure_response(error: MediaDependencyError, request: Request):
+    """The frozen dependency error envelope.
+
+    It carries the public failure code, a category message and the safe
+    details only. No absolute path, download URL, raw exception, command line,
+    cookie, token or API key may ever appear here.
+    """
+    return JSONResponse(
+        status_code=error.http_status,
+        content={
+            "ok": False,
+            "data": None,
+            "error": {
+                "code": error.code,
+                "message": error.public_message,
+                "recoverable": error.recoverable,
+                "details": error.details,
+            },
+            "request_id": request.headers.get("x-request-id") or "req_dependency",
+        },
+    )
+
+
+def dependency_authenticate(request: Request):
+    """The dependency API is privileged: exact extension origin + bootstrap auth.
+
+    A rejected credential keeps the SAME frozen dependency error envelope, so
+    the client never has to parse two different error shapes.
+    """
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+    except MediaCredentialFailure as error:
+        return JSONResponse(
+            status_code=error.status,
+            content={
+                "ok": False,
+                "data": None,
+                "error": {
+                    "code": error.code,
+                    "message": "Media dependency request was rejected.",
+                    "recoverable": False,
+                    "details": {},
+                },
+                "request_id": request.headers.get("x-request-id") or "req_dependency",
+            },
+        )
+    return None
+
+
+@app.get("/v1/media/dependencies")
+def get_media_dependencies(request: Request):
+    denied = dependency_authenticate(request)
+    if denied is not None:
+        return denied
+    try:
+        return success(media_dependency_manager.status(), request_id=request.headers.get("x-request-id"))
+    except MediaDependencyError as error:
+        return dependency_failure_response(error, request)
+
+
+@app.post("/v1/media/dependency-installations", status_code=202)
+async def create_media_dependency_installation(request: Request):
+    denied = dependency_authenticate(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request_json_or_empty(request)
+        if set(body) != {"dependencyIds"} or not isinstance(body.get("dependencyIds"), list):
+            raise MediaDependencyError("REQUEST_INVALID", "dependencyIds must be the only field.")
+        job = media_dependency_manager.start_install(body["dependencyIds"])
+        # The job runs on its own thread so Settings can poll real progress.
+        # The Runtime remains the only owner; the client never drives it.
+        threading.Thread(
+            target=media_dependency_manager.run_job,
+            args=(job["jobId"],),
+            name="media-dependency-repair",
+            daemon=True,
+        ).start()
+        return JSONResponse(
+            status_code=202,
+            content=success({"job": job}, request_id=request.headers.get("x-request-id")),
+        )
+    except MediaDependencyError as error:
+        return dependency_failure_response(error, request)
+
+
+@app.get("/v1/media/dependency-installations/{job_id}")
+def get_media_dependency_installation(job_id: str, request: Request):
+    denied = dependency_authenticate(request)
+    if denied is not None:
+        return denied
+    try:
+        job = media_dependency_manager.job(job_id)
+        return success({"job": job}, request_id=request.headers.get("x-request-id"))
+    except MediaDependencyError as error:
+        return dependency_failure_response(error, request)
+
+
+@app.delete("/v1/media/dependency-installations/{job_id}")
+def delete_media_dependency_installation(job_id: str, request: Request):
+    denied = dependency_authenticate(request)
+    if denied is not None:
+        return denied
+    try:
+        job = media_dependency_manager.cancel(job_id)
+        return success({"job": job}, request_id=request.headers.get("x-request-id"))
+    except MediaDependencyError as error:
+        return dependency_failure_response(error, request)
+
+
+
+# ---------------------------------------------------------------------------
+# WP-B local media import API
+#
+# The rejection order is FIXED and every negative case proves no writer was
+# constructed:  middleware exact Origin -> endpoint bearer -> contract/token
+# -> writer. Content-Type, Content-Length and Content-Encoding are all proven
+# BEFORE the writer exists, and the body is read only through request.stream().
+# ---------------------------------------------------------------------------
+
+LOCAL_IMPORT_METHODS = "POST,GET,PUT,DELETE,OPTIONS"
+LOCAL_IMPORT_ALLOWED_HEADERS = (
+    "Content-Type,X-Request-Id,Authorization,X-Navia-Import-Token"
+)
+
+
+def _local_import_failure(error: LocalMediaImportError, request: Request, status: int | None = None):
+    envelope = error.to_envelope(request.headers.get("x-request-id"))
+    return JSONResponse(status_code=status or error.http_status, content=envelope)
+
+
+def _local_import_authorize(request: Request):
+    """Endpoint bearer. The exact Origin is already enforced by middleware."""
+    try:
+        media_credential_authenticator.authenticate_bootstrap(
+            request.headers.get("authorization"), request.headers.get("origin")
+        )
+    except MediaCredentialFailure:
+        return JSONResponse(
+            status_code=401,
+            content=LocalMediaImportError(
+                "AUTH_REQUIRED", "Local import request requires the companion bearer."
+            ).to_envelope(request.headers.get("x-request-id")),
+        )
+    return None
+
+
+@app.options("/v1/media/local-imports")
+@app.options("/v1/media/local-imports/{import_id}")
+@app.options("/v1/media/local-imports/{import_id}/content")
+async def options_local_import(request: Request):
+    origin = request.headers.get("origin")
+    if not media_credential_authenticator.is_exact_origin(origin):
+        return _local_import_failure(
+            LocalMediaImportError("ORIGIN_MISMATCH", "Origin is not allowed."), request, 403
+        )
+    return Response(
+        status_code=200,
+        content=b"",
+        media_type=None,
+        headers={
+            "Access-Control-Allow-Methods": LOCAL_IMPORT_METHODS,
+            "Access-Control-Allow-Headers": LOCAL_IMPORT_ALLOWED_HEADERS,
+            "Access-Control-Max-Age": "600",
+            "Cache-Control": "no-store",
+        },
+    )
+
+
+@app.post("/v1/media/local-imports", status_code=201)
+async def create_local_import(request: Request):
+    denied = _local_import_authorize(request)
+    if denied is not None:
+        return denied
+    try:
+        body = await request.json()
+        # The CONTRACT gate precedes any dependency resolution: a body that is
+        # not exactly the frozen four fields is refused as REQUEST_INVALID even
+        # when the task could not have been bound anyway.
+        validate_local_import_create_body(body)
+        data = local_media_import_manager.create(
+            body, dependency_generation=_local_import_generation(body["taskId"])
+        )
+        return JSONResponse(
+            status_code=201,
+            content=success(data, request_id=request.headers.get("x-request-id")),
+            headers={"Cache-Control": "no-store"},
+        )
+    except LocalMediaImportError as error:
+        return _local_import_failure(error, request)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return _local_import_failure(
+            LocalMediaImportError("REQUEST_INVALID", "Create body is not valid JSON."), request
+        )
+
+
+@app.get("/v1/media/local-imports/{import_id}")
+def get_local_import(import_id: str, request: Request):
+    denied = _local_import_authorize(request)
+    if denied is not None:
+        return denied
+    try:
+        data = {"import": local_media_import_manager.status(import_id)}
+        return JSONResponse(
+            status_code=200,
+            content=success(data, request_id=request.headers.get("x-request-id")),
+            headers={"Cache-Control": "no-store"},
+        )
+    except LocalMediaImportError as error:
+        return _local_import_failure(error, request)
+
+
+@app.delete("/v1/media/local-imports/{import_id}")
+def delete_local_import(import_id: str, request: Request):
+    denied = _local_import_authorize(request)
+    if denied is not None:
+        return denied
+    try:
+        local_import_observations.observations.record_cancel_request(import_id)
+        data = {"import": local_media_import_manager.cancel(import_id)}
+        return JSONResponse(
+            status_code=200,
+            content=success(data, request_id=request.headers.get("x-request-id")),
+            headers={"Cache-Control": "no-store"},
+        )
+    except LocalMediaImportError as error:
+        return _local_import_failure(error, request)
+
+
+#: Test-only seam. Production never assigns it, so the effective owner is
+#: always the live `media_dependency_manager`.
+local_import_generation_resolver: Callable[..., str | None] | None = None
+
+
+@app.put("/v1/media/local-imports/{import_id}/content")
+async def put_local_import_content(import_id: str, request: Request):
+    """Stream the raw body into a sliced writer.
+
+    Every gate below runs BEFORE the writer exists:
+    Origin (middleware) -> bearer -> token -> Content-Type/Length/Encoding ->
+    writer. The body is read only through ``request.stream()``; a transport
+    chunk larger than 1 MiB is legal and is sliced, never rejected.
+    """
+    denied = _local_import_authorize(request)
+    if denied is not None:
+        return denied
+    try:
+        token = request.headers.get("x-navia-import-token") or ""
+        if not token:
+            raise LocalMediaImportError("TOKEN_INVALID", "Upload token is required.")
+        if request.headers.get("content-encoding"):
+            raise LocalMediaImportError(
+                "REQUEST_INVALID", "Content-Encoding is not accepted for local import."
+            )
+        declared = request.headers.get("content-length")
+        declared_length = int(declared) if declared is not None and declared.isdigit() else None
+        # The manager proves the token, the content type and the declared length
+        # BEFORE it constructs the writer.
+        # `begin_stream` is SYNCHRONOUS and proves every gate BEFORE it
+        # constructs the writer.
+        local_media_import_manager.begin_stream(
+            import_id,
+            token=token,
+            content_type=request.headers.get("content-type", ""),
+            declared_content_length=declared_length,
+        )
+        # `request.stream()` is an ASGI async generator: it MUST be consumed
+        # with `async for`. A transport chunk larger than 1 MiB is legal and is
+        # sliced by the writer, never rejected here.
+        async for chunk in request.stream():
+            if not chunk:
+                continue
+            local_media_import_manager.feed(import_id, chunk)
+        digest = local_media_import_manager.finish(import_id)
+        record = local_media_import_manager.complete(import_id, digest)
+        # C4: the durable EOF is the ONLY trigger. Preparation, binding, the
+        # audio owner receipt and the release all happen in the orchestrator.
+        schedule_local_import_orchestration(import_id)
+        return JSONResponse(
+            status_code=200,
+            content=success({"import": record}, request_id=request.headers.get("x-request-id")),
+            headers={"Cache-Control": "no-store"},
+        )
+    except ClientDisconnect:
+        # A real tab identity change tears down the Side Panel XHR and asks the
+        # stable Background owner to DELETE the import at nearly the same time.
+        # Give that explicit user cancellation a short bounded chance to win;
+        # otherwise the transport disconnect remains a fail-closed write error.
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + 0.25
+        while loop.time() < deadline:
+            record = local_media_import_manager.store.find(import_id)
+            if record is not None and record["state"] in {"cancelling", "cancelled"}:
+                return _local_import_failure(
+                    LocalMediaImportError("CANCELLED", "The upload was cancelled."), request
+                )
+            await asyncio.sleep(0.01)
+        local_media_import_manager.abort(import_id)
+        return _local_import_failure(
+            LocalMediaImportError("WRITE_FAILED", "The upload could not be completed."), request
+        )
+    except LocalMediaImportError as error:
+        # A rejection that happened BEFORE the writer exists must leave the
+        # import untouched and still awaiting its upload: the one-shot token may
+        # legitimately be retried with the correct value.
+        if local_media_import_manager.has_session(import_id):
+            local_media_import_manager.abort(import_id)
+        return _local_import_failure(error, request)
+    except Exception:
+        # A transport or disk failure must leave nothing behind: the handle is
+        # closed, the live session is dropped and the staging is purged.
+        local_media_import_manager.abort(import_id)
+        return _local_import_failure(
+            LocalMediaImportError("WRITE_FAILED", "The upload could not be completed."), request
+        )
+
+
+def _local_import_generation(task_id: str) -> str:
+    """Acquire the task's frozen dependency snapshot, or fail closed."""
+    resolver = local_import_generation_resolver
+    try:
+        if resolver is not None:
+            try:
+                generation = resolver(task_id)
+            except TypeError:
+                # Existing isolated contract tests use the historical no-arg
+                # seam. Production never enters this compatibility branch.
+                generation = resolver()
+        else:
+            snapshot = media_dependency_manager.acquire_snapshot(task_id)
+            generation = getattr(snapshot, "generation", None)
+        if isinstance(generation, str) and generation:
+            return generation
+    except Exception:  # noqa: BLE001
+        pass
+    raise LocalMediaImportError(
+        "TASK_NOT_ELIGIBLE",
+        "Media dependencies are not ready for this task.",
+        details={"maximumBytes": LOCAL_IMPORT_MAX_BYTES},
+    )
+
 
 
 @app.get("/v1/asr/catalog")
@@ -2265,14 +3366,14 @@ async def v2_workbench(request: Request):
 
 
 async def import_llm_provider_body(body: dict[str, Any], request: Request):
-    provider_type = str(body.get("type") or body.get("providerType") or "deepseek")
-    if provider_type != "deepseek":
+    provider_type = str(body.get("type") or body.get("providerType") or "").strip().lower()
+    if provider_type not in {"deepseek", "minimax"}:
         return provider_failure_response(
-            ProviderSettingsError("Only DeepSeek provider import is supported in V1.0.", code="provider_unsupported"),
+            ProviderSettingsError("Select a supported provider before saving credentials.", code="provider_unsupported"),
             request,
         )
     try:
-        provider = settings_store.import_deepseek(body, new_id("prov_"))
+        provider = settings_store.import_provider({**body, "type": provider_type}, new_id("prov_"))
         return success({"provider": provider, "settings": settings_store.get_settings()}, request_id=request.headers.get("x-request-id"))
     except ProviderSettingsError as exc:
         return provider_failure_response(exc, request)

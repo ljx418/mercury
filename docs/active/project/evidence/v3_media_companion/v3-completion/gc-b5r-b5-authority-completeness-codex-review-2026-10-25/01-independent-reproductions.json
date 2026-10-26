@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "gc-b5r-b5-codex-independent-reproductions/v1",
+  "date": "2026-10-25",
+  "externalActions": {
+    "chromeLaunches": 0,
+    "visibleWindows": 0,
+    "runtimeMediaTasks": 0,
+    "providerCalls": 0,
+    "cookieReadsOrInjections": 0,
+    "downloads": 0,
+    "imports": 0,
+    "audioOutputs": 0,
+    "tabCapture": 0,
+    "focusEvents": 0,
+    "visibleAuthorizationConsumed": false
+  },
+  "submittedEvidence": {
+    "manifestFilesVerified": 13,
+    "recordedSourceFilesVerified": 58
+  },
+  "verification": {
+    "focusedNode": { "passed": 118, "failed": 0, "exitCode": 0 },
+    "pythonEquivalence": { "passed": 22, "failed": 0, "exitCode": 0 },
+    "consolidatedOffline": { "passed": 404, "failed": 0, "exitCode": 0 }
+  },
+  "reproductions": [
+    {
+      "id": "AC-01",
+      "target": "machineIdentityDefects",
+      "mutation": {
+        "sourceIdentity": "portal:attacker:BV11t8w6oEtP:cid:p1",
+        "taskNamespace": "arbitrary-nonempty",
+        "startedAtUtc": "2026-99-99T99:99:99Z",
+        "finishedAtUtc": "2026-99-99T99:99:99Z"
+      },
+      "observed": { "identityDefects": [] },
+      "expected": "one or more authority/shape/time defects"
+    },
+    {
+      "id": "AC-02",
+      "target": "evaluateAggregate",
+      "mutation": "delete receipt.disposition from all six otherwise valid contract-shaped rows",
+      "observed": { "missingDispositionPositive": true, "failures": [] },
+      "expected": "non-positive AGG_QUALITY_DISPOSITION_MISMATCH or machine-terminal-shape failure"
+    },
+    {
+      "id": "AC-03",
+      "target": "validateAgainstSchema",
+      "input": { "schema": { "type": "object", "not": {} }, "value": {} },
+      "observed": { "ok": true, "errors": [] },
+      "expected": "hard failure for unsupported keyword not"
+    }
+  ]
+}
+

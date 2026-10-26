@@ -17,6 +17,165 @@ import {
 
 const TERMINAL_STATES = new Set(["ready", "failed", "corrupt", "cancelled"]);
 
+// ---------------------------------------------------------------------------
+// R5 / 64 — installation experience correction (UI + orchestration only)
+// ---------------------------------------------------------------------------
+
+/** 64 §1: the frozen Windows persistent locations, outside the WSL virtual disk. */
+export const ASR_WINDOWS_STORAGE = Object.freeze({
+  downloadStaging: "C:\\workspace\\navia\\.navia\\downloads",
+  productRoot: "C:\\workspace\\navia\\.navia\\asr",
+  modelRoot: "C:\\workspace\\navia\\.navia\\asr\\models"
+});
+
+export function asrWindowsStorageLines(): string[] {
+  return [
+    `下载暂存：${ASR_WINDOWS_STORAGE.downloadStaging}`,
+    `产品根：${ASR_WINDOWS_STORAGE.productRoot}`,
+    `最终模型：${ASR_WINDOWS_STORAGE.modelRoot}`
+  ];
+}
+
+export function asrWindowsStorageNote(): string {
+  return "以上为 Windows 持久目录，不在 WSL 虚拟磁盘；WSL 发行版回收、重启或重装都不会丢失已安装的模型。";
+}
+
+/**
+ * 64 §3 step 5 / §5.1 — one operation ends at "installed and enabled".
+ * The auto-select fires only once the Runtime reports a self-tested `ready`.
+ */
+export function asrAutoSelectEnabled(state: string): boolean {
+  return state === "ready";
+}
+
+/**
+ * The label is claimed only when the Runtime confirms the model is the
+ * EFFECTIVE one. A `ready` install that did not take effect must not read as
+ * success.
+ */
+export function asrInstalledAndEnabledLabel(modelId: string, effectiveModelId: string | null): string {
+  return effectiveModelId === modelId
+    ? `已安装并启用：当前转写实际使用 ${modelId}。`
+    : `已安装但尚未生效：实际生效模型为 ${effectiveModelId ?? "无可用模型"}，请重新选择后再转写。`;
+}
+
+export function asrEffectiveModelLabel(effectiveModelId: string | null, _requestedModelId: string | null): string {
+  return effectiveModelId ?? "无可用模型";
+}
+
+export function asrRuntimeOfflineAction(): string {
+  return "请先启动 Navia 本机伴侣（本地 Runtime）。Runtime 离线时无法校验、安装或自检模型。";
+}
+
+type AsrFailureCategory = "network" | "space" | "hash" | "self_test" | "permission" | "qualification" | "unknown";
+
+/** 64 §3: each failure class needs its own next action, not one generic message. */
+const ASR_FAILURE_CATEGORY: Readonly<Record<string, AsrFailureCategory>> = Object.freeze({
+  V3_ASR_SOURCE_NOT_ALLOWED: "network",
+  V3_ASR_SOURCE_NOT_FROZEN: "network",
+  V3_ASR_IMPORT_FAILED: "network",
+  V3_ASR_RUNTIME_RESTARTED: "network",
+  V3_ASR_INSTALL_FAILED: "network",
+  V3_ASR_PACKAGE_TOO_LARGE: "space",
+  V3_ASR_HASH_MISMATCH: "hash",
+  V3_ASR_SIZE_MISMATCH: "hash",
+  V3_ASR_FILE_SET_MISMATCH: "hash",
+  V3_ASR_FILE_TYPE_INVALID: "hash",
+  V3_ASR_FILE_MODE_INVALID: "permission",
+  V3_ASR_PACKAGE_INVALID: "hash",
+  V3_ASR_PACKAGE_MODEL_MISMATCH: "hash",
+  V3_ASR_IMPORT_PATH_INVALID: "hash",
+  V3_ASR_ARCHIVE_FORMAT_UNSUPPORTED: "hash",
+  V3_ASR_ARCHIVE_MEMBER_MISSING: "hash",
+  V3_ASR_ARCHIVE_MEMBER_UNSAFE: "hash",
+  V3_ASR_SELF_TEST_FAILED: "self_test",
+  V3_ASR_MODEL_NOT_READY: "self_test",
+  V3_ASR_AUDIO_FORMAT_UNSUPPORTED: "self_test",
+  V3_ASR_AUDIO_REF_INVALID: "self_test",
+  V3_ASR_MODEL_NOT_QUALIFIED: "qualification",
+  V3_ASR_MODEL_NOT_INSTALLABLE: "qualification",
+  V3_ASR_MODEL_UNKNOWN: "qualification"
+});
+
+const ASR_FAILURE_RECOVERY: Readonly<Record<AsrFailureCategory, { title: string; actions: string[] }>> = Object.freeze({
+  network: {
+    title: "下载未完成",
+    actions: [
+      "确认 Navia 本机伴侣正在运行、网络可达，然后点击“重试自动安装”。",
+      "网络不可用时，请改用离线文件导入（见下方资产说明）。",
+      "重试或取消都会清理暂存目录，已验证的既有模型不会被破坏。"
+    ]
+  },
+  space: {
+    title: "磁盘空间不足",
+    actions: [
+      "安装需要预留至少 1.0 GiB 空闲空间；安装前已阻止下载，不会先下载再失败。",
+      "清理下载暂存目录或其他大文件后重新安装。"
+    ]
+  },
+  hash: {
+    title: "校验未通过",
+    actions: [
+      "模型文件与 catalog 冻结的 revision、字节数或 SHA-256 不一致，已保留旧的可用模型。",
+      "请重新下载清单中的三个冻结文件，并确认文件名未被修改。",
+      "若重新下载后仍失败，说明来源文件已变更，请改用自动安装。"
+    ]
+  },
+  self_test: {
+    title: "自检未通过",
+    actions: [
+      "文件校验通过，但模型自检失败，因此不会成为实际生效模型。",
+      "请重新下载后重试；持续失败说明本机缺少运行时依赖，请改用自动安装。"
+    ]
+  },
+  permission: {
+    title: "文件权限不符合要求",
+    actions: [
+      "受控目录中的模型文件必须为私有权限；请删除该模型目录后重新安装。"
+    ]
+  },
+  qualification: {
+    title: "模型未通过资格确认",
+    actions: [
+      "该模型当前不可选，也不允许安装。请选择 catalog 中已通过资格的模型。"
+    ]
+  },
+  unknown: {
+    title: "安装未完成",
+    actions: [
+      "先检查网络、剩余磁盘空间与文件完整性，然后点击“重试自动安装”。",
+      "若仍失败，请改用离线文件导入，或使用 catalog 中已可用的模型。"
+    ]
+  }
+});
+
+export function asrFailureRecovery(state: string, failureCode?: string | null): {
+  category: AsrFailureCategory;
+  title: string;
+  actions: string[];
+} {
+  const category = (failureCode ? ASR_FAILURE_CATEGORY[failureCode] : undefined) ?? "unknown";
+  const recovery = ASR_FAILURE_RECOVERY[category];
+  return { category, title: state === "corrupt" ? `${recovery.title}（资产损坏）` : recovery.title, actions: [...recovery.actions] };
+}
+
+/**
+ * 64 §3 step 4 and §5.5 — the manual route must be honest.
+ *
+ * Navia does not publish a downloadable offline bundle, so the panel must not
+ * point at a release page that does not exist. The only truth we can state is
+ * the catalog-frozen file set, the staging directory, and the one import entry
+ * the Runtime actually exposes today.
+ */
+export function asrManualAssetGuidance(): string {
+  return [
+    "手动导入需要 catalog 冻结的三个文件：funasr-llamacpp-linux-x64.tar.gz、sensevoice-small-q8.gguf、fsmn-vad.gguf。",
+    `请放入下载暂存目录：${ASR_WINDOWS_STORAGE.downloadStaging}，文件名不得更改。`,
+    "Runtime 的导入入口目前只接受 .navia-asrpack；请由 Navia 本机伴侣在本机校验并组包后导入，Navia 不提供可下载的发布包。",
+    "导入时 Runtime 会再次按 catalog 校验 revision、字节数与 SHA-256，并执行自检；任一不符都会 fail-closed 并保留旧模型。"
+  ].join("\n");
+}
+
 export function formatAsrBytes(value: number): string {
   if (!Number.isFinite(value) || value <= 0) return "0 MiB";
   const gib = value / 1024 ** 3;
@@ -76,7 +235,7 @@ export function AsrModelSettingsPanel({ runtimeStatus }: Props) {
 
   async function refresh() {
     if (runtimeStatus !== "online") {
-      setMessage("本地 Runtime 离线，无法读取或安装 ASR 模型。");
+      setMessage(asrRuntimeOfflineAction());
       return;
     }
     setLoading(true);
@@ -108,6 +267,27 @@ export function AsrModelSettingsPanel({ runtimeStatus }: Props) {
     }, 500);
     return () => window.clearInterval(timer);
   }, [job?.jobId, job?.state]);
+
+  // R5/64 §3 step 5: the ONE explicit action ends at "installed and enabled".
+  // Auto-select fires only on a self-tested `ready`, and the confirmation is
+  // the Runtime's own `effectiveModelId` — never the local optimistic state.
+  const autoSelectedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (!job || !asrAutoSelectEnabled(job.state)) return;
+    const modelId = job.modelId;
+    if (autoSelectedFor.current === modelId) return;
+    autoSelectedFor.current = modelId;
+    void (async () => {
+      try {
+        const next = await patchAsrSettings(modelId);
+        setSelection(next);
+        setMessage(asrInstalledAndEnabledLabel(modelId, next.effectiveModelId));
+      } catch (error) {
+        autoSelectedFor.current = null;
+        setMessage(error instanceof Error ? error.message : "模型已安装，但自动启用失败，请手动选择。");
+      }
+    })();
+  }, [job?.modelId, job?.state]);
 
   useEffect(() => {
     if (!job) return;
@@ -229,9 +409,14 @@ export function AsrModelSettingsPanel({ runtimeStatus }: Props) {
         <strong>低资源基线</strong>
         <span>{lowResource ? `${lowResource.cpuCores} 核 CPU · ${formatAsrBytes(lowResource.ramBytes)} 内存 · 无需 GPU` : "8 核 CPU · 8 GiB 内存 · 无需 GPU"}</span>
       </div>
+      <div className="asr-storage" role="note" data-testid="asr-windows-storage">
+        <strong>保存位置</strong>
+        {asrWindowsStorageLines().map((line) => <span key={line}>{line}</span>)}
+        <span className="muted">{asrWindowsStorageNote()}</span>
+      </div>
       <dl className="asr-selection-summary">
         <div><dt>请求模型</dt><dd>{selection?.requestedModelId ?? "未读取"}</dd></div>
-        <div><dt>实际生效</dt><dd>{selection?.effectiveModelId ?? "无可用模型"}</dd></div>
+        <div><dt>实际生效</dt><dd data-testid="asr-effective-model">{asrEffectiveModelLabel(selection?.effectiveModelId ?? null, selection?.requestedModelId ?? null)}</dd></div>
         <div><dt>Fallback</dt><dd>{selection?.fallbackActive ? `已启用：${selection.fallbackReason}` : "未启用"}</dd></div>
       </dl>
 
@@ -264,11 +449,13 @@ export function AsrModelSettingsPanel({ runtimeStatus }: Props) {
                 <button type="button" disabled={!model.selectable || !ready || isRequested || loading} onClick={() => void chooseModel(model)}>
                   {isRequested ? "已选择" : !model.selectable ? "资格通过后可选" : ready ? "选择" : "安装后可选"}
                 </button>
-                {!ready && model.installable ? <button type="button" disabled={loading} onClick={() => void installModel(model)}>下载并安装</button> : null}
-                {!ready && model.installable ? <button type="button" className="secondary" disabled={loading} onClick={() => openImport(model.modelId)}>导入离线包</button> : null}
+                {!ready && model.installable && runtimeStatus === "online" ? <button type="button" disabled={loading} onClick={() => void installModel(model)}>下载、安装并使用</button> : null}
+                {!ready && model.installable && runtimeStatus !== "online" ? <p className="asr-offline-note" role="note">{asrRuntimeOfflineAction()}</p> : null}
+                {!ready && model.installable && runtimeStatus === "online" ? <button type="button" className="secondary" disabled={loading} onClick={() => openImport(model.modelId)}>使用离线文件</button> : null}
                 {ready && !model.bundled ? <button type="button" className="danger" disabled={loading} onClick={() => void removeModel(model)}>卸载</button> : null}
               </div>
-              {isEffective ? <p className="asr-effective-note">当前转写实际使用此模型。</p> : null}
+              {isEffective ? <p className="asr-effective-note" data-testid={`asr-effective-${model.modelId}`}>当前转写实际使用此模型。</p> : null}
+              {ready && !isEffective && isRequested ? <p className="asr-effective-note" data-testid={`asr-installed-not-effective-${model.modelId}`}>{asrInstalledAndEnabledLabel(model.modelId, selection?.effectiveModelId ?? null)}</p> : null}
             </article>
           );
         })}
@@ -292,17 +479,19 @@ export function AsrModelSettingsPanel({ runtimeStatus }: Props) {
             <p>{formatAsrBytes(job.bytesPerSecond)}/s{job.etaSeconds !== null ? ` · 预计 ${job.etaSeconds}s` : ""}</p>
             <p className="muted">{job.message}</p>
             {!TERMINAL_STATES.has(job.state) ? <button type="button" className="danger" onClick={() => void cancelAsrModelInstallation(job.jobId).then(setJob)}>取消安装</button> : null}
-            {job.state === "failed" || job.state === "corrupt" ? (
-              <div className="asr-manual-recovery">
-                <strong>自动安装未完成</strong>
-                <ol>
-                  <li>先检查网络和剩余磁盘空间，再点击关闭后重试。</li>
-                  <li>从 Navia 发布页获取与模型 ID、revision 匹配的 `.navia-asrpack`。</li>
-                  <li>点击模型旁“导入离线包”；Runtime 会再次校验全部 SHA-256。</li>
-                </ol>
-                <code>python -m navia_runtime.asr_import --model {job.modelId} --package &lt;file.navia-asrpack&gt;</code>
-              </div>
-            ) : null}
+            {job.state === "failed" || job.state === "corrupt" ? (() => {
+              const recovery = asrFailureRecovery(job.state, job.failureCode);
+              return (
+                <div className="asr-manual-recovery" data-testid="asr-failure-recovery" data-category={recovery.category}>
+                  <strong>{recovery.title}</strong>
+                  {job.failureCode ? <p className="muted">失败阶段：{asrStateLabel(job.state)} · 固定错误码 {job.failureCode}</p> : null}
+                  <ol>{recovery.actions.map((action) => <li key={action}>{action}</li>)}</ol>
+                  <strong>使用离线文件</strong>
+                  <p className="muted" style={{ whiteSpace: "pre-line" }}>{asrManualAssetGuidance()}</p>
+                  <code>python -m navia_runtime.asr_import --model {job.modelId} --package &lt;file.navia-asrpack&gt;</code>
+                </div>
+              );
+            })() : null}
           </section>
         </div>
       ) : null}

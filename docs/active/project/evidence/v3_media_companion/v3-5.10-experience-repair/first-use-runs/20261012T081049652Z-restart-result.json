@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "v3-stage-a-runtime-restart-evidence/v5",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_e4f23b1105b34e8ab41345d9dd368869",
+  "newTaskId": "media_task_a0db58df4b5f400b93d86d565834049b",
+  "authority": [
+    {
+      "task_id": "media_task_a0db58df4b5f400b93d86d565834049b",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_a0db58df4b5f400b93d86d565834049b",
+      "state": "degraded"
+    }
+  ],
+  "oldOwnedDirectoryToken": "task_41b7deb87f329796b1a2ce89bdb2e467",
+  "ownerManifestMatchedBeforeCrash": true,
+  "oldPrivateArtifactBeforeCrash": {
+    "name": "artifact_99ba6275a4dfd1df8ba650182dc6fbdb.json",
+    "byteLength": 172751,
+    "segmentCount": 1101,
+    "jsonParsed": true
+  },
+  "oldPrivateAfterCrash": true,
+  "oldPrivateAfterRestartBeforeRetry": false,
+  "oldPrivateBeforeRetry": false,
+  "visibleOutlineForNewTask": true,
+  "visibleOutlineMatchesStored": true,
+  "originalEmbeddedTaskId": "media_task_a0db58df4b5f400b93d86d565834049b",
+  "secondEmbeddedTaskId": "media_task_a0db58df4b5f400b93d86d565834049b",
+  "crossSurfaceRestored": true,
+  "workspaceChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 155100
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 200209
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 118481
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 214112
+    }
+  ],
+  "workspaceKeyboardRoute": true,
+  "visibleOutlineTitleLength": 12,
+  "visibleOutlineSummaryLength": 4000,
+  "stablePublishedSnapshot": true,
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_e4f23b1105b34e8ab41345d9dd368869",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_a0db58df4b5f400b93d86d565834049b",
+      "failureCode": null
+    }
+  ],
+  "fixture": "pregranted_in_temporary_extension_only;real_artifact_then_SIGKILL"
+}

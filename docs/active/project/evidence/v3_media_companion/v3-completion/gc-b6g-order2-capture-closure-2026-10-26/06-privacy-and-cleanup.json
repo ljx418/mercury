@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "gc-b6g-privacy-cleanup/v1",
+  "publicEvidenceScan": {
+    "secretValueHits": 0,
+    "absolutePrivatePathHits": 0,
+    "rawMediaHits": 0,
+    "providerResponseHits": 0,
+    "transcriptOrOcrTextIncluded": false,
+    "pngBytesIncluded": false
+  },
+  "cleanup": {
+    "ownedRootsRemoved": 3,
+    "ownedRootsRemaining": 0,
+    "ownedChromeProcesses": 0,
+    "ownedRuntimeProcesses": 0,
+    "ownedRunnerProcesses": 0,
+    "runtimePort17861Listeners": 0,
+    "cookieSourcePreserved": true
+  },
+  "visibleActionsAcrossTheThreeConfirmations": {
+    "ownedMutedChromeLaunches": 3,
+    "visibleWindows": 3,
+    "isolatedRuntimeStarts": 3,
+    "mediaTasks": 3,
+    "runtimeSynthesizeCalls": 3,
+    "providerHttpCalls": 12,
+    "audioOutputs": 0,
+    "tabCaptureActions": 0,
+    "sourceCompletions": 0
+  },
+  "note": "sourceCompletions remains zero because the order-2 canary is permanently non-candidate"
+}
+

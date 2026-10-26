@@ -1,0 +1,15 @@
+# WP-B 纠偏 changed files（SHA-256）
+
+```
+b9d9ffae930d5b8196ab52bf1649c9c62bd73da97265c8420188e12749b0c64d  navia_runtime/app.py
+8c2106544ea4a5a84395efb18acae1d67fbea092e2dcabee31b76e60760b20fb  navia_runtime/modules/media_companion/local_import/contracts.py
+b0b07e226d3d1c8384f3787765c2b4b1809c949565b201653d9091ded81db7bb  navia_runtime/modules/media_companion/local_import/store.py
+70af32c5b8c51372da9ca2436974a61f855d8ddbd0bc7be25bcb831d836cd080  navia_runtime/modules/media_companion/local_import/runtime.py
+26ef7d15e10da9f695291e97ba1d5d88a3bce94befd97fc9e64020ceefd7baf7  navia_runtime/modules/media_companion/local_import/manager.py
+890e4123a11d26e5c1e61fffd198132668e8bc3f564ebc688747e135a68d59d0  navia_runtime/modules/media_companion/local_import/preparer.py
+d2cabc9aab2cd23375399b4d39d5deb44773b5e5adc4b6f51e412370392679ed  navia_runtime/modules/media_companion/local_import/consumer_barrier.py
+44beb488052f146ad6e792d841ca6540891f10404da67cb766d3d04326525a9c  tests/test_wp_b_c2_streaming_put.py
+```
+
+全部位于 `services/local-runtime/`（除 `tests/` 同根）
+HEAD `a303551a5bf89c26ff36b24ac06c7e30c334db27` 未变。

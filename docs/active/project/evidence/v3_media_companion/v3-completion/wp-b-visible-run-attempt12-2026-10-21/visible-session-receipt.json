@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B27",
+    "failure": "The local-import card did not become eligible. state={\"launchStatus\":\"当前输入不可用\",\"launchDetail\":\"字幕和本机媒体获取均失败。浏览器音频采集仍为实验能力，本版本不会自动启动。\",\"diagnostic\":null,\"controls\":[\"media-companion-launch\",\"<redacted>\",\"media-consent-revoke\",\"<redacted>\",\"media-transcript-open\",\"media-transcript-cancel\"]}",
+    "ownedResidue": null
+  }
+}

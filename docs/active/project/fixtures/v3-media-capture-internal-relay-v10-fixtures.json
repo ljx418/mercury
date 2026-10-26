@@ -1,0 +1,1324 @@
+{
+  "schemaVersion": "v3-media-capture-internal-relay-fixtures/v10",
+  "protocol": {
+    "schemaVersion": "v3-media-capture-internal-relay/v10",
+    "visibility": "extension_internal_only",
+    "portName": "navia.mediaCapture.audio/v10",
+    "audioShape": {
+      "encoding": "pcm_s16le",
+      "sampleRateHz": 16000,
+      "channels": 1,
+      "sampleWidthBytes": 2,
+      "payloadTransport": "base64_json_string"
+    },
+    "senderPolicy": {
+      "minimumChromeVersion": 116,
+      "capability": "chrome.runtime.getContexts_required_no_runtime_downgrade",
+      "extensionId": "messageSender.id_equals_runtime.id",
+      "url": "messageSender.url_equals_runtime.getURL_offscreen",
+      "tab": "messageSender.tab_absent",
+      "frameId": "messageSender.frameId_absent_or_zero",
+      "documentId": "messageSender.documentId_required_nonempty_bind_first_reject_replacement",
+      "incognito": "runtime.getContexts_by_documentId_returns_exactly_one_OFFSCREEN_DOCUMENT_and_context.incognito_equals_chrome.extension.inIncognitoContext"
+    },
+    "limits": {
+      "maxRawChunkBytes": 49152,
+      "maxEncodedChunkChars": 65536,
+      "creditWindowChunks": 1,
+      "runtimeMaxInFlightChunks": 1,
+      "maxOutstandingChunks": 32,
+      "maxOutstandingRawBytes": 1572864,
+      "portConnectTimeoutMs": 5000,
+      "runtimeStartTimeoutMs": 10000,
+      "chunkAckTimeoutMs": 10000,
+      "cleanupTimeoutMs": 10000,
+      "finalizeTimeoutMs": 120000,
+      "maxCaptureMs": 900000,
+      "maxCaptureBytes": 536870912
+    },
+    "ordering": {
+      "firstSequence": 0,
+      "increment": 1,
+      "ackSource": "runtime_chunkAccepted",
+      "creditReturn": "after_runtime_ack_only",
+      "chunkOwnership": "local_queued_xor_credit_consumed_runtime_inflight",
+      "capacityRule": "abort_before_enqueue_would_exceed_limit",
+      "quiesceRule": "stop_audio_source_then_drain_existing_queue_under_credit",
+      "chunkRejectBoundary": "runtime_stop_sent",
+      "overflowBehavior": "abort_without_drop"
+    },
+    "streamIdPolicy": {
+      "allowedMessage": "background_to_offscreen_start_exactly_once",
+      "memoryLifetime": "until_getUserMedia_settles_or_abort",
+      "forbiddenLocations": [
+        "chunk",
+        "credit",
+        "log",
+        "restartMarker",
+        "storage",
+        "publicEvidence"
+      ]
+    },
+    "restartMarker": {
+      "storage": "chrome.storage.session",
+      "accessLevel": "TRUSTED_CONTEXTS",
+      "schemaVersion": "v3-media-capture-restart-marker/v10",
+      "fields": [
+        "schemaVersion",
+        "captureSessionId",
+        "taskId",
+        "startedAt",
+        "phase",
+        "expiresAt"
+      ],
+      "captureSessionId": "cap_ plus 32 base64url chars from 192 random bits",
+      "phaseValues": [
+        "connecting",
+        "runtime_started",
+        "capturing",
+        "draining",
+        "cleanup_pending"
+      ],
+      "phaseTransitions": [
+        "connecting->runtime_started",
+        "runtime_started->capturing",
+        "capturing->draining",
+        "draining->cleanup_pending"
+      ],
+      "expiryRule": "set_once_startedAt_plus_1080000_never_refresh",
+      "maxRetentionMs": 1080000,
+      "forbiddenFields": [
+        "ticket",
+        "grantId",
+        "streamId",
+        "pcm",
+        "sourceIdentity",
+        "absolutePath",
+        "cookie",
+        "apiKey"
+      ],
+      "clearRule": "after_phase_owner_receipt_and_cleanup_grace",
+      "restartBehavior": "phase_dispatch_to_existing_DELETE_or_runtime_finally_or_existing_recover_never_resume_old_pcm_ticket_or_sequence"
+    },
+    "restartMarkerInstances": [
+      {
+        "schemaVersion": "v3-media-capture-restart-marker/v10",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "startedAt": "2026-10-15T00:00:00Z",
+        "phase": "connecting",
+        "expiresAt": "2026-10-15T00:18:00Z"
+      },
+      {
+        "schemaVersion": "v3-media-capture-restart-marker/v10",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "startedAt": "2026-10-15T00:00:00Z",
+        "phase": "runtime_started",
+        "expiresAt": "2026-10-15T00:18:00Z"
+      },
+      {
+        "schemaVersion": "v3-media-capture-restart-marker/v10",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "startedAt": "2026-10-15T00:00:00Z",
+        "phase": "capturing",
+        "expiresAt": "2026-10-15T00:18:00Z"
+      },
+      {
+        "schemaVersion": "v3-media-capture-restart-marker/v10",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "startedAt": "2026-10-15T00:00:00Z",
+        "phase": "draining",
+        "expiresAt": "2026-10-15T00:18:00Z"
+      },
+      {
+        "schemaVersion": "v3-media-capture-restart-marker/v10",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "startedAt": "2026-10-15T00:00:00Z",
+        "phase": "cleanup_pending",
+        "expiresAt": "2026-10-15T00:18:00Z"
+      }
+    ],
+    "restartTermination": {
+      "owner": "runtime_websocket_handler_finally",
+      "trigger": "any_handler_exit_after_valid_start",
+      "cleanup": "before_stage_transfer_RuntimeCaptureSink_abort_and_acquisition_fail_after_stage_transfer_transcript_service_or_existing_recover_owns_cleanup",
+      "operation": "MediaAcquisitionCoordinator.fail_capture_stream_internal_call",
+      "taskIdSource": "validated_start.taskId",
+      "taskFailureMapping": {
+        "unexpected_disconnect_before_stage_transfer": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+        "finalize_create_or_stage_failure": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "completed_frame_send_after_stage_transfer": "preserve_handoff_transcript_continues_or_recover_published_or_abandoned",
+        "cleanup_failure": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+        "validated_capture_failure": "preserve_normalized_relay_code"
+      },
+      "idempotency": "owner_transfer_exactly_once_cleanup_owner_never_overlaps_terminal_product_commit_not_rewritten",
+      "newWorkerRole": "dispatch_by_marker_phase_using_existing_authenticated_DELETE_or_GET_or_existing_recover_never_resume_old_pcm_ticket_or_sequence",
+      "publicApiChange": "none"
+    },
+    "recoveryOwnership": {
+      "connecting_before_valid_start": "new_worker_calls_existing_authenticated_DELETE_acquisition_then_GET_terminal",
+      "valid_start_runtime_alive": "before_stage_transfer_runtime_finally_cleanup_after_stage_transfer_transcript_service_owns_lifecycle",
+      "runtime_graceful_sigterm": "persisted_owner_pid_and_start_token_derive_interrupted_then_existing_recover_on_product_reattach",
+      "runtime_hard_crash_restart": "existing_recover_returns_published_only_if_durable_product_commit_exists_else_abandoned_after_cleanup",
+      "recoverObservableEvidence": [
+        "recover_http_success",
+        "disposition_published_or_abandoned",
+        "authoritativeTaskId_matches_marker",
+        "published_requires_MediaTaskStore_ready_or_degraded_projection",
+        "abandoned_requires_acquisition_asr_stage_unpublished_product_cleanup_zero",
+        "fresh_begin_succeeds_single_sink"
+      ],
+      "get404": "stop_polling_emit_recovery_pending_wait_product_reattach_recover_result_or_marker_expiry",
+      "markerExpiry": "clear_nonsecret_marker_only_does_not_mark_task_success_or_delete_persistent_authority",
+      "publicApiChange": "none",
+      "newUserAction": "none",
+      "stagedAudioRecoveryEntity": "MediaRecoveryCleanupCoordinator_internal_callback",
+      "stagedAudioOwnerMetadata": "TaskAudioStager_private_owner_manifest_v10_plus_SQLite_owner_receipt_v10",
+      "recoverCleanupBarrier": "acquisition_sandbox_then_asr_staged_root_then_unpublished_product_evidence_all_residual_zero",
+      "recoverFailureRule": "any_cleanup_error_or_nonzero_residual_returns_V3_MEDIA_CLEANUP_INCOMPLETE",
+      "stagedAudioOwnerDiscovery": "deterministic_private_asr_staging_root_taskId_owner.json_from_authoritativeTaskId",
+      "stagedAudioOwnerPublish": "manifest_temp_O_EXCL_write_file_fsync_atomic_replace_parent_directory_fsync_then_SQLite_synchronous_FULL_receipt_commit",
+      "stagedAudioOwnerInvalid": "missing_torn_corrupt_mismatch_unsafe_manifest_or_missing_mismatched_uncommitted_receipt_returns_V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    "boundaryFailureNormalization": {
+      "scope": "capture_grant_sink_controller_recovery_boundary_only_public_runtime_and_ui_codes_remain_unchanged",
+      "sourceInventory": [
+        "V3_MEDIA_ACQUISITION_IN_PROGRESS",
+        "V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+        "V3_MEDIA_CAPTURE_ALREADY_ACTIVE",
+        "V3_MEDIA_CAPTURE_AUDIO_CONTEXT_SUSPENDED",
+        "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID",
+        "V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_BINDING_INVALID",
+        "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_BYTE_LIMIT",
+        "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+        "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+        "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_CAPTURE_DURATION_LIMIT",
+        "V3_MEDIA_CAPTURE_EMPTY",
+        "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "V3_MEDIA_CAPTURE_GRANT_EXPIRED",
+        "V3_MEDIA_CAPTURE_GRANT_INVALID",
+        "V3_MEDIA_CAPTURE_MESSAGE_INVALID",
+        "V3_MEDIA_CAPTURE_NOT_ACTIVE",
+        "V3_MEDIA_CAPTURE_NOT_ELIGIBLE",
+        "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH",
+        "V3_MEDIA_CAPTURE_PERMISSION_REQUIRED",
+        "V3_MEDIA_CAPTURE_PREPARE_FAILED",
+        "V3_MEDIA_CAPTURE_PREPARE_REQUIRED",
+        "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+        "V3_MEDIA_CAPTURE_START_FAILED",
+        "V3_MEDIA_CAPTURE_STREAM_INVALID",
+        "V3_MEDIA_CAPTURE_TAB_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_EXPIRED",
+        "V3_MEDIA_CAPTURE_TICKET_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_REPLAYED",
+        "V3_MEDIA_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_CROSS_TASK_REUSE",
+        "V3_MEDIA_LEASE_REQUIRED",
+        "V3_MEDIA_PLATFORM_REJECTED",
+        "V3_MEDIA_RUNTIME_OFFLINE",
+        "V3_MEDIA_SOURCE_TASK_ACTIVE",
+        "V3_MEDIA_SUBTITLE_UNAVAILABLE",
+        "V3_MEDIA_TASK_INVALID",
+        "V3_MEDIA_TEMP_FILE_MODE_INVALID"
+      ],
+      "targetInventory": [
+        "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_PORT_DISCONNECTED",
+        "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+        "V3_MEDIA_CAPTURE_BACKPRESSURE",
+        "V3_MEDIA_CAPTURE_WORKER_RESTARTED",
+        "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+        "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID",
+        "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+        "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+        "V3_MEDIA_CAPTURE_BYTE_LIMIT",
+        "V3_MEDIA_CAPTURE_DURATION_LIMIT",
+        "V3_MEDIA_CAPTURE_EMPTY",
+        "V3_MEDIA_CAPTURE_STREAM_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_EXPIRED",
+        "V3_MEDIA_CAPTURE_TICKET_REPLAYED",
+        "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_ALREADY_ACTIVE",
+        "V3_MEDIA_CAPTURE_FINALIZE_FAILED"
+      ],
+      "identityShared": [
+        "V3_MEDIA_CAPTURE_STREAM_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_INVALID",
+        "V3_MEDIA_CAPTURE_TICKET_EXPIRED",
+        "V3_MEDIA_CAPTURE_TICKET_REPLAYED",
+        "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_ALREADY_ACTIVE",
+        "V3_MEDIA_CAPTURE_BYTE_LIMIT",
+        "V3_MEDIA_CAPTURE_DURATION_LIMIT",
+        "V3_MEDIA_CAPTURE_EMPTY",
+        "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID",
+        "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+        "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+        "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED"
+      ],
+      "renameMapping": {
+        "V3_MEDIA_CAPTURE_BINDING_INVALID": "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_NOT_ACTIVE": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+        "V3_MEDIA_CAPTURE_NOT_ELIGIBLE": "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_GRANT_INVALID": "V3_MEDIA_CAPTURE_TICKET_INVALID",
+        "V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_MESSAGE_INVALID": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+        "V3_MEDIA_CAPTURE_AUDIO_CONTEXT_SUSPENDED": "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID",
+        "V3_MEDIA_CAPTURE_START_FAILED": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+        "V3_MEDIA_CAPTURE_PREPARE_FAILED": "V3_MEDIA_CAPTURE_PORT_DISCONNECTED",
+        "V3_MEDIA_CAPTURE_PREPARE_REQUIRED": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+        "V3_MEDIA_CAPTURE_PERMISSION_REQUIRED": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+        "V3_MEDIA_CAPTURE_TAB_INVALID": "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_CAPTURE_GRANT_EXPIRED": "V3_MEDIA_CAPTURE_TICKET_EXPIRED",
+        "V3_MEDIA_CLEANUP_INCOMPLETE": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+        "V3_MEDIA_CROSS_TASK_REUSE": "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+        "V3_MEDIA_TEMP_FILE_MODE_INVALID": "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID"
+      },
+      "publicOnlyNotEmittedOnRelayWire": [
+        "V3_MEDIA_ACQUISITION_IN_PROGRESS",
+        "V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+        "V3_MEDIA_LEASE_REQUIRED",
+        "V3_MEDIA_PLATFORM_REJECTED",
+        "V3_MEDIA_RUNTIME_OFFLINE",
+        "V3_MEDIA_SOURCE_TASK_ACTIVE",
+        "V3_MEDIA_SUBTITLE_UNAVAILABLE",
+        "V3_MEDIA_TASK_INVALID"
+      ],
+      "classificationRule": "every_current_source_exactly_one_of_identity_rename_public_only_and_R0_registry_AST_scan_rejects_unknown_omitted_or_duplicate",
+      "sourceAuthority": {
+        "baselineMode": "current_source_evidence_plus_required_R0_central_registry",
+        "r0Registry": "captureRelaySourceFailureCodes",
+        "implementationVerification": "semantic_AST_boundary_sites_equals_registry_equals_frozen_sourceInventory",
+        "authoritativeScopes": [
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_grants.py#python_ast_boundary_module",
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_sink.py#python_ast_boundary_module",
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/task_artifacts.py#python_ast_boundary_module",
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py#python_ast_boundary_symbols:MediaAcquisitionCoordinator.create,MediaAcquisitionCoordinator.recover_interrupted,MediaAcquisitionCoordinator.bind_capture_grant,MediaAcquisitionCoordinator.acquire_input",
+          "services/local-runtime/navia_runtime/app.py#python_ast_boundary_symbols:create_media_capture_grant,get_media_capture_grant,media_capture_stream",
+          "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts#typescript_compiler_ast_boundary_values",
+          "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageClient.ts#typescript_compiler_ast_boundary_values",
+          "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageRouter.ts#typescript_compiler_ast_boundary_values",
+          "apps/chrome-extension/entrypoints/media-capture-offscreen/main.ts#typescript_compiler_ast_boundary_values",
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/bilibili/acquirer.py#python_ast_boundary_module",
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/downloaders/yt_dlp.py#python_ast_boundary_module"
+        ],
+        "taskArtifactErrorPolicy": "V3_MEDIA_CROSS_TASK_REUSE_to_BINDING_MISMATCH_V3_MEDIA_TEMP_FILE_MODE_INVALID_to_AUDIO_SHAPE_INVALID_other_declared_codes_follow_frozen_classification",
+        "discoveryRoots": [
+          "services/local-runtime/navia_runtime/modules/media_companion/acquisition/**/*.py",
+          "services/local-runtime/navia_runtime/*.py",
+          "apps/chrome-extension/src/modules/media_companion/capture/**/*.ts",
+          "apps/chrome-extension/entrypoints/media-capture-offscreen/**/*.ts"
+        ],
+        "unlistedEmitPolicy": "reject_unlisted_file_in_recursive_boundary_roots_containing_any_frozen_source_code_or_new_V3_MEDIA_CAPTURE_code",
+        "nonRelayCodeAllowlist": [
+          "V3_MEDIA_TRANSCRIPT_AUDIO_UNAVAILABLE",
+          "V3_MEDIA_TRANSCRIPT_AUDIO_UNSAFE",
+          "V3_MEDIA_TRANSCRIPT_CANCELLED",
+          "V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE",
+          "V3_MEDIA_TRANSCRIPT_COVERAGE_INDETERMINATE",
+          "V3_MEDIA_TRANSCRIPT_EMPTY",
+          "V3_MEDIA_TRANSCRIPT_INVALID",
+          "V3_MEDIA_TRANSCRIPT_MODEL_MISMATCH",
+          "V3_MEDIA_TRANSCRIPT_OUTPUT_LIMIT",
+          "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED",
+          "V3_MEDIA_TRANSCRIPT_PROCESS_TIMEOUT",
+          "V3_MEDIA_TRANSCRIPT_PROVENANCE_INVALID",
+          "V3_MEDIA_TRANSCRIPT_SOURCE_MISMATCH",
+          "V3_MEDIA_TRANSCRIPT_TASK_INVALID"
+        ]
+      }
+    },
+    "identityAndRevisionPolicy": {
+      "taskIdentity": "resolve_sourceAuthority_acquisition_transcript_outline_workspace_share_taskId_and_sourceIdentity_where_field_exists",
+      "consentRevision": "resolve_authority_and_acquisition_request_share_consentPolicyId_and_consentPolicyRevision",
+      "transcriptRevision": "independent_monotonic_transcript_projection_revision",
+      "productRevision": "outline_and_workspace_share_media_task_revision_with_expected_revision_fence",
+      "crossDomainRevisionEquality": "forbidden_transcript_consent_and_product_revisions_are_distinct_domains",
+      "revisionDomainCount": 3
+    },
+    "runtimeSinkInvariant": {
+      "scope": "one_global_active_sink_per_runtime_process",
+      "startedPrecondition": "RuntimeCaptureSink.begin_succeeded_with_no_prior_active_sink",
+      "disconnectCleanup": "websocket_finally_calls_abort_then_internal_fail_capture_stream",
+      "observerChecks": [
+        "old_task_existing_GET_is_terminal",
+        "old_task_cleanup_receipt_activeCaptureCount_zero",
+        "old_task_residualRawAudioCount_zero",
+        "old_task_private_temp_audio_count_zero",
+        "fresh_capture_receives_started"
+      ]
+    },
+    "messageTypes": {
+      "backgroundToOffscreen": [
+        "start",
+        "chunk_credit",
+        "quiesce",
+        "abort"
+      ],
+      "offscreenToBackground": [
+        "ready",
+        "chunk",
+        "quiesced",
+        "stopped",
+        "capture_error"
+      ]
+    },
+    "messageExamples": [
+      {
+        "type": "start",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "streamId": "fixture-stream",
+        "audioConfig": {
+          "sampleRateHz": 16000,
+          "channels": 1,
+          "sampleWidthBytes": 2
+        }
+      },
+      {
+        "type": "chunk_credit",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "acknowledgedSequence": -1,
+        "credit": 1
+      },
+      {
+        "type": "quiesce",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "reason": "completed"
+      },
+      {
+        "type": "abort",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "failureCode": "V3_MEDIA_CAPTURE_PORT_DISCONNECTED"
+      },
+      {
+        "type": "ready",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      {
+        "type": "chunk",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "sequence": 0,
+        "rawByteLength": 2,
+        "pcmBase64": "AAA="
+      },
+      {
+        "type": "quiesced",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "queuedChunks": 1,
+        "outstandingRawBytes": 2,
+        "sourceStopped": true
+      },
+      {
+        "type": "stopped",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "queuedChunks": 0,
+        "creditConsumed": 0,
+        "tracksStopped": true,
+        "contextClosed": true
+      },
+      {
+        "type": "capture_error",
+        "captureSessionId": "cap_AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "failureCode": "V3_MEDIA_CAPTURE_BACKPRESSURE"
+      }
+    ],
+    "failureCodes": [
+      "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "V3_MEDIA_CAPTURE_PORT_DISCONNECTED",
+      "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "V3_MEDIA_CAPTURE_BACKPRESSURE",
+      "V3_MEDIA_CAPTURE_WORKER_RESTARTED",
+      "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+      "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+      "V3_MEDIA_CAPTURE_AUDIO_SHAPE_INVALID",
+      "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+      "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+      "V3_MEDIA_CAPTURE_BYTE_LIMIT",
+      "V3_MEDIA_CAPTURE_DURATION_LIMIT",
+      "V3_MEDIA_CAPTURE_EMPTY",
+      "V3_MEDIA_CAPTURE_STREAM_INVALID",
+      "V3_MEDIA_CAPTURE_TICKET_INVALID",
+      "V3_MEDIA_CAPTURE_TICKET_EXPIRED",
+      "V3_MEDIA_CAPTURE_TICKET_REPLAYED",
+      "V3_MEDIA_CAPTURE_BINDING_MISMATCH",
+      "V3_MEDIA_CAPTURE_ALREADY_ACTIVE",
+      "V3_MEDIA_CAPTURE_FINALIZE_FAILED"
+    ],
+    "stopReasons": [
+      "completed",
+      "cancelled",
+      "navigation",
+      "tab_closed",
+      "consent_revoked",
+      "runtime_disconnected",
+      "timeout",
+      "failed"
+    ],
+    "captureHandoffBoundary": {
+      "captureStreamDurability": "ephemeral_transport_handoff_not_authoritative_product_terminal",
+      "sinkFinalizeIsTerminal": false,
+      "handoffAcceptedAt": "after_sink_finalize_transcript_create_and_synchronous_stage_barrier_before_async_worker",
+      "completedFrameDelivery": "best_effort_capture_handoff_notification_not_task_success",
+      "productDurableAuthority": "MediaTaskStore_commit_terminal_ready_or_degraded",
+      "acquisitionCompletionOwner": "transcript_service_after_ASR_validation_and_stage_plus_acquisition_cleanup",
+      "runtimeRestartBeforeProductPublish": "existing_recover_returns_abandoned_cleanup_then_fresh_analysis_required",
+      "successPreconditions": [
+        "sink_finalize_succeeded",
+        "transcript_create_succeeded",
+        "stage_copy_fsync_hash_shape_barrier_succeeded",
+        "async_transcript_worker_started"
+      ],
+      "failureInjectionPoints": [
+        "after_sink_finalize",
+        "transcript_create",
+        "before_stage",
+        "after_stage_before_worker",
+        "handoff_completed_frame_send",
+        "commit_then_runtime_restart_before_background_observe"
+      ],
+      "completedFrameSendFailure": "preserve_handoff_owner_transcript_continues_same_process_or_recover_published_or_abandoned_after_restart",
+      "finallyRule": "before_stage_transfer_runtime_handler_cleans_after_stage_transfer_transcript_service_or_recover_owns_cleanup"
+    },
+    "artifactOwnershipPolicy": {
+      "beforeStageBarrierOwner": "runtime_capture_handler_owns_acquisition_sandbox",
+      "stageBarrier": "TaskAudioStager_stage_copy_fsync_sha256_byte_length_wave_shape_all_match_before_return",
+      "afterStageBarrierOwner": "transcript_service_owns_staged_audio_and_acquisition_sandbox_until_terminal_cleanup",
+      "asyncWorkerPrecondition": "matching_SQLite_owner_receipt_transaction_synchronous_FULL_committed_after_manifest_parent_directory_fsync_before_thread_start",
+      "handlerCleanupAfterTransfer": "forbidden",
+      "transcriptSuccessCleanupOrder": "ASR_validate_then_cleanup_stage_then_acquisition_complete_then_transcript_terminal",
+      "transcriptFailureCleanupOrder": "cleanup_stage_then_acquisition_failure_cleanup_then_transcript_failed",
+      "crashBeforeProductCommit": "existing_recover_uses_composite_cleanup_owner_to_abandon_unpublished_authority_and_clean_acquisition_asr_stage_product_evidence",
+      "rawAudioPersistence": "private_task_scoped_only_never_public_evidence",
+      "stagedAudioOwnerManifest": "schema_v3_media_capture_owner_manifest_v10_taskId_pid_processStartToken_sourceSha256_stagedSha256_byteLength_waveShape_state_staged",
+      "hardCrashRecoveryOwner": "MediaRecoveryCleanupCoordinator_called_by_existing_recover_internal_cleanup_callback",
+      "hardCrashCleanupOrder": "acquisition_sandbox_then_asr_staged_root_then_unpublished_product_evidence",
+      "hardCrashCleanupReceipt": "acquisitionResidualCount_asrResidualCount_productResidualCount_activeSinkCount_all_zero",
+      "hardCrashCleanupFailure": "any_error_or_nonzero_residual_fail_closed_V3_MEDIA_CLEANUP_INCOMPLETE",
+      "freshBeginPrecondition": "recover_abandoned_and_all_four_residual_counts_zero",
+      "stagedAudioOwnerManifestPath": "private_asr_staging_root/<taskId>/owner.json",
+      "stagedAudioOwnerManifestDiscovery": "existing_recover_resolves_exact_path_from_validated_authoritative_taskId_without_process_memory",
+      "stagedAudioOwnerManifestWrite": "canonical_json_to_owner.json.tmp.<random>_open_O_EXCL_then_file_fsync_then_atomic_replace_owner.json_then_parent_directory_fsync",
+      "stagedAudioOwnerManifestReceipt": "SQLite_media_capture_owner_receipts_taskId_manifestSha256_ownership_committed_transaction_synchronous_FULL",
+      "stagedAudioOwnerManifestValidation": "manifest_and_SQLite_receipt_schema_valid_exact_taskId_manifestSha256_process_identity_hash_length_wave_shape_state_safe_path_match_else_V3_MEDIA_CLEANUP_INCOMPLETE",
+      "hardCrashKillPoint": "after_SQLite_owner_receipt_FULL_commit_before_async_worker_start",
+      "stagedAudioOwnerReceiptTable": "media_capture_owner_receipts_internal_taskId_primary_key_manifestSha256_state_committedAt",
+      "stagedAudioOwnerReceiptWrite": "after_manifest_parent_directory_fsync_begin_immediate_SQLite_transaction_synchronous_FULL_insert_ownership_committed_then_commit",
+      "stagedAudioOwnerReceiptRecovery": "recover_requires_valid_manifest_and_matching_committed_receipt_manifestSha256_without_process_memory"
+    },
+    "ownerManifestExample": {
+      "schemaVersion": "v3-media-capture-owner-manifest/v10",
+      "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "pid": 4242,
+      "processStartToken": "linux-proc-start-123456",
+      "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "stagedSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "byteLength": 32000,
+      "waveShape": {
+        "encoding": "pcm_s16le",
+        "sampleRateHz": 16000,
+        "channels": 1,
+        "sampleWidthBytes": 2
+      },
+      "state": "staged"
+    },
+    "ownerReceiptExample": {
+      "schemaVersion": "v3-media-capture-owner-receipt/v10",
+      "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "manifestSha256": "f585d34021377fabf6cefa41b700a25337726ca845b838723cd83c692e1c8409",
+      "state": "ownership_committed",
+      "committedAt": "2026-10-15T00:00:01Z",
+      "durability": "sqlite_transaction_synchronous_FULL_committed"
+    }
+  },
+  "positiveTrace": [
+    {
+      "step": 1,
+      "actor": "background",
+      "message": "restart_marker_write",
+      "requiredState": "connecting"
+    },
+    {
+      "step": 2,
+      "actor": "background",
+      "message": "runtime_start",
+      "requiredState": "connecting"
+    },
+    {
+      "step": 3,
+      "actor": "runtime",
+      "message": "started",
+      "requiredState": "runtime_started"
+    },
+    {
+      "step": 4,
+      "actor": "background",
+      "message": "restart_marker_phase_runtime_started",
+      "requiredState": "runtime_started"
+    },
+    {
+      "step": 5,
+      "actor": "background",
+      "message": "start_with_streamId_once",
+      "requiredState": "runtime_started"
+    },
+    {
+      "step": 6,
+      "actor": "offscreen",
+      "message": "ready",
+      "requiredState": "capturing"
+    },
+    {
+      "step": 7,
+      "actor": "background",
+      "message": "restart_marker_phase_capturing",
+      "requiredState": "capturing"
+    },
+    {
+      "step": 8,
+      "actor": "background",
+      "message": "chunk_credit",
+      "requiredState": "capturing",
+      "acknowledgedSequence": -1,
+      "credit": 1
+    },
+    {
+      "step": 9,
+      "actor": "offscreen",
+      "message": "chunk_base64",
+      "requiredState": "capturing",
+      "sequence": 0,
+      "rawByteLength": 2,
+      "pcmBase64": "AAA="
+    },
+    {
+      "step": 10,
+      "actor": "background",
+      "message": "runtime_binary_chunk",
+      "requiredState": "capturing",
+      "sequence": 0,
+      "rawByteLength": 2
+    },
+    {
+      "step": 11,
+      "actor": "runtime",
+      "message": "chunkAccepted",
+      "requiredState": "capturing",
+      "sequence": 0,
+      "rawByteLength": 2
+    },
+    {
+      "step": 12,
+      "actor": "background",
+      "message": "chunk_credit",
+      "requiredState": "capturing",
+      "acknowledgedSequence": 0,
+      "credit": 1
+    },
+    {
+      "step": 13,
+      "actor": "background",
+      "message": "quiesce",
+      "requiredState": "draining"
+    },
+    {
+      "step": 14,
+      "actor": "background",
+      "message": "restart_marker_phase_draining",
+      "requiredState": "draining"
+    },
+    {
+      "step": 15,
+      "actor": "offscreen",
+      "message": "quiesced",
+      "requiredState": "draining",
+      "queuedChunks": 1,
+      "outstandingRawBytes": 2,
+      "sourceStopped": true
+    },
+    {
+      "step": 16,
+      "actor": "offscreen",
+      "message": "chunk_base64",
+      "requiredState": "draining",
+      "sequence": 1,
+      "rawByteLength": 2,
+      "pcmBase64": "AAA="
+    },
+    {
+      "step": 17,
+      "actor": "background",
+      "message": "runtime_binary_chunk",
+      "requiredState": "draining",
+      "sequence": 1,
+      "rawByteLength": 2
+    },
+    {
+      "step": 18,
+      "actor": "runtime",
+      "message": "chunkAccepted",
+      "requiredState": "draining",
+      "sequence": 1,
+      "rawByteLength": 2
+    },
+    {
+      "step": 19,
+      "actor": "background",
+      "message": "chunk_credit",
+      "requiredState": "draining",
+      "acknowledgedSequence": 1,
+      "credit": 1
+    },
+    {
+      "step": 20,
+      "actor": "offscreen",
+      "message": "stopped",
+      "requiredState": "draining",
+      "queuedChunks": 0,
+      "creditConsumed": 0,
+      "tracksStopped": true,
+      "contextClosed": true
+    },
+    {
+      "step": 21,
+      "actor": "background",
+      "message": "restart_marker_phase_cleanup_pending",
+      "requiredState": "cleanup_pending"
+    },
+    {
+      "step": 22,
+      "actor": "background",
+      "message": "runtime_stop_sent",
+      "requiredState": "cleanup_pending"
+    },
+    {
+      "step": 23,
+      "actor": "runtime",
+      "message": "completed_with_cleanup",
+      "requiredState": "finalized",
+      "activeCaptureCount": 0,
+      "residualRawAudioCount": 0,
+      "privateTempAudioCount": 0
+    },
+    {
+      "step": 24,
+      "actor": "background",
+      "message": "restart_marker_clear",
+      "requiredState": "finalized"
+    }
+  ],
+  "restartRecoveryTrace": [
+    {
+      "step": 1,
+      "actor": "background_new_worker",
+      "message": "restart_marker_read",
+      "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "phase": "capturing",
+      "localDiagnostic": "V3_MEDIA_CAPTURE_WORKER_RESTARTED"
+    },
+    {
+      "step": 2,
+      "actor": "runtime",
+      "message": "websocket_finally_abort",
+      "activeCaptureCount": 0,
+      "residualRawAudioCount": 0,
+      "privateTempAudioCount": 0
+    },
+    {
+      "step": 3,
+      "actor": "runtime",
+      "message": "internal_fail_capture_stream",
+      "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "failureCode": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+      "idempotent": true,
+      "publicApiCall": false
+    },
+    {
+      "step": 4,
+      "actor": "background_new_worker",
+      "message": "existing_get_observed_terminal",
+      "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "state": "failed",
+      "failureCode": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED"
+    },
+    {
+      "step": 5,
+      "actor": "background_new_worker",
+      "message": "cleanup_grace_elapsed",
+      "durationMs": 10000
+    },
+    {
+      "step": 6,
+      "actor": "background_new_worker",
+      "message": "restart_marker_clear"
+    },
+    {
+      "step": 7,
+      "actor": "runtime",
+      "message": "fresh_begin_single_sink_precondition",
+      "priorActiveCaptureCount": 0
+    },
+    {
+      "step": 8,
+      "actor": "runtime",
+      "message": "fresh_started",
+      "freshCapture": true
+    }
+  ],
+  "phaseRecoveryCases": [
+    {
+      "phase": "connecting",
+      "runtimeState": "alive_before_valid_start",
+      "owner": "background_new_worker",
+      "action": "existing_authenticated_DELETE_acquisition",
+      "requiredReceipt": "cancelled_task_and_cleanup_zero"
+    },
+    {
+      "phase": "runtime_started",
+      "runtimeState": "alive_after_valid_start",
+      "owner": "runtime_websocket_handler_finally",
+      "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+      "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+    },
+    {
+      "phase": "capturing",
+      "runtimeState": "alive_after_valid_start",
+      "owner": "runtime_websocket_handler_finally",
+      "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+      "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+    },
+    {
+      "phase": "draining",
+      "runtimeState": "alive_after_valid_start",
+      "owner": "runtime_websocket_handler_finally",
+      "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+      "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+    },
+    {
+      "phase": "cleanup_pending",
+      "runtimeState": "alive_after_valid_start",
+      "owner": "runtime_websocket_handler_finally",
+      "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+      "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+    },
+    {
+      "phase": "any",
+      "runtimeState": "hard_crash_or_restarted",
+      "owner": "product_reattach_recovery",
+      "action": "existing_recover_by_current_sourceIdentity_match_authoritativeTaskId",
+      "requiredReceipt": "recover_success_disposition_and_matching_taskId_imply_internal_cleanup_pass_else_cleanup_error_then_fresh_begin"
+    },
+    {
+      "phase": "any",
+      "runtimeState": "GET_404",
+      "owner": "background_new_worker",
+      "action": "stop_polling_emit_recovery_pending",
+      "requiredReceipt": "product_reattach_recover_result_or_marker_expiry_without_success_claim"
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "RLY10-N01",
+      "mutation": "sender_id_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N02",
+      "mutation": "sender_url_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N03",
+      "mutation": "sender_has_tab",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N04",
+      "mutation": "sender_frame_nonzero",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N05",
+      "mutation": "sender_document_missing_or_replaced",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N06",
+      "mutation": "sender_incognito_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN"
+    },
+    {
+      "caseId": "RLY10-N07",
+      "mutation": "chunk_before_runtime_started",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N08",
+      "mutation": "first_sequence_is_one",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID"
+    },
+    {
+      "caseId": "RLY10-N09",
+      "mutation": "duplicate_sequence",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID"
+    },
+    {
+      "caseId": "RLY10-N10",
+      "mutation": "sequence_gap",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID"
+    },
+    {
+      "caseId": "RLY10-N11",
+      "mutation": "base64_noncanonical_or_invalid",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_INVALID"
+    },
+    {
+      "caseId": "RLY10-N12",
+      "mutation": "decoded_length_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_INVALID"
+    },
+    {
+      "caseId": "RLY10-N13",
+      "mutation": "raw_chunk_odd_or_exceeds_49152",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_INVALID"
+    },
+    {
+      "caseId": "RLY10-N14",
+      "mutation": "encoded_chunk_exceeds_65536",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CHUNK_INVALID"
+    },
+    {
+      "caseId": "RLY10-N15",
+      "mutation": "chunk_without_credit",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N16",
+      "mutation": "enqueue_would_exceed_32_chunks",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_BACKPRESSURE"
+    },
+    {
+      "caseId": "RLY10-N17",
+      "mutation": "enqueue_would_exceed_1572864_raw_bytes",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_BACKPRESSURE"
+    },
+    {
+      "caseId": "RLY10-N18",
+      "mutation": "runtime_ack_timeout",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED"
+    },
+    {
+      "caseId": "RLY10-N19",
+      "mutation": "port_disconnect",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PORT_DISCONNECTED"
+    },
+    {
+      "caseId": "RLY10-N20",
+      "mutation": "service_worker_restart_with_marker",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_WORKER_RESTARTED"
+    },
+    {
+      "caseId": "RLY10-N21",
+      "mutation": "chunk_after_runtime_stop_sent",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N22",
+      "mutation": "cleanup_timeout",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "RLY10-N23",
+      "mutation": "second_start_message",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_STREAM_INVALID"
+    },
+    {
+      "caseId": "RLY10-N24",
+      "mutation": "streamId_reused_after_getUserMedia_settle",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_STREAM_INVALID"
+    },
+    {
+      "caseId": "RLY10-N25",
+      "mutation": "streamId_reused_after_abort",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_STREAM_INVALID"
+    },
+    {
+      "caseId": "RLY10-N26",
+      "mutation": "streamId_in_chunk_or_credit",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N27",
+      "mutation": "streamId_in_log",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N28",
+      "mutation": "streamId_in_marker_or_storage",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    },
+    {
+      "caseId": "RLY10-N29",
+      "mutation": "abort_receipt_missing_after_disconnect",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "RLY10-N30",
+      "mutation": "marker_phase_or_expiry_invalid",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID"
+    }
+  ],
+  "handoffFailureTrace": [
+    {
+      "step": 1,
+      "actor": "runtime",
+      "message": "sink_finalize_succeeded",
+      "handoffAccepted": false,
+      "productTerminal": false
+    },
+    {
+      "step": 2,
+      "actor": "runtime",
+      "message": "stage_barrier_succeeded",
+      "sourceSha256EqualsStagedSha256": true,
+      "fsyncCompleted": true,
+      "shapeMatched": true
+    },
+    {
+      "step": 3,
+      "actor": "runtime",
+      "message": "ownership_transferred_to_transcript_service",
+      "handlerCleanupAllowed": false
+    },
+    {
+      "step": 4,
+      "actor": "runtime",
+      "message": "async_transcript_worker_started",
+      "handoffAccepted": true,
+      "productTerminal": false
+    },
+    {
+      "step": 5,
+      "actor": "runtime",
+      "message": "completed_frame_send_failed",
+      "handoffAccepted": true,
+      "productTerminal": false
+    },
+    {
+      "step": 6,
+      "actor": "product",
+      "message": "recover_after_runtime_restart",
+      "allowedDisposition": [
+        "published",
+        "abandoned"
+      ],
+      "publishedRequiresDurableProductCommit": true
+    }
+  ],
+  "handoffFailureCases": [
+    {
+      "injectionPoint": "after_sink_finalize",
+      "owner": "runtime_capture_handler",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+      "requiresCleanupZero": true
+    },
+    {
+      "injectionPoint": "transcript_create",
+      "owner": "runtime_capture_handler",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+      "requiresCleanupZero": true
+    },
+    {
+      "injectionPoint": "before_stage",
+      "owner": "runtime_capture_handler",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+      "requiresCleanupZero": true
+    },
+    {
+      "injectionPoint": "after_stage_before_worker",
+      "owner": "transcript_service",
+      "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+      "requiresCleanupZero": true,
+      "faultMode": "hard_process_crash",
+      "restartAction": "existing_recover_composite_cleanup",
+      "requiredResiduals": {
+        "activeSinkCount": 0,
+        "acquisitionResidualCount": 0,
+        "asrResidualCount": 0,
+        "productResidualCount": 0
+      },
+      "requiresFreshBegin": true
+    },
+    {
+      "injectionPoint": "handoff_completed_frame_send",
+      "owner": "transcript_service",
+      "expectedFailureCode": null,
+      "expectedHandoffAccepted": true,
+      "productTerminal": false,
+      "recoveryObservation": "same_process_transcript_continues_or_restart_recover_published_or_abandoned"
+    },
+    {
+      "injectionPoint": "commit_then_runtime_restart_before_background_observe",
+      "owner": "product_reattach_recovery",
+      "expectedFailureCode": null,
+      "expectedDisposition": "published_only_if_MediaTaskStore_terminal_commit_exists_else_abandoned",
+      "requiresFreshBegin": true
+    }
+  ],
+  "sourceInventoryEvidence": {
+    "scopeMode": "frozen_source_and_target_file_sha256_plus_python_ast_symbols_or_typescript_string_literals",
+    "scopes": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_grants.py",
+        "sha256": "cf0d50cd5bae093d62966bd0a5e165fec6582ab370360a6131cf61e75333c874",
+        "language": "python",
+        "extractor": "python_ast_boundary_module"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_sink.py",
+        "sha256": "a851708f3bc680b5cb29b65ae9edecab12ba9fb4b2fd4fa07f0186482a1f531a",
+        "language": "python",
+        "extractor": "python_ast_boundary_module"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/task_artifacts.py",
+        "sha256": "425e64b2b63d9faa51bda559409a1d6cb290f0db24bbec0216e6a1a899c85841",
+        "language": "python",
+        "extractor": "python_ast_boundary_module"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py",
+        "sha256": "ddbf830f5ce5d15b2270deba636ad5620531ef122ef28ee6903a5f8ad603cb5c",
+        "language": "python",
+        "extractor": "python_ast_boundary_symbols",
+        "symbols": [
+          "MediaAcquisitionCoordinator.create",
+          "MediaAcquisitionCoordinator.recover_interrupted",
+          "MediaAcquisitionCoordinator.bind_capture_grant",
+          "MediaAcquisitionCoordinator.acquire_input"
+        ]
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/app.py",
+        "sha256": "51791f0568eaeeb8e539ddad392c990c877e196021bf92a0c65622ae200d3f0a",
+        "language": "python",
+        "extractor": "python_ast_boundary_symbols",
+        "symbols": [
+          "create_media_capture_grant",
+          "get_media_capture_grant",
+          "media_capture_stream"
+        ]
+      },
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts",
+        "sha256": "dc20b041647b6fcf3ad71952f3cbe115883d92dabd054402279813f7d77281fa",
+        "language": "typescript",
+        "extractor": "typescript_compiler_ast_boundary_values"
+      },
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageClient.ts",
+        "sha256": "5a2317a96d24f257b4bbc127c19bbc636dfced9e6f162e0e289cb5605b206346",
+        "language": "typescript",
+        "extractor": "typescript_compiler_ast_boundary_values"
+      },
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageRouter.ts",
+        "sha256": "d7d0ed7db90d12a4c477cca05da46de6ba53d68535916d1de8f2218af1d8c6d0",
+        "language": "typescript",
+        "extractor": "typescript_compiler_ast_boundary_values"
+      },
+      {
+        "path": "apps/chrome-extension/entrypoints/media-capture-offscreen/main.ts",
+        "sha256": "fff4948edddb2220bc00eef66ac0cf217b8765e755d505d1cc0170288ebebe1a",
+        "language": "typescript",
+        "extractor": "typescript_compiler_ast_boundary_values"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/bilibili/acquirer.py",
+        "sha256": "7fa289b73dffe2161ded044899fe039c1c2810368f59ff6908df90e675fa13ec",
+        "language": "python",
+        "extractor": "python_ast_boundary_module"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/downloaders/yt_dlp.py",
+        "sha256": "96d20f2e9411313fed81a150058db2f4483d0c6245bbcf125bbef16369c54e25",
+        "language": "python",
+        "extractor": "python_ast_boundary_module"
+      }
+    ],
+    "targetScopes": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/relayContracts.ts",
+        "sha256": "d09c43c46778ed4a70e96e397c2e25deb7052c8955688dc0fdd081cded2a693b",
+        "language": "typescript",
+        "extractor": "typescript_compiler_ast_boundary_values",
+        "expectedInventory": "targetInventory",
+        "allowedOverlapInventory": "sourceInventory"
+      }
+    ],
+    "discoveryRoots": [
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/**/*.py",
+      "services/local-runtime/navia_runtime/*.py",
+      "apps/chrome-extension/src/modules/media_companion/capture/**/*.ts",
+      "apps/chrome-extension/entrypoints/media-capture-offscreen/**/*.ts"
+    ],
+    "unlistedEmitPolicy": "reject_unlisted_file_in_recursive_boundary_roots_containing_any_frozen_source_code_or_new_V3_MEDIA_CAPTURE_code",
+    "sourceInventoryCount": 40,
+    "targetInventoryCount": 20,
+    "nonRelayCodeAllowlist": [
+      "V3_MEDIA_TRANSCRIPT_AUDIO_UNAVAILABLE",
+      "V3_MEDIA_TRANSCRIPT_AUDIO_UNSAFE",
+      "V3_MEDIA_TRANSCRIPT_CANCELLED",
+      "V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE",
+      "V3_MEDIA_TRANSCRIPT_COVERAGE_INDETERMINATE",
+      "V3_MEDIA_TRANSCRIPT_EMPTY",
+      "V3_MEDIA_TRANSCRIPT_INVALID",
+      "V3_MEDIA_TRANSCRIPT_MODEL_MISMATCH",
+      "V3_MEDIA_TRANSCRIPT_OUTPUT_LIMIT",
+      "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED",
+      "V3_MEDIA_TRANSCRIPT_PROCESS_TIMEOUT",
+      "V3_MEDIA_TRANSCRIPT_PROVENANCE_INVALID",
+      "V3_MEDIA_TRANSCRIPT_SOURCE_MISMATCH",
+      "V3_MEDIA_TRANSCRIPT_TASK_INVALID"
+    ]
+  },
+  "hardCrashRecoveryTrace": [
+    {
+      "step": 1,
+      "actor": "transcript_service",
+      "message": "staged_audio_copy_file_fsynced",
+      "stagedSha256Verified": true,
+      "waveShapeVerified": true,
+      "productTerminal": false
+    },
+    {
+      "step": 2,
+      "actor": "transcript_service",
+      "message": "owner_manifest_temp_written_canonical",
+      "openMode": "O_EXCL",
+      "path": "private_asr_staging_root/<taskId>/owner.json.tmp.<random>"
+    },
+    {
+      "step": 3,
+      "actor": "transcript_service",
+      "message": "owner_manifest_file_fsynced"
+    },
+    {
+      "step": 4,
+      "actor": "transcript_service",
+      "message": "owner_manifest_atomic_replace",
+      "target": "private_asr_staging_root/<taskId>/owner.json"
+    },
+    {
+      "step": 5,
+      "actor": "transcript_service",
+      "message": "owner_manifest_parent_directory_fsynced"
+    },
+    {
+      "step": 6,
+      "actor": "transcript_service",
+      "message": "ownership_transfer_receipt_SQLite_FULL_committed",
+      "asyncWorkerStarted": false,
+      "receiptStore": "media_capture_owner_receipts",
+      "transactionCommitted": true,
+      "synchronous": "FULL",
+      "manifestSha256Matches": true
+    },
+    {
+      "step": 7,
+      "actor": "fault_injector",
+      "message": "hard_crash_after_durable_manifest_and_SQLite_receipt_before_worker",
+      "finallyExecuted": false
+    },
+    {
+      "step": 8,
+      "actor": "runtime_restart",
+      "message": "existing_recover_discovered_manifest_and_matching_SQLite_receipt_by_authoritative_taskId",
+      "processMemoryUsed": false
+    },
+    {
+      "step": 9,
+      "actor": "recovery",
+      "message": "acquisition_sandbox_cleanup",
+      "acquisitionResidualCount": 0
+    },
+    {
+      "step": 10,
+      "actor": "recovery",
+      "message": "asr_staged_root_cleanup",
+      "asrResidualCount": 0
+    },
+    {
+      "step": 11,
+      "actor": "recovery",
+      "message": "unpublished_product_cleanup",
+      "productResidualCount": 0
+    },
+    {
+      "step": 12,
+      "actor": "recovery",
+      "message": "recover_abandoned",
+      "activeSinkCount": 0,
+      "disposition": "abandoned"
+    },
+    {
+      "step": 13,
+      "actor": "runtime_restart",
+      "message": "fresh_begin_succeeds",
+      "singleActiveSink": true
+    }
+  ],
+  "ownerManifestFailureCases": [
+    {
+      "caseId": "OM10-N01",
+      "mutation": "manifest_missing_after_transfer_receipt",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N02",
+      "mutation": "manifest_torn_or_invalid_json",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N03",
+      "mutation": "manifest_task_or_process_identity_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N04",
+      "mutation": "manifest_source_or_staged_hash_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N05",
+      "mutation": "manifest_byte_length_or_wave_shape_mismatch",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N06",
+      "mutation": "manifest_state_invalid",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N07",
+      "mutation": "manifest_path_escape_or_symlink",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    },
+    {
+      "caseId": "OM10-N08",
+      "mutation": "SQLite_owner_receipt_missing_uncommitted_or_manifestSha256_mismatch_after_manifest_publish",
+      "expectedFailureCode": "V3_MEDIA_CLEANUP_INCOMPLETE"
+    }
+  ]
+}

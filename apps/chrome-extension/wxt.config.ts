@@ -15,6 +15,9 @@ export default defineConfig({
     permissions: ["activeTab", "offscreen", "scripting", "sidePanel", "storage", "tabCapture", "tabs"],
     optional_permissions: ["cookies"],
     host_permissions: ["http://127.0.0.1:17861/*", "http://localhost:17861/*"],
+    content_security_policy: {
+      extension_pages: "script-src 'self'; object-src 'self'; connect-src 'self' http://127.0.0.1:17861 http://localhost:17861 ws://127.0.0.1:17861 ws://localhost:17861"
+    },
     optional_host_permissions: ["https://*.bilibili.com/*"],
     action: {
       default_title: "Open Navia"

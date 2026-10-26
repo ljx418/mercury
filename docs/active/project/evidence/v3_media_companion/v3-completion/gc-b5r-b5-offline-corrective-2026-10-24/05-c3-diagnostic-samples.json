@@ -1,0 +1,293 @@
+{
+  "schemaVersion": "v3-5.10-b5-chapter-diagnostic-samples/v1",
+  "note": "Real samples of the Runtime's internal diagnostic. No Provider response, transcript, evidence text, title, Cookie, key, path, raw media or evidence id appears in any of them.",
+  "samples": [
+    {
+      "schemaVersion": "v3-media-grounded-chapter-diagnostic/v1",
+      "stage": "validator_initial",
+      "failureCode": "V3510B_CHAPTER_TIME_INVALID",
+      "candidateShape": {
+        "candidateType": "object",
+        "topLevel": {
+          "present": [
+            "brief",
+            "chapters",
+            "claims",
+            "unresolvedEvidenceConflict"
+          ],
+          "presentCount": 4,
+          "missingCount": 0,
+          "unknownCount": 1
+        },
+        "brief": {
+          "present": [
+            "evidenceIds",
+            "text"
+          ],
+          "presentCount": 2,
+          "missingCount": 0,
+          "unknownCount": 0
+        },
+        "claims": {
+          "count": 1,
+          "itemShape": {
+            "present": [
+              "evidenceIds",
+              "text"
+            ],
+            "presentCount": 2,
+            "missingCount": 0,
+            "unknownCount": 0
+          }
+        },
+        "chapters": {
+          "containerType": "list",
+          "count": 3,
+          "fieldSetClasses": [
+            "exact",
+            "exact",
+            "exact"
+          ],
+          "invalidChapterIndexes": [
+            1
+          ],
+          "invalidRelationCount": 1
+        },
+        "conflictFlagType": "boolean",
+        "shapeViolation": "top_level_key_set"
+      },
+      "evidenceCapacity": {
+        "evidenceCount": 6,
+        "distinctStartCount": 5,
+        "duplicateStartGroupCount": 1,
+        "maximumDuplicateStartMultiplicity": 2,
+        "firstStartMs": 0,
+        "lastStartMs": 40000,
+        "hasTwoStrictlyIncreasingAnchors": true
+      },
+      "anchors": {
+        "chapterAnchorCount": 3,
+        "duplicateAnchorCount": 2,
+        "nonIncreasingAnchorCount": 2,
+        "unknownEvidenceReference": false,
+        "firstChapterIncludesBoundaryEvidence": true,
+        "lastChapterIncludesBoundaryEvidence": false
+      },
+      "repair": {
+        "repairAttemptCount": 0,
+        "finalOutcome": "fail_closed"
+      }
+    },
+    {
+      "schemaVersion": "v3-media-grounded-chapter-diagnostic/v1",
+      "stage": "temporal_repair",
+      "failureCode": "V3510B_CHAPTER_TIME_INVALID",
+      "candidateShape": {
+        "candidateType": "object",
+        "topLevel": {
+          "present": [
+            "brief",
+            "chapters",
+            "claims",
+            "unresolvedEvidenceConflict"
+          ],
+          "presentCount": 4,
+          "missingCount": 0,
+          "unknownCount": 1
+        },
+        "brief": {
+          "present": [
+            "evidenceIds",
+            "text"
+          ],
+          "presentCount": 2,
+          "missingCount": 0,
+          "unknownCount": 0
+        },
+        "claims": {
+          "count": 1,
+          "itemShape": {
+            "present": [
+              "evidenceIds",
+              "text"
+            ],
+            "presentCount": 2,
+            "missingCount": 0,
+            "unknownCount": 0
+          }
+        },
+        "chapters": {
+          "containerType": "list",
+          "count": 3,
+          "fieldSetClasses": [
+            "exact",
+            "exact",
+            "exact"
+          ],
+          "invalidChapterIndexes": [
+            1
+          ],
+          "invalidRelationCount": 1
+        },
+        "conflictFlagType": "boolean",
+        "shapeViolation": "top_level_key_set"
+      },
+      "evidenceCapacity": {
+        "evidenceCount": 6,
+        "distinctStartCount": 5,
+        "duplicateStartGroupCount": 1,
+        "maximumDuplicateStartMultiplicity": 2,
+        "firstStartMs": 0,
+        "lastStartMs": 40000,
+        "hasTwoStrictlyIncreasingAnchors": true
+      },
+      "anchors": {
+        "chapterAnchorCount": 3,
+        "duplicateAnchorCount": 2,
+        "nonIncreasingAnchorCount": 2,
+        "unknownEvidenceReference": false,
+        "firstChapterIncludesBoundaryEvidence": true,
+        "lastChapterIncludesBoundaryEvidence": false
+      },
+      "repair": {
+        "repairAttemptCount": 2,
+        "finalOutcome": "fail_closed"
+      }
+    },
+    {
+      "schemaVersion": "v3-media-grounded-chapter-diagnostic/v1",
+      "stage": "bounded_repair",
+      "failureCode": "V3510B_PROVIDER_RESPONSE_INVALID",
+      "candidateShape": {
+        "candidateType": "object",
+        "topLevel": {
+          "present": [
+            "brief",
+            "chapters",
+            "claims",
+            "unresolvedEvidenceConflict"
+          ],
+          "presentCount": 4,
+          "missingCount": 0,
+          "unknownCount": 1
+        },
+        "brief": {
+          "present": [
+            "evidenceIds",
+            "text"
+          ],
+          "presentCount": 2,
+          "missingCount": 0,
+          "unknownCount": 0
+        },
+        "claims": {
+          "count": 1,
+          "itemShape": {
+            "present": [
+              "evidenceIds",
+              "text"
+            ],
+            "presentCount": 2,
+            "missingCount": 0,
+            "unknownCount": 0
+          }
+        },
+        "chapters": {
+          "containerType": "list",
+          "count": 3,
+          "fieldSetClasses": [
+            "exact",
+            "exact",
+            "exact"
+          ],
+          "invalidChapterIndexes": [
+            1
+          ],
+          "invalidRelationCount": 1
+        },
+        "conflictFlagType": "boolean",
+        "shapeViolation": "top_level_key_set"
+      },
+      "evidenceCapacity": {
+        "evidenceCount": 6,
+        "distinctStartCount": 5,
+        "duplicateStartGroupCount": 1,
+        "maximumDuplicateStartMultiplicity": 2,
+        "firstStartMs": 0,
+        "lastStartMs": 40000,
+        "hasTwoStrictlyIncreasingAnchors": true
+      },
+      "anchors": {
+        "chapterAnchorCount": 3,
+        "duplicateAnchorCount": 2,
+        "nonIncreasingAnchorCount": 2,
+        "unknownEvidenceReference": false,
+        "firstChapterIncludesBoundaryEvidence": true,
+        "lastChapterIncludesBoundaryEvidence": false
+      },
+      "repair": {
+        "repairAttemptCount": 1,
+        "finalOutcome": "fail_closed"
+      }
+    }
+  ],
+  "capacityOnly": {
+    "evidenceCount": 6,
+    "distinctStartCount": 5,
+    "duplicateStartGroupCount": 1,
+    "maximumDuplicateStartMultiplicity": 2,
+    "firstStartMs": 0,
+    "lastStartMs": 40000,
+    "hasTwoStrictlyIncreasingAnchors": true
+  },
+  "shapeOnly": {
+    "candidateType": "object",
+    "topLevel": {
+      "present": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "presentCount": 4,
+      "missingCount": 0,
+      "unknownCount": 1
+    },
+    "brief": {
+      "present": [
+        "evidenceIds",
+        "text"
+      ],
+      "presentCount": 2,
+      "missingCount": 0,
+      "unknownCount": 0
+    },
+    "claims": {
+      "count": 1,
+      "itemShape": {
+        "present": [
+          "evidenceIds",
+          "text"
+        ],
+        "presentCount": 2,
+        "missingCount": 0,
+        "unknownCount": 0
+      }
+    },
+    "chapters": {
+      "containerType": "list",
+      "count": 3,
+      "fieldSetClasses": [
+        "exact",
+        "exact",
+        "exact"
+      ],
+      "invalidChapterIndexes": [
+        1
+      ],
+      "invalidRelationCount": 1
+    },
+    "conflictFlagType": "boolean",
+    "shapeViolation": "top_level_key_set"
+  }
+}

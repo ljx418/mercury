@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261013T140624050Z",
+  "bvid": "BV1pohR6rEEh",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "Embedded surface did not create a media task: {\"status\":\"视频已就绪\",\"detail\":\"当前视频内容已准备完成，可以继续伴读和提问。\",\"enable\":false,\"top\":\"视频内容已就绪\"}"
+  }
+}

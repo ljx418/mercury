@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "v3-media-local-import/v1",
+  "importId": "media_import_22222222222222222222222222222222",
+  "taskId": "media_task_11111111111111111111111111111111",
+  "state": "ready",
+  "sequence": 4,
+  "byteLength": 104857600,
+  "uploadedBytes": 104857600,
+  "createdAt": "2026-10-19T10:00:00Z",
+  "updatedAt": "2026-10-19T10:02:00Z",
+  "failureCode": null,
+  "recoverable": false,
+  "media": {
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "durationMs": 600000,
+    "widthPx": 1920,
+    "heightPx": 1080,
+    "container": "mp4",
+    "route": "explicit_local_media_asr"
+  }
+}

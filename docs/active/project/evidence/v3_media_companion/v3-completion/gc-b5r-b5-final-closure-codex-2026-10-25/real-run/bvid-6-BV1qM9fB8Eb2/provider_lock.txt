@@ -1,0 +1,11 @@
+providerLock=minimax_chat_completions
+selectedProviderId=minimax-cn-openai-vision
+selectedEndpointClass=minimax_chat_completions
+providerIdObserved=minimax-cn-openai-vision
+endpointClassObserved=minimax_chat_completions
+providerPublished=true
+deepseek.selected=false
+derivedTextScope=transcript,ocr,vision-caption
+uploadCounters={"rawVideoUploadCount":0,"rawAudioUploadCount":0,"frameByteUploadCount":0,"cookieUploadCount":0,"apiKeyDisclosureCount":0,"localPathUploadCount":0}
+startedAtUtc=2026-10-24T20:15:16.451Z
+finishedAtUtc=2026-10-24T20:19:02.648Z

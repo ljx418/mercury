@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "v3-5.10-b6a-obligation-map/v1",
+  "batch": "GC-B6A REVIEW-CAPTURE IMPLEMENTATION",
+  "fixedObligationTotal": 54,
+  "note": "The 54 FIXED obligations of the acceptance plan. They are neither merged nor reduced; the extra cases are additional.",
+  "groups": [
+    {
+      "group": "bundle identity/hash closure",
+      "obligations": 12,
+      "file": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "cases": "B6 identity 1/12 .. 12/12"
+    },
+    {
+      "group": "evidence/text closure mutations",
+      "obligations": 10,
+      "file": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "cases": "B6 evidence 1/10 .. 10/10"
+    },
+    {
+      "group": "thumbnail/seek mutations",
+      "obligations": 8,
+      "file": "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs",
+      "cases": "B6 thumbnail 1/8 .. 8/8"
+    },
+    {
+      "group": "blind projection/privacy",
+      "obligations": 8,
+      "file": "scripts/stage_b_b5_3/test/b6_blind_projection.node-test.mjs",
+      "cases": "B6 blind 1/8 .. 8/8"
+    },
+    {
+      "group": "lifecycle/cleanup",
+      "obligations": 6,
+      "file": "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+      "cases": "B6 lifecycle 1/6 .. 6/6"
+    },
+    {
+      "group": "B6 aggregate/sentinel",
+      "obligations": 10,
+      "file": "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+      "cases": "B6 aggregate 1/10 .. 10/10"
+    }
+  ]
+}

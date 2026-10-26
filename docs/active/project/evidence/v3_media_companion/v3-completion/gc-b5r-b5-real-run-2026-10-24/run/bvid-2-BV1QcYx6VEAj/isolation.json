@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-isolation/v1",
+  "runtimePid": 93462,
+  "runtimeDir": "/tmp/navia-b5-3-rtbvid2-ldCrA0",
+  "runtimePort": 17861,
+  "databasePath": "/tmp/navia-b5-3-rtbvid2-ldCrA0/bvid-2.sqlite3",
+  "databaseMode": "600",
+  "chromeProfileDir": "/tmp/navia-b5-3-bvid2-jJhKY9",
+  "chromePidList": [],
+  "chromeCdpPort": null,
+  "chromeLaunchLineSha256": "1996d4f692b47dc13c09487ca66436cda85714eec2c77f002927b655adee39d2",
+  "taskIdNamespace": "media_task_818a48a9f9744993896d1f76110cab9e",
+  "providerLock": "minimax_chat_completions",
+  "selectedProviderId": "minimax-cn-openai-vision",
+  "derivedTextScope": [
+    "transcript",
+    "ocr",
+    "vision-caption"
+  ],
+  "startedAtUtc": "2026-10-24T03:35:21.069Z",
+  "finishedAtUtc": "2026-10-24T03:38:59.801Z",
+  "finalDisposition": "complete",
+  "finishReason": "final=complete; quality=complete; derivativeSha=7c47ce6a9bbebe55"
+}

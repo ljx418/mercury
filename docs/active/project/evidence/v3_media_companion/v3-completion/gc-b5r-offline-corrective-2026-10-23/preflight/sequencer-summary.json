@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-sequencer/v1",
+  "runId": "gc-b5r-offline-corrective-preflight-2026-10-23",
+  "startedAtUtc": "2026-10-23T15:50:53.139Z",
+  "finishedAtUtc": "2026-10-23T15:50:53.142Z",
+  "stopped": false,
+  "stopReason": null,
+  "bvids": [],
+  "processAudit": {
+    "leakedBefore": 0,
+    "leakedAfter": 0,
+    "ok": true,
+    "leakedPids": []
+  },
+  "mode": "preflight-only",
+  "preflightReceipt": "preflight-receipt.json"
+}

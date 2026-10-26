@@ -241,6 +241,36 @@ def test_transcript_service_cancel_and_native_failure_are_single_terminal(tmp_pa
     assert sandbox.active_task_count() == 0
 
 
+def test_transcript_cleanup_uses_failure_path_for_cancel_and_asr_error(tmp_path: Path) -> None:
+    for name, failure, cancel_queued in (
+        ("success", None, False),
+        ("failure", "V3_ASR_PROCESS_FAILED", False),
+        ("cancel", None, True),
+    ):
+        sandbox, audio = make_audio(tmp_path / name)
+        calls: list[str] = []
+
+        def complete(task_id: str) -> dict:
+            calls.append("complete")
+            return sandbox.cleanup(task_id)
+
+        def abort(task_id: str) -> dict:
+            calls.append("abort")
+            return sandbox.cleanup(task_id)
+
+        service = SenseVoiceTranscriptService(
+            TaskAudioStager(sandbox, tmp_path / name / "asr"),
+            lambda: FakeSenseVoiceProvider(failure=failure),
+            complete,
+            abort,
+        )
+        service.create(TranscriptTask(audio))
+        result = service.cancel(TASK) if cancel_queued else service.run(TASK)
+        assert result["state"] == ("cancelled" if cancel_queued else "failed" if failure else "succeeded")
+        assert calls == (["complete"] if name == "success" else ["abort"])
+        assert sandbox.active_task_count() == 0
+
+
 def test_transcript_service_cancels_running_provider_and_cleans_once(tmp_path: Path) -> None:
     sandbox, audio = make_audio(tmp_path)
     started = threading.Event()

@@ -18,7 +18,31 @@ import {
   MediaCaptureController,
   MediaCaptureMessageRouter
 } from "../../src/modules/media_companion/capture";
+import { RuntimeCaptureTransport, type RuntimeSocketLike } from "../../src/modules/media_companion/capture/RuntimeCaptureTransport";
+import { OffscreenAudioPort, type OffscreenPortLike } from "../../src/modules/media_companion/capture/OffscreenAudioPort";
+import { MEDIA_CAPTURE_AUDIO_PORT_NAME } from "../../src/modules/media_companion/capture/relayContracts";
+import {
+  RelayRestartReconciler,
+  type RelayRecoveryAdapter,
+  type RelaySessionStore
+} from "../../src/modules/media_companion/capture/RelayRestartReconciler";
+import {
+  RuntimeRelayRecoveryAdapter,
+  type RelayRuntimeClient
+} from "../../src/modules/media_companion/capture/RuntimeRelayRecoveryAdapter";
+import {
+  bootstrapLocalRuntimeSession,
+  cancelLocalMediaImport,
+  cancelMediaAcquisition,
+  getMediaAcquisition
+} from "../../src/runtimeClient";
+import type { RelayTransportPort } from "../../src/modules/media_companion/capture/MediaCaptureController";
 import { resolveMediaPortalAdapter } from "../../src/modules/media_companion/MediaPortalRegistry";
+import {
+  LOCAL_IMPORT_NAVIGATION_MESSAGE_TYPE,
+  LocalImportNavigationGuard,
+  parseLocalImportNavigationMessage
+} from "../../src/modules/media_companion/LocalImportNavigationGuard";
 
 const RUNTIME_URL = "http://127.0.0.1:17861";
 const CONTENT_SCRIPT_FILE = "content-scripts/content.js";
@@ -85,6 +109,122 @@ const mediaCredentialMessageRouter = new PortalCredentialMessageRouter({
   exchange: (message) => bilibiliCredentialEnvelopeBroker.exchange(message),
   revokeLease: (leaseId) => bilibiliCredentialEnvelopeBroker.revokeLease(leaseId)
 });
+// WP0 R1 — the Background service worker is the single owner of the Runtime
+// capture WebSocket. The Offscreen document is a pure PCM producer reachable
+// only through the fixed long-lived Port.
+// WP0 R1-F4: the restart marker is persisted in chrome.storage.session at
+// TRUSTED_CONTEXTS. It carries identity/time/phase only — never ticket,
+// grantId, streamId, PCM, sourceIdentity, absolute path, cookie or API key.
+const RELAY_MARKER_KEY = "navia.relay.restartMarker.v10";
+// Forward reference: the Port owner is created after the transport, but the
+// transport's Runtime-ACK hook needs it. A holder object is used so TypeScript
+// does not narrow the reference to `never` inside the earlier closure.
+const relayPortRef: { current: OffscreenAudioPort | null } = { current: null };
+globalThis.__naviaRelayMarkerStorageKey = RELAY_MARKER_KEY;
+const runtimeCaptureTransport = new RuntimeCaptureTransport({
+  createSocket: (url) => new WebSocket(url) as unknown as RuntimeSocketLike,
+  runtimeWsUrl: "ws://127.0.0.1:17861/v1/media/capture-stream",
+  onMarker: (marker) => {
+    globalThis.__naviaRelayRestartMarker = marker;
+    void chrome.storage.session.set({ [RELAY_MARKER_KEY]: marker });
+  },
+  clearMarker: (captureSessionId) => {
+    // Cleared only after the owner receipt and the cleanup grace completed.
+    void chrome.storage.session.get(RELAY_MARKER_KEY).then((stored) => {
+      const current = stored[RELAY_MARKER_KEY] as { captureSessionId?: string } | undefined;
+      if (current?.captureSessionId === captureSessionId) {
+        void chrome.storage.session.remove(RELAY_MARKER_KEY);
+      }
+    });
+  },
+  reportFailure: (failureCode) => {
+    globalThis.__naviaRelayLastFailure = failureCode;
+  },
+  onRuntimeAck: (acknowledgedSequence) => {
+    // A Runtime ACK is the only event that returns producer credit.
+    relayPortRef.current?.noteRuntimeAck(acknowledgedSequence);
+  },
+  onCaptureAbort: (failureCode) => {
+    // C1: the Port owns the producer abort. Routing the Transport's
+    // fail-closed through `notifyProducerAbortOnce` (not raw `sendAbort`)
+    // guarantees the frozen `abort` message is emitted AT MOST ONCE per
+    // capture, whether the failure was Transport-owned or Port-owned.
+    // This is the same frozen Port path — not a second control plane.
+    relayPortRef.current?.notifyProducerAbortOnce(failureCode);
+  }
+});
+const offscreenAudioPort = new OffscreenAudioPort({
+  getContexts: (filter) => chrome.runtime.getContexts(filter),
+  // EXACT expected Offscreen document URL, not a prefix.
+  expectedSenderUrl: chrome.runtime.getURL("media-capture-offscreen.html"),
+  extensionIncognito: chrome.extension.inIncognitoContext,
+  onFailure: (failureCode) => {
+    globalThis.__naviaRelayLastFailure = failureCode;
+    runtimeCaptureTransport.abort(failureCode);
+  },
+  onDisconnect: (reason) => {
+    // An EXPECTED producer disconnect keeps draining; an ABNORMAL one fails
+    // closed. The transport classifies.
+    runtimeCaptureTransport.handleProducerDisconnect(reason);
+  }
+}, runtimeCaptureTransport);
+// Wire the transport's Runtime-ACK hook to the Port owner so a Runtime
+// chunkAccepted is what returns producer credit.
+relayPortRef.current = offscreenAudioPort;
+
+// R1-C2-3: on every service worker start, read the frozen restart marker
+// and dispatch by phase. The new worker NEVER restores old PCM, ticket or
+// sequence; it only drives the existing authenticated DELETE / GET.
+const relaySessionStore: RelaySessionStore = {
+  get: (key) => chrome.storage.session.get(key),
+  set: (items) => chrome.storage.session.set(items),
+  remove: (key) => chrome.storage.session.remove(key),
+  setAccessLevel: (options) => chrome.storage.session.setAccessLevel(options)
+};
+// R1-C3-01: the production recovery adapter drives the EXISTING
+// authenticated Runtime client. The previous wiring sent
+// `navia.mediaCapture` messages to this same service worker, which the
+// router does not accept for `delete` / `recover` and which is not a
+// trusted surface at all — so recovery never reached the Runtime.
+//
+// Each reconcile establishes a NEW process-local session because a
+// service worker restart loses the in-memory bearer token. The token is
+// never persisted, never stored in the marker and never restored.
+const relayRuntimeClient: RelayRuntimeClient = {
+  bootstrapSession: () => bootstrapLocalRuntimeSession(),
+  cancelAcquisition: (taskId) => cancelMediaAcquisition(taskId),
+  getAcquisition: (taskId) => getMediaAcquisition(taskId)
+};
+const relayRuntimeRecoveryAdapter = new RuntimeRelayRecoveryAdapter(relayRuntimeClient);
+const relayRecoveryAdapter: RelayRecoveryAdapter = relayRuntimeRecoveryAdapter;
+const relayRestartReconciler = new RelayRestartReconciler({
+  store: relaySessionStore,
+  runtime: relayRecoveryAdapter,
+  onFailure: (failureCode) => { globalThis.__naviaRelayLastFailure = failureCode; },
+  onDispatch: (phase, action) => { globalThis.__naviaRelayRestartDispatch = `${phase}:${action}`; }
+});
+void relayRestartReconciler.reconcile();
+
+const relayFacade: RelayTransportPort = {
+  start: (binding) => runtimeCaptureTransport.start(binding),
+  sendStart: (streamId) => offscreenAudioPort.sendStart(streamId),
+  sendQuiesce: () => offscreenAudioPort.sendQuiesce(),
+  beginStop: (reason) => {
+    runtimeCaptureTransport.beginStop(reason);
+  },
+  abort: (failureCode) => {
+    // R3: the Port owner's once-guard owns the producer abort. A raw
+    // `sendAbort` here would emit a SECOND frozen `abort`, because
+    // `runtimeCaptureTransport.abort()` routes through `#failClosed()` ->
+    // `onCaptureAbort` -> `notifyProducerAbortOnce()`. Going through the
+    // once-guard keeps the frozen `abort` at most once per capture on this
+    // path too.
+    offscreenAudioPort.notifyProducerAbortOnce(failureCode);
+    runtimeCaptureTransport.abort(failureCode);
+  },
+  stop: (reason) => runtimeCaptureTransport.stop(reason),
+  disconnect: () => offscreenAudioPort.disconnect()
+};
 const mediaCaptureController = new MediaCaptureController({
   queryTargetTab: async (surface) => {
     if (surface === "side_panel") {
@@ -111,13 +251,18 @@ const mediaCaptureController = new MediaCaptureController({
           type: MEDIA_CAPTURE_OFFSCREEN_MESSAGE_TYPE,
           command: "ping"
         });
-        if (response?.ok === true && response?.state === "ready") return;
+        // The Offscreen document can answer `ping` before the asynchronous
+        // sender-context validation in OffscreenAudioPort.accept() finishes.
+        // Do not expose a false-ready document to the Controller: producer
+        // readiness requires both the live document and the validated,
+        // Background-owned Port binding.
+        if (response?.ok === true && response?.state === "ready" && offscreenAudioPort.connected) return;
       } catch {
         // The prior document can still report as present while Chrome closes it.
       }
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
-    throw new Error("offscreen document did not become ready");
+    throw new Error(`offscreen document did not become ready:${offscreenAudioPort.lastAcceptDiagnostic}`);
   },
   sendOffscreenMessage: (message) => chrome.runtime.sendMessage(message),
   closeOffscreenDocument: async () => {
@@ -125,6 +270,7 @@ const mediaCaptureController = new MediaCaptureController({
   },
   digest: async (value) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))))
     .map((byte) => byte.toString(16).padStart(2, "0")).join(""),
+  relay: relayFacade,
   reportDiagnostic: (diagnostic) => { globalThis.__naviaMediaCaptureLastDiagnostic = diagnostic; }
 });
 const mediaCaptureMessageRouter = new MediaCaptureMessageRouter(
@@ -133,8 +279,22 @@ const mediaCaptureMessageRouter = new MediaCaptureMessageRouter(
   mediaCaptureController,
   (url) => resolveMediaPortalAdapter(url) !== null
 );
+const localImportNavigationGuard = new LocalImportNavigationGuard(async (importId) => {
+  await bootstrapLocalRuntimeSession();
+  const response = await cancelLocalMediaImport(importId);
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error(`Local import cancellation failed with HTTP ${response.status}.`);
+  }
+});
 
 declare global {
+  var __naviaRelayRestartMarker: unknown;
+  var __naviaRelayRestartDispatch: string | undefined;
+  var __naviaRelayMarkerStorageKey: string | undefined;
+  var __naviaRelayLastFailure: string | undefined;
+  var __naviaRelayCaptureDiagnostic:
+    | (() => Record<string, number | string | boolean | null>)
+    | undefined;
   var __naviaMediaCaptureLastDiagnostic: { stage: string; errorName: string; message: string } | undefined;
   var __naviaActionInvocationCount: number | undefined;
   var __naviaE2EExecuteSidePanelCommand:
@@ -161,6 +321,7 @@ declare global {
 }
 
 export default defineBackground(() => {
+  globalThis.__naviaRelayCaptureDiagnostic = () => runtimeCaptureTransport.diagnostic;
   void configureSidePanel();
   ensureMediaCookieChangeListener();
   if (__NAVIA_E2E_BRIDGE__) {
@@ -203,6 +364,33 @@ export default defineBackground(() => {
     if (__NAVIA_E2E_BRIDGE__ && message?.type === "navia.e2e.ping") {
       sendResponse({ ok: true, received: true });
       return false;
+    }
+    if (message?.type === LOCAL_IMPORT_NAVIGATION_MESSAGE_TYPE) {
+      const parsed = parseLocalImportNavigationMessage(message);
+      const trusted = sender.id === chrome.runtime.id
+        && typeof sender.url === "string"
+        && sender.url.startsWith(chrome.runtime.getURL(""));
+      if (!parsed || !trusted) {
+        sendResponse({ ok: false });
+        return false;
+      }
+      if (parsed.command === "complete") {
+        localImportNavigationGuard.complete(parsed.importId);
+        sendResponse({ ok: true });
+        return false;
+      }
+      void chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+        const registered = typeof tab?.id === "number" && typeof tab.url === "string"
+          ? localImportNavigationGuard.register({
+            importId: parsed.importId,
+            sourceIdentity: parsed.sourceIdentity,
+            tabId: tab.id,
+            tabUrl: tab.url
+          })
+          : false;
+        sendResponse({ ok: registered });
+      }).catch(() => sendResponse({ ok: false }));
+      return true;
     }
     if (message?.type === MEDIA_CAPTURE_MESSAGE_TYPE) {
       void mediaCaptureMessageRouter.handle(message, {
@@ -309,6 +497,11 @@ export default defineBackground(() => {
   });
 
   chrome.runtime.onConnect.addListener((port) => {
+    // WP0 R1: the Offscreen PCM producer connects on the frozen Port name.
+    if (port.name === MEDIA_CAPTURE_AUDIO_PORT_NAME) {
+      void offscreenAudioPort.accept(port as unknown as OffscreenPortLike);
+      return;
+    }
     if (__NAVIA_E2E_BRIDGE__ && port.name === "navia.e2e.sidepanel") {
       e2eSidePanelPort = port;
       if (!port.sender?.url?.includes("naviaInPage=1")) e2eNativeSidePanelPort = port;
@@ -336,16 +529,22 @@ export default defineBackground(() => {
     await openSidePanelForTab(tab);
   });
 
-  chrome.tabs.onRemoved.addListener(() => {
+  chrome.tabs.onRemoved.addListener((tabId) => {
+    localImportNavigationGuard.onTabRemoved(tabId);
     if (mediaCaptureController.activeGrantId()) {
       void mediaCaptureController.stop({ type: MEDIA_CAPTURE_MESSAGE_TYPE, command: "stop", reason: "tab_closed" });
     }
   });
 
-  chrome.tabs.onUpdated.addListener((_tabId, changeInfo) => {
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    localImportNavigationGuard.onTabUpdated(tabId, changeInfo);
     if (mediaCaptureController.activeGrantId() && (changeInfo.status === "loading" || typeof changeInfo.url === "string")) {
       void mediaCaptureController.stop({ type: MEDIA_CAPTURE_MESSAGE_TYPE, command: "stop", reason: "navigation" });
     }
+  });
+
+  chrome.tabs.onActivated.addListener(({ tabId }) => {
+    localImportNavigationGuard.onTabActivated(tabId);
   });
 
   chrome.commands?.onCommand.addListener((command) => {

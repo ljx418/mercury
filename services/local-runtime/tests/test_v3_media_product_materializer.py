@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Event
 from types import SimpleNamespace
 
 import pytest
@@ -51,10 +54,21 @@ def test_materializer_publishes_degraded_transcript_outline_and_is_idempotent(tm
     assert store.transaction_counts(TASK)["outlineCount"] == 1
 
 
+def test_materializer_serializes_concurrent_requests_for_one_task(tmp_path: Path) -> None:
+    store = MediaTaskStore(tmp_path / "runtime.sqlite3")
+    service = MediaProductMaterializer(store, Projection(), tmp_path / "private")
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(service.materialize, [TASK] * 8))
+    assert all(result["taskId"] == TASK and result["state"] == "degraded" for result in results)
+    assert len({result["revision"] for result in results}) == 1
+    assert store.transaction_counts(TASK)["outlineCount"] == 1
+
+
 def test_materialize_api_requires_session_rejects_body_and_returns_same_task(tmp_path: Path, monkeypatch) -> None:
     store = MediaTaskStore(tmp_path / "runtime.sqlite3")
     service = MediaProductMaterializer(store, Projection(), tmp_path / "private")
     monkeypatch.setattr(app_module, "media_product_materializer", service)
+    monkeypatch.setattr(app_module, "media_outline_task_store", store)
     extension_id = "a" * 32
     origin = f"chrome-extension://{extension_id}"
     monkeypatch.setenv("NAVIA_LOCAL_FILES_EXTENSION_ID", extension_id)
@@ -159,6 +173,115 @@ def test_visual_materializer_commits_typed_evidence_and_cleans_media(tmp_path: P
     thumbnail = tmp_path / "private" / metadata["thumbnailRelativeRef"]
     assert thumbnail.read_bytes() == b"private-frame"
     assert thumbnail.stat().st_mode & 0o777 == 0o600
+
+
+@pytest.mark.parametrize("pause_at", ["download", "thumbnail"])
+def test_cancel_during_visual_materialization_stops_dispatch_and_cleans_evidence(
+    tmp_path: Path, monkeypatch, pause_at: str
+) -> None:
+    store = MediaTaskStore(tmp_path / "runtime.sqlite3")
+    store.reserve_source_authority(SOURCE, TASK, "bilibili", "bilibili-media-consent/v1", 1)
+    sandbox = TaskArtifactSandbox(tmp_path / "visual")
+    entered = Event()
+    release = Event()
+    calls = {"download": 0, "vision": 0}
+
+    class LeaseStore:
+        def resolve_credentials(self, *_):
+            return [{"name": "SESSDATA", "value": "private", "domain": ".bilibili.com"}]
+
+    class Downloader:
+        def acquire_video_section(self, task_id, identity, credentials, *, start_seconds, end_seconds):
+            calls["download"] += 1
+            if pause_at == "download" and calls["download"] == 1:
+                entered.set()
+                assert release.wait(timeout=5)
+            return sandbox.write_bytes(task_id, "video", b"video"), 8_000
+
+    class Extractor:
+        def __init__(self, owned):
+            assert owned is sandbox
+
+        def extract(self, binding, timestamp_ms):
+            return SimpleNamespace(artifact=sandbox.write_bytes(TASK, "frame", b"frame"), width_px=640, height_px=360)
+
+    class Ocr:
+        def __init__(self, owned):
+            assert owned is sandbox
+
+        def observe(self, task_id, artifact):
+            return SimpleNamespace(blocks=(SimpleNamespace(text="画面文字"),))
+
+    class Consent:
+        def grant(self):
+            return None
+
+        def revoke(self, task_id):
+            return None
+
+    class Governed:
+        def __init__(self, *args):
+            pass
+
+        def dispatch(self, selected):
+            calls["vision"] += 1
+            return SimpleNamespace(caption="真实画面")
+
+    import navia_runtime.modules.media_companion.product_materializer as module
+    monkeypatch.setattr(module, "FrameExtractor", Extractor)
+    monkeypatch.setattr(module, "LocalOcrAdapter", Ocr)
+    monkeypatch.setattr(module, "GovernedMediaVisionAdapter", Governed)
+    service = MediaProductMaterializer(
+        store, Projection(), tmp_path / "private", lease_store=LeaseStore(),
+        visual_sandbox=sandbox, visual_downloader=Downloader(), vision_consent=Consent(),
+        vision_providers=object(), vision_adapters=object(),
+    )
+    monkeypatch.setattr(service, "_distributed_frame_timestamps", lambda duration_ms: (25_000, 35_000))
+    if pause_at == "thumbnail":
+        original = service._persist_frame_thumbnail
+
+        def pause_after_thumbnail(task_id, evidence_id, artifact):
+            relative = original(task_id, evidence_id, artifact)
+            entered.set()
+            assert release.wait(timeout=5)
+            return relative
+
+        monkeypatch.setattr(service, "_persist_frame_thumbnail", pause_after_thumbnail)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        materializing = pool.submit(service.materialize_visual, TASK, "pcl_" + "b" * 32)
+        assert entered.wait(timeout=5)
+        cancelling = pool.submit(service.cancel, TASK)
+        for _ in range(200):
+            if store.source_authority(SOURCE)["state"] == "cancelling":
+                break
+            time.sleep(0.01)
+        assert store.source_authority(SOURCE)["state"] == "cancelling"
+        replacement = "media_task_" + "b" * 32
+        blocked = store.reserve_source_authority(SOURCE, replacement, "bilibili", "bilibili-media-consent/v1", 1)
+        assert blocked["task_id"] == TASK and blocked["state"] == "cancelling"
+        release.set()
+        with pytest.raises(MediaTaskStoreError) as stopped:
+            materializing.result(timeout=5)
+        assert stopped.value.code == "TASK_CANCELLED"
+        assert cancelling.result(timeout=5) == "cancelled"
+    assert calls["download"] == 1
+    assert calls["vision"] == (1 if pause_at == "thumbnail" else 0)
+    assert not (tmp_path / "private" / "evidence" / TASK).exists()
+    assert sandbox.active_task_count() == 0
+    assert store.source_authority(SOURCE)["state"] == "cancelled"
+
+
+def test_cancel_cleanup_failure_keeps_source_blocked(tmp_path: Path, monkeypatch) -> None:
+    store = MediaTaskStore(tmp_path / "runtime.sqlite3")
+    store.reserve_source_authority(SOURCE, TASK, "bilibili", "bilibili-media-consent/v1", 1)
+    service = MediaProductMaterializer(store, Projection(), tmp_path / "private")
+    monkeypatch.setattr(service, "_discard_unpublished_evidence", lambda task_id: (_ for _ in ()).throw(OSError("disk error")))
+    with pytest.raises(MediaTaskStoreError) as failed:
+        service.cancel(TASK)
+    assert failed.value.code == "V3_MEDIA_CLEANUP_INCOMPLETE"
+    assert store.source_authority(SOURCE)["state"] == "cleanup_incomplete"
+    blocked = store.reserve_source_authority(SOURCE, "media_task_" + "b" * 32, "bilibili", "bilibili-media-consent/v1", 1)
+    assert blocked["task_id"] == TASK and blocked["state"] == "cleanup_incomplete"
 
 
 def test_visual_materializer_distributes_at_most_eight_frames_across_full_duration() -> None:

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "navia-wp0-r7-constrained-candidate/v1",
+  "candidateId": "wp0-r7-constrained-2026-10-19",
+  "decision": "WP0 LIMITED PASS / R7 CONSTRAINED CLOSEOUT",
+  "scope": "v3-media-input-and-capture-safety-wp0",
+  "historicalAnchor": {
+    "r5PayloadManifestSha256": "7ff78a7c15ca2b9eced7978f784f5d5e3517f293b6bc3e1b6351251f2b235a2f"
+  },
+  "candidateClosure": {
+    "buildTreeSha256": "498a85042cb36834bc2463c31d64811d5264527fc237b25fafd4d2fa877a04b2",
+    "productionSourceClosureSha256": "007d1c245cc62d94d2b4a04b8712a947f38dcdc57a7ed059d451e8216c95ce0e",
+    "buildFileCount": 99,
+    "productionSourceFileCount": 23
+  },
+  "relayV11": {
+    "baselinePassed": 50,
+    "baselineTotal": 50,
+    "mutationsPassed": 16,
+    "mutationsTotal": 16,
+    "staticPassed": 45,
+    "staticTotal": 45
+  },
+  "r6HistoricalDenominator": {
+    "supportedPassed": 58,
+    "total": 65,
+    "visibleLifecyclePassed": 0,
+    "visibleLifecycleTotal": 7,
+    "r6Passed": false
+  },
+  "productPolicy": {
+    "automaticRoutes": [
+      "credentialed_or_public_subtitle",
+      "controlled_media_download",
+      "local_sensevoice_asr"
+    ],
+    "tabCapture": "experimental_default_off",
+    "automaticCaptureStart": false,
+    "localFileImport": "not_implemented"
+  },
+  "verification": {
+    "extensionTestsPassed": 644,
+    "extensionTestsTotal": 644,
+    "runtimeFocusedPassed": 196,
+    "secretScanHits": 0,
+    "ownedResidualCount": 0
+  },
+  "limitations": [
+    "R6 is 58/65 and is not PASS",
+    "tabCapture is not a supported fallback",
+    "explicit local media import is not implemented",
+    "this candidate does not declare the whole V3 stage complete"
+  ]
+}

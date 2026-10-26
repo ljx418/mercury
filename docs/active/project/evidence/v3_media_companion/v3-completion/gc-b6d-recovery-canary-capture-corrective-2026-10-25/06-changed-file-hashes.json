@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "gc-b6e-capture-corrective-files/v1",
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "sha256": "79591f623903006126c4af2876f54d4ae49dbaaf6a16ac0e7a648f5e627d228e"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "sha256": "27b6a19fa8c42bb9d6046a91b7d989e021b8f1f391d40bdbe76fb5c212437b57"
+    }
+  ],
+  "contractChanges": "none"
+}

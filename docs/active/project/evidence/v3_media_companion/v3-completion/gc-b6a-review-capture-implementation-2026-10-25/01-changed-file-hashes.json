@@ -1,0 +1,719 @@
+{
+  "schemaVersion": "v3-5.10-b6a-review-capture-changes/v1",
+  "batch": "GC-B6A REVIEW-CAPTURE IMPLEMENTATION",
+  "recordedAtUtc": "2026-10-25T02:05:00Z",
+  "note": "The ACTUAL FINAL SOURCE SET of the workpack area: every file is listed with its SHA-256, so nothing is omitted. 'batchOwner' separates the files THIS batch wrote from the changes that were already in the dirty worktree (the earlier GC-B5R batches and a concurrent session); those changes are preserved untouched.",
+  "sourceFileCount": 71,
+  "modifiedInThisBatch": 16,
+  "newInThisBatch": 13,
+  "carriedUnchanged": 42,
+  "generatedArtifactsInTheSourceTree": [],
+  "removedByThisBatch": [],
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/action_ledger.mjs",
+      "change": "carried",
+      "sha256": "af346b1979d4258477f505fbcbaba0b31a2d1383c7a8eb60f72bcfc576501a22",
+      "bytes": 10917,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/aggregate.mjs",
+      "change": "modified",
+      "sha256": "3e235f7cb47cd2354802c57dc344ab31ba31a8775723911b25116741420ad6d2",
+      "bytes": 35668,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/artifact_integrity.mjs",
+      "change": "carried",
+      "sha256": "77b29ac20ff1689c46144823ad8b03129203818e8843f49a41bebcbe50b3e16f",
+      "bytes": 6102,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/audit_finalizer.mjs",
+      "change": "modified",
+      "sha256": "634a4bd5da873639bdd68e374c4caa470a4eed8b088ab8a93cc832864b79e226",
+      "bytes": 11147,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/authorization.mjs",
+      "change": "carried",
+      "sha256": "6bbd44a7517738791ea1adb74cb48e7c4e37652accc1b9cb6c4f7ab0f4b47776",
+      "bytes": 14852,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+      "change": "new",
+      "sha256": "a33c1f46279dac97b36be36c2c4e4595b8da368f929b88e2817007cab06f1112",
+      "bytes": 9352,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+      "change": "new",
+      "sha256": "ea1d17554b7d41c9fd53be63415aaf6e14a49d775245a6183ca445462261ed8e",
+      "bytes": 5276,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/contracts.mjs",
+      "change": "carried",
+      "sha256": "4349868e367f3d0be595268233456b716a69a56f73194eef346cf3d079c5a0c8",
+      "bytes": 6953,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/extension_fixture.mjs",
+      "change": "carried",
+      "sha256": "0bdee8a7f5e361ef2acbe8e98732884fb362c878f60bf915e86bf62e9cdd8cc0",
+      "bytes": 4039,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/machine_identity.mjs",
+      "change": "modified",
+      "sha256": "8d441117bb48bc7fcfe97a0c133d0bebbf0d7ae2a12480e33ffcd781df3ec405",
+      "bytes": 16859,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/owned_chrome.mjs",
+      "change": "new",
+      "sha256": "836832105fa58465ac88c3a373d23f771466767a21d9ca73f8cd88b7aea3e1a2",
+      "bytes": 2076,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "change": "carried",
+      "sha256": "9a5f8a1dde9ccd3916557f0dbd405d029394b6a3b05cd0ac866f65b51d524a43",
+      "bytes": 5973,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/preflight.mjs",
+      "change": "carried",
+      "sha256": "b541be0c3ff7806673393b67f7799c3d11ea96d30ed54e36c58e18c8e447d286",
+      "bytes": 11295,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/privacy.mjs",
+      "change": "carried",
+      "sha256": "ed24ba386d61c4c5b2ecbe85c05fbdb52a1563038c3c295e54f018f09b992024",
+      "bytes": 5848,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/process_ownership.mjs",
+      "change": "carried",
+      "sha256": "51c431f8e8bd9dff20070c5b45b0c132e77638b73de18a414d170f3aca282072",
+      "bytes": 4446,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/registry.mjs",
+      "change": "carried",
+      "sha256": "15bbb4d8660459312a9ce460ec26b0909f08139d6a62b7676ab241865da054dd",
+      "bytes": 5946,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/retained_logs.mjs",
+      "change": "carried",
+      "sha256": "70409bee2e92a4e3b51227b01442f7fc928e3882eb08152d52de5673f4796f57",
+      "bytes": 2340,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "change": "new",
+      "sha256": "ba46199d4330b7a6492dda3c7f4885ab83d4efe9a6efaabc90833d6f92fed34f",
+      "bytes": 16002,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_capture.mjs",
+      "change": "new",
+      "sha256": "adc43633be3227aa0677553acd3d471da5888b7c38e3d6beb36c9e9d1224590f",
+      "bytes": 15244,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/sequencer_copy.mjs",
+      "change": "carried",
+      "sha256": "d2c40d246a8a401e5d5e811344dd07902e71bbd2889606d98358f4d642b3ca43",
+      "bytes": 2089,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/task_id.mjs",
+      "change": "carried",
+      "sha256": "a2553603cc4d0a3d6d45279c1eb0c000b12337473cc92d1750bbc6f03da2b30b",
+      "bytes": 2126,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/temp_roots.mjs",
+      "change": "carried",
+      "sha256": "a15b6a4ff8d1e499970b2a20ec33c8b26ce0a581f22acaebede8a9dacc01aaee",
+      "bytes": 1529,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/v21_artifact.mjs",
+      "change": "modified",
+      "sha256": "33515d1bdfbcf1a230aa91673a003e28f51548e711ce8fc0edf39fbc8c1a19a0",
+      "bytes": 13734,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "change": "carried",
+      "sha256": "034d9e60ea7f3df9ea39bbca754d64c9a657eb60e48d9d6506169360acd52386",
+      "bytes": 23584,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "change": "modified",
+      "sha256": "469c886c769de329aa4857d5a3c1ecc109c56bab2ee6a43b801fbe764b4c892f",
+      "bytes": 72404,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "change": "carried",
+      "sha256": "ddaa09ba3981beea1e41dc2399e792c54a32e19f70f9b91e437d9839e0d6ac0a",
+      "bytes": 27419,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/attempt_harness.mjs",
+      "change": "carried",
+      "sha256": "63a9fb96579408e02d7465f8591540b373b75a15767a6db5e13669097c5bd8ba",
+      "bytes": 9695,
+      "handWritten": true,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/b6_bundle_fixture.mjs",
+      "change": "new",
+      "sha256": "f8bf42d3aac01cd331e009f22608902aa2b47155688b5c358c07a64c75c2aca2",
+      "bytes": 6055,
+      "handWritten": true,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/contract_shaped_stub.mjs",
+      "change": "modified",
+      "sha256": "f5a7e521e50ea14d7392195a9003d65cef733353f76c7ac218369000da58be6f",
+      "bytes": 21527,
+      "handWritten": true,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/grant_stub_runner.mjs",
+      "change": "carried",
+      "sha256": "6401934785ab9af41c68233a46eaa0f0f915a5ded24d384ad2b3893966e10664",
+      "bytes": 1270,
+      "handWritten": true,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/seed_review_task.py",
+      "change": "new",
+      "sha256": "51ae82b3d6299757e5734cb1dcf867ec0f8a4b6189ab5b15b96e3f1eb7dd1299",
+      "bytes": 4792,
+      "handWritten": true,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/action_ledger.node-test.mjs",
+      "change": "carried",
+      "sha256": "0a00436aab52df6bf1ea007fdd67bbb522aa584539e54724c36f5d63355e6e75",
+      "bytes": 8911,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/aggregate_identity.node-test.mjs",
+      "change": "modified",
+      "sha256": "b3387436d0187be4cfcee2e0c0173eaf947574b734bc33d51fb4a036077e3f9c",
+      "bytes": 18768,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/artifact_integrity.node-test.mjs",
+      "change": "carried",
+      "sha256": "14717147409d5b0498671979a1331a6a56ece64f87138e98d546a6e3af523ca9",
+      "bytes": 12534,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/audit_finalizer.node-test.mjs",
+      "change": "carried",
+      "sha256": "e686a008e340ecba28c5bc6701b094f5709ecb33997787eb197101fe2a81644b",
+      "bytes": 13285,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/authorization_composition.node-test.mjs",
+      "change": "carried",
+      "sha256": "7f14bd9032f9c1160aa1002c4afe7514bacf585fb5b01824e4745214d648b166",
+      "bytes": 21639,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+      "change": "new",
+      "sha256": "897cb08702abf4e9bd6af403609c8154409ca42ae0e0c3c27506c5524d7af3c7",
+      "bytes": 6974,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_blind_projection.node-test.mjs",
+      "change": "new",
+      "sha256": "e2ffd70fdf538096c2acefe95b5c1e0d21a8b1d1e8af36f297d40a936402adb9",
+      "bytes": 4965,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+      "change": "new",
+      "sha256": "71a7cee3583cbe4a64a348cc815f765f379aad64ca2cdb66ca12805bece8675e",
+      "bytes": 16476,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "change": "new",
+      "sha256": "f4019deadcca732a5005947367cb42bf780fec43a73b9eaa72fa3980a95dd9bb",
+      "bytes": 8710,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs",
+      "change": "new",
+      "sha256": "e302de38e4b687522cd3589ea3c75fe1f56ef8a8a72fd10ad812394ce5ca4642",
+      "bytes": 13847,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_bvid1.node-test.mjs",
+      "change": "carried",
+      "sha256": "ed3f6a78c5e8e83a074df067a31413cae179f8cf43a5165bbb986dcffa7ce8b9",
+      "bytes": 69045,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_cookie_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "e2e466141cd36170a9ff6c7af492da311a623a484df7eea1a02cc046c8f592e0",
+      "bytes": 18571,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_purity_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "8d5dc44ee9fb5fdba97419332304e110bcb43abba50cf2215cfb031fdd07254e",
+      "bytes": 8869,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/contracts.node-test.mjs",
+      "change": "carried",
+      "sha256": "9d577ad0f80df87a1f1a1bf991c07449705c0c7c3dca78141babfd2a3d8c480f",
+      "bytes": 19768,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/cookie_prereq.mjs",
+      "change": "carried",
+      "sha256": "075e3603edad4642c8192ae17e5a65324bafb930cb39211db5113d59000ea177",
+      "bytes": 7995,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/cookie_prereq.node-test.mjs",
+      "change": "carried",
+      "sha256": "a2adca300061f92dd16b91732190e8bb0d4500fa70ebfe105dfb55f2285f4fee",
+      "bytes": 15127,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/gc_b5r_preflight.node-test.mjs",
+      "change": "carried",
+      "sha256": "b51590c3a85cc1c7f4afce866a6e41a4e0e431324fae991d65026a8da26adaf6",
+      "bytes": 22677,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/integration_runtime_api.node-test.mjs",
+      "change": "carried",
+      "sha256": "b1def362d18c3d4ad1ec571dfc738c3c485d77c913419adfd85214a879059db9",
+      "bytes": 10259,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/machine_identity.node-test.mjs",
+      "change": "modified",
+      "sha256": "d966703f47cb031d139756741d7c8a06b58505dea2700ae49e71ff9103dda2a0",
+      "bytes": 11577,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/owned_chrome.node-test.mjs",
+      "change": "new",
+      "sha256": "0e6c0bc8500cb881a4e5efab7648517d6c2bd487682cd1631cd5dc95393a9726",
+      "bytes": 2947,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/privacy_scan.node-test.mjs",
+      "change": "carried",
+      "sha256": "899fc8065b5ce5245ee48fd4b45dd6e50add076292442579c23c8641031a9cb9",
+      "bytes": 5706,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/production_preflight.node-test.mjs",
+      "change": "carried",
+      "sha256": "d1502ea6471bd11b0b21e0fd84a66efb54ee8a717c31f62826244fb6a3774e7d",
+      "bytes": 4873,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/provider_attempt_accounting.node-test.mjs",
+      "change": "carried",
+      "sha256": "0d872c73b20afc880c898315c99eaefce3b8387b9eee4da4e576bd07fd623cf6",
+      "bytes": 5544,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/real_branches.node-test.mjs",
+      "change": "carried",
+      "sha256": "a122beabb89e5b68d33b6a3b3e1c127a4773b41005cdf8ab9478c02c04406219",
+      "bytes": 16364,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/relay_ownership_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "7ac32075adf2fecee857320bf2988c2c5b5e713c7eb5e841d32ca5a90cfe7768",
+      "bytes": 44046,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/run_offline_suite.mjs",
+      "change": "carried",
+      "sha256": "1cf981914197ee64dd29d4a30d1f7e748fa413ba73aa5398a0335ec0127962fb",
+      "bytes": 2390,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_failure_evidence.node-test.mjs",
+      "change": "carried",
+      "sha256": "06482e22fb73d399b762b9b862f1a7ba9b3bbd1a82a8d91f89eac308ff249823",
+      "bytes": 10722,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+      "change": "modified",
+      "sha256": "b5eeef12e122513b22a60d57a1e2b4009a896afd24524ae3bb049068dd87f9d3",
+      "bytes": 8302,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/schema_keywords.node-test.mjs",
+      "change": "modified",
+      "sha256": "18a5510e28f72bfdb7bc7e5f887edc297f70cc9c575a2664e72d8fdc8f7a9a84",
+      "bytes": 9356,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+      "change": "modified",
+      "sha256": "bb750c58e91f0ab26048ae0fb782c182b48546b3cfa072a56f6ddec092d65546",
+      "bytes": 38889,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/structured_failure_evidence.node-test.mjs",
+      "change": "carried",
+      "sha256": "08d0da72c61864efa31a89cff7afc09290d729e8e3593363c6963a7bf8069a09",
+      "bytes": 15947,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/task_id.node-test.mjs",
+      "change": "carried",
+      "sha256": "864ddb6b61d8fbb5375bc153079d82044b00a080b51dfa1b864a066e3f0fe0f0",
+      "bytes": 2264,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/windows_extension_invocation.node-test.mjs",
+      "change": "carried",
+      "sha256": "57e9b3c58156e008f4550a68f8048c617ad6bb47e4b9f609183a991ce4e07e98",
+      "bytes": 3497,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/__init__.py",
+      "change": "carried",
+      "sha256": "3e61bfb2026890c068ce0e6a60547507c0afe4b4bf28ab79cbfeb47354627df6",
+      "bytes": 325,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "change": "modified",
+      "sha256": "363ebefb6602befd156fe5212a139d88cc03fcb1bf6c66ce9c190ed04b773b09",
+      "bytes": 14646,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+      "change": "modified",
+      "sha256": "938d199b49b4bd5f731325d0b58d60a883f9655e591845033c231e8bff395745",
+      "bytes": 20529,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+      "change": "modified",
+      "sha256": "fbec91e0d6a66eaafa87758327b00c9355ecfdecc3636e82a55e3b69682da178",
+      "bytes": 45642,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+      "change": "modified",
+      "sha256": "83bcd3c0cbf59a88a07025ab0e8cd0113ba34d9041dd1bc032ddaeedf2006123",
+      "bytes": 65747,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_final_offline_correction.py",
+      "change": "modified",
+      "sha256": "eda992845ddb88d17abe84f32e7aeb35b10ac556e6995a3a75603fa82656661c",
+      "bytes": 24474,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "pre-existing-dirty-worktree-change-preserved"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_v21_artifact_validator_equivalence.py",
+      "change": "carried",
+      "sha256": "1003e983f639a5c63e8ea7fccdafd2435e2499d45bccd4ceb58a30e478af51d3",
+      "bytes": 17827,
+      "handWritten": false,
+      "generatedArtifact": false,
+      "batchOwner": "unchanged-by-this-batch"
+    }
+  ],
+  "changedByThisBatch": [
+    "scripts/stage_b_b5_3/lib/audit_finalizer.mjs",
+    "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+    "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+    "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+    "scripts/stage_b_b5_3/lib/review_capture.mjs",
+    "scripts/stage_b_b5_3/run_one_bvid.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/b6_bundle_fixture.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/seed_review_task.py",
+    "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_blind_projection.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs"
+  ],
+  "changedByAnotherSession": [
+    "scripts/stage_b_b5_3/lib/aggregate.mjs",
+    "scripts/stage_b_b5_3/lib/machine_identity.mjs",
+    "scripts/stage_b_b5_3/lib/owned_chrome.mjs",
+    "scripts/stage_b_b5_3/lib/v21_artifact.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/contract_shaped_stub.mjs",
+    "scripts/stage_b_b5_3/test/aggregate_identity.node-test.mjs",
+    "scripts/stage_b_b5_3/test/machine_identity.node-test.mjs",
+    "scripts/stage_b_b5_3/test/owned_chrome.node-test.mjs",
+    "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+    "scripts/stage_b_b5_3/test/schema_keywords.node-test.mjs",
+    "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+    "services/local-runtime/tests/test_v3_gc_b5r_final_offline_correction.py"
+  ],
+  "writtenByThisBatch": [
+    "scripts/stage_b_b5_3/lib/aggregate.mjs",
+    "scripts/stage_b_b5_3/lib/audit_finalizer.mjs",
+    "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+    "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+    "scripts/stage_b_b5_3/lib/machine_identity.mjs",
+    "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+    "scripts/stage_b_b5_3/lib/review_capture.mjs",
+    "scripts/stage_b_b5_3/lib/v21_artifact.mjs",
+    "scripts/stage_b_b5_3/run_one_bvid.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/b6_bundle_fixture.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/contract_shaped_stub.mjs",
+    "scripts/stage_b_b5_3/test/_fixtures/seed_review_task.py",
+    "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_blind_projection.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+    "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs"
+  ],
+  "preExistingDirtyWorktreeChanges": [
+    "scripts/stage_b_b5_3/lib/owned_chrome.mjs",
+    "scripts/stage_b_b5_3/test/aggregate_identity.node-test.mjs",
+    "scripts/stage_b_b5_3/test/machine_identity.node-test.mjs",
+    "scripts/stage_b_b5_3/test/owned_chrome.node-test.mjs",
+    "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+    "scripts/stage_b_b5_3/test/schema_keywords.node-test.mjs",
+    "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+    "services/local-runtime/tests/test_v3_gc_b5r_final_offline_correction.py"
+  ]
+}

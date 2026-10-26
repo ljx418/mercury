@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261014T053516101Z",
+  "bvid": "BV1pohR6rEEh",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "Stage B expected one versioned derivative, found 0"
+  }
+}

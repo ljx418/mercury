@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "v3-media-dependency-installation/v1",
+  "jobId": "media_dep_job_9ec1bb9d4c3aa4334361ef8c7dcb11e9",
+  "dependencyIds": ["yt-dlp"],
+  "state": "downloading",
+  "cancelable": true,
+  "progress": {"completedBytes": 1536234, "totalBytes": 3072469, "completedItems": 0, "totalItems": 1},
+  "failureCode": null,
+  "publishedGeneration": null,
+  "sequence": 4,
+  "createdAt": "2026-10-19T08:00:00Z",
+  "updatedAt": "2026-10-19T08:00:03Z",
+  "finishedAt": null
+}

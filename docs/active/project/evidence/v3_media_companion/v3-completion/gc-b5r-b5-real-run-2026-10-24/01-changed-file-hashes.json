@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "v3-5.10-b5-changed-file-hashes/v1",
+  "generatedAtUtc": "2026-10-24",
+  "changedFiles": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/registry.mjs",
+      "sha256": "15bbb4d8660459312a9ce460ec26b0909f08139d6a62b7676ab241865da054dd",
+      "byteLength": 5946,
+      "change": "new — the ACTIVE v2 registry: the digest, the order, the reserves and the identity guard"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/aggregate.mjs",
+      "sha256": "3e7fec163b2b6c1bf449386effd4e51f763a0d8846ac4c8fe91180787d2f3707",
+      "byteLength": 10561,
+      "change": "new — the pure aggregate evaluator (every R0.3 failure condition)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "sha256": "9a5f8a1dde9ccd3916557f0dbd405d029394b6a3b05cd0ac866f65b51d524a43",
+      "byteLength": 5973,
+      "change": "new — the owned-session composition over the product's own helpers"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/extension_fixture.mjs",
+      "sha256": "0bdee8a7f5e361ef2acbe8e98732884fb362c878f60bf915e86bf62e9cdd8cc0",
+      "byteLength": 4039,
+      "change": "new — the canary's frozen pre-granted permission promotion, shared with the canary"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/preflight.mjs",
+      "sha256": "b541be0c3ff7806673393b67f7799c3d11ea96d30ed54e36c58e18c8e447d286",
+      "byteLength": 11295,
+      "change": "the preflight consumes the v2 registry and validates the declared identity and path exactly"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/contracts.mjs",
+      "sha256": "eb9d7f6b2038b76201806df296e38d260e04f526c40c12c753002a4edd3b941a",
+      "byteLength": 6269,
+      "change": "the exact Provider lock (SELECTED_PROVIDER_ID + endpointClass, no substring)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "sha256": "b5ba5285c5ed93aed4771bc934602221480e630d1f15f15f9733527c5952072f",
+      "byteLength": 18019,
+      "change": "the v2 registry, the aggregate verdict and the nonzero exit"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "sha256": "f0e65abdc8e0e81abbd43a1b57d9da1067c06fdd9ab2eaa404901114f2e78e15",
+      "byteLength": 45153,
+      "change": "the frozen-identity refusal, the pre-granted fixture, the owned Provider bootstrap, the cookie injection, the companion session, the frozen Runtime port, the machine receipt and the redacted call trace"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "sha256": "034d9e60ea7f3df9ea39bbca754d64c9a657eb60e48d9d6506169360acd52386",
+      "byteLength": 23584,
+      "change": "new — the R1 production preflight"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/gc_b5r_preflight.node-test.mjs",
+      "sha256": "31f0bb7013b52da88f48b042ae170372146ffc87b97cd5d54341f8a5691ccaac",
+      "byteLength": 22649,
+      "change": "the v2 registry, the exact preflight matching and the exact lock"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/production_preflight.node-test.mjs",
+      "sha256": "2b2f56ba945696f8b403bb5b2998a65bd70a729886d83b5a56b7e4965ec630b2",
+      "byteLength": 4845,
+      "change": "new — the cookie resolution and inspection (no value, no value length, no path)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+      "sha256": "97531132689f5fc8f4fb286819886a5796340d4d77b26d1e3d15e6331ac2f89a",
+      "byteLength": 6791,
+      "change": "new — the static gate (no undefined identifier, no block-scoped read)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+      "sha256": "896f7c2163cd91e2ab1c601ea6c3ce308614b32c96e3324b3891028ce2b524a7",
+      "byteLength": 18389,
+      "change": "the v2 six and the aggregate negative matrix (the PROCESS EXIT)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/real_branches.node-test.mjs",
+      "sha256": "10676ed6cf50a38bb74ef302ee2237422cd78ef9bd63f90b4428c7d875b3fc2a",
+      "byteLength": 17144,
+      "change": "the v2 identity, the machine receipt in the stub, the PH0-AR-10 readiness fix"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_bvid1.node-test.mjs",
+      "sha256": "ed3f6a78c5e8e83a074df067a31413cae179f8cf43a5165bbb986dcffa7ce8b9",
+      "byteLength": 69045,
+      "change": "the canary shares the fixture builder"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/run_offline_suite.mjs",
+      "sha256": "e8afd80f14ffdf56d590ed4ad2017dad8d5ffa45ccef4f951c427edc54b551f9",
+      "byteLength": 2856,
+      "change": "the ONE offline command (serial phases, the external canary classified as external_not_run)"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+      "sha256": "c8fa8adb159bffc3f07f25d07fca71ea5719524aa2ecac3c5e362f49e42ef120",
+      "byteLength": 40497,
+      "change": "the receipt extras are read AFTER the request, so the published derivative satisfies the frozen V2.1 schema"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_corrective_authority.py",
+      "sha256": "722a03f5f50d3317468b625dd25a096879e6302c98c73f03af0bdb4e6b6c4038",
+      "byteLength": 24973,
+      "change": "the offline gate that validates the published derivative against the frozen V2.1 schema"
+    }
+  ],
+  "unchangedFrozenFiles": [
+    {
+      "path": "services/local-runtime/navia_runtime/app.py",
+      "sha256": "afbf76a0d3a7e11186b5a9257fb1108254972148bd37bb179754a2750bde23c1",
+      "byteLength": 175005,
+      "change": "the Runtime composition is unchanged by this batch"
+    },
+    {
+      "path": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+      "sha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+      "byteLength": 1558,
+      "change": "the canonical v2 registry, read in place"
+    },
+    {
+      "path": "docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/stage-b-grounded-comprehension-contract.md",
+      "sha256": "c03491d5f55d3950448de75d20f2c89c1195234da05d17329f3a6f19254f38b8",
+      "byteLength": 5735,
+      "change": "the frozen grounded comprehension contract"
+    },
+    {
+      "path": "docs/active/project/contracts/v3_media_grounded_comprehension_v2_1.schema.json",
+      "sha256": "33b363eef77ee859ceef684eb9404051a5491887a25da85923cca369f4ec8135",
+      "byteLength": 8222,
+      "change": "the frozen V2.1 schema"
+    },
+    {
+      "path": "docs/active/project/fixtures/v3-media-capture-internal-relay-v11-fixtures.json",
+      "sha256": "1eddd4989ee1ef513eba7166a9a6d9e3d209605d82a504781dc47fe8e3fbd763",
+      "byteLength": 51945,
+      "change": "the relay v11 frozen evidence — NOT edited, NOT refrozen"
+    }
+  ]
+}

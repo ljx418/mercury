@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1M5tJ6kEvw",
+  "order": "4",
+  "finalDisposition": "failed",
+  "finishReason": "visionProviderDbPath is not defined",
+  "error": {
+    "name": "ReferenceError",
+    "message": "visionProviderDbPath is not defined",
+    "stack": "ReferenceError: visionProviderDbPath is not defined\n    at startIsolatedRuntime (file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:209:38)\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:371:13\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "startedAtUtc": "2026-10-23T17:10:06.572Z",
+  "finishedAtUtc": "2026-10-23T17:10:08.709Z"
+}

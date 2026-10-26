@@ -1,6 +1,10 @@
 # Navia V1 Active Project Documentation
 
 > 当前 V3 产品收敛入口：`design/v3-chat-know-product-convergence.md`。目标原型：`design/v3-chat-know-target-review.html`。L0 架构：`design/v3-chat-know-l0-architecture.html`。V3 只以 Chat/Know 为一级产品域，Runtime 手动启动，Agent 延至 V5+。
+>
+> 2026-10-15 V3 逐阶段实施入口：`handoffs/v3-claudecode-implementation-2026-10-15/00-README.md`。ClaudeCode 只负责当前冻结工作包的实现、自验证和 handoff；Codex 负责文档、架构、独立审查和阶段验收。当前仅 WP0 可实施；WP1 Stage A 收口及其后续工作包仍受前序门禁阻塞。
+
+> 跨会话恢复与单一阶段六步开发循环：`design/project-stage-workflow.md`；主线入口：`03-development-plan.md`。流程规则不代表尚未通过的阶段已获实施或出门授权。
 
 本目录只保留当前仍然激活的项目级 V1 / V1.2 / V1.3 / A-V1.2 开发入口、公共合同、工作区说明和验收门禁。
 

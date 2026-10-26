@@ -1,0 +1,254 @@
+{
+  "schemaVersion": "v3-media-capture-internal-relay-v10-mutation-verification/v1",
+  "passed": true,
+  "summary": {
+    "total": 15,
+    "passed": 15,
+    "failed": 0
+  },
+  "failedCases": [],
+  "cases": [
+    {
+      "name": "owner_manifest_failure_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "ownerManifestInvalidFailClosedExact",
+        "traceCountsExact"
+      ],
+      "observedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "ownerManifestInvalidFailClosedExact",
+        "traceCountsExact"
+      ],
+      "passed": true
+    },
+    {
+      "name": "owner_manifest_parent_fsync_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "ownerManifestAtomicDurabilityExact",
+        "protocolAuthorityAllFieldsImmutable"
+      ],
+      "observedChecks": [
+        "ownerManifestAtomicDurabilityExact",
+        "protocolAuthorityAllFieldsImmutable",
+        "protocolInstanceSchemaValid"
+      ],
+      "passed": true
+    },
+    {
+      "name": "owner_receipt_write_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "ownerManifestAtomicDurabilityExact",
+        "protocolAuthorityAllFieldsImmutable"
+      ],
+      "observedChecks": [
+        "ownerManifestAtomicDurabilityExact",
+        "protocolAuthorityAllFieldsImmutable",
+        "protocolInstanceSchemaValid"
+      ],
+      "passed": true
+    },
+    {
+      "name": "owner_receipt_manifest_hash_mismatch",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "protocolAuthorityAllFieldsImmutable",
+        "stagedAudioCrashOwnerFrozen"
+      ],
+      "observedChecks": [
+        "protocolAuthorityAllFieldsImmutable",
+        "stagedAudioCrashOwnerFrozen"
+      ],
+      "passed": true
+    },
+    {
+      "name": "hard_crash_trace_step_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "hardCrashTraceRecoveryBarrierExact",
+        "traceCountsExact"
+      ],
+      "observedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "hardCrashTraceRecoveryBarrierExact",
+        "traceCountsExact"
+      ],
+      "passed": true
+    },
+    {
+      "name": "authoritative_scope_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "sourceManifestPathsExact"
+      ],
+      "observedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "sourceManifestPathsExact"
+      ],
+      "passed": true
+    },
+    {
+      "name": "source_inventory_entry_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "protocolAuthorityAllFieldsImmutable",
+        "sourceClassificationClosedAndDisjoint",
+        "sourceInventoryExact40"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "protocolAuthorityAllFieldsImmutable",
+        "protocolInstanceSchemaValid",
+        "sourceClassificationClosedAndDisjoint",
+        "sourceEmitSetEqualsFrozenInventory",
+        "sourceInventoryExact40"
+      ],
+      "passed": true
+    },
+    {
+      "name": "source_inventory_entry_added",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "protocolAuthorityAllFieldsImmutable",
+        "sourceClassificationClosedAndDisjoint",
+        "sourceInventoryExact40"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "protocolAuthorityAllFieldsImmutable",
+        "protocolInstanceSchemaValid",
+        "sourceClassificationClosedAndDisjoint",
+        "sourceEmitSetEqualsFrozenInventory",
+        "sourceInventoryExact40"
+      ],
+      "passed": true
+    },
+    {
+      "name": "non_relay_allowlist_entry_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "discoveredCodeUniverseClosed"
+      ],
+      "observedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "passed": true
+    },
+    {
+      "name": "non_relay_allowlist_entry_added",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "discoveredCodeUniverseClosed"
+      ],
+      "observedChecks": [
+        "allFixtureAuthoritiesImmutable",
+        "discoveredCodeUniverseClosed"
+      ],
+      "passed": true
+    },
+    {
+      "name": "offscreen_direct_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "unlistedBoundaryEmits": {
+        "apps/chrome-extension/entrypoints/media-capture-offscreen/BoundaryFailureHelper.ts": [
+          "V3_MEDIA_CAPTURE_MUTATION_DIRECT"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "offscreen_nested_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "unlistedBoundaryEmits": {
+        "apps/chrome-extension/entrypoints/media-capture-offscreen/helpers/BoundaryFailureHelper.ts": [
+          "V3_MEDIA_CAPTURE_MUTATION_NESTED"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "python_acquisition_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "unlistedBoundaryEmits": {
+        "services/local-runtime/navia_runtime/modules/media_companion/acquisition/mutation_helper.py": [
+          "V3_MEDIA_CAPTURE_MUTATION_PYTHON"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "offscreen_imported_enum_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "expectedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "observedChecks": [
+        "discoveredCodeUniverseClosed",
+        "unlistedSourceFilesEmitNoBoundaryCodes"
+      ],
+      "unlistedBoundaryEmits": {
+        "apps/chrome-extension/entrypoints/media-capture-offscreen/helpers/IndependentFailure.ts": [
+          "V3_MEDIA_CAPTURE_INDEPENDENT_IMPORTED"
+        ]
+      },
+      "passed": true
+    },
+    {
+      "name": "non_boundary_lexical_string_control",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "expectedChecks": [],
+      "observedChecks": [],
+      "unlistedBoundaryEmits": {},
+      "passed": true
+    }
+  ]
+}

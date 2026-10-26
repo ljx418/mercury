@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-receipt-mirror/v2",
+  "taskId": "media_task_99c902c30ccc473d92381ae5af4aa7ad",
+  "receipt": {
+    "apiKeyDisclosureCount": 0,
+    "attemptId": "attempt-fda67a9a3584ce05",
+    "cookieUploadCount": 0,
+    "endpointClass": "minimax_chat_completions",
+    "finishReason": "stop",
+    "frameByteUploadCount": 0,
+    "latencyMs": 15773,
+    "localPathUploadCount": 0,
+    "modelId": "MiniMax-M3",
+    "outboundDerivedTextSha256": "90df4883f64fde4abbfa64ef7c226e404cb9e2f41da62a9492d24cdadebe8c25",
+    "providerId": "minimax-cn-openai-vision",
+    "rawAudioUploadCount": 0,
+    "rawVideoUploadCount": 0,
+    "requestCount": 7,
+    "requestSha256": "90df4883f64fde4abbfa64ef7c226e404cb9e2f41da62a9492d24cdadebe8c25",
+    "responseSha256": "b4008d9316bcf2ae08e308d638a93a6f00ce9e122246e9bd8da31e0929e67f5d",
+    "structureMode": "openai_chat_object"
+  },
+  "published": true,
+  "derivativeSha256": "67eece7e13af478fa9205e7680abda3fc6bfc025b9e9ed509ecdfc468858d473",
+  "taskIdNamespace": "media_task_2ae2dd553658421985bafe77a3cdbc79",
+  "providerLock": "minimax_chat_completions",
+  "selectedProviderId": "minimax-cn-openai-vision",
+  "selectedEndpointClass": "minimax_chat_completions",
+  "derivedTextScope": [
+    "transcript",
+    "ocr",
+    "vision-caption"
+  ]
+}

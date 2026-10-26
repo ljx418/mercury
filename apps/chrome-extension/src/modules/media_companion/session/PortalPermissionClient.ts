@@ -29,6 +29,8 @@ export class PortalPermissionClient implements PortalPermissionReader {
   async request(adapterId: string): Promise<PortalPermissionState> {
     const definition = this.#resolve(adapterId);
     const descriptor = cloneDescriptor(definition.permissionDescriptor);
+    const current = await this.contains(definition.permissionDescriptor);
+    if (current.namedPermissionGranted && current.hostPermissionGranted) return current;
     const granted = await this.#dependencies.permissionsApi.request(descriptor);
     if (!granted) {
       return { namedPermissionGranted: false, hostPermissionGranted: false };

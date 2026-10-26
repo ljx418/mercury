@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "v3-5.10-b6a-corrective-changed-file-hashes/v1",
+  "batch": "GC-B6A CORRECTIVE IMPLEMENTATION",
+  "note": "Every file this batch wrote. The whole scripts/stage_b_b5_3 tree is untracked in git, so the digests below are the only baseline.",
+  "fileCount": 19,
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+      "sha256": "f52c9c0ee5d381968df58913a8bccf32aa0f3d868f2e762c27d9ce451e9cb937",
+      "bytes": 18167
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/b6_authority.mjs",
+      "sha256": "c49c5fa80a7318828dc44f287f9aa565398237226022480bcf21febad273979e",
+      "bytes": 6861
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/b6_capture_gate.mjs",
+      "sha256": "c434a66476fc4e7fb5980ddb0405fff859ae509939c7ea0e030524f2bbaa7045",
+      "bytes": 1451
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "sha256": "8a73c02e09d691127530c821be75e4366946e6719967e55ecd1bcfcae5536eda",
+      "bytes": 40063
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_capture.mjs",
+      "sha256": "fddece99b9bc77457fddd470c15f05e765d07ec4d0406ca55dc70da5a202fa73",
+      "bytes": 27568
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+      "sha256": "f2d2a838c9ff7d892e7e6349ec609a88fb533e6350b5a479f63527ef445d3b29",
+      "bytes": 5461
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "sha256": "040f0f4b67c064df49a31ffa437ab61ed2943182458ce2b3e76f3fa6d1d5bd7f",
+      "bytes": 73191
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "sha256": "00f750f415087a275c5a81375a969942f6169f166ffa987a7a1be30555aadd4b",
+      "bytes": 30199
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+      "sha256": "87efaaa2f909722d07c2dfa732f3931c320de07d00cdcc245a4a2f740e9eb1c2",
+      "bytes": 15166
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "sha256": "d4677eae534329cb90202cd073c0ad0c523c77df8538ab1163ed7f362e88243f",
+      "bytes": 8945
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs",
+      "sha256": "493d3c52e4a6307ab04cfdb4ebc79ebefa985e0d785d153092543731bb46e3aa",
+      "bytes": 13958
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+      "sha256": "46d75ee89d3a0818e492affab7e33f983c8764725b07a946ab1b7ee61b763ad3",
+      "bytes": 17014
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_mutation_process.node-test.mjs",
+      "sha256": "4ca241c71912b73add891ed03b37e7bb4868c64982c2e6aea0f2365d5c1dce6b",
+      "bytes": 3893
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_capture_filesystem.node-test.mjs",
+      "sha256": "6445501a50007e0c5249ba9b0b55f4081911cb282a7b2974ab028a170a99ba2b",
+      "bytes": 10941
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_seek_closure.node-test.mjs",
+      "sha256": "04fade2cc12bf6bd0eb61fc71f236cad5af122b1554ed13229b6f9383308cbbf",
+      "bytes": 7292
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_runner_capture_gate.node-test.mjs",
+      "sha256": "92bbd7375e8ac95beeca75283d3748fb3a4a8a32beed668305a53d891e17780e",
+      "bytes": 4129
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/b6_bundle_fixture.mjs",
+      "sha256": "4df0a3072ef1353884e0ee635f72cc31a8e0bcdcec01b58c6cf3933e8c882757",
+      "bytes": 5295
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/b6_mutation_runner.mjs",
+      "sha256": "bf6a7fdf3c6791c3299cca7ad2c8b56a7f97b6681d30c97972a3b3847f04ee05",
+      "bytes": 5347
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/b6_capture_gate_scenario.mjs",
+      "sha256": "a1367d1275e8f38bf50a8771f20e41a801a7e0288c0b72a59cb1951402ce1b3c",
+      "bytes": 2826
+    }
+  ]
+}

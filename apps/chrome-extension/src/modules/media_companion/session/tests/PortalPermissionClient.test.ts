@@ -18,10 +18,10 @@ const adapter: PortalSessionAdapter = {
   async inspectCapability() { throw new Error("not used"); }
 };
 
-function setup(requestResult = true) {
+function setup(requestResult = true, containsResults = [false, false, true, true]) {
   const permissionsApi = {
     request: vi.fn(async () => requestResult),
-    contains: vi.fn(async () => true),
+    contains: vi.fn(async () => containsResults.shift() ?? true),
     remove: vi.fn(async () => true)
   };
   return {
@@ -34,7 +34,7 @@ function setup(requestResult = true) {
 }
 
 describe("PortalPermissionClient", () => {
-  it("requests only the build-time descriptor and rechecks both permission classes", async () => {
+  it("requests only the build-time descriptor when either permission class is missing, then rechecks both", async () => {
     const { client, permissionsApi } = setup();
     await expect(client.request("example")).resolves.toEqual({
       namedPermissionGranted: true,
@@ -46,15 +46,27 @@ describe("PortalPermissionClient", () => {
     });
     expect(permissionsApi.contains).toHaveBeenNthCalledWith(1, { permissions: ["cookies"] });
     expect(permissionsApi.contains).toHaveBeenNthCalledWith(2, { origins: ["https://media.example/*"] });
+    expect(permissionsApi.contains).toHaveBeenNthCalledWith(3, { permissions: ["cookies"] });
+    expect(permissionsApi.contains).toHaveBeenNthCalledWith(4, { origins: ["https://media.example/*"] });
   });
 
   it("does not claim permission after Chrome rejects the trusted request", async () => {
-    const { client, permissionsApi } = setup(false);
+    const { client, permissionsApi } = setup(false, [false, false]);
     await expect(client.request("example")).resolves.toEqual({
       namedPermissionGranted: false,
       hostPermissionGranted: false
     });
-    expect(permissionsApi.contains).not.toHaveBeenCalled();
+    expect(permissionsApi.contains).toHaveBeenCalledTimes(2);
+  });
+
+  it("is idempotent when both permission classes are already granted", async () => {
+    const { client, permissionsApi } = setup(true, [true, true]);
+    await expect(client.request("example")).resolves.toEqual({
+      namedPermissionGranted: true,
+      hostPermissionGranted: true
+    });
+    expect(permissionsApi.request).not.toHaveBeenCalled();
+    expect(permissionsApi.contains).toHaveBeenCalledTimes(2);
   });
 
   it("removes only the registered descriptor and rejects unknown adapters", async () => {

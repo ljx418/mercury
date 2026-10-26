@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "gc-b6g-changed-file-hashes/v1",
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "sha256": "122b5ed7be56c7b9bd80ede0addf03324266efa4de2e6f6053358550c3820dc1"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "sha256": "f81eb8eb22c796f514c6abb66c4ebcf05087ba0c24616a5ae9005e1d1ce98462"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "5701ee475e129ea4ae7493355284a30b1afc8114082898b1189950b233ac7e4a"
+    },
+    {
+      "path": "docs/active/project/stage-gates/v3-media-companion.md",
+      "sha256": "ebaa280911a7301dfce4f15b111753e1636bb7c8e01fe6d58843f2156a942c0b"
+    }
+  ]
+}

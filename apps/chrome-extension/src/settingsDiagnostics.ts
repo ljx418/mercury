@@ -151,10 +151,10 @@ function classifyRuntimeErrorStatus(event: AgentEvent): Exclude<ChatProviderTest
 function runtimeErrorMessage(status: ChatProviderTestStatus, event: AgentEvent): string {
   if (status === "pi_rpc_no_text") return "Chat Provider 测试未通过：PiAgent raw 输出没有普通文本，请检查 pi RPC 协议是否兼容。";
   if (status === "pi_normalizer_no_delta") return "Chat Provider 测试未通过：PiAgent raw event 疑似包含文本，但 normalizer 没有转换出普通文本 delta。";
-  if (status === "provider_auth_failed") return "Chat Provider 测试未通过：DeepSeek Provider 鉴权失败，请检查 API Key。";
-  if (status === "piagent_provider_config_missing") return "Chat Provider 测试未通过：PiAgent 没有收到完整的 DeepSeek Provider 配置。";
+  if (status === "provider_auth_failed") return "Chat Provider 测试未通过：模型服务鉴权失败，请检查 API Key。";
+  if (status === "piagent_provider_config_missing") return "Chat Provider 测试未通过：PiAgent 没有收到完整的模型服务配置。";
   if (status === "piagent_sidecar_unavailable") return "Chat Provider 测试未通过：Pi Sidecar 未启动或暂不可用。请启动 Pi Sidecar，或在 Settings 中手动切换到 LLM Direct。";
-  if (status === "llm_provider_missing") return "Chat Provider 测试未通过：DeepSeek Provider 未配置。请保存 Provider / model，或手动切换到 LLM Direct。";
+  if (status === "llm_provider_missing") return "Chat Provider 测试未通过：尚未选择模型服务。请保存 Provider / model，或手动切换到 LLM Direct。";
   if (status === "llm_model_invalid") return "Chat Provider 测试未通过：当前模型不存在或不属于所选 Provider，请检查 model。";
   return String(event.data.message ?? "Chat Provider 测试失败。");
 }

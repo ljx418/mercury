@@ -1,0 +1,70 @@
+{
+  "files": {
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs": {
+      "bytes": 36003,
+      "sha256": "95872a634fcb682a3c0647c9a83ead07435c4ab1d4b15d93bd4998b56e127218"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/assets.mjs": {
+      "bytes": 8420,
+      "sha256": "2ed5ae82773150781a7b7da42ef50e738f354a56a2655e40098d9af778660e82"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b27.mjs": {
+      "bytes": 4389,
+      "sha256": "29d7e6c93c44eadc7878d9d21e31934cc7780db25cf7c560e368869e86b1d4a9"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b29.mjs": {
+      "bytes": 4379,
+      "sha256": "bd66466c1638395407c6937b5336b7a43b0bf630c0829cf4faf863525c646788"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b30.mjs": {
+      "bytes": 6431,
+      "sha256": "65445b0aaedfd9251c9b1b46131ebca2294cf7a121bc405bd4941c97ada853d4"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/chrome.mjs": {
+      "bytes": 7213,
+      "sha256": "0a5328e8d45d872057f38aed9e0c74318226740ea55522c55648b00ecd1247ba"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/context.mjs": {
+      "bytes": 3072,
+      "sha256": "3d5c263cd55a11b58041ec5016ac662fbc69b1faf6d4ceb7d732df38a4548ab0"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/index.mjs": {
+      "bytes": 4792,
+      "sha256": "5bd81f4f3b06c6f58951293682e3a941b61aaace8aeb9f9b631a44cb12de4db3"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/plan.mjs": {
+      "bytes": 6948,
+      "sha256": "f665ee5066efaf536a341c5a6f3b94c6b2c067c3587ef7cf1be233e8000ee186"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/preflight.mjs": {
+      "bytes": 7551,
+      "sha256": "c9065b0caf27ceea525ed06cf610acfe9a6516750b39e22f908e02895c7fc270"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/realAdapters.mjs": {
+      "bytes": 13616,
+      "sha256": "b39580a442062d229428f12667e953f17c87536803389ece42862bdb21970e63"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/receipt.mjs": {
+      "bytes": 6090,
+      "sha256": "e464d5e19811d7e2147520bf21fa56bfcf8642a4bbfeff7feea31245170a6953"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/runtime.mjs": {
+      "bytes": 6777,
+      "sha256": "398fe87f95cee0089a620b6582afc33c8320852e27ac754c0282baf93a20859b"
+    },
+    "apps/chrome-extension/e2e/v3-wp-b-local-import-owned-session.mjs": {
+      "bytes": 6360,
+      "sha256": "a49628ae815249e50e36babc0909f00f589438c784574a421445bd3b3e5ca92f"
+    },
+    "apps/chrome-extension/package.json": {
+      "bytes": 8925,
+      "sha256": "27a89b82883f388d3b3a7cb0e64213f9aa68a231f54cf9cf848afe42d03ec020"
+    },
+    "services/local-runtime/scripts/build_wp_b_visible_harness_evidence.py": {
+      "bytes": 4737,
+      "sha256": "e8173787c08fcc5854eab392aa0fd3d0f297c85edadb3267498773249f35b86b"
+    }
+  },
+  "note": "Hashes of the FINAL stable worktree. The builder re-hashes every file after writing and fails if anything moved.",
+  "schemaVersion": "v3-wp-b-visible-harness-changed-file-hashes/v1"
+}

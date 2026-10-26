@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "gc-b5r-b5-blocked-publication-codex-reproductions/v1",
+  "date": "2026-10-25",
+  "externalActions": {
+    "chromeLaunches": 0,
+    "visibleWindows": 0,
+    "runtimeMediaTasks": 0,
+    "providerCalls": 0,
+    "cookieReadsOrInjections": 0,
+    "downloads": 0,
+    "imports": 0,
+    "audioOutputs": 0,
+    "tabCapture": 0,
+    "focusEvents": 0,
+    "visibleAuthorizationConsumed": false
+  },
+  "submittedEvidence": {
+    "manifestFilesVerified": 13,
+    "recordedSourceFilesVerified": 58
+  },
+  "verification": {
+    "focusedNode": { "passed": 132, "failed": 0, "exitCode": 0 },
+    "consolidatedOffline": { "passed": 438, "failed": 0, "exitCode": 0 }
+  },
+  "reproductions": [
+    {
+      "id": "BP-01",
+      "target": "evaluateAggregate",
+      "setup": "five valid complete rows and one blocked pre-synthesis row with exact ledger totals",
+      "mutation": {
+        "blockedSourceIdentityAdapter": "attacker",
+        "blockedDerivativePresent": true,
+        "blockedMirrorPublished": true
+      },
+      "observed": { "positive": true, "failures": [] },
+      "expected": "non-positive identity and blocked-publication failures"
+    },
+    {
+      "id": "BP-02",
+      "target": "validateAgainstSchema",
+      "input": {
+        "schema": { "$ref": "#/$defs/X" },
+        "root": { "$defs": { "X": { "type": "object", "not": {} } } },
+        "value": {}
+      },
+      "observed": { "ok": true, "errors": [] },
+      "expected": "hard failure for unsupported keyword not in the effective schema root"
+    }
+  ]
+}
+

@@ -8,9 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from threading import RLock
 from time import perf_counter
-from typing import Any
+from typing import Any, Protocol
 
 import httpx
+from jsonschema import Draft202012Validator
 
 from navia_runtime.contracts import utc_now
 from navia_runtime.runtime_profile import default_profiles, normalize_profile
@@ -19,6 +20,10 @@ from navia_runtime.runtime_profile import default_profiles, normalize_profile
 DEFAULT_DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEFAULT_DEEPSEEK_MODEL = "deepseek-v4-flash"
 DEFAULT_DEEPSEEK_MODELS = ("deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat", "deepseek-reasoner")
+DEFAULT_MINIMAX_BASE_URL = "https://api.minimax.io/v1"
+DEFAULT_MINIMAX_MODEL = "MiniMax-M3"
+DEFAULT_MINIMAX_MODELS = ("MiniMax-M3", "MiniMax-M3.1-Flash-Preview")
+SUPPORTED_LLM_PROVIDER_TYPES = {"deepseek", "minimax"}
 ALLOWED_CORE_PROVIDERS = {"mock", "llm_direct", "piagent", "custom"}
 V1_10_PIAGENT_DEFAULT_MARKER = "v1_10_piagent_default_applied"
 V1_10_MANUAL_CORE_PROVIDER_MARKER = "v1_10_manual_core_provider_saved"
@@ -33,12 +38,20 @@ class ProviderSettingsError(RuntimeError):
 
 class ProviderMissingError(ProviderSettingsError):
     def __init__(self) -> None:
-        super().__init__("Provider is not configured. Open Settings to import a DeepSeek provider.", code="provider_missing")
+        super().__init__("Provider is not configured. Open Settings to add a model provider.", code="provider_missing")
 
 
 class ProviderIncompleteError(ProviderSettingsError):
     def __init__(self) -> None:
         super().__init__("Provider configuration is incomplete. Open Settings to update it.", code="provider_incomplete")
+
+
+class ProviderSecretStore(Protocol):
+    storage_kind: str
+
+    def set(self, reference: str, secret: str) -> None: ...
+    def get(self, reference: str) -> str | None: ...
+    def delete(self, reference: str) -> None: ...
 
 
 def configured_deepseek_models() -> list[str]:
@@ -78,6 +91,8 @@ class DeepSeekProvider:
 
     def test(self) -> dict[str, Any]:
         start = perf_counter()
+        if self.provider.get("type") == "deepseek":
+            return self._test_deepseek_strict_structure(start)
         try:
             with self.client_factory() as client:
                 response = client.post(
@@ -92,11 +107,60 @@ class DeepSeekProvider:
                 )
                 response.raise_for_status()
         except Exception as exc:  # httpx wraps transport and status failures separately.
-            raise RuntimeError(f"DeepSeek connection test failed: {exc}") from exc
+            raise RuntimeError(f"Provider connection test failed: {exc}") from exc
         return {
             "status": "ok",
             "latencyMs": max(1, round((perf_counter() - start) * 1000)),
             "message": "API Key 校验成功，连接正常。",
+        }
+
+    def _test_deepseek_strict_structure(self, start: float) -> dict[str, Any]:
+        if self.provider.get("defaultModel") != "deepseek-chat":
+            raise RuntimeError("DeepSeek 结构化视频理解当前仅验证 deepseek-chat，请先手动选择该模型。")
+        schema = {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["ok", "nonce"],
+            "properties": {
+                "ok": {"type": "boolean", "enum": [True]},
+                "nonce": {"type": "string", "enum": ["navia-structure-check-v1"]},
+            },
+        }
+        try:
+            with self.client_factory() as client:
+                response = client.post(
+                    f"{str(self.provider['baseUrl']).rstrip('/')}/beta/chat/completions",
+                    headers=self._headers(),
+                    json={
+                        "model": "deepseek-chat",
+                        "messages": [{"role": "user", "content": "Call the required tool with the fixed values."}],
+                        "tools": [{"type": "function", "function": {
+                            "name": "confirm_navia_structure_capability",
+                            "description": "Confirm strict structured-output capability.",
+                            "strict": True,
+                            "parameters": schema,
+                        }}],
+                        "tool_choice": {"type": "function", "function": {"name": "confirm_navia_structure_capability"}},
+                        "temperature": 0,
+                        "max_tokens": 128,
+                        "stream": False,
+                    },
+                )
+                response.raise_for_status()
+                body = response.json()
+            calls = body["choices"][0]["message"]["tool_calls"]
+            if len(calls) != 1 or calls[0]["function"]["name"] != "confirm_navia_structure_capability":
+                raise ValueError("strict tool call missing")
+            value = json.loads(calls[0]["function"]["arguments"])
+            if list(Draft202012Validator(schema).iter_errors(value)):
+                raise ValueError("strict tool payload invalid")
+        except Exception as exc:
+            raise RuntimeError(f"Provider strict structure test failed: {type(exc).__name__}") from exc
+        return {
+            "status": "ok",
+            "latencyMs": max(1, round((perf_counter() - start) * 1000)),
+            "message": "API Key 与严格结构能力校验成功。",
+            "capabilities": {"structuredOutput": "deepseek_beta_strict_tool_v1"},
         }
 
     def stream_chat(self, prompt: str, *, page_context: dict[str, Any] | None = None) -> Iterable[str]:
@@ -133,7 +197,7 @@ class DeepSeekProvider:
                         if isinstance(text, str) and text:
                             yield text
         except Exception as exc:
-            raise RuntimeError(f"DeepSeek chat stream failed: {exc}") from exc
+            raise RuntimeError(f"Provider chat stream failed: {exc}") from exc
 
     def _chat_url(self) -> str:
         return f"{str(self.provider['baseUrl']).rstrip('/')}/chat/completions"
@@ -153,14 +217,15 @@ class ProviderRegistry:
             raise ProviderMissingError()
         if not provider.get("apiKey") or not provider.get("baseUrl") or not provider.get("defaultModel"):
             raise ProviderIncompleteError()
-        if provider.get("type") != "deepseek":
-            raise ProviderSettingsError("Only DeepSeek provider is supported in V1.0.", code="provider_unsupported")
+        if provider.get("type") not in SUPPORTED_LLM_PROVIDER_TYPES:
+            raise ProviderSettingsError("The selected model provider is not supported.", code="provider_unsupported")
         return DeepSeekProvider(provider, self.client_factory)
 
 
 class SettingsStore:
-    def __init__(self, db_path: str | Path) -> None:
+    def __init__(self, db_path: str | Path, secret_store: ProviderSecretStore) -> None:
         self.db_path = Path(db_path)
+        self.secret_store = secret_store
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = RLock()
         self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
@@ -201,6 +266,10 @@ class SettingsStore:
                 self._conn.execute("DROP TABLE llm_providers")
                 self._conn.execute("DELETE FROM llm_settings")
                 self._create_provider_table()
+                columns = {row["name"] for row in self._conn.execute("PRAGMA table_info(llm_providers)").fetchall()}
+            if "api_key_masked" not in columns:
+                self._conn.execute("ALTER TABLE llm_providers ADD COLUMN api_key_masked TEXT")
+        self._migrate_plaintext_provider_secrets()
 
     def _create_provider_table(self) -> None:
         self._conn.execute(
@@ -215,6 +284,7 @@ class SettingsStore:
                 api_key TEXT NOT NULL,
                 secret_storage TEXT NOT NULL,
                 api_key_ref TEXT NOT NULL,
+                api_key_masked TEXT,
                 test_status_json TEXT,
                 enabled INTEGER NOT NULL,
                 created_at TEXT NOT NULL,
@@ -308,7 +378,13 @@ class SettingsStore:
         settings = self._settings_row()
         provider = self._present_provider(row, is_default=row["id"] == settings.get("defaultProviderId"))
         if include_secret:
-            provider["apiKey"] = row["api_key"]
+            try:
+                secret = self.secret_store.get(str(row["api_key_ref"]))
+            except Exception as exc:
+                raise ProviderSettingsError("系统凭据库不可用。", code="provider_secret_unavailable") from exc
+            if not secret:
+                raise ProviderSettingsError("Provider 密钥在系统凭据库中不存在。", code="provider_secret_missing")
+            provider["apiKey"] = secret
         return provider
 
     def get_default_provider(self, *, include_secret: bool) -> dict[str, Any] | None:
@@ -320,7 +396,7 @@ class SettingsStore:
 
     def get_llm_provider_for_chat(self, provider_id: str | None, model: str | None, *, include_secret: bool) -> dict[str, Any]:
         if not provider_id:
-            raise ProviderSettingsError("LLM Provider 未配置，请在 Settings 中选择 DeepSeek Provider。", code="llm_provider_missing")
+            raise ProviderSettingsError("LLM Provider 未配置，请在 Settings 中选择模型服务。", code="llm_provider_missing")
         provider = self.get_provider(provider_id, include_secret=include_secret)
         if provider is None:
             raise ProviderSettingsError("LLM Provider 不存在或已被删除。", code="llm_provider_missing")
@@ -345,45 +421,63 @@ class SettingsStore:
             "model": model if isinstance(model, str) else None,
         }
 
-    def import_deepseek(self, body: dict[str, Any], provider_id: str) -> dict[str, Any]:
+    def import_provider(self, body: dict[str, Any], provider_id: str) -> dict[str, Any]:
+        provider_type = str(body.get("type") or body.get("providerType") or "").strip().lower()
+        if provider_type not in SUPPORTED_LLM_PROVIDER_TYPES:
+            raise ProviderSettingsError("Provider type is not supported.", code="provider_unsupported")
         api_key = str(body.get("apiKey") or "").strip()
         if not api_key:
             raise ProviderSettingsError("apiKey is required.", code="provider_incomplete")
         models = self._read_models(body.get("models"))
-        default_model = str(body.get("defaultModel") or configured_deepseek_default_model(models))
+        fallback_model = DEFAULT_MINIMAX_MODEL if provider_type == "minimax" else configured_deepseek_default_model(models)
+        default_model = str(body.get("defaultModel") or fallback_model)
         if default_model not in models:
             raise ProviderSettingsError("defaultModel must belong to provider models.", code="model_invalid")
         now = utc_now()
-        # Technical debt: V1.0 stores the API key in SQLite plaintext for local-only use.
-        # The API shape already carries apiKeyRef/secretStorage internally so this can move
-        # to OS keychain or encrypted storage without changing frontend contracts.
-        with self._lock, self._conn:
-            self._conn.execute(
-                """
-                INSERT OR REPLACE INTO llm_providers(
-                    id, type, name, base_url, models_json, default_model, api_key,
-                    secret_storage, api_key_ref, test_status_json, enabled, created_at, updated_at
+        secret_ref = self._secret_ref(provider_id)
+        try:
+            self.secret_store.set(secret_ref, api_key)
+            with self._lock, self._conn:
+                self._conn.execute(
+                    """
+                    INSERT OR REPLACE INTO llm_providers(
+                        id, type, name, base_url, models_json, default_model, api_key,
+                        secret_storage, api_key_ref, api_key_masked, test_status_json,
+                        enabled, created_at, updated_at
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?, 1, ?, ?)
+                    """,
+                    (
+                        provider_id,
+                        provider_type,
+                        str(body.get("name") or body.get("displayName") or ("MiniMax" if provider_type == "minimax" else "DeepSeek")),
+                        str(body.get("baseUrl") or (DEFAULT_MINIMAX_BASE_URL if provider_type == "minimax" else DEFAULT_DEEPSEEK_BASE_URL)),
+                        _to_json(models),
+                        default_model,
+                        self.secret_store.storage_kind,
+                        secret_ref,
+                        mask_api_key(api_key),
+                        _to_json({"status": "untested", "message": "Not tested yet."}),
+                        now,
+                        now,
+                    ),
                 )
-                VALUES (?, 'deepseek', ?, ?, ?, ?, ?, 'sqlite_plaintext', ?, ?, 1, ?, ?)
-                """,
-                (
-                    provider_id,
-                    str(body.get("name") or body.get("displayName") or "DeepSeek"),
-                    str(body.get("baseUrl") or DEFAULT_DEEPSEEK_BASE_URL),
-                    _to_json(models),
-                    default_model,
-                    api_key,
-                    f"sqlite:{provider_id}:api_key",
-                    _to_json({"status": "untested", "message": "Not tested yet."}),
-                    now,
-                    now,
-                ),
-            )
-        self.patch_settings({"defaultProviderId": provider_id, "defaultModel": default_model})
+        except ProviderSettingsError:
+            raise
+        except Exception as exc:
+            raise ProviderSettingsError("无法将 Provider 密钥保存到系统凭据库。", code="provider_secret_unavailable") from exc
+        # Saving credentials never changes the active Chat provider. MiniMax may
+        # initialize an otherwise empty default; every non-default provider
+        # requires an explicit Settings selection before it is used.
+        if provider_type == "minimax" and self.get_default_provider(include_secret=False) is None:
+            self.patch_settings({"defaultProviderId": provider_id, "defaultModel": default_model})
         provider = self.get_provider(provider_id, include_secret=False)
         if provider is None:
             raise ProviderSettingsError("Provider import failed.", code="runtime_internal")
         return provider
+
+    def import_deepseek(self, body: dict[str, Any], provider_id: str) -> dict[str, Any]:
+        return self.import_provider({**body, "type": "deepseek"}, provider_id)
 
     def patch_provider(self, provider_id: str, body: dict[str, Any]) -> dict[str, Any]:
         provider = self.get_provider(provider_id, include_secret=True)
@@ -395,23 +489,31 @@ class SettingsStore:
             raise ProviderSettingsError("defaultModel must belong to provider models.", code="model_invalid")
         api_key = str(body.get("apiKey") or provider["apiKey"])
         now = utc_now()
-        with self._lock, self._conn:
-            self._conn.execute(
-                """
-                UPDATE llm_providers
-                SET name = ?, base_url = ?, models_json = ?, default_model = ?, api_key = ?, updated_at = ?
-                WHERE id = ?
-                """,
-                (
-                    str(body.get("name") or provider["name"]),
-                    str(body.get("baseUrl") or provider["baseUrl"]),
-                    _to_json(models),
-                    default_model,
-                    api_key,
-                    now,
-                    provider_id,
-                ),
-            )
+        secret_ref = self._secret_ref(provider_id)
+        try:
+            self.secret_store.set(secret_ref, api_key)
+            with self._lock, self._conn:
+                self._conn.execute(
+                    """
+                    UPDATE llm_providers
+                    SET name = ?, base_url = ?, models_json = ?, default_model = ?, api_key = '',
+                        secret_storage = ?, api_key_ref = ?, api_key_masked = ?, updated_at = ?
+                    WHERE id = ?
+                    """,
+                    (
+                        str(body.get("name") or provider["name"]),
+                        str(body.get("baseUrl") or provider["baseUrl"]),
+                        _to_json(models),
+                        default_model,
+                        self.secret_store.storage_kind,
+                        secret_ref,
+                        mask_api_key(api_key),
+                        now,
+                        provider_id,
+                    ),
+                )
+        except Exception as exc:
+            raise ProviderSettingsError("无法更新系统凭据库中的 Provider 密钥。", code="provider_secret_unavailable") from exc
         settings = self._settings_row()
         if settings.get("defaultProviderId") == provider_id:
             self.patch_settings({"defaultProviderId": provider_id, "defaultModel": default_model})
@@ -421,6 +523,13 @@ class SettingsStore:
         return updated
 
     def delete_provider(self, provider_id: str) -> dict[str, Any]:
+        with self._lock:
+            row = self._conn.execute("SELECT api_key_ref FROM llm_providers WHERE id = ?", (provider_id,)).fetchone()
+        if row:
+            try:
+                self.secret_store.delete(str(row["api_key_ref"]))
+            except Exception as exc:
+                raise ProviderSettingsError("无法删除系统凭据库中的 Provider 密钥。", code="provider_secret_unavailable") from exc
         with self._lock, self._conn:
             self._conn.execute("UPDATE llm_providers SET enabled = 0, updated_at = ? WHERE id = ?", (utc_now(), provider_id))
         settings = self._settings_row()
@@ -450,6 +559,13 @@ class SettingsStore:
         return provider
 
     def clear(self) -> None:
+        with self._lock:
+            references = [str(row["api_key_ref"]) for row in self._conn.execute("SELECT api_key_ref FROM llm_providers").fetchall()]
+        for reference in references:
+            try:
+                self.secret_store.delete(reference)
+            except Exception as exc:
+                raise ProviderSettingsError("无法清理系统凭据库中的 Provider 密钥。", code="provider_secret_unavailable") from exc
         with self._lock, self._conn:
             self._conn.execute("DELETE FROM llm_settings")
             self._conn.execute("DELETE FROM llm_providers")
@@ -511,11 +627,42 @@ class SettingsStore:
             "models": _from_json(row["models_json"], []),
             "defaultModel": row["default_model"],
             "isDefault": is_default,
-            "apiKeyMasked": mask_api_key(row["api_key"]),
+            "apiKeyMasked": row["api_key_masked"] or mask_api_key(row["api_key"]),
+            "secretStorage": row["secret_storage"],
             "testStatus": _from_json(row["test_status_json"], None),
             "createdAt": row["created_at"],
             "updatedAt": row["updated_at"],
         }
+
+    @staticmethod
+    def _secret_ref(provider_id: str) -> str:
+        return f"llm:{provider_id}:api-key"
+
+    def _migrate_plaintext_provider_secrets(self) -> None:
+        with self._lock:
+            rows = self._conn.execute(
+                "SELECT id, api_key FROM llm_providers WHERE api_key <> ''"
+            ).fetchall()
+        for row in rows:
+            provider_id = str(row["id"])
+            secret = str(row["api_key"])
+            secret_ref = self._secret_ref(provider_id)
+            try:
+                self.secret_store.set(secret_ref, secret)
+                with self._lock, self._conn:
+                    self._conn.execute(
+                        """
+                        UPDATE llm_providers
+                        SET api_key = '', secret_storage = ?, api_key_ref = ?, api_key_masked = ?
+                        WHERE id = ? AND api_key = ?
+                        """,
+                        (self.secret_store.storage_kind, secret_ref, mask_api_key(secret), provider_id, secret),
+                    )
+            except Exception as exc:
+                raise ProviderSettingsError(
+                    "检测到历史明文 Provider 密钥，但系统凭据库迁移失败。",
+                    code="provider_secret_migration_failed",
+                ) from exc
 
     def _read_models(self, value: Any) -> list[str]:
         if isinstance(value, list):

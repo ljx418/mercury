@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "V3_MEDIA_IMPORT_TYPE_UNSUPPORTED",
+    "message": "请选择 MP4、WebM 或 Matroska 视频文件。",
+    "recoverable": true,
+    "details": {"importId": "media_import_22222222222222222222222222222222"}
+  },
+  "request_id": "req_wp_b_error_01"
+}

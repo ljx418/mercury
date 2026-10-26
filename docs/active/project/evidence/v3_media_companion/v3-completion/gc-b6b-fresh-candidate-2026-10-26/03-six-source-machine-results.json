@@ -1,0 +1,279 @@
+{
+  "schemaVersion": "v3-5.10-b6b-machine-results/v1",
+  "batch": "GC-B6B FRESH SIX-SOURCE CANDIDATE + BLIND SEMANTIC REVIEW",
+  "runId": "gc-b6b-20261025T175243Z",
+  "finishedAtUtc": "2026-10-25T18:41:19.203Z",
+  "stopped": true,
+  "stopReason": "aggregate verdict is not positive: AGG_LIMITED_SOURCE(source 1/BV11t8w6oEtP is limited); AGG_LIMITED_SOURCE(source 3/BV1v58B6GEan is limited); AGG_LIMITED_SOURCE(source 4/BV1M5tJ6kEvw is limited); AGG_LIMITED_SOURCE(3 sources are limited); AGG_FAILED_SOURCE(only 2 sources are complete (at least 5 are required))",
+  "machineGate": {
+    "positive": false,
+    "counts": {
+      "complete": 2,
+      "limited": 3,
+      "blocked": 1,
+      "failed": 0,
+      "total": 6
+    },
+    "failures": [
+      {
+        "code": "AGG_LIMITED_SOURCE",
+        "detail": "source 1/BV11t8w6oEtP is limited"
+      },
+      {
+        "code": "AGG_LIMITED_SOURCE",
+        "detail": "source 3/BV1v58B6GEan is limited"
+      },
+      {
+        "code": "AGG_LIMITED_SOURCE",
+        "detail": "source 4/BV1M5tJ6kEvw is limited"
+      },
+      {
+        "code": "AGG_LIMITED_SOURCE",
+        "detail": "3 sources are limited"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "only 2 sources are complete (at least 5 are required)"
+      }
+    ]
+  },
+  "candidateAuthorityDefects": [
+    "the candidate authority does not carry a positive machine gate",
+    "the candidate authority capture status is failed",
+    "the authority source 2 has no valid task id",
+    "the authority source 2 has no valid task revision",
+    "the authority source 2 has no valid source identity",
+    "the authority source 2 has no valid dependency generation",
+    "the authority source 2 has no valid derivativeSha256",
+    "the authority source 2 has no valid captureArtifactSha256",
+    "the authority source 2 has no valid bundleSha256",
+    "the authority source 2 has no valid reviewBindingSha256",
+    "the authority source 2 was not captured",
+    "the authority source 2 has no positive evidence count",
+    "the authority source 2 has no positive thumbnails count",
+    "the authority source 2 has no positive chapters count",
+    "the authority source 2 has not closed identityClosed",
+    "the authority source 2 has not closed catalogClosed",
+    "the authority source 2 has not closed thumbnailsClosed",
+    "the authority source 2 has not closed seekClosed"
+  ],
+  "processAudit": {
+    "leakedBefore": 0,
+    "leakedAfter": 0,
+    "ok": true,
+    "leakedPids": [],
+    "sightings": [],
+    "stillAliveAtCloseout": 0,
+    "killedOwnedPids": [],
+    "note": "The LATCHED sightings of the owned descendants that survived their source runner. A sighting is never cleared by a later exit."
+  },
+  "sources": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "disposition": "limited",
+      "failureCode": null,
+      "providerOutboundHttpAttempts": 6,
+      "publishedRequestCount": 6,
+      "derivativeSha256": "a9f5470248a47789608d21223a06a910cce4ba929edfc95f92f138f8881eab18",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": {
+        "qualityStatus": "limited",
+        "qualityFailureCodes": [
+          "V3510B_EVIDENCE_CONFLICT_UNRESOLVED"
+        ],
+        "maxChapterStartConcentration": 0.333333,
+        "maxChapterSpanRatio": 0.356015,
+        "sourceCoverageRatio": 1,
+        "claimCount": 5,
+        "chapterCount": 6,
+        "regionCount": 3
+      }
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "disposition": "blocked",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": null,
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "disposition": "limited",
+      "failureCode": null,
+      "providerOutboundHttpAttempts": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "f334bb89e039442e83f2347c1211c1f905e96433132739026e43348a277a3b5f",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": {
+        "qualityStatus": "limited",
+        "qualityFailureCodes": [
+          "V3510B_BRIEF_COVERAGE_INSUFFICIENT"
+        ],
+        "maxChapterStartConcentration": 0.5,
+        "maxChapterSpanRatio": 0.389527,
+        "sourceCoverageRatio": 1,
+        "claimCount": 5,
+        "chapterCount": 6,
+        "regionCount": 3
+      }
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "disposition": "limited",
+      "failureCode": null,
+      "providerOutboundHttpAttempts": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "c87b885ce7901b15687eb50287179c92cfbc4833a1ec14d7b127fb567ddea726",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": {
+        "qualityStatus": "limited",
+        "qualityFailureCodes": [
+          "V3510B_EVIDENCE_CONFLICT_UNRESOLVED"
+        ],
+        "maxChapterStartConcentration": 0.5,
+        "maxChapterSpanRatio": 0.414169,
+        "sourceCoverageRatio": 1,
+        "claimCount": 5,
+        "chapterCount": 6,
+        "regionCount": 3
+      }
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "disposition": "complete",
+      "failureCode": null,
+      "providerOutboundHttpAttempts": 2,
+      "publishedRequestCount": 2,
+      "derivativeSha256": "c1569027a8aa60dbb0856625d115cc0fc0c1df9ea4e4edbb41556dcc7eebb204",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": {
+        "qualityStatus": "complete",
+        "qualityFailureCodes": [],
+        "maxChapterStartConcentration": 0.375,
+        "maxChapterSpanRatio": 0.187417,
+        "sourceCoverageRatio": 1,
+        "claimCount": 7,
+        "chapterCount": 8,
+        "regionCount": 3
+      }
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "disposition": "complete",
+      "failureCode": null,
+      "providerOutboundHttpAttempts": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "b6a82ad326ff1077e8be0ea7e018d68b5a4069319802f83d8fb581848145c9a1",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": {
+        "qualityStatus": "complete",
+        "qualityFailureCodes": [],
+        "maxChapterStartConcentration": 0.333333,
+        "maxChapterSpanRatio": 0.220104,
+        "sourceCoverageRatio": 1,
+        "claimCount": 5,
+        "chapterCount": 6,
+        "regionCount": 3
+      }
+    }
+  ]
+}

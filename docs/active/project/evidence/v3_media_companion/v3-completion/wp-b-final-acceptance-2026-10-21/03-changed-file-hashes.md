@@ -1,0 +1,18 @@
+# Final corrective file hashes
+
+```text
+ae3bf892666fca7fc5795c8be1631dba120460f88aefecceb818f08c939e5cce  apps/chrome-extension/src/modules/media_companion/acquisition/useMediaAcquisitionTask.ts
+f2f1e40b7da9c56a78786da015d401f4338aa8d557b776319ba5eae4e92a9793  apps/chrome-extension/src/modules/media_companion/acquisition/useMediaAcquisitionTask.test.tsx
+ecab156e05652ec41ee13608f7933422575298c2169edde09d146f7386aa4671  apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs
+b6c438084856be0b23426fdfcfe95c81d580ba1a76b0c0ca6d31733ba9c3fa59  apps/chrome-extension/e2e/lib/v3WpBVisibleSession/realAdapters.mjs
+d8d1c91f4e2e6b651504518f9be746085039f73218fc2eb73e7b284b1db6d7ef  apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b30.mjs
+07e44c06f0ab9c10063fa563c21793350214cc75fa454c6b3bbc5ae7df73fbf6  services/local-runtime/navia_runtime/modules/media_companion/local_import/preparer.py
+4cd49bcfcf2c293d90b4d1873fac1628c9afbcb28072b05620ecbbe67833fe49  services/local-runtime/navia_runtime/modules/media_companion/local_import/consumer_barrier.py
+58b66dc373c9b6ff2989d560c74877bee33327916eaf06f92893ce24e19597b1  services/local-runtime/navia_runtime/modules/media_companion/local_import/orchestrator.py
+97ae56ddecb46001613544748d861ce9d86479cf434ca379f76f9a6746dd509f  services/local-runtime/tests/test_wp_b_ac2_preparation.py
+192bc6116af58894736d2e138f511b8756e0591816d43aa2375ccd21d8a49528  services/local-runtime/tests/test_wp_b_c4_orchestrator.py
+3a23867592a2b1f158ef0202a72c1bf1082a5dc0d6bc355ed9acba3182f0c6e4  docs/active/project/fixtures/v3-media-capture-internal-relay-v11-fixtures.json
+0e2ce683aa95b7e9783cdcd10a19355fb433403b553c1af6d542e67610625c70  docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-contract.py
+8b302e75fec6b992aabb548b3263bed9e891aefed1525121a2e83ca71b7b2b80  docs/active/project/evidence/v3_media_companion/v3-completion/wp-b-visible-run-attempt51-2026-10-21/visible-session-receipt.json
+```
+

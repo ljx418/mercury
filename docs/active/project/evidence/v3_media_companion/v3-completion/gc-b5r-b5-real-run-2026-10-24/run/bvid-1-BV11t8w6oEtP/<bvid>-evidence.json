@@ -1,0 +1,476 @@
+{
+  "binding": {
+    "evidenceCatalogSha256": "8d70caf66b2d4ed13f739f83e64e217c145308a99cb498f06e53931814628b12",
+    "mediaDurationMs": 1878880,
+    "sourceIdentity": "portal:bilibili:BV11t8w6oEtP:41095398520:p1",
+    "spanEndMs": 1878880,
+    "spanStartMs": 0,
+    "taskId": "media_task_2008e36845fe4aa494907b70b98a9272",
+    "taskRevision": 7
+  },
+  "brief": {
+    "evidenceIds": [
+      "mtr_04850745d84a945304f4d05ed81d971e",
+      "mtr_69b9e987e59172f94391dfd5963b8775",
+      "mtr_1a6fa6ef390a24d09b384409e604d883",
+      "mtr_866a3b60d310e22f3fde213eddd39acb",
+      "mtr_aa9fd3d80a87ce508d979042cfd5c5d4",
+      "mtr_47f5660a8787fc127a097d14382a2990",
+      "mtr_c8ed7babd988a2219a7f277b3ce12dbc"
+    ],
+    "origin": "provider",
+    "regions": [
+      "opening",
+      "middle",
+      "ending"
+    ],
+    "sourceClaimIds": [],
+    "text": "视频回顾贺建奎从物理训练、计算生物研究走向基因编辑婴儿事件的经历，呈现其技术方案、伦理风险、判刑及出狱后的转型，并分析其过度相信模型可控性的成因。"
+  },
+  "chapters": [
+    {
+      "chapterId": "chapter_de9c0602f0c9095c",
+      "endMs": 197950,
+      "evidenceIds": [
+        "mtr_04850745d84a945304f4d05ed81d971e",
+        "mtr_7575f65dabae720280cd68fb7b2197ff",
+        "mtr_69d13451e22165307c8351dda781c9ad",
+        "mtr_166d87e3660587438d3dea34151a6952",
+        "mtr_e9e6edd2194421782b6dcdfe980d1c25",
+        "mtr_4dcf8a2555c13088322fd8a0c7beb4c6",
+        "mtr_9a13a973c93b276b8b1c3907ba15575b",
+        "mtr_f9ffe9288224f554fadf9367254f64c0",
+        "mtr_683b9299a1b67040859daa87ea57ff1b"
+      ],
+      "order": 0,
+      "relationToPrevious": "opening",
+      "startMs": 0,
+      "thesis": "视频从基因编辑婴儿事件切入，追溯贺建奎的成长环境、学业天赋与科学家理想，以解释其走向高风险实验的背景。",
+      "title": "基因编辑婴儿事件与成长起点"
+    },
+    {
+      "chapterId": "chapter_54f68073719189e7",
+      "endMs": 407060,
+      "evidenceIds": [
+        "mtr_9314d77dbd873ebab03e2c2a9e2b1cf4",
+        "mev_7891a908f810d89431cbecd93001d633",
+        "mev_7f577871505ea62dbe74fd9e96968c7e",
+        "mtr_63881639880c41d56d04df856b1f0d9f",
+        "mtr_bbad97100aba58f78062a696e11f9a11",
+        "mtr_02fe5ce95adc3ad9a5e5cded06090607",
+        "mtr_69b9e987e59172f94391dfd5963b8775",
+        "mtr_26a810035fb58b5a4e6a41d50eef7541",
+        "mtr_d8711f58d5a91f155dfd63c239c9e1e7",
+        "mtr_0415e91bf6884c0cb78aea62a775e82a",
+        "mtr_28324697452523e8e086692d9dc6e452"
+      ],
+      "order": 1,
+      "relationToPrevious": "continuation",
+      "startMs": 197950,
+      "thesis": "本科论文与博士训练使其转向以物理建模、算法和计算模拟解决生物问题，并强化了对理论方案可行性的信心。",
+      "title": "计算训练塑造生物研究路径"
+    },
+    {
+      "chapterId": "chapter_8cee32913ad16564",
+      "endMs": 673480,
+      "evidenceIds": [
+        "mtr_833991f1cd422df180174e2ef441fa5c",
+        "mev_0d63eb38babbc7c154450a41a8d6b064",
+        "mev_4186384717a1dfb5e51d5ab1a98ac7e1",
+        "mtr_d21fd1864d82ac97eac297e65c212988",
+        "mtr_46641599dfec3146483462d374d40ecf",
+        "mtr_71e11235c534b295f2a3f47129e0aed6",
+        "mtr_89c3da227726d97f6eff2ed512d05fc0",
+        "mtr_26b7529caf9580dd32fe34d5b9468c03",
+        "mtr_dc40659f3d086bd8651899c5301d32c1",
+        "mtr_74304da796e0cac05bcddaf99b567f15",
+        "mtr_50df34ae80f17e44767b27710d6491cf",
+        "mtr_43bb606665a68b009970bc7de9146f79",
+        "mev_0b0cc903257c6efca66a9aa81d596617",
+        "mev_0c0c6078a216c63c3cb02a86230bba62",
+        "mev_e4bb69bca3e03bd88af537921adfc541",
+        "mtr_9994aa4ea89b702982ea577fca1cb253",
+        "mtr_a21cc08c9b88d73ff45c827672e23c0b"
+      ],
+      "order": 2,
+      "relationToPrevious": "cause_effect",
+      "startMs": 407060,
+      "thesis": "斯坦福经历和深圳人才计划带来职位、经费与产业资源，而CRISPR的成熟和开源扩散则使胚胎编辑项目具备实施条件。",
+      "title": "科研资源积累与CRISPR扩散"
+    },
+    {
+      "chapterId": "chapter_d73551574ca742e6",
+      "endMs": 865380,
+      "evidenceIds": [
+        "mtr_1a6fa6ef390a24d09b384409e604d883",
+        "mtr_d78a4dfdac32b7459f9410f1c2e28914",
+        "mtr_5835e259ffde7c3114d39164ee213d9e",
+        "mtr_88483a9955f46c717b3acccbae89d6c2",
+        "mtr_15443c1ff1238386bb77b95e893994e5",
+        "mtr_98c059853c3729ce3b3a5b9b37a78474",
+        "mtr_866a3b60d310e22f3fde213eddd39acb",
+        "mtr_70d7f31e99e8438ed9bac57235923758",
+        "mev_2b6ca3152274bc0f789ce5cfc8c1298c",
+        "mev_60096bbb9e9cedd6fd1f4a4b0bc5c91f",
+        "mtr_3e4ef66d5826eb0c5a807b5e130f7e28"
+      ],
+      "order": 3,
+      "relationToPrevious": "cause_effect",
+      "startMs": 673480,
+      "thesis": "视频将事件拆解为方案选择、技术限制、长期风险与司法回应，指出实验者不能把不可预知后果完全转嫁给被编辑者。",
+      "title": "CCR5方案风险与司法回应"
+    },
+    {
+      "chapterId": "chapter_ec73c133442009cb",
+      "endMs": 1107100,
+      "evidenceIds": [
+        "mtr_fc8f43f10ac6b02c0f94d97af81d7ef1",
+        "mtr_8548dd8ab3ca148bc1210bf7ed00c94d",
+        "mtr_e7931ec5732797e249543b60dc1cce3d",
+        "mtr_09d8f89c668a9c3432083ca933c775a8",
+        "mtr_7dc84d0effda455c0f385d68733e8b76",
+        "mtr_e579d0d26a24ea87020e4f7dd8ee8b2c",
+        "mtr_4ecc2dbcabee4124e6c5ed220434658c",
+        "mtr_9d589e4c3f0eeccf47f37c5e1c2d61bc",
+        "mtr_4d55b97b90fb3e7df463531f8917684c",
+        "mev_10120feeb31a2bc17977ad84ab2a18db",
+        "mev_9533f72f0f2862d04d1bce17202b04af",
+        "mev_f1789b153b86edd7530126332d1cb693",
+        "mtr_e56abd17b0c4b2d2fda06f214db30b4c",
+        "mtr_bfa2cd060f79cb19afa68bc45e6a5263",
+        "mtr_56e6395d66414bda61fde79af513539e"
+      ],
+      "order": 4,
+      "relationToPrevious": "continuation",
+      "startMs": 865380,
+      "thesis": "刑满后，贺建奎试图借人才流动、社会关注和商业融资恢复科研事业，但伦理争议持续阻碍其制度化立足。",
+      "title": "出狱后尝试重返科研"
+    },
+    {
+      "chapterId": "chapter_9db3aa223fa09200",
+      "endMs": 1592780,
+      "evidenceIds": [
+        "mtr_aa9fd3d80a87ce508d979042cfd5c5d4",
+        "mtr_eb6d33e44bddce88c3d7e86623de8b31",
+        "mtr_e2eb07933f8f64110d19fec18cb1c41f",
+        "mtr_e95834a9f5392096934657e092e2791d",
+        "mtr_19e666da342922a0d2118b2523c6120b",
+        "mtr_636c1ae84320f1312aae9d852c69ecb1",
+        "mtr_1e24db9e5b7a4c0034138e892d3cfd8c",
+        "mev_209e14e53f7abaae47a9aaca4c7a1ded",
+        "mev_68099fd7bce4fe2fc1459a6de5869458",
+        "mev_e3e257354d6eb10ad30cc70c2f87d555",
+        "mtr_2cc87d9f616e15ce7a6f7b3f0b850bda",
+        "mtr_026fa3432ba941d05f65c3b38f4592e0",
+        "mtr_482c0d6b0293a38b7f15e5ab8738d590",
+        "mtr_3854ad9df2e341a44b044929f4bafa5a",
+        "mtr_5ab7fc9281da319c694c558779d628cb",
+        "mtr_3e320ed4e49360792a77c839557bba32",
+        "mtr_15a6ecd9b430219bbcd772fb951d2daa",
+        "mtr_391037e39f0383cc16792d5ae8553402",
+        "mtr_176e988c18309f299bd791c6731de030",
+        "mev_52f1fb53e2f2c935d2b9ff0f955f6dd3",
+        "mev_66edd4a2e04824deb83134505e5378a2",
+        "mev_dc2c554c449d4f30a897ad36ea05b231",
+        "mtr_87c402a22e764c469bc5873ab6855719",
+        "mtr_32d43882bbdd0ce598c4e2604b9cb0a0",
+        "mtr_4c63a1fdd65d24d9a2c27adfc0ac30f8",
+        "mtr_02c6e569ab5dafb0a155cde0677c90ab"
+      ],
+      "order": 5,
+      "relationToPrevious": "contrast",
+      "startMs": 1107100,
+      "thesis": "抽象创作、感情纠纷和夜店生活显示其人生重心转向网红化，AI生图、粉丝互动与线下聚会又强化了这一身份。",
+      "title": "抽象创作与网红身份形成"
+    },
+    {
+      "chapterId": "chapter_8aae78de0c8a8a59",
+      "endMs": 1878880,
+      "evidenceIds": [
+        "mtr_47f5660a8787fc127a097d14382a2990",
+        "mtr_83360c85e6a9d51e223fc4206bb350be",
+        "mtr_4fddef00775ded4d1762eefbbf94c392",
+        "mev_1b85c222ba8d9b08198bcd8512c33304",
+        "mev_77ffe8fe6e5844e051838960061163c9",
+        "mev_97a90a39b6c0ca8104c7cceecf06844f",
+        "mtr_683772d348958e32d3f46da28afe1d9d",
+        "mtr_126cea25e38b02cdd5c1d1d8b7230c34",
+        "mtr_be5e924d191fcdbed04efec896f5a9d4",
+        "mtr_d1419e1deaa406e19ac6a6f8764c2222",
+        "mtr_f6b7e237b95679fe6ee23ed20247e03d",
+        "mtr_9ddc1df3f5cddf27152584fe5ce59bb5",
+        "mtr_1a88bfeb1279cdf63dde3e3a945e8d77",
+        "mtr_4b6cc959fe143889292cc7415bb76be8",
+        "mtr_c8ed7babd988a2219a7f277b3ce12dbc"
+      ],
+      "order": 6,
+      "relationToPrevious": "conclusion",
+      "startMs": 1592780,
+      "thesis": "视频最终将核心失误归结为实验经验不足与风险校准缺失，并警示学历、算法能力和外部支持都不能替代对不可逆人类实验后果的敬畏。",
+      "title": "经验缺口与人类实验警示"
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "claim_c82399d866e1ffc6",
+      "evidenceIds": [
+        "mtr_166d87e3660587438d3dea34151a6952",
+        "mtr_e9e6edd2194421782b6dcdfe980d1c25",
+        "mtr_4dcf8a2555c13088322fd8a0c7beb4c6",
+        "mtr_9a13a973c93b276b8b1c3907ba15575b"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "视频将贫困出身、学业天赋和对物理的兴趣视为贺建奎科学家理想及后续道路的基础。"
+    },
+    {
+      "claimId": "claim_e427ea04dd8b4345",
+      "evidenceIds": [
+        "mtr_69b9e987e59172f94391dfd5963b8775",
+        "mtr_26a810035fb58b5a4e6a41d50eef7541",
+        "mtr_d8711f58d5a91f155dfd63c239c9e1e7",
+        "mtr_0415e91bf6884c0cb78aea62a775e82a"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "博士阶段延续了以物理建模、算法优化和计算机模拟研究生物问题的路径。"
+    },
+    {
+      "claimId": "claim_1b7ab31c148ce003",
+      "evidenceIds": [
+        "mtr_833991f1cd422df180174e2ef441fa5c",
+        "mev_0d63eb38babbc7c154450a41a8d6b064",
+        "mev_4186384717a1dfb5e51d5ab1a98ac7e1",
+        "mtr_d21fd1864d82ac97eac297e65c212988",
+        "mtr_46641599dfec3146483462d374d40ecf"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "斯坦福博士后经历及深圳人才计划使其快速获得职位、经费和产业资源。"
+    },
+    {
+      "claimId": "claim_bfb2bebbd8f178ba",
+      "evidenceIds": [
+        "mtr_26b7529caf9580dd32fe34d5b9468c03",
+        "mev_0b0cc903257c6efca66a9aa81d596617",
+        "mev_0c0c6078a216c63c3cb02a86230bba62",
+        "mev_e4bb69bca3e03bd88af537921adfc541",
+        "mtr_9994aa4ea89b702982ea577fca1cb253"
+      ],
+      "regions": [
+        "opening",
+        "middle"
+      ],
+      "text": "CRISPR技术的成熟、开源与项目实施最终使人类胚胎基因编辑成为全球性伦理事件。"
+    },
+    {
+      "claimId": "claim_3b576e2cd329c57c",
+      "evidenceIds": [
+        "mtr_1a6fa6ef390a24d09b384409e604d883",
+        "mtr_d78a4dfdac32b7459f9410f1c2e28914",
+        "mtr_15443c1ff1238386bb77b95e893994e5"
+      ],
+      "regions": [
+        "middle"
+      ],
+      "text": "视频指出，CCR5编辑方案存在更低风险的替代路径、技术精度限制以及不可预知的脱靶和终身风险。"
+    },
+    {
+      "claimId": "claim_37b5c891b6a077c3",
+      "evidenceIds": [
+        "mtr_866a3b60d310e22f3fde213eddd39acb",
+        "mev_2b6ca3152274bc0f789ce5cfc8c1298c",
+        "mev_60096bbb9e9cedd6fd1f4a4b0bc5c91f",
+        "mtr_3e4ef66d5826eb0c5a807b5e130f7e28"
+      ],
+      "regions": [
+        "middle"
+      ],
+      "text": "法院以非法行医罪判处贺建奎有期徒刑3年并处罚金300万元，后续修法新增胚胎基因编辑相关罪名。"
+    },
+    {
+      "claimId": "claim_36045af4980b4674",
+      "evidenceIds": [
+        "mtr_aa9fd3d80a87ce508d979042cfd5c5d4",
+        "mtr_e95834a9f5392096934657e092e2791d",
+        "mtr_19e666da342922a0d2118b2523c6120b"
+      ],
+      "regions": [
+        "middle"
+      ],
+      "text": "出狱后，贺建奎借AI生图、粉丝群和线下活动获得流量，也遭遇冲突、开盒并最终停更。"
+    },
+    {
+      "claimId": "claim_64990e4230c0e45f",
+      "evidenceIds": [
+        "mtr_47f5660a8787fc127a097d14382a2990",
+        "mtr_683772d348958e32d3f46da28afe1d9d",
+        "mtr_126cea25e38b02cdd5c1d1d8b7230c34",
+        "mtr_be5e924d191fcdbed04efec896f5a9d4",
+        "mtr_c8ed7babd988a2219a7f277b3ce12dbc"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "视频最终警示，学历、算法能力和支持环境不能替代对不可逆后果的亲历、风险校准与敬畏。"
+    }
+  ],
+  "quality": {
+    "failureCodes": [],
+    "humanReviewRequired": true,
+    "maxChapterSpanRatio": 0.258494,
+    "maxChapterStartConcentration": 0.285714,
+    "sourceCoverageRatio": 1,
+    "status": "complete"
+  },
+  "receipt": {
+    "apiKeyDisclosureCount": 0,
+    "attemptId": "",
+    "cookieUploadCount": 0,
+    "endpointClass": "minimax_chat_completions",
+    "finishReason": "stop",
+    "frameByteUploadCount": 0,
+    "latencyMs": 0,
+    "localPathUploadCount": 0,
+    "modelId": "MiniMax-M3",
+    "outboundDerivedTextSha256": "7f776a3cf284e5f2af022fc8f172fc716ab2d86f1db60e28be5757f37b2cc6a9",
+    "providerId": "minimax-cn-openai-vision",
+    "rawAudioUploadCount": 0,
+    "rawVideoUploadCount": 0,
+    "requestCount": 5,
+    "requestSha256": "",
+    "responseSha256": "",
+    "structureMode": "openai_chat_object"
+  },
+  "regions": [
+    {
+      "availability": "substantive",
+      "endMs": 626293,
+      "evidenceIds": [
+        "mtr_04850745d84a945304f4d05ed81d971e",
+        "mtr_7575f65dabae720280cd68fb7b2197ff",
+        "mtr_69d13451e22165307c8351dda781c9ad",
+        "mtr_166d87e3660587438d3dea34151a6952",
+        "mtr_e9e6edd2194421782b6dcdfe980d1c25",
+        "mtr_4dcf8a2555c13088322fd8a0c7beb4c6",
+        "mtr_9a13a973c93b276b8b1c3907ba15575b",
+        "mtr_f9ffe9288224f554fadf9367254f64c0",
+        "mtr_683b9299a1b67040859daa87ea57ff1b",
+        "mtr_9314d77dbd873ebab03e2c2a9e2b1cf4",
+        "mev_7891a908f810d89431cbecd93001d633",
+        "mev_7f577871505ea62dbe74fd9e96968c7e",
+        "mtr_63881639880c41d56d04df856b1f0d9f",
+        "mtr_bbad97100aba58f78062a696e11f9a11",
+        "mtr_02fe5ce95adc3ad9a5e5cded06090607",
+        "mtr_69b9e987e59172f94391dfd5963b8775",
+        "mtr_26a810035fb58b5a4e6a41d50eef7541",
+        "mtr_d8711f58d5a91f155dfd63c239c9e1e7",
+        "mtr_0415e91bf6884c0cb78aea62a775e82a",
+        "mtr_28324697452523e8e086692d9dc6e452",
+        "mtr_833991f1cd422df180174e2ef441fa5c",
+        "mev_0d63eb38babbc7c154450a41a8d6b064",
+        "mev_4186384717a1dfb5e51d5ab1a98ac7e1",
+        "mtr_d21fd1864d82ac97eac297e65c212988",
+        "mtr_46641599dfec3146483462d374d40ecf",
+        "mtr_71e11235c534b295f2a3f47129e0aed6",
+        "mtr_89c3da227726d97f6eff2ed512d05fc0",
+        "mtr_26b7529caf9580dd32fe34d5b9468c03",
+        "mtr_dc40659f3d086bd8651899c5301d32c1",
+        "mtr_74304da796e0cac05bcddaf99b567f15",
+        "mtr_50df34ae80f17e44767b27710d6491cf",
+        "mtr_43bb606665a68b009970bc7de9146f79"
+      ],
+      "name": "opening",
+      "startMs": 0
+    },
+    {
+      "availability": "substantive",
+      "endMs": 1252586,
+      "evidenceIds": [
+        "mtr_43bb606665a68b009970bc7de9146f79",
+        "mev_0c0c6078a216c63c3cb02a86230bba62",
+        "mev_e4bb69bca3e03bd88af537921adfc541",
+        "mtr_9994aa4ea89b702982ea577fca1cb253",
+        "mtr_a21cc08c9b88d73ff45c827672e23c0b",
+        "mtr_1a6fa6ef390a24d09b384409e604d883",
+        "mtr_d78a4dfdac32b7459f9410f1c2e28914",
+        "mtr_5835e259ffde7c3114d39164ee213d9e",
+        "mtr_88483a9955f46c717b3acccbae89d6c2",
+        "mtr_15443c1ff1238386bb77b95e893994e5",
+        "mtr_98c059853c3729ce3b3a5b9b37a78474",
+        "mtr_866a3b60d310e22f3fde213eddd39acb",
+        "mtr_70d7f31e99e8438ed9bac57235923758",
+        "mev_2b6ca3152274bc0f789ce5cfc8c1298c",
+        "mev_60096bbb9e9cedd6fd1f4a4b0bc5c91f",
+        "mtr_3e4ef66d5826eb0c5a807b5e130f7e28",
+        "mtr_fc8f43f10ac6b02c0f94d97af81d7ef1",
+        "mtr_8548dd8ab3ca148bc1210bf7ed00c94d",
+        "mtr_e7931ec5732797e249543b60dc1cce3d",
+        "mtr_09d8f89c668a9c3432083ca933c775a8",
+        "mtr_7dc84d0effda455c0f385d68733e8b76",
+        "mtr_e579d0d26a24ea87020e4f7dd8ee8b2c",
+        "mtr_4ecc2dbcabee4124e6c5ed220434658c",
+        "mtr_9d589e4c3f0eeccf47f37c5e1c2d61bc",
+        "mtr_4d55b97b90fb3e7df463531f8917684c",
+        "mev_9533f72f0f2862d04d1bce17202b04af",
+        "mev_f1789b153b86edd7530126332d1cb693",
+        "mtr_e56abd17b0c4b2d2fda06f214db30b4c",
+        "mtr_bfa2cd060f79cb19afa68bc45e6a5263",
+        "mtr_56e6395d66414bda61fde79af513539e",
+        "mtr_aa9fd3d80a87ce508d979042cfd5c5d4",
+        "mtr_eb6d33e44bddce88c3d7e86623de8b31",
+        "mtr_e2eb07933f8f64110d19fec18cb1c41f",
+        "mtr_e95834a9f5392096934657e092e2791d",
+        "mtr_19e666da342922a0d2118b2523c6120b",
+        "mtr_636c1ae84320f1312aae9d852c69ecb1",
+        "mtr_1e24db9e5b7a4c0034138e892d3cfd8c"
+      ],
+      "name": "middle",
+      "startMs": 626293
+    },
+    {
+      "availability": "substantive",
+      "endMs": 1878880,
+      "evidenceIds": [
+        "mtr_1e24db9e5b7a4c0034138e892d3cfd8c",
+        "mev_68099fd7bce4fe2fc1459a6de5869458",
+        "mev_e3e257354d6eb10ad30cc70c2f87d555",
+        "mtr_2cc87d9f616e15ce7a6f7b3f0b850bda",
+        "mtr_026fa3432ba941d05f65c3b38f4592e0",
+        "mtr_482c0d6b0293a38b7f15e5ab8738d590",
+        "mtr_3854ad9df2e341a44b044929f4bafa5a",
+        "mtr_5ab7fc9281da319c694c558779d628cb",
+        "mtr_3e320ed4e49360792a77c839557bba32",
+        "mtr_15a6ecd9b430219bbcd772fb951d2daa",
+        "mtr_391037e39f0383cc16792d5ae8553402",
+        "mtr_176e988c18309f299bd791c6731de030",
+        "mev_52f1fb53e2f2c935d2b9ff0f955f6dd3",
+        "mev_dc2c554c449d4f30a897ad36ea05b231",
+        "mtr_87c402a22e764c469bc5873ab6855719",
+        "mtr_32d43882bbdd0ce598c4e2604b9cb0a0",
+        "mtr_4c63a1fdd65d24d9a2c27adfc0ac30f8",
+        "mtr_02c6e569ab5dafb0a155cde0677c90ab",
+        "mtr_47f5660a8787fc127a097d14382a2990",
+        "mtr_83360c85e6a9d51e223fc4206bb350be",
+        "mtr_4fddef00775ded4d1762eefbbf94c392",
+        "mev_1b85c222ba8d9b08198bcd8512c33304",
+        "mev_77ffe8fe6e5844e051838960061163c9",
+        "mtr_683772d348958e32d3f46da28afe1d9d",
+        "mtr_126cea25e38b02cdd5c1d1d8b7230c34",
+        "mtr_be5e924d191fcdbed04efec896f5a9d4",
+        "mtr_d1419e1deaa406e19ac6a6f8764c2222",
+        "mtr_f6b7e237b95679fe6ee23ed20247e03d",
+        "mtr_9ddc1df3f5cddf27152584fe5ce59bb5",
+        "mtr_1a88bfeb1279cdf63dde3e3a945e8d77",
+        "mtr_4b6cc959fe143889292cc7415bb76be8",
+        "mtr_c8ed7babd988a2219a7f277b3ce12dbc"
+      ],
+      "name": "ending",
+      "startMs": 1252586
+    }
+  ],
+  "schemaVersion": "v3-media-grounded-comprehension/v2.1"
+}

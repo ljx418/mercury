@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "v3-stage-a-browser-route-drift-evidence/v1",
+  "runId": "20261012T135152769Z",
+  "bvid": "BV1hMpE6FEXG",
+  "outcome": "route_drift_checked",
+  "permissionFixture": "pregranted_in_temporary_extension_only",
+  "nativePromptClicked": false,
+  "finalPermission": {
+    "cookies": true,
+    "bilibili": true
+  },
+  "identityClosed": false,
+  "taskIds": [],
+  "productStates": [],
+  "embeddedTaskId": "media_task_881419417823496b8843c6b11674c8c4",
+  "embeddedTaskIdBeforeWorkspace": null,
+  "embeddedTaskIdAfterWorkspace": "media_task_881419417823496b8843c6b11674c8c4",
+  "secondTabTaskId": null,
+  "resolutionPosts": 1,
+  "executeCount": 1,
+  "authorityReadCount": 3,
+  "cancelClicked": false,
+  "previewCheck": null,
+  "reconnectEvidence": null,
+  "routeDriftEvidence": {
+    "createdTaskId": "media_task_881419417823496b8843c6b11674c8c4",
+    "unknownTaskId": "media_task_ffffffffffffffffffffffffffffffff",
+    "oldReadHeld": true,
+    "oldReadReleased": true,
+    "oldResponse": {
+      "at": 1791813112035,
+      "status": 200,
+      "taskId": "media_task_881419417823496b8843c6b11674c8c4",
+      "revision": 1,
+      "state": "created"
+    },
+    "unknownResponse": {
+      "at": 1791813104095,
+      "status": 404,
+      "taskId": null,
+      "revision": null,
+      "state": null
+    },
+    "wrongRoute": {
+      "route": "#/media/tasks/media_task_ffffffffffffffffffffffffffffffff",
+      "taskId": "",
+      "errorVisible": true,
+      "taskContentCount": 0
+    },
+    "recovered": {
+      "route": "#/media/tasks/media_task_881419417823496b8843c6b11674c8c4",
+      "taskId": "media_task_881419417823496b8843c6b11674c8c4",
+      "taskContentCount": 1
+    }
+  },
+  "visualRequestCount": 0,
+  "visualReleases": [],
+  "visualResponses": [],
+  "authorityRows": [
+    {
+      "task_id": "media_task_881419417823496b8843c6b11674c8c4",
+      "state": "active"
+    }
+  ],
+  "postReleaseAuthority": null,
+  "postReleaseTasks": null,
+  "privateResiduals": [],
+  "cancelClosed": false,
+  "workspaceCancelled": null,
+  "embeddedCancelled": null,
+  "standaloneCancelled": null,
+  "workspaceLive": null,
+  "workspacePendingChecks": [],
+  "workspaceOverviewChecks": [],
+  "workspaceChecks": [],
+  "workspaceMindmapChecks": [],
+  "workspaceKeyboardRoute": false,
+  "workspaceMindmapKeyboard": false,
+  "observations": []
+}

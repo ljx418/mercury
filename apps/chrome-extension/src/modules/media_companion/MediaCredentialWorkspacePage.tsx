@@ -1,14 +1,20 @@
-import { useEffect, useMemo, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import {
   bootstrapMediaCaptureGrant,
   bootstrapMediaCredentialChannel,
   cancelMediaTranscriptProjection,
-  createMediaAcquisition,
+  resolveMediaAcquisition,
   executeMediaAcquisition,
   getMediaCaptureEligibility,
   recordMediaCaptureRouteFailure,
+  cancelLocalMediaImport,
+  createLocalMediaImport,
+  getLocalMediaImport,
   type MediaAcquisitionInput
 } from "../../runtimeClient";
+import { createLocalImportRuntimeClient, localImportSessionGeneration } from "./createLocalImportRuntimeClient";
+import { hasPublishedMediaProjection, localImportEntryEligible, mediaNavigationIdentity } from "./localImportEntry";
+import { LocalMediaImportCard } from "./settings/LocalMediaImportCard";
 import { LocalRuntimeAccess, type LocalRuntimeAccessChange } from "../knowledge_workspace/LocalRuntimeAccess";
 import { MediaConsentCard } from "./MediaConsentCard";
 import { MediaCredentialLeaseCard, type MediaCredentialLeaseUiState } from "./MediaCredentialLeaseCard";
@@ -49,7 +55,7 @@ export function MediaCredentialWorkspacePage() {
   const captureMessages = useMemo(() => new MediaCaptureMessageClient((message) => chrome.runtime.sendMessage(message)), []);
   const acquisitionClient = useMemo(() => new MediaAcquisitionClient({
     collectCurrentContext: createChromeMediaContextCollector(),
-    create: createMediaAcquisition,
+    resolve: resolveMediaAcquisition,
     execute: executeMediaAcquisition,
     recordPublicSubtitleFailure: recordMediaCaptureRouteFailure
   }), []);
@@ -61,6 +67,7 @@ export function MediaCredentialWorkspacePage() {
   const [runtimeConnected, setRuntimeConnected] = useState(false);
   const [credentialState, setCredentialState] = useState<MediaCredentialLeaseUiState>("idle");
   const [lease, setLease] = useState<PortalCredentialLease | null>(null);
+  const [authoritativeTaskId, setAuthoritativeTaskId] = useState<string | null>(null);
   const [credentialError, setCredentialError] = useState<string | null>(null);
   const [captureEligibility, setCaptureEligibility] = useState<Awaited<ReturnType<typeof getMediaCaptureEligibility>> | null>(null);
   const [captureState, setCaptureState] = useState<"awaiting_user" | "starting" | "capturing" | "stopping" | "transcribing" | "succeeded" | "failed">("awaiting_user");
@@ -69,8 +76,19 @@ export function MediaCredentialWorkspacePage() {
   const [acquisitionInput, setAcquisitionInput] = useState<MediaAcquisitionInput | null>(null);
   const [acquisitionFailure, setAcquisitionFailure] = useState<string | null>(null);
   const [acquisitionSourceIdentity, setAcquisitionSourceIdentity] = useState<string | null>(null);
+  const acquisitionSourceIdentityRef = useRef<string | null>(null);
+  const navigationIdentityRef = useRef<string | null>(null);
   const [taskActionState, setTaskActionState] = useState<"cancelling" | "retrying" | null>(null);
-  const taskAuthority = useMediaAcquisitionTask({ taskId: lease?.taskId, sourceIdentity: acquisitionSourceIdentity });
+  const taskAuthority = useMediaAcquisitionTask({ taskId: authoritativeTaskId ?? lease?.taskId, sourceIdentity: acquisitionSourceIdentity });
+  // WP-B: ONE client per page identity, built by the production factory so the
+  // Runtime URL, the bearer and the session generation have a single source.
+  const localImportClient = useMemo(() => createLocalImportRuntimeClient(), []);
+  const taskId = authoritativeTaskId ?? lease?.taskId ?? null;
+  const sourceIdentity = acquisitionSourceIdentity;
+
+  useEffect(() => {
+    acquisitionSourceIdentityRef.current = acquisitionSourceIdentity;
+  }, [acquisitionSourceIdentity]);
 
   async function monitorTranscript(taskId: string) {
     setAcquisitionState("transcribing");
@@ -124,16 +142,75 @@ export function MediaCredentialWorkspacePage() {
   }, []);
 
   useEffect(() => {
+    if (!runtimeConnected || !adapterId) return;
     let active = true;
-    if (runtimeConnected && adapterId) {
-      void createChromeMediaContextCollector()().then((context) => {
-        if (active) setAcquisitionSourceIdentity(mediaSourceIdentity(context));
-      }).catch(() => {
-        if (active) setAcquisitionSourceIdentity(null);
-      });
-    }
-    return () => { active = false; };
-  }, [runtimeConnected, adapterId]);
+    let revision = 0;
+    const collector = createChromeMediaContextCollector();
+
+    const clearOldIdentity = () => {
+      void localImportClient.abandonAll();
+      acquisitionSourceIdentityRef.current = null;
+      setAcquisitionSourceIdentity(null);
+      setAuthoritativeTaskId(null);
+      setLease(null);
+      setCredentialState("idle");
+      setAcquisitionState("idle");
+      setAcquisitionInput(null);
+      setAcquisitionFailure(null);
+      setCaptureEligibility(null);
+      setCaptureState("awaiting_user");
+      setCaptureError(null);
+    };
+
+    const refreshIdentity = async () => {
+      const requestRevision = ++revision;
+      try {
+        const context = await collector();
+        if (!active || requestRevision !== revision) return;
+        const nextIdentity = mediaSourceIdentity(context);
+        const previousIdentity = acquisitionSourceIdentityRef.current;
+        if (previousIdentity && previousIdentity !== nextIdentity) clearOldIdentity();
+        acquisitionSourceIdentityRef.current = nextIdentity;
+        setAcquisitionSourceIdentity(nextIdentity);
+      } catch {
+        // A navigation boundary already clears the old identity. A content
+        // script that is still loading must not restore stale ownership.
+      }
+    };
+
+    const inspectActiveTab = async () => {
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!active) return;
+      const tab = tabs.find((candidate) => typeof candidate.id === "number");
+      const nextNavigation = mediaNavigationIdentity(tab?.url ?? "");
+      if (navigationIdentityRef.current && nextNavigation && navigationIdentityRef.current !== nextNavigation) {
+        clearOldIdentity();
+      }
+      navigationIdentityRef.current = nextNavigation;
+      await refreshIdentity();
+    };
+
+    const onUpdated: Parameters<typeof chrome.tabs.onUpdated.addListener>[0] = (_tabId, changeInfo, tab) => {
+      if (!tab.active) return;
+      const nextNavigation = mediaNavigationIdentity(changeInfo.url ?? tab.url ?? "");
+      if (changeInfo.url && navigationIdentityRef.current && nextNavigation !== navigationIdentityRef.current) {
+        clearOldIdentity();
+        navigationIdentityRef.current = nextNavigation;
+      }
+      if (changeInfo.status === "complete" || Boolean(changeInfo.url)) void refreshIdentity();
+    };
+    const onActivated = () => { void inspectActiveTab(); };
+
+    void inspectActiveTab();
+    chrome.tabs.onUpdated?.addListener(onUpdated);
+    chrome.tabs.onActivated?.addListener(onActivated);
+    return () => {
+      active = false;
+      revision += 1;
+      chrome.tabs.onUpdated?.removeListener(onUpdated);
+      chrome.tabs.onActivated?.removeListener(onActivated);
+    };
+  }, [runtimeConnected, adapterId, localImportClient]);
 
   async function authorize() {
     if (!adapterId || busy) return;
@@ -234,12 +311,19 @@ export function MediaCredentialWorkspacePage() {
           policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
           policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
         });
-        setAcquisitionInput(acquisition.execution.input);
+        setAuthoritativeTaskId(acquisition.taskId);
+        if (acquisition.disposition !== "created") {
+          const messages = new PortalCredentialMessageClient({ sendMessage: (message) => chrome.runtime.sendMessage(message) });
+          const revoked = await messages.revokeLease(result.value.leaseId);
+          if (!revoked.ok) throw new Error(revoked.failureCode);
+          setLease(null);
+        }
+        setAcquisitionInput(acquisition.execution?.input ?? null);
         setAcquisitionSourceIdentity(mediaSourceIdentity(acquisition.context));
         setAcquisitionFailure(acquisition.failureCode);
         setAcquisitionState(acquisition.status);
         setCaptureEligibility(acquisition.eligibility);
-        if (acquisition.execution.transcript) void monitorTranscript(acquisition.execution.transcript.taskId);
+        if (acquisition.execution?.transcript) void monitorTranscript(acquisition.execution.transcript.taskId);
       } catch (error) {
         setCaptureEligibility(null);
         setAcquisitionState("failed");
@@ -399,6 +483,25 @@ export function MediaCredentialWorkspacePage() {
         onFinish={() => void stopCapture("completed")}
         onCancel={() => void cancelCurrentTask()}
       /> : null}
+      {/* WP-B: the explicit local import is a LAST RESORT. The single frozen
+          predicate decides whether it is offered at all. */}
+      {localImportEntryEligible({
+        captureFallbackEligible: captureEligibility?.captureFallbackEligible === true,
+        captureState,
+        acquisitionState,
+        hasProjection: hasPublishedMediaProjection(taskAuthority.projection),
+        taskId,
+        sourceIdentity
+      }) ? (
+        <LocalMediaImportCard
+          eligible
+          blockedReason="当前三种自动方式都不可用，可以选择一个本地视频文件继续。"
+          taskId={taskId ?? ""}
+          sourceIdentity={sourceIdentity ?? ""}
+          client={localImportClient}
+          generation={localImportSessionGeneration}
+        />
+      ) : null}
     </div>
   </main>;
 }

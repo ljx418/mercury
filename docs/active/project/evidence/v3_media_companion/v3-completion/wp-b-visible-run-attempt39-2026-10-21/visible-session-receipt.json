@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [
+    {
+      "case": "B27",
+      "xhrAborted": true,
+      "abortProof": "runtime-partial-terminal",
+      "deleteObserved": true,
+      "statusConverged": true,
+      "identityContained": true,
+      "residue": {
+        "storageImportId": 0,
+        "storageBearer": 0,
+        "storageUploadToken": 0,
+        "fileName": 0,
+        "importId": 0,
+        "token": 0
+      },
+      "sequence": 3,
+      "terminalState": "cancelled",
+      "importId": "media_import_87e3d6c7e932f4c17514b9e07f2138b1",
+      "eventsDigest": "fnv1a32:026578ac"
+    }
+  ],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B29",
+    "failure": "B29: cleanup ran 0 times instead of exactly once.",
+    "ownedResidue": null
+  }
+}

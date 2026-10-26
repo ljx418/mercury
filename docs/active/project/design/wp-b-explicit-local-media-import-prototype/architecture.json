@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "WP-B 显式本地视频导入目标架构",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [1380, 1020]
+  },
+  "layout": {"mode": "grid", "origin": [60, 100], "cols": 4, "gapX": 65, "gapY": 118, "cellW": 260, "cellH": 155},
+  "components": [
+    {"id": "user", "type": "external", "label": "用户显式选择", "sublabel": "单文件 · 一次手势", "row": 0, "col": 0, "size": [240, 84]},
+    {"id": "panel", "type": "frontend", "label": "Side Panel + Client", "sublabel": "File 仅内存 · XHR 字节进度", "row": 0, "col": 1, "size": [240, 84]},
+    {"id": "api", "type": "security", "label": "Privileged Local Import API", "sublabel": "exact Origin · bearer · one-shot token", "row": 0, "col": 2, "size": [250, 84]},
+    {"id": "manager", "type": "backend", "label": "LocalMediaImportManager", "sublabel": "worker · writer · cancel owner", "row": 0, "col": 3, "size": [240, 84]},
+    {"id": "asr", "type": "backend", "label": "SenseVoice Consumer", "sublabel": "audio owner receipt · terminal receipt", "row": 1, "col": 0, "size": [240, 84]},
+    {"id": "coordinator", "type": "backend", "label": "MediaAcquisitionCoordinator", "sublabel": "同一 task / SourceAuthority", "row": 1, "col": 1, "size": [250, 84]},
+    {"id": "store", "type": "database", "label": "LocalMediaImportStore", "sublabel": "SQLite FULL · sequence CAS · restart scan", "row": 1, "col": 2, "size": [250, 84]},
+    {"id": "acquisition", "type": "database", "label": "TaskArtifactSandbox", "sublabel": "video + WAV · quota · owner manifests", "row": 1, "col": 3, "size": [240, 84]},
+    {"id": "barrier", "type": "security", "label": "LocalMediaConsumerBarrier", "sublabel": "T1-T4 · 双终态 · 单一 cleanup owner", "row": 2, "col": 0, "size": [250, 84]},
+    {"id": "visual", "type": "backend", "label": "Visual Product Consumer", "sublabel": "截图 · OCR · 图文产品 · terminal receipt", "row": 2, "col": 1, "size": [250, 84]},
+    {"id": "visualSandbox", "type": "database", "label": "media_visual_sandbox", "sublabel": "1..8 frames · canonical visual receipt", "row": 2, "col": 2, "size": [250, 84]},
+    {"id": "preparer", "type": "backend", "label": "LocalMediaPreparer", "sublabel": "verified ffprobe/ffmpeg · audio + frames", "row": 2, "col": 3, "size": [250, 84]}
+  ],
+  "boundaries": [
+    {"kind": "security-group", "label": "Chrome extension document", "wraps": ["panel"], "pad": 26},
+    {"kind": "region", "label": "Authenticated local Runtime", "wraps": ["api", "manager", "asr", "coordinator", "store", "acquisition", "barrier", "visual", "visualSandbox", "preparer"], "pad": 34}
+  ],
+  "connections": [
+    {"from": "user", "to": "panel", "label": "原生单文件选择", "variant": "emphasis"},
+    {"from": "panel", "to": "api", "label": "认证 raw stream；不发送路径", "variant": "security", "labelDy": 66},
+    {"from": "api", "to": "manager", "label": "精确合同；认证先于 writer", "labelDy": -29},
+    {"from": "manager", "to": "store", "label": "FULL transaction + CAS"},
+    {"from": "manager", "to": "acquisition", "label": "私有 video staging", "labelDy": 24},
+    {"from": "acquisition", "to": "preparer", "label": "verified task-owned media", "fromSide": "bottom", "toSide": "top", "labelDy": 24},
+    {"from": "preparer", "to": "visualSandbox", "label": "frames + canonical receipt", "labelDy": 66},
+    {"from": "preparer", "to": "coordinator", "label": "WAV + visual receipt bind", "fromSide": "top", "toSide": "bottom"},
+    {"from": "coordinator", "to": "asr", "label": "explicit_local_media_asr", "labelDy": 73},
+    {"from": "visualSandbox", "to": "visual", "label": "task-bound frames", "labelDy": 66},
+    {"from": "asr", "to": "barrier", "label": "audio owner + terminal receipt", "fromSide": "bottom", "toSide": "top"},
+    {"from": "visual", "to": "barrier", "label": "visual terminal receipt", "labelDy": 66}
+  ],
+  "cards": [
+    {"dot": "rose", "title": "删除屏障", "items": ["bind + audio receipt + visual receipt durable 后才删原视频", "ASR 与视觉均 terminal 后才清双沙箱"]},
+    {"dot": "emerald", "title": "重启与隐私", "items": ["SQLite 不保存 token、文件名或路径", "新进程返回持久失败并按 manifest fail closed"]}
+  ]
+}

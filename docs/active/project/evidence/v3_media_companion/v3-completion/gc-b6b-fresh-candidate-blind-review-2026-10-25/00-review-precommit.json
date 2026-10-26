@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "v3-5.10-b6b-review-precommit/v1",
+  "batch": "GC-B6B FRESH CANDIDATE + BLIND SEMANTIC REVIEW",
+  "frozenBeforeAnyExternalAction": true,
+  "frozenAtUtc": "2026-10-25T05:57:32.905Z",
+  "rubricSha256": "e2583ba9973b2b105e1cd2086dc7d28d2346f298c97e39094d989d74db034c8d",
+  "promptSha256": "97ceedd88adcce824aba749ecfbf5db0cce46603a88083b9235854a5f34635cc",
+  "rubricBytes": 3857,
+  "promptBytes": 5126,
+  "rubricLocation": "the private review root (review-protocol/rubric.md); it reproduces the frozen acceptance plan rubric verbatim",
+  "promptLocation": "the private review root (review-protocol/prompt.md)",
+  "firstPass": {
+    "sessionId": "b6b-pass1-6a3860b785ac33b7",
+    "reviewOrder": [
+      "1",
+      "3",
+      "5",
+      "6",
+      "2",
+      "4"
+    ],
+    "orderMeaning": "the random presentation order of the six sources; the registry order of each source is the identity key, not the position"
+  },
+  "sentinel": {
+    "registryOrder": "3",
+    "firstPassPosition": 2,
+    "secondPassSessionId": "b6b-sentinel-c100a0ff9280841c",
+    "secondPassPosition": 5,
+    "rule": "the sentinel is reviewed twice: the same session twice is a failure, the same position twice is a failure, a reversed thesis or claim verdict is a failure, an axis drift greater than 1 is a failure"
+  },
+  "randomSource": "node:crypto randomInt (Fisher-Yates) and randomBytes; the order was drawn BEFORE the first external action and is never changed afterwards"
+}

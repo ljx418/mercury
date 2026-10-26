@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV11t8w6oEtP",
+  "order": "1",
+  "finalDisposition": "blocked",
+  "finishReason": "stage_a_authority_timeout_for_bvid_BV11t8w6oEtP: no media_source_authority row after 5 minutes (enable_button=true; permission_denied=false)",
+  "error": {
+    "name": "Error",
+    "message": "Stage A authority did not converge within 7 minutes",
+    "stack": "Error: Stage A authority did not converge within 7 minutes\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:604:11"
+  },
+  "startedAtUtc": "2026-10-23T17:24:13.633Z",
+  "finishedAtUtc": "2026-10-23T17:29:28.296Z"
+}

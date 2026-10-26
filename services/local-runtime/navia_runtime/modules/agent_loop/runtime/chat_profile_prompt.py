@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-PAGE_CONTEXT_PROMPT_CHAR_LIMIT = 12_000
+PAGE_CONTEXT_PROMPT_CHAR_LIMIT = 18_000
 _SECRET_PATTERNS = (
     re.compile(r"sk-[A-Za-z0-9_-]{8,}"),
     re.compile(r"Bearer\s+[A-Za-z0-9._-]+", re.IGNORECASE),
@@ -45,6 +45,7 @@ def build_prompt_envelope(user_message: str, *, task_type: str = "general_chat",
         if task_type == "mindmap_page"
         else ""
     )
+    task_instruction = _task_instruction(task_type)
     page_context_block = (
         "\nPAGE_CONTEXT:\n"
         "以下 PAGE_CONTEXT 就是当前浏览器页面内容。不要说你无法访问浏览器页面，不要根据终端/coding-agent 运行环境拒答。不要请求读取目录、文件或命令。\n"
@@ -57,10 +58,30 @@ def build_prompt_envelope(user_message: str, *, task_type: str = "general_chat",
         f"TASK_TYPE: {task_type}\n"
         f"CONTEXT_SOURCE: {context_source}\n"
         "TOOLS_ALLOWED: false\n"
+        f"{task_instruction}"
         f"{mindmap_instruction}"
         f"{page_context_block}\n"
         f"USER_REQUEST:\n{user_message}"
     )
+
+
+def _task_instruction(task_type: str) -> str:
+    if task_type == "summarize_page":
+        return (
+            "\nSUMMARY_OUTPUT_REQUIREMENTS:\n"
+            "1. 先判断页面的正文类型与核心问题，忽略导航、推荐、评论、登录提示和重复控件。\n"
+            "2. 第一段用 1-2 句给出全文主旨，不复述页面标题。\n"
+            "3. 再按原文逻辑给出 3-7 个带小标题的要点，区分观点、依据、步骤、例子与限制。\n"
+            "4. 对数字、人名、时间、因果和结论只保留 PAGE_CONTEXT 明确支持的内容；信息不足时明确标注。\n"
+            "5. 结尾给出“阅读结论”，说明读者应记住什么；不要输出泛化建议或与页面无关的常识。\n"
+            "6. 如果 PAGE_CONTEXT 是视频详情页而非完整字幕，必须说明总结覆盖的是页面资料，不得假装已理解整段视频。\n"
+        )
+    if task_type == "page_qa":
+        return (
+            "\nPAGE_QA_REQUIREMENTS: 先定位 PAGE_CONTEXT 中直接支持答案的段落，再回答；"
+            "不得把标题、推荐内容或评论当作正文依据。证据不足时直说不足。\n"
+        )
+    return ""
 
 
 def build_page_context_prompt(active_page: dict[str, Any] | None, *, max_chars: int = PAGE_CONTEXT_PROMPT_CHAR_LIMIT) -> str:

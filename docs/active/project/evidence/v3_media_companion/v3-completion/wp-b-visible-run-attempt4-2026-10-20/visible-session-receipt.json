@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [],
+  "residue": {
+    "chrome": false,
+    "runtime": false,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": null,
+    "failure": "EXTERNAL-INPUT BLOCK: Chrome did not expose CDP on port 9731 within 30000 ms. startupDiagnostic={\"ownedProcessCount\":14,\"windowsCdpReachable\":false}",
+    "ownedResidue": null
+  }
+}

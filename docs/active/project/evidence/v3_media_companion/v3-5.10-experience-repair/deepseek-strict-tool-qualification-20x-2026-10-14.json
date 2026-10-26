@@ -1,0 +1,396 @@
+{
+  "schemaVersion": "v3-provider-structured-output-probe/v1",
+  "syntheticDataOnly": true,
+  "trialsPerMode": 20,
+  "targetSchemaSha256": "4cf295dd9e1ee1270a4704fa94e5441e8e5e3c5b55ca51206e680a94feafb880",
+  "results": [
+    {
+      "mode": "beta_strict_tool",
+      "trial": 1,
+      "latencyMs": 2532,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2410,
+      "responseSha256": "2de86be53e820fabca2b1b784168d3c96ac1b5d6c8264f4f3c3c1709046b28fa",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 2,
+      "latencyMs": 2627,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2168,
+      "responseSha256": "a05752ffacb59c2e267854f493e63cb75ed14df30b6b4b978f0d019069e0e87b",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 70
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 3,
+      "latencyMs": 3098,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2521,
+      "responseSha256": "d3d6dad235112fffa014aecdb184530923e2728e2f81bfcf6416c27ab472f95f",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 4,
+      "latencyMs": 2419,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "90968a818a9f75192e9ddb5b54beab81b063fc73d736cf3322f939dd634b52a7",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 5,
+      "latencyMs": 2569,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2168,
+      "responseSha256": "231d766dafc023c1025cb461ae5cf39ad68d83b357db58fd8049acc69cfac340",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 70
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 6,
+      "latencyMs": 2259,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2168,
+      "responseSha256": "4bcd78d888a52168e2b5af0d34f6abd10d65c0f664743d13164184650c87ba80",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 70
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 7,
+      "latencyMs": 2414,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "2a8eee7b0f86eb61bf032cc0a3dd06e1b502ae0019b110f4595c5571110ad916",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 8,
+      "latencyMs": 2185,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "5d855701357e8aa3c600dd20c8d3224b7cef215edc2ba019e7453f3c806ab236",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 70
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 9,
+      "latencyMs": 2206,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2135,
+      "responseSha256": "a4c270ac8894b3e16ede5322cfc3a2de812d4b458e0d4844c3b48cf6c72936d9",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 10,
+      "latencyMs": 2397,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2449,
+      "responseSha256": "0c320723ae0fcb77fe8b0da27ceb07cd32e7c78fa488704ab093beb1f34fad8a",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 11,
+      "latencyMs": 2779,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2216,
+      "responseSha256": "b3b1039a27af598272363f24bb78957039494fd1d221f753c0429ff40612f6e6",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 12,
+      "latencyMs": 2842,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2413,
+      "responseSha256": "aba9f8ce4e20ab639229f025f3525e1a051988c43fbc18c4b1cfa6666a3fbad6",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 13,
+      "latencyMs": 2705,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2383,
+      "responseSha256": "765d6c795e5f441871f0167330b84a7a14b5c1e5fe0fd67a71a6f858537ffba2",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 14,
+      "latencyMs": 2728,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2356,
+      "responseSha256": "91e9e36b302a7f8c14a2e61de35bd684be22eacacc385c56bceda0fa6f7671dd",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 70
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 15,
+      "latencyMs": 2158,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2135,
+      "responseSha256": "cf24cc1f4b47de74de20279b93aaf1a152060e5034bfa7856950cd7150718dc5",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 16,
+      "latencyMs": 2147,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "8ce5563e60324073fceafc1bca98b4dead2fab33177061caf0e748bc2e805f95",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 17,
+      "latencyMs": 2358,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2410,
+      "responseSha256": "8e24ab53cc211ff651c5a58f24420f6e95803efc105153d6c1e3de9be81c3afa",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 18,
+      "latencyMs": 2368,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "5599afa79566d3f56154eb37cad712721afe88a0a38e30a75646edc69bae4752",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 19,
+      "latencyMs": 2280,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2177,
+      "responseSha256": "03dcb254457cc133f2918e0feb6b9812863867e8cedfdf72ce0b45cb36eb99ad",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 20,
+      "latencyMs": 2011,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2222,
+      "responseSha256": "09fa8579a9d0c833f0097e41892e9fa570a08ed0b2a048dcc2cc5daf25b63181",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    }
+  ],
+  "summary": {
+    "beta_strict_tool": {
+      "passed": 20,
+      "total": 20
+    }
+  },
+  "secretMaterialPersisted": false,
+  "realProjectEvidenceUploaded": false
+}

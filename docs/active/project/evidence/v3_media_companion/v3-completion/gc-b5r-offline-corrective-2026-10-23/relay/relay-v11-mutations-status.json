@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "v3-5.10-gc-b5r-relay-v11-mutation-status/v1",
+  "command": "python3 docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-mutations.py",
+  "status": "not run: canonical baseline pending Codex refreeze",
+  "reason": "The canonical baseline is not green: the only failing checks are the authorized app.py source-scope hash drift and its semantic cascade. The corrective goal requires the mutations to run only when the canonical baseline is green.",
+  "refreezePerformedByClaudeCode": false
+}

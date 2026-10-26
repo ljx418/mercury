@@ -1,0 +1,21 @@
+# WP-B continuation — test results (Runtime + Extension)
+
+## Runtime local-import suite
+........................................................................ [ 97%]
+....                                                                     [100%]
+148 passed in 54.46s
+
+## Runtime full suite, chunked (a single run is killed by the host with exit 137)
+chunk 1 (files 1-30): 263 passed
+chunk 2 (files 31-62): 498 passed
+chunk 3 (files 63-92): 247 passed, 1 failed
+the single failure: tests/test_wp0_r4_restart_and_security.py::test_no_secret_or_private_path_leaks_into_the_observable_surface
+WP0-owned timing race, see 00-continuation-report.md section 7; not introduced by C3-C7 and not fixed here
+
+## Extension
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent without both the task id and the source identity 0ms
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+
+## TypeScript
+npx tsc --noEmit: clean except the pre-existing vitest.config.ts module-overload error

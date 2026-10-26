@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "v3-5.10-b5-offline-corrective-changed-files/v1",
+  "generatedAtUtc": "2026-10-24",
+  "changedFiles": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/action_ledger.mjs",
+      "sha256": "bd00874a894f5753d14fe7c477a1b90bcaf94cf43f27439a9c75e081dc88e846",
+      "byteLength": 8523,
+      "change": "new — the durable append-only stage action ledger and the one-shot visible authorization"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/aggregate.mjs",
+      "sha256": "30e82ac592a4c23ab1c614b216e08d18b17804b5a06a9d18954b8b6f8cee408d",
+      "byteLength": 12139,
+      "change": "the Provider rule: a failed attempt is never misclassified as a foreign Provider"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/contracts.mjs",
+      "sha256": "eb9d7f6b2038b76201806df296e38d260e04f526c40c12c753002a4edd3b941a",
+      "byteLength": 6269,
+      "change": "the exact Provider lock (the selected product id and the endpoint class)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/extension_fixture.mjs",
+      "sha256": "0bdee8a7f5e361ef2acbe8e98732884fb362c878f60bf915e86bf62e9cdd8cc0",
+      "byteLength": 4039,
+      "change": "the canary's frozen pre-granted permission promotion, shared with the canary"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "sha256": "9a5f8a1dde9ccd3916557f0dbd405d029394b6a3b05cd0ac866f65b51d524a43",
+      "byteLength": 5973,
+      "change": "the owned-session composition over the product's own helpers"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/preflight.mjs",
+      "sha256": "b541be0c3ff7806673393b67f7799c3d11ea96d30ed54e36c58e18c8e447d286",
+      "byteLength": 11295,
+      "change": "the preflight consumes the active registry and validates the declared identity and path exactly"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/registry.mjs",
+      "sha256": "15bbb4d8660459312a9ce460ec26b0909f08139d6a62b7676ab241865da054dd",
+      "byteLength": 5946,
+      "change": "the active v2 registry: the digest, the order, the reserves and the identity guard"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "sha256": "034d9e60ea7f3df9ea39bbca754d64c9a657eb60e48d9d6506169360acd52386",
+      "byteLength": 23584,
+      "change": "the production preflight (zero visible actions)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "sha256": "2870f4afc1c27ad7f960c943a14701ff276fc6d8bd778d5b9a4d48129fe318e2",
+      "byteLength": 58145,
+      "change": "the single finalizer, the ledger events, the one-shot authorization, the fault seam and the diagnostic sanitizer"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "sha256": "b5ba5285c5ed93aed4771bc934602221480e630d1f15f15f9733527c5952072f",
+      "byteLength": 18019,
+      "change": "the active registry and the aggregate verdict"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/action_ledger.node-test.mjs",
+      "sha256": "f0195a42c952f998cf1b2d6a0b3f18006268c0311dcf2ee35b64e3823e0f295e",
+      "byteLength": 6402,
+      "change": "new — the ledger, the interruption, the malformed prior ledger, the duplicate identifier and the stage/candidate distinction"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/gc_b5r_preflight.node-test.mjs",
+      "sha256": "31f0bb7013b52da88f48b042ae170372146ffc87b97cd5d54341f8a5691ccaac",
+      "byteLength": 22649,
+      "change": "the exact preflight matching and the exact lock"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/production_preflight.node-test.mjs",
+      "sha256": "2b2f56ba945696f8b403bb5b2998a65bd70a729886d83b5a56b7e4965ec630b2",
+      "byteLength": 4845,
+      "change": "the cookie resolution and inspection (no value, no value length, no path)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_failure_evidence.node-test.mjs",
+      "sha256": "d54cb388edf4fc0293a0ff65390941ef13563376f4b37ce37c2a136db398be13",
+      "byteLength": 10168,
+      "change": "new — the real runner driven through all five failure milestones"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+      "sha256": "6a37a30268074ad03bd3b88bf66686f531f34bfe0b2d79d3ded79ae220e1b687",
+      "byteLength": 7540,
+      "change": "new — the static gate (no undefined identifier, no block-scoped read)"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/run_offline_suite.mjs",
+      "sha256": "e8afd80f14ffdf56d590ed4ad2017dad8d5ffa45ccef4f951c427edc54b551f9",
+      "byteLength": 2856,
+      "change": "the ONE offline command"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "sha256": "c5023a929e5bd8095a0e07643c48555e0a2b741611f084087304f864e99fbf09",
+      "byteLength": 12001,
+      "change": "new — the privacy-safe chapter diagnostic"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+      "sha256": "5baa5ec9f333665a4b0b050df420fc42df2f4e7f15e2191dffa14789a1460bf9",
+      "byteLength": 43256,
+      "change": "the receipt extras are read after the request; the private diagnostic is written"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+      "sha256": "6ce1db5dd706f60f341e3637b842e8823d8cb9bdd61eecdee4fa0d3bbf9c6700",
+      "byteLength": 60737,
+      "change": "the adapter enforces the frozen shape and regenerates it with a hard request bound"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_chapter_diagnostics.py",
+      "sha256": "092ae06f2095b73332b4c35bc00fb082bb747fbfb6b89c84c0ea8db5f17a34d7",
+      "byteLength": 18431,
+      "change": "new — the C3 and C4 cases"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_corrective_authority.py",
+      "sha256": "159ce21ae0fee5a6ae3b54a03b78a93f2ef34bdef289e2c76c6511be31e69799",
+      "byteLength": 27533,
+      "change": "the V2.1 schema gates, including the repair path"
+    }
+  ],
+  "unchangedFrozenFiles": [
+    {
+      "path": "services/local-runtime/navia_runtime/app.py",
+      "sha256": "afbf76a0d3a7e11186b5a9257fb1108254972148bd37bb179754a2750bde23c1",
+      "byteLength": 175005,
+      "change": "unchanged by this batch: the production composition of the rejected candidate is retained"
+    },
+    {
+      "path": "docs/active/project/contracts/v3_media_grounded_comprehension_v2_1.schema.json",
+      "sha256": "33b363eef77ee859ceef684eb9404051a5491887a25da85923cca369f4ec8135",
+      "byteLength": 8222,
+      "change": "the frozen V2.1 schema"
+    },
+    {
+      "path": "docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/stage-b-grounded-comprehension-contract.md",
+      "sha256": "c03491d5f55d3950448de75d20f2c89c1195234da05d17329f3a6f19254f38b8",
+      "byteLength": 5735,
+      "change": "the frozen grounded comprehension contract"
+    },
+    {
+      "path": "docs/active/project/fixtures/v3-media-capture-internal-relay-v11-fixtures.json",
+      "sha256": "1eddd4989ee1ef513eba7166a9a6d9e3d209605d82a504781dc47fe8e3fbd763",
+      "byteLength": 51945,
+      "change": "the relay v11 frozen evidence — NOT edited, NOT refrozen"
+    },
+    {
+      "path": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+      "sha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+      "byteLength": 1558,
+      "change": "the canonical v2 registry"
+    },
+    {
+      "path": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/03-preflight-receipt.json",
+      "sha256": "f6cf57804f12f0bddbf3cf3da379369b04d8556c76a274584d35437451985400",
+      "byteLength": 7445,
+      "change": "the preflight receipt of the rejected candidate — historical"
+    }
+  ]
+}

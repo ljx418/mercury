@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mediaTaskPath, resolveMediaWorkspaceRoute } from "./MediaWorkspaceRouter";
+import { mediaChapterPath, mediaTaskPath, resolveMediaWorkspaceRoute, selectedMediaChapter } from "./MediaWorkspaceRouter";
 
 const taskId = `media_task_${"1".repeat(32)}`;
 const evidenceId = `mev_${"2".repeat(32)}`;
@@ -27,6 +27,15 @@ describe("MediaWorkspaceRouter", () => {
   it("migrates the old transcript route to one canonical overview route", () => {
     const resolution = resolveMediaWorkspaceRoute(`#/media/transcript/${taskId}`);
     expect(resolution?.ok && resolution.legacyReplacement).toBe(mediaTaskPath(taskId));
+  });
+
+  it("preserves the media route while selecting a chapter", () => {
+    const chapterId = `chapter_${"a".repeat(16)}`;
+    const hash = mediaChapterPath(taskId, chapterId);
+    const resolution = resolveMediaWorkspaceRoute(hash);
+    expect(resolution?.ok && resolution.route.kind).toBe("outline");
+    expect(selectedMediaChapter(hash)).toBe(chapterId);
+    expect(selectedMediaChapter(mediaTaskPath(taskId, "outline") + "?chapter=invalid")).toBeNull();
   });
 
   it.each([

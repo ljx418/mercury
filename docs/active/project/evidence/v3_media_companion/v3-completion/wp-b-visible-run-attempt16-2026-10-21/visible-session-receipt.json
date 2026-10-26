@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B27",
+    "failure": "The product did not accept the selected local file. state={\"fileCount\":0,\"byteLength\":0,\"phase\":null,\"error\":null,\"importId\":null,\"uploadStarted\":false}",
+    "ownedResidue": null
+  }
+}

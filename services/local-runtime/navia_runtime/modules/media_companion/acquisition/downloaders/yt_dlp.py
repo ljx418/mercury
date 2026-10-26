@@ -10,6 +10,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from ...bilibili_policy import BILIBILI_CREDENTIAL_ENVELOPE_POLICY
+from ...media_cache import MediaDownloadCache
 from ..contracts import AcquiredMedia, MediaIdentity
 from ..coordinator import MediaAcquisitionError
 from ..task_artifacts import ArtifactRef, TaskArtifactError, TaskArtifactSandbox
@@ -32,11 +33,13 @@ class YtDlpMediaDownloader:
         yt_dlp_sha256: str,
         ffmpeg: Path,
         ffmpeg_sha256: str,
+        media_cache: MediaDownloadCache | None = None,
         timeout_seconds: int = 1800,
     ) -> None:
         self._sandbox = sandbox
         self._yt_dlp = Path(yt_dlp).resolve()
         self._ffmpeg = Path(ffmpeg).resolve()
+        self._media_cache = media_cache
         self._timeout_seconds = timeout_seconds
         if _sha256_file(self._yt_dlp) != yt_dlp_sha256 or _sha256_file(self._ffmpeg) != ffmpeg_sha256:
             raise MediaAcquisitionError("V3_MEDIA_RUNTIME_OFFLINE", "Frozen media tool hash mismatch.", status=503)
@@ -49,23 +52,26 @@ class YtDlpMediaDownloader:
         wav_path.unlink()
         raw_files: list[Path] = []
         try:
-            cookie_path.write_text(self._netscape_cookiefile(credentials), encoding="utf-8")
-            cookie_path.chmod(0o600)
-            output_template = f"{raw_marker}.%(ext)s"
-            url = f"https://www.bilibili.com/video/{identity.media_id}?p={identity.part_index}"
-            command = [
-                str(self._yt_dlp), "--ignore-config", "--no-plugin-dirs", "--no-update", "--no-playlist",
-                "--no-cache-dir", "--no-write-info-json", "--no-write-comments", "--no-write-thumbnail",
-                "--retries", "0", "--fragment-retries", "0", "--socket-timeout", "20",
-                "--max-filesize", str(self._sandbox.maximum_audio_bytes),
-                "--cookies", str(cookie_path), "--format", "bestaudio/best", "--output", output_template, url,
-            ]
-            self._run(command)
-            raw_files = [entry for entry in raw_marker.parent.glob(f"{raw_marker.name}.*") if entry != cookie_path]
-            if len(raw_files) != 1 or raw_files[0].is_symlink():
-                raise MediaAcquisitionError("V3_MEDIA_PLATFORM_REJECTED", "Media download did not produce one audio input.", status=502)
-            raw = raw_files[0]
-            raw.chmod(0o600)
+            if self._media_cache is not None:
+                raw = self._cached_video(identity, credentials)
+            else:
+                cookie_path.write_text(self._netscape_cookiefile(credentials), encoding="utf-8")
+                cookie_path.chmod(0o600)
+                output_template = f"{raw_marker}.%(ext)s"
+                url = f"https://www.bilibili.com/video/{identity.media_id}?p={identity.part_index}"
+                command = [
+                    str(self._yt_dlp), "--ignore-config", "--no-plugin-dirs", "--no-update", "--no-playlist",
+                    "--no-cache-dir", "--no-write-info-json", "--no-write-comments", "--no-write-thumbnail",
+                    "--retries", "0", "--fragment-retries", "0", "--socket-timeout", "20",
+                    "--max-filesize", str(self._sandbox.maximum_audio_bytes),
+                    "--cookies", str(cookie_path), "--format", "bestaudio/best", "--output", output_template, url,
+                ]
+                self._run(command)
+                raw_files = [entry for entry in raw_marker.parent.glob(f"{raw_marker.name}.*") if entry != cookie_path]
+                if len(raw_files) != 1 or raw_files[0].is_symlink():
+                    raise MediaAcquisitionError("V3_MEDIA_PLATFORM_REJECTED", "Media download did not produce one audio input.", status=502)
+                raw = raw_files[0]
+                raw.chmod(0o600)
             self._run([
                 str(self._ffmpeg), "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
                 "-protocol_whitelist", "file,pipe,crypto,data", "-i", str(raw), "-map", "0:a:0",
@@ -90,6 +96,66 @@ class YtDlpMediaDownloader:
                     self._sandbox.remove_private_temp(task_id, path)
                 except (FileNotFoundError, TaskArtifactError):
                     pass
+
+    def acquire_video(self, task_id: str, identity: MediaIdentity, credentials: Sequence[dict[str, object]]) -> tuple[ArtifactRef, int]:
+        """Import one cached complete low-resolution video into the task sandbox."""
+        if self._media_cache is None:
+            raise MediaAcquisitionError("V3_MEDIA_RUNTIME_OFFLINE", "Media download cache is unavailable.", status=503)
+        try:
+            source = self._cached_video(identity, credentials)
+            artifact = self._sandbox.import_private_file(task_id, "video", source)
+            completed = self._run([
+                str(self._ffmpeg.parent / "ffprobe"), "-v", "error", "-show_entries", "format=duration",
+                "-of", "default=nw=1:nk=1", str(source),
+            ], capture_text=True)
+            duration_ms = round(float(completed.stdout.strip()) * 1000)
+            if duration_ms <= 0:
+                raise ValueError("duration")
+            return artifact, duration_ms
+        except (OSError, ValueError, subprocess.CalledProcessError, subprocess.TimeoutExpired, TaskArtifactError) as exc:
+            code = exc.code if isinstance(exc, TaskArtifactError) else "V3_MEDIA_PLATFORM_REJECTED"
+            raise MediaAcquisitionError(code, "Cached video acquisition failed.", status=502) from exc
+
+    def _cached_video(self, identity: MediaIdentity, credentials: Sequence[dict[str, object]]) -> Path:
+        if self._media_cache is None:
+            raise MediaAcquisitionError("V3_MEDIA_RUNTIME_OFFLINE", "Media download cache is unavailable.", status=503)
+        source_identity = f"portal:{identity.adapter_id}:{identity.media_id}:{identity.playback_unit_id}:{identity.part_id}"
+        return self._media_cache.get_or_create(
+            source_identity,
+            lambda destination: self._download_video_file(identity, credentials, destination),
+        )
+
+    def _download_video_file(
+        self,
+        identity: MediaIdentity,
+        credentials: Sequence[dict[str, object]],
+        destination: Path,
+    ) -> None:
+        cookie_path = destination.with_name(f".cookie_{os.getpid()}_{hashlib.sha256(str(destination).encode()).hexdigest()[:12]}.txt")
+        try:
+            cookie_path.write_text(self._netscape_cookiefile(credentials), encoding="utf-8")
+            cookie_path.chmod(0o600)
+            destination.unlink(missing_ok=True)
+            url = f"https://www.bilibili.com/video/{identity.media_id}?p={identity.part_index}"
+            cache_maximum = self._media_cache.settings()["maximumBytes"] if self._media_cache is not None else self._sandbox.maximum_video_bytes
+            maximum = min(cache_maximum, self._sandbox.maximum_video_bytes)
+            self._run([
+                str(self._yt_dlp), "--ignore-config", "--no-plugin-dirs", "--no-update", "--no-playlist",
+                "--no-cache-dir", "--no-write-info-json", "--no-write-comments", "--no-write-thumbnail",
+                "--retries", "2", "--fragment-retries", "2", "--socket-timeout", "20",
+                "--max-filesize", str(maximum), "--cookies", str(cookie_path),
+                "--format", "bv*[height<=480]+ba/b[height<=480]", "--merge-output-format", "mp4",
+                "--ffmpeg-location", str(self._ffmpeg.parent), "--output", str(destination), url,
+            ])
+            if not destination.is_file() or destination.is_symlink() or destination.stat().st_size <= 0:
+                raise MediaAcquisitionError("V3_MEDIA_PLATFORM_REJECTED", "Media download did not produce a video file.", status=502)
+            destination.chmod(0o600)
+        except subprocess.TimeoutExpired as exc:
+            raise MediaAcquisitionError("V3_MEDIA_PLATFORM_REJECTED", "Media download timed out.", status=504) from exc
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise MediaAcquisitionError("V3_MEDIA_PLATFORM_REJECTED", "Media download failed.", status=502) from exc
+        finally:
+            cookie_path.unlink(missing_ok=True)
 
     def acquire_video_section(
         self,

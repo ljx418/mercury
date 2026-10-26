@@ -1,7 +1,21 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AsrModelSettingsPanel, asrCatalogStateLabel, asrQualityLabel, asrStateLabel, formatAsrBytes } from "./AsrModelSettingsPanel";
+import {
+  AsrModelSettingsPanel,
+  asrAutoSelectEnabled,
+  asrCatalogStateLabel,
+  asrEffectiveModelLabel,
+  asrFailureRecovery,
+  asrInstalledAndEnabledLabel,
+  asrManualAssetGuidance,
+  asrQualityLabel,
+  asrRuntimeOfflineAction,
+  asrStateLabel,
+  asrWindowsStorageLines,
+  asrWindowsStorageNote,
+  formatAsrBytes
+} from "./AsrModelSettingsPanel";
 
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -65,6 +79,59 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe("R5-64 installation UX correction", () => {
+  it("discloses the frozen Windows persistent directories so WSL recycling is visible", () => {
+    const lines = asrWindowsStorageLines();
+    expect(lines.join("|")).toContain("C:\\workspace\\navia\\.navia\\downloads");
+    expect(lines.join("|")).toContain("C:\\workspace\\navia\\.navia\\asr");
+    expect(lines.join("|")).toContain("C:\\workspace\\navia\\.navia\\asr\\models");
+    expect(asrWindowsStorageNote()).toContain("不在 WSL 虚拟磁盘");
+  });
+
+  it("auto-selects only after a self-tested ready state, and confirms via effectiveModelId", () => {
+    expect(asrAutoSelectEnabled("ready")).toBe(true);
+    for (const state of ["not_installed", "checking", "downloading", "verifying", "installing", "self_testing", "failed", "corrupt", "cancelled"]) {
+      expect(asrAutoSelectEnabled(state)).toBe(false);
+    }
+    expect(asrInstalledAndEnabledLabel("funasr-sensevoice-small-q8", "funasr-sensevoice-small-q8")).toContain("已安装并启用");
+    expect(asrInstalledAndEnabledLabel("funasr-sensevoice-small-q8", "faster-whisper-tiny")).toContain("尚未生效");
+  });
+
+  it("categorises install failures into distinct, actionable next steps", () => {
+    expect(asrFailureRecovery("failed", "V3_ASR_HASH_MISMATCH").category).toBe("hash");
+    expect(asrFailureRecovery("corrupt", "V3_ASR_SIZE_MISMATCH").category).toBe("hash");
+    expect(asrFailureRecovery("corrupt", "V3_ASR_FILE_SET_MISMATCH").category).toBe("hash");
+    expect(asrFailureRecovery("failed", "V3_ASR_SELF_TEST_FAILED").category).toBe("self_test");
+    expect(asrFailureRecovery("failed", "V3_ASR_PACKAGE_TOO_LARGE").category).toBe("space");
+    expect(asrFailureRecovery("failed", "V3_ASR_SOURCE_NOT_ALLOWED").category).toBe("network");
+    expect(asrFailureRecovery("failed", "V3_ASR_RUNTIME_RESTARTED").category).toBe("network");
+    expect(asrFailureRecovery("failed", "V3_ASR_FILE_MODE_INVALID").category).toBe("permission");
+    expect(asrFailureRecovery("failed", "V3_ASR_MODEL_NOT_QUALIFIED").category).toBe("qualification");
+    // Every category must offer BOTH recovery actions, per 64 §3.
+    for (const category of ["hash", "self_test", "space", "network", "permission", "qualification", "unknown"] as const) {
+      const recovery = asrFailureRecovery("failed", category === "unknown" ? "V3_ASR_INSTALL_FAILED" : undefined);
+      expect(recovery.actions.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("never claims a Navia release page package exists", () => {
+    expect(asrManualAssetGuidance()).not.toContain("发布页");
+    expect(asrManualAssetGuidance()).toContain("funasr-llamacpp-linux-x64.tar.gz");
+    expect(asrManualAssetGuidance()).toContain("sensevoice-small-q8.gguf");
+    expect(asrManualAssetGuidance()).toContain("fsmn-vad.gguf");
+    expect(asrManualAssetGuidance()).toContain(".navia-asrpack");
+  });
+
+  it("offers a companion start action instead of a failing install button when the Runtime is offline", () => {
+    expect(asrRuntimeOfflineAction()).toContain("启动 Navia 本机伴侣");
+  });
+
+  it("shows unavailable instead of a silent fallback when nothing is installed", () => {
+    expect(asrEffectiveModelLabel(null, null)).toContain("无可用模型");
+    expect(asrEffectiveModelLabel("funasr-sensevoice-small-q8", null)).toContain("funasr-sensevoice-small-q8");
+  });
+});
+
 describe("AsrModelSettingsPanel", () => {
   it("formats resources and states without hiding low-resource impact", () => {
     expect(formatAsrBytes(8 * 1024 ** 3)).toBe("8.0 GiB");
@@ -87,7 +154,7 @@ describe("AsrModelSettingsPanel", () => {
     const pendingCard = mounted.container.querySelector("[data-testid='asr-model-funasr-paraformer-q8']") as HTMLElement;
     expect(pendingCard.querySelector(".asr-state")?.classList.contains("asr-state-quality-failed")).toBe(true);
     expect((Array.from(pendingCard.querySelectorAll("button")).find((item) => item.textContent === "资格通过后可选") as HTMLButtonElement).disabled).toBe(true);
-    expect(Array.from(pendingCard.querySelectorAll("button")).some((item) => item.textContent === "下载并安装")).toBe(true);
+    expect(Array.from(pendingCard.querySelectorAll("button")).some((item) => item.textContent === "下载、安装并使用")).toBe(true);
     const baselineCard = mounted.container.querySelector("[data-testid='asr-model-funasr-sensevoice-small-q8']") as HTMLElement;
     expect(baselineCard.textContent).toContain("V3 本地转写基线");
     expect(baselineCard.textContent).toContain("Linux 252 MiB · Windows 249 MiB");
@@ -103,13 +170,15 @@ describe("AsrModelSettingsPanel", () => {
       if (url.endsWith("/installations") && init?.method === "POST") return response({ job: failedJob }, 202);
       throw new Error(`unexpected request: ${url}`);
     });
-    const button = Array.from(mounted.container.querySelectorAll("button")).find((item) => item.textContent === "下载并安装") as HTMLButtonElement;
+    const button = Array.from(mounted.container.querySelectorAll("button")).find((item) => item.textContent === "下载、安装并使用") as HTMLButtonElement;
     button.focus();
     await act(async () => { button.click(); await Promise.resolve(); await Promise.resolve(); });
     const dialog = mounted.container.querySelector<HTMLElement>("[role='dialog']");
     expect(dialog).not.toBeNull();
     expect(document.activeElement).toBe(dialog);
-    expect(mounted.container.textContent).toContain("自动安装未完成");
+    // V3_ASR_HASH_MISMATCH must be categorised as a verification failure, not a network one.
+    expect(mounted.container.textContent).toContain("校验未通过");
+    expect(mounted.container.querySelector<HTMLElement>("[data-testid='asr-failure-recovery']")?.dataset.category).toBe("hash");
     expect(mounted.container.textContent).toContain(".navia-asrpack");
     expect(mounted.container.textContent).toContain("python -m navia_runtime.asr_import");
     await act(async () => { document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); });

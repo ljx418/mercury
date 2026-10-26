@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "v3-5.2-grounded-quality-question-set/v1",
+  "rules": {
+    "questionsPerVideo": 12,
+    "contentQuestions": 6,
+    "visualQuestions": 2,
+    "crossChapterQuestions": 2,
+    "insufficientEvidenceQuestions": 2,
+    "note": "内容题按真实视频主题冻结，拒绝用同一套泛化问题替代内容质量验收。"
+  },
+  "videos": [
+    {
+      "taskId": "media_task_572068b315fe473b0a7a2f06719ad931",
+      "sourceIdentity": "portal:bilibili:BV1PA4m1w7ya:1491078608:1",
+      "questions": [
+        {"id": "S01", "kind": "content", "question": "视频如何定义广义的影视后期？", "expectedStatus": "answered"},
+        {"id": "S02", "kind": "content", "question": "PR、AE 和 C4D 在影视后期中的分工是什么？", "expectedStatus": "answered"},
+        {"id": "S03", "kind": "content", "question": "视频用哪些因素说明影视后期的发展前景？", "expectedStatus": "answered"},
+        {"id": "S04", "kind": "content", "question": "讲述者给出了哪些接单和变现渠道？", "expectedStatus": "answered"},
+        {"id": "S05", "kind": "content", "question": "主业与副业收入的划分维度是什么？", "expectedStatus": "answered"},
+        {"id": "S06", "kind": "content", "question": "视频最后对真正入行给出了什么建议？", "expectedStatus": "answered"},
+        {"id": "S07", "kind": "visual", "question": "影视后期应用场景的画面展示了哪些内容？", "expectedStatus": "answered"},
+        {"id": "S08", "kind": "visual", "question": "工作室模式画面列出了哪些获客渠道？", "expectedStatus": "answered"},
+        {"id": "S09", "kind": "cross_chapter", "question": "视频如何从技术能力逐步论证到收入与工作室模式？", "expectedStatus": "answered"},
+        {"id": "S10", "kind": "cross_chapter", "question": "各章节怎样共同支撑影视后期可以作为职业或副业的结论？", "expectedStatus": "answered"},
+        {"id": "S11", "kind": "insufficient", "question": "视频未提供的火星样本序列号是什么？", "expectedStatus": "insufficient_evidence"},
+        {"id": "S12", "kind": "insufficient", "question": "讲述者未披露的私人身份证号码是什么？", "expectedStatus": "insufficient_evidence"}
+      ]
+    },
+    {
+      "taskId": "media_task_b387c85cd26fed76e494363f51463361",
+      "sourceIdentity": "portal:bilibili:BV1ZpYd66ELP:41828944992:1",
+      "questions": [
+        {"id": "M01", "kind": "content", "question": "餐厅所在位置为什么被称为三角割裂地带？", "expectedStatus": "answered"},
+        {"id": "M02", "kind": "content", "question": "餐厅的称重计价和活动规则是什么？", "expectedStatus": "answered"},
+        {"id": "M03", "kind": "content", "question": "免费项目和翻台率如何影响餐厅运营？", "expectedStatus": "answered"},
+        {"id": "M04", "kind": "content", "question": "挑肉与挑素菜为什么会产生不同的性价比？", "expectedStatus": "answered"},
+        {"id": "M05", "kind": "content", "question": "晚间折扣存在什么隐藏门槛？", "expectedStatus": "answered"},
+        {"id": "M06", "kind": "content", "question": "博主对勇哥餐厅运营给出了什么结论？", "expectedStatus": "answered"},
+        {"id": "M07", "kind": "visual", "question": "道路与餐厅周边画面显示了怎样的地理环境？", "expectedStatus": "answered"},
+        {"id": "M08", "kind": "visual", "question": "菜品或账单画面中可见哪些关键信息？", "expectedStatus": "answered"},
+        {"id": "M09", "kind": "cross_chapter", "question": "视频如何从选址疑问推进到菜品、账单和运营结论？", "expectedStatus": "answered"},
+        {"id": "M10", "kind": "cross_chapter", "question": "低价、高翻台和隐藏门槛之间是什么关系？", "expectedStatus": "answered"},
+        {"id": "M11", "kind": "insufficient", "question": "视频未提供的火星样本序列号是什么？", "expectedStatus": "insufficient_evidence"},
+        {"id": "M12", "kind": "insufficient", "question": "讲述者未披露的私人身份证号码是什么？", "expectedStatus": "insufficient_evidence"}
+      ]
+    },
+    {
+      "taskId": "media_task_a60e14706b9464a68033a55bd240adb7",
+      "sourceIdentity": "portal:bilibili:BV1sMNtzJE5B:30592600559:1",
+      "questions": [
+        {"id": "L01", "kind": "content", "question": "节目为何讨论接待台湾网红馆长来大陆？", "expectedStatus": "answered"},
+        {"id": "L02", "kind": "content", "question": "节目如何描述馆长线上立场与线下表现的反差？", "expectedStatus": "answered"},
+        {"id": "L03", "kind": "content", "question": "嘉宾认为民间交流能够发挥哪些作用？", "expectedStatus": "answered"},
+        {"id": "L04", "kind": "content", "question": "节目如何解释统一污名与岛内统派困境？", "expectedStatus": "answered"},
+        {"id": "L05", "kind": "content", "question": "伊朗与以色列冲突部分如何概括中国立场与伊朗的反击能力？", "expectedStatus": "answered"},
+        {"id": "L06", "kind": "content", "question": "节目如何分析伊朗现代化的瓶颈与可能的破局路径？", "expectedStatus": "answered"},
+        {"id": "L07", "kind": "visual", "question": "访谈画面中的人物与分屏布局是什么样的？", "expectedStatus": "answered"},
+        {"id": "L08", "kind": "visual", "question": "节目后半段画面中可见哪些嘉宾或议题提示？", "expectedStatus": "answered"},
+        {"id": "L09", "kind": "cross_chapter", "question": "馆长访陆讨论如何逐步延伸到统一与民间交流议题？", "expectedStatus": "answered"},
+        {"id": "L10", "kind": "cross_chapter", "question": "视频从两岸议题转入伊朗议题后，两部分各自采用了怎样的分析结构？", "expectedStatus": "answered"},
+        {"id": "L11", "kind": "insufficient", "question": "视频未提供的火星样本序列号是什么？", "expectedStatus": "insufficient_evidence"},
+        {"id": "L12", "kind": "insufficient", "question": "讲述者未披露的私人身份证号码是什么？", "expectedStatus": "insufficient_evidence"}
+      ]
+    }
+  ]
+}

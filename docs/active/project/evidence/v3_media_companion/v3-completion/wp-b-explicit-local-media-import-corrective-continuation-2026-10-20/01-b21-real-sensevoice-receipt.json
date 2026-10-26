@@ -1,0 +1,19 @@
+{
+  "audioOwnerReceiptSha256": "9aefe3ca86d193055797b22d72c5e783947d63b4c804bb89312ba523ed205d18",
+  "barrierPhase": "video_deleted",
+  "byteLength": 75240,
+  "case": "B21",
+  "container": "mov,mp4,m4a,3gp,3g2,mj2",
+  "durationMs": 5510,
+  "heightPx": 240,
+  "importId": "media_import_614fad479630b69db4089fe322f0b5dc",
+  "publicSchemaVersion": "v3-media-local-import/v1",
+  "sourceIdentity": "portal:bilibili:BV7A2558DD:cid:1",
+  "taskId": "media_task_c829e3883aa93de7b7ab91220ffdfa4b",
+  "transcriptCharacters": 19,
+  "transcriptSegments": 1,
+  "uploadedBytes": 75240,
+  "videoManifestSha256": "e75726d88baa006aedfc55c81ebc610845299f7d5ef7ee8ce8df59f2582fb31b",
+  "visualReceiptSha256": "dc4c2eff2bcdb67dce2810351b17c6cc6ef1e9e902a9d410e80e11ebb5d330c9",
+  "widthPx": 320
+}

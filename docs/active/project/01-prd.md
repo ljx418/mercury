@@ -2148,6 +2148,8 @@ unauthorizedFileOperationCount
 
 ## 18. V3 Media Companion 规划目标
 
+> **2026-10-19 输入仲裁与 tabCapture 裁剪增量**：V3 用户可用主路径调整为“凭据/公开字幕 -> 受控任务期媒体下载 -> 本地 SenseVoice ASR”。三条自动路线均失败时必须显示原因并停止，不得静默启动标签页捕获。现有 `tabCapture` relay、安全边界和历史证据保留，但该能力降为默认关闭的实验 fallback，不再作为 V3 首版可用性或 V3-7 出门依赖；后续只有在真实 owned Chrome 可重复完成可信启动、终止和零残留正控后才能重新升格。用户显式选择本地视频后接续解析作为后续独立 workpack：仅允许文件选择器产生的单文件授权，不允许默认扫描或读取本地文件；该入口实现前必须重新冻结上传/本机交接、大小/格式/空间、SourceAuthority、清理和失败码合同。历史固定分母与失败证据不改写。
+
 > 权威性说明（2026-09-16）：本节已按“V2 暂停、V3 优先、V4 承接知识能力”重新冻结。当前可执行范围以 §18.2 为准：B站优先、12 页固定分母、受控 Cookie 会话获取为主路径、公开/页内字幕和可信 `tabCapture` 为回退，并在首版纳入本地 ASR、关键帧、本地 OCR 与用户持久授权下的云端 VLM。YouTube 在 B站出门后复用同一合同；V2/PX-6/RKM、知识持久化、Query、Graph 与 Durable Forget 不再是 V3 前置并统一进入 V4。
 
 `V3 Media Companion` 是 V1 当前网页伴读之后独立推进的媒体伴随体验阶段。长期目标覆盖 B站、YouTube、小红书等含视频内容的门户；当前首批范围只面向 B站视频详情页，把 Navia 从“读网页正文”扩展到“陪用户看视频，理解字幕、音频和选定画面，生成可引用、可反跳的视频产物”。B站是首个 `MediaPortalAdapter`，YouTube、小红书只能在 B站固定矩阵出门后复用通用合同并单独冻结权限、采集和验收，不得复制 B站 DOM/Cookie 实现形成平行事实模型。V3-0 与 V3-1P 文档/真实样本已完成；产品实现仍按子阶段门禁推进，不改写已封存 V2 事实。
@@ -2170,7 +2172,7 @@ V3 首版目标用户路径：
 用户打开受支持的 B站视频详情页
 -> Navia 贴边 launcher / sidebar 识别当前页为 video page
 -> 用户首次授予 B站会话访问、任务期临时媒体、本地音频、本地画面和选定证据帧云端视觉处理权限；授权持续到主动撤销
--> 用户点击开始分析，本次任务产生短期 Cookie 租约；平台拒绝时才提示可信点击启动 tabCapture 回退
+-> 用户点击开始分析，本次任务产生短期 Cookie 租约；字幕和受控下载均失败时显示原因与可用 fallback，不自动启动 tabCapture
 -> Navia 读取身份、凭据或公开字幕/本地转录、关键帧、本地 OCR 和授权 VLM 证据
 -> 生成视频概览：一句话结论、关键看点、章节时间轴、可疑低信号提示
 -> 生成 Media Mindmap / 视频概览图：主题、事件、论点、示例、结论按时间线组织
@@ -2235,7 +2237,7 @@ https://www.bilibili.com/video/BV1ZpYd66ELP
 用户授权后由 B站 Broker 创建同任务、短期 PortalCredentialLease(adapterId=bilibili)
 -> 优先获取用户当前会话可访问的字幕或任务期临时音频/视频
 -> Cookie/平台路径失败时尝试页内/公开字幕
--> 仍不足时提示用户可信点击启动当前标签页音频采集
+-> 仍不足时返回可解释的 blocked；实验性标签页音频采集默认关闭且不计 V3 出门
 -> 音频只进入本机 Runtime 的 LocalAsrAdapter
 -> 生成带时间戳和来源 hash 的 MediaTranscript
 -> 同一 VideoOutline 派生图文大纲、章节时间轴和 Media Mindmap
@@ -2246,7 +2248,7 @@ V3 首版的本地 ASR 是限定 fallback，不代表通用音频理解、云端
 - 只有用户点击开始且五项 scope 已授权，才可签发短期租约并下载当前会话有权访问的任务期媒体；平台拒绝必须回退或 blocked。
 - Cookie 值不写入配置、数据库、EventStore、Trace、日志或公开证据；需要 cookiefile 时只允许任务期随机 `0600` 文件。
 - Chrome 的自动页面桥接只匹配 `https://www.bilibili.com/video/*`；B站会话访问另行请求可选 `cookies` 与 `https://*.bilibili.com/*`。Background 再按版本化 Cookie 名称白名单过滤；秘密只经认证 loopback 的一次性 envelope 进入 Runtime 内存，前端和持久事件不得接触值。其他网页只允许用户手势触发 `activeTab`，禁止 `<all_urls>` 或等价全站静态匹配。
-- `tabCapture` 只在主路径和公开字幕失败后由可信点击启动；原始音频默认不持久化、不上传。
+- `tabCapture` relay 保留为默认关闭的实验能力；不得自动启动，不计 V3 首版出门。若未来重新启用，仍只允许在主路径和公开字幕失败后由可信点击启动，且原始音频默认不持久化、不上传。
 - 取消、页面关闭、租约到期或撤销后必须停止并清理 cookiefile、临时媒体、原始音频和非证据帧。
 - 字幕和 ASR 都不可用时返回 `degraded/blocked`，不能由标题、简介、评论或模型常识生成伪大纲。
 - 图文笔记与 Media Mindmap 必须由同一个强类型 `VideoOutline` 派生，不能用模型 marker 正则作为事实权威。
@@ -2259,7 +2261,7 @@ V3 首版的本地 ASR 是限定 fallback，不代表通用音频理解、云端
 -> Navia 识别 bvid/cid/单P/时长并显示“无公开字幕”与当前会话能力
 -> 首次授予 B站会话、临时媒体、本地音频、本地画面和选定帧云端视觉五项 scope
 -> 用户点击“开始分析”，本次任务创建短期租约并优先获取凭据字幕/临时媒体
--> 若平台拒绝，UI 显示原因并允许可信点击切换到 tabCapture 回退
+-> 若平台拒绝，UI 显示原因并进入 blocked；后续版本可提供“选择已下载视频”或显式启用的实验 capture
 -> UI 显示 acquiring credentials / downloading / transcribing / extracting frames / OCR / vision / synthesizing 进度，可取消
 -> 完成后展示图文大纲、章节时间轴、Media Mindmap、Ask 和分型证据覆盖
 -> 点击章节跳转播放器时间点
@@ -2269,6 +2271,18 @@ V3 首版的本地 ASR 是限定 fallback，不代表通用音频理解、云端
 2026-10-10 人工体验复核新增 `V3-5.1` 质量门槛。既有 V3-5 基础路径通过不等于 Workspace 理解质量通过；V3-6 前必须补齐：具有时间刻度、章节色带、真实截图节点、滚轮横移、鼠标拖动、缩放、播放游标和双向播放器同步的图文时间线；按摘要、章节、关键点、证据组织的可折叠大纲；至少 root/chapter/key-point 三层且支持平移、缩放、折叠、fit 和节点反跳的 Media Mindmap；能够处理事实、视觉、跨章节和证据不足问题的 grounded Ask。所有视图继续由同一版本化强类型 outline 派生，开源 renderer 不能成为事实源，BiliNote 输出不能充当生产证据。
 
 若为章节或问答质量增加云端文本合成，只能通过独立的 `GroundedMediaSynthesisProvider` 和新增授权 scope 发送任务期派生文本；它不继承 `selected_frame_cloud_vision` 授权。未授权时必须使用本地确定性回退且 0 文本网络调用。具体开发顺序、组件 spike 和验收分母见 `design/v3-workspace-comprehension-ux-optimization-plan.md`。
+
+2026-10-12 用户批准 `V3-5.10 Media Experience Repair`，作为既有 V3-5.1 路线的增量修复而非替代。转写完成后必须立即显示明确标记的转写预览；整个任务的简要概览不得由首段转写冒充。Chat 和 Workspace 必须显示同一个任务/修订权威状态、耗时与最近进展；视频结构入口和任何截图/节点反跳不得落到无效路由或静默失败。`VIDEO BRIEF` 必须从全片证据形成不超过 100 字的内容、焦点和主要论点，证据不足时显式降级；章节时间必须覆盖全片且边界分布经过校验。大纲只展示视频综述、章节和证据，原有知识长文/图文笔记/深度专栏迁入导出。导出新增至少五种独立生成风格，允许选择范围、篇幅、候选真实截图和引用。媒体导图增加有证据绑定的概念节点与关系，支持拖动和保存布局；旧章节树仍可读。新增输出必须保持同任务/修订/证据闭合，不能以生成图冒充真实视频帧，也不能扩大已有云端文本授权。完整阶段验收见 `design/v3-5.10-media-experience-repair-plan.md`。
+
+> **2026-10-14 V3-5.10 子阶段状态纠偏**（仅修正当前权威状态词，不改写历史证据）：
+> - **Stage A**：固定负向旅程 NJ-01..NJ-10 取得 `LIMITED PASS`（Fatal=0 / Major=0 / Minor=3，单 BVID `BV1hMpE6FEXG`、临时扩展预授权 fixture、四视口 bounded evidence）。Orca worker `task_b307e1598b9e` 在 `evidence/v3_media_companion/v3-5.10-experience-repair/stage-a-final-independent-exit-audit-2026-10-13.md` 独立复算。
+> - **Stage B B-0**：合同冻结 PASS（schema meta、失败码 17、负例 18、客观验收、固定 BVID 注册表）。
+> - **Stage B B-1..B-4**：实现候选 `LIMITED PASS candidate`（注意：未构成 Stage B 出门，不替代 B-5 实测）。
+> - **Stage B Route 2（确定性 brief composer）**：文档 CONDITIONAL GO（Claude Code CLI 独立复算 Fatal 0/Major 0/Minor 5，外部审查报告 SHA-256 `b3db4ffc82283712c28737a0ee569403e1194ea280b74ab24408f2c66eb72079`），实现 LIMITED PASS 但 **B-5 真实六视频分母仍 FAIL / REPLAN**（`BV1pohR6rEEh` 多次 `V3510B_BRIEF_LENGTH_INVALID`；`stage-b-b5-route-2-risk-stop-2026-10-14.md`）。
+> - **DeepSeek strict adapter DS-1..DS-5**：LIMITED PASS（20/20 schema 合规；结构成功仅证明 JSON 形状，不证明内容正确性，亦不替代默认权限）。
+> - **Chat Provider 默认**：MiniMax 保持默认；DeepSeek 已通过 Windows Credential Vault 安全导入，模型 `deepseek-chat`、能力标签 `deepseek_beta_strict_tool_v1`，**未选中**；首次使用不自动切换、不诱导。
+> - **B-5..B-7、Stage C/D/E、V3-6/V3-7**：均 **NO-GO**，不得据任何 Stage A/Route 2/DeepSeek DS 候选扩大为 V3 PASS。
+> - 详细诊断证据全部保留为 `evidence/v3_media_companion/v3-5.10-experience-repair/` 下的 `stage-a-*`、`stage-b-*`、`stage-b-route-2-*`、`stage-b-deepseek-strict-adapter-*` 和 `chat-provider-secure-secret-migration-and-deepseek-import-2026-10-14.md`；本节只冻结状态词，不删除、不重述历史失败证据。
 
 V3 不再以 `H01-RDS` 或 PX-6 为前置。媒体产物进入本地 `MediaTaskStore` 并可导出，`knowledgeImportStatus` 必须为 `deferred_to_v4`。已封存 H01/PX-6 事实保持不变且仍不得声明通过。BiliNote 路线研究与采纳/拒绝决定见 `design/v3-bilinote-bilibili-route-study.md`。
 
@@ -2417,3 +2431,39 @@ Paraformer 固定窗仍在非静音窗口完整遗漏后，路线 C 采用官方
 V3-2-1 Runtime acquisition core 已于 2026-09-22 完成限定实现与真实私有 B站 WAV 验收；V3-2-2 前必须新增 sample registry revision 3。Revision 3 保留 12 个唯一 URL、`6 subtitle + 3 ASR + 1 multipart + 1 restricted + 1 low_signal`、页面身份/分P/授权探测/hash 与真实预期路线，但不再要求 V4 范围内的跨模型 review/adjudication。Revision 2 保持历史只读，禁止原地放宽。
 
 人工产品验收 `H01..H10` 统一推迟到 V3-5 双容器产品体验完成后执行；V3-2 至 V3-4 不请求人类操作，只能使用真实数据自动验收、机器审计与独立文档/实现复审。V3-5.1 自动质量门槛通过后只增加一次结构清晰度和交互质量的最小复核，不重复听写或重做 H01-H10。V3-6 重放已签署的人类结果并执行全量自动矩阵，V3-7 只做最终独立出门审计，不得自动代签或补写人工项。
+
+### 18.10 V3-5.9 持久 B站登录态下载与私有媒体缓存
+
+用户可在 `Settings / 媒体与语音` 显式开启“B站登录态下载”，通过选择 Cookie 文件或粘贴 Cookie 完成一次配置与在线校验。原始 Cookie 只进入操作系统凭据库；扩展存储、SQLite、日志、任务事件、公开证据和审计包均不得保存或返回秘密值。用户可随时停用、重新验证或删除配置；删除配置必须同步清空私有媒体缓存。既有浏览器一次性租约继续作为未配置持久登录态时的兼容回退，不得删除。
+
+同一视频同一分P的音频转写、关键帧抽取和重试必须复用一份 Runtime 私有低清完整视频，避免按关键帧重复下载。缓存默认上限 5 GiB、保留 24 小时，设置页必须显示占用量、条目数、自动清理周期，并提供明确的手动清空二次确认。缓存目录与文件分别为私有 `0700/0600`，拒绝链接、跨来源复用和超额文件；到期、LRU、用户清理或 Cookie 删除均须删除本地文件和索引。缓存与持久登录态不改变选定帧云端上传边界：仍最多 8 张固定帧，禁止上传原始视频、音频、全文转写或 OCR 全文。
+
+### 18.11 2026-10-15 P0 可信捕获内部中继纠偏
+
+无字幕且前置媒体路线不可用时，用户体验继续保持一次可信扩展动作；不得增加 ticket、WebSocket 或 Runtime 连接类操作。30 秒 one-shot grant、task/tab/page/adapter/surface 绑定、本地 SenseVoice、同源唯一 task/revision 和原始音频不上云均保持不变。
+
+为关闭真实 Chrome 中 Offscreen Document 无法把 WebSocket 请求送达 Runtime 的阻塞，扩展内部调整为 Background Service Worker 持有 Runtime capture WebSocket，Offscreen 只负责 `tabCapture` 音频采集、降采样和经受信内部 Port 发送有序 PCM。Chrome Port 数据面固定为 JSON 可序列化的 Base64 PCM，不使用不可实现的 transferable `ArrayBuffer`；单信用、producer 侧有界队列和硬超限 abort 必须同时成立。正常完成采用“两阶段停止”：先 quiesce 音频源，再 drain 已入队 chunk，Offscreen stopped 后才允许 Runtime finalize。该变化不得扩大公共 API/schema、Origin、权限、ticket TTL 或云端上传范围。
+
+Background 重启、Port/WS 断线、队列超限、页签关闭、导航变化、用户取消和 Runtime crash 均须 fail-closed：旧 PCM/ticket/streamId 不持久化、不续传；受信 session marker 只保存旧 task 的非秘密失败对账字段。capture stream 只承诺安全 handoff：sink finalize、transcript create、同步 `TaskAudioStager.stage()` 的 copy/fsync/hash/length/WAV-shape 屏障和 worker start 全部成功后才转移 cleanup ownership；屏障前由 handler 清理，屏障后由 transcript service 清理，双方不得重叠。terminal frame 只是 handoff 通知，不能表示产品成功。唯一 durable 产品终态为现有 SQLite `MediaTaskStore.commit_terminal(ready|degraded)`。
+
+恢复所有权按 marker phase 和 staging receipt 固定：`connecting` 且尚无合法 start 时，新 worker只能调用既有已认证 acquisition DELETE 后再 GET；合法 start 且 Runtime 仍存活时按屏障前/后唯一 owner 清理；Runtime graceful/hard crash 后在产品重新附着时走既有 recover。owner manifest 必须位于 `private_asr_staging_root/<taskId>/owner.json`，按临时文件 `O_EXCL` canonical write、file fsync、atomic replace、parent-directory fsync 后，将 manifest canonical SHA-256 绑定到 SQLite `synchronous=FULL` ownership receipt；receipt commit 后才允许 worker。recover 只凭 authoritativeTaskId 定位并要求 manifest/receipt 精确匹配，missing/torn/corrupt/uncommitted/mismatch/unsafe 均 fail-closed。composite cleanup 必须清 acquisition sandbox、ASR staged root 和未发布产品证据，并连同 active sink 验证四项残留全零。只有 SQLite ready/degraded 已提交才允许 `published`，否则必须 `abandoned`、清理私有原件并 fresh analysis。公开观察边界不变。40 个现行 source code 必须由 11 个冻结源码 scope 的 semantic AST selector 实际推导；TypeScript enum member 与跨文件 imported emitter 必须纳入递归闭包。v1-v9 已拒绝；v10 基线 50/50、对抗变异 15/15 已通过，待单次 Codex 独立文档审查 Fatal=0/Major=0 后，用户既有实际开发授权直接放行 R0-R7；R7、单视频真实静音 canary和故障矩阵完成前，P1 六视频保持 NO-GO。
+
+### 18.12 WP-A 媒体依赖就绪
+
+V3 的自动媒体主路径必须在 Settings 中提前披露 `yt-dlp`、`ffmpeg`、`ffprobe` 与实际生效 SenseVoice 模型的就绪状态。用户不得在点击“分析”并等待后才从笼统的 `Runtime offline` 推断依赖缺失。Runtime 在线但依赖不完整时，Settings 显示缺失项、安装或修复进度、分类失败原因与下一步；全部就绪时显示“可以分析无字幕视频”。
+
+首版管理范围固定为：Runtime 可从现有冻结依赖清单的精确 URL 安装并校验 `yt-dlp 2026.08.19`；`ffmpeg 6.1.1-3ubuntu5` 与 `ffprobe` 只按既有路径、版本、自检和 SHA-256 验证，禁止 Runtime 静默执行 `apt` 或从任意 URL 安装系统包；SenseVoice 状态委托既有 `AsrModelManager`，不得复制模型安装状态机。下载暂存、最终工具与模型必须位于 Windows 持久目录或明确的 Runtime 系统目录，不把可恢复资产只保存在易回收的 WSL 临时目录。
+
+用户点击一次“修复本机依赖”后，Runtime 负责空间检查、固定来源下载、长度与 SHA-256 校验、可执行性和最小命令自检、原子发布及失败清理。只允许一个活动 repair job；取消、Runtime 重启、网络失败、磁盘不足、摘要不符、权限失败或自检失败均不得覆盖旧的 ready 工具。媒体任务只在开始或显式重试时读取一个不可变 `VerifiedDependencySnapshot`；运行中任务不得热切换工具 generation。
+
+WP-A 不实现用户本地视频导入，不升格 `tabCapture`，不改变 Cookie/Provider 上传边界。自动字幕与受控下载均失败时继续诚实 blocked；显式单文件导入属于 WP-B。
+
+### 18.13 WP-B 显式本地视频导入
+
+当当前网页任务已穷尽凭据字幕、受控媒体下载和公开/页内字幕后，Side Panel 必须提供一个非诱导、用户手势触发的“选择本地视频”入口。用户只选择一个自己已取得的当前视频文件；Navia 不扫描目录、不接收本机路径、不保存浏览器伪路径、不自动恢复文件权限，也不静默启动 experimental `tabCapture`。
+
+首版支持 MP4、WebM 和 Matroska 视频，单文件最大 2 GiB、最长 4 小时、最大 7680x4320。声明 MIME 不是信任依据；Runtime 必须在任务私有 staging 中流式写入、校验长度与 SHA-256，并使用 WP-A 同一 task generation 的 ffprobe/ffmpeg 验证真实容器与视频流。合法输入在本机准备 16 kHz mono WAV 和分布式候选帧，再以 `explicit_local_media_asr` 绑定原 acquisition task/source identity，继续既有 SenseVoice、OCR、图文大纲、时间线、导图、Ask 和反跳链路。
+
+原始视频、WAV 和未选帧不得进入 Provider、知识库、日志、Trace 或公开证据。Runtime 必须使用无 token/name/path 的 SQLite import store；input bind、audio owner receipt 与 visual receipt 均 durable 后才可删除原视频。ASR 与视觉产品分别提交 terminal receipt，第二个到达后由单一 consumer barrier 清理 WAV、双沙箱和非证据帧；清理失败不得发布成功。取消、断连、页面切换、Runtime 重启或 30 分钟过期均须终止 worker、释放 active slot 并清理未发布字节；重启 GET 返回持久 `RUNTIME_RESTARTED` 或 `CLEANUP_INCOMPLETE`，要求重选且不伪造断点续传。
+
+WP-B 不创建 `file:*` SourceAuthority，不改变自动 route 顺序、Cookie/Provider 边界或 relay v11，不支持目录/批量/音频-only/URL 粘贴/云同步。固定实施前包位于 `evidence/v3_media_companion/v3-completion/wp-b-explicit-local-media-import-preimplementation-2026-10-19/`；B01-B30 全绿和单次 Codex checkpoint 前不得声明 WP-B 或 V3 PASS。

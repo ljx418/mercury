@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "v3-5.10-b6-public-evidence/v2",
+  "kind": "review-decision",
+  "runId": "gc-b6b-20261026T080359Z-292745bcb719",
+  "machineGatePositive": false,
+  "counts": {
+    "complete": 0,
+    "limited": 0,
+    "blocked": 0,
+    "failed": 6,
+    "total": 6
+  },
+  "reviewAuthorized": false,
+  "blindReviewPerformed": false,
+  "reviewRows": 0,
+  "sentinelReceipts": 0,
+  "aggregateFailures": [
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE",
+    "AGG_FAILED_SOURCE"
+  ],
+  "reviewFailures": [],
+  "summary": "The machine gate is negative (0 complete, 0 limited, 0 blocked, 6 failed of 6); no blind review is performed."
+}

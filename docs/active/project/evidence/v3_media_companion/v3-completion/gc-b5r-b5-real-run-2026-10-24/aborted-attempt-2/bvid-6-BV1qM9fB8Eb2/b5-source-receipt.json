@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-source-receipt/v1",
+  "runId": "gc-b5r-b5-real-2026-10-24",
+  "order": 6,
+  "bvid": "BV1qM9fB8Eb2",
+  "registrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+  "taskId": null,
+  "taskNamespace": "media_task_882e90438b1b4f19acf3712f4135bfd7",
+  "taskRevision": null,
+  "sourceIdentity": null,
+  "dependencyGeneration": null,
+  "route": null,
+  "disposition": "failed",
+  "startedAtUtc": "2026-10-23T17:10:12.855Z",
+  "finishedAtUtc": "2026-10-23T17:10:15.091Z",
+  "providerId": null,
+  "selectedProviderId": "minimax-cn-openai-vision",
+  "endpointClass": null,
+  "selectedEndpointClass": "minimax_chat_completions",
+  "uploadCounters": {
+    "rawVideoUploadCount": 0,
+    "rawAudioUploadCount": 0,
+    "frameByteUploadCount": 0,
+    "cookieUploadCount": 0,
+    "apiKeyDisclosureCount": 0,
+    "localPathUploadCount": 0
+  },
+  "audioOutputCount": 0,
+  "tabCaptureCount": 0,
+  "focusEventCount": 0,
+  "cookieInjectionCount": 0,
+  "cookie": {
+    "requiredNamesPresent": true,
+    "allowedNameSetSha256": "bf8919e7225f8bb56054fb1802b778bd25122abf0b7c547d55132a847dedcfd9",
+    "usableCookieCount": 26
+  },
+  "visionProviderId": "minimax-cn-openai-vision",
+  "runtimeDatabaseRef": "db5a6803395498e3edb094cf1ea083672ae25a4eaa5d4d73e3a8da6a51a1e8b1",
+  "chromeProfileRef": "c14570cbcf15f2d1456fe5e572e2200159264aad66e864cff09816ae2bbd94d6",
+  "derivativeSha256": null,
+  "receiptSha256": null,
+  "evidenceSha256": null
+}

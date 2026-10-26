@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "v3-stage-a-policy-switch-failure/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "switchResponseDropped": true,
+  "authority": [
+    {
+      "task_id": "media_task_608944a425f54092bc0f5ccd06048c5e",
+      "state": "active",
+      "consent_policy_revision": 2
+    }
+  ],
+  "tasks": [
+    {
+      "task_id": "media_task_608944a425f54092bc0f5ccd06048c5e",
+      "state": "created",
+      "revision": 1,
+      "terminal_failure_code": null
+    },
+    {
+      "task_id": "media_task_7a0b6f3a573543faa7a5dd0715e555f3",
+      "state": "degraded",
+      "revision": 6,
+      "terminal_failure_code": "VISUAL_EVIDENCE_UNAVAILABLE"
+    }
+  ],
+  "panelState": []
+}

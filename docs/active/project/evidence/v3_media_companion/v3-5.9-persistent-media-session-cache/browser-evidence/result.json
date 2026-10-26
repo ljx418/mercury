@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "v3-media-portal-settings-e2e/v1",
+  "checks": [
+    {
+      "id": "surface_360",
+      "passed": true,
+      "detail": {
+        "title": 1,
+        "fileInput": 1,
+        "secretTextarea": 1,
+        "cacheQuota": 1,
+        "cacheRetention": 2,
+        "statusText": "Companion Runtime request was rejected."
+      }
+    },
+    {
+      "id": "axe_360",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "surface_420",
+      "passed": true,
+      "detail": {
+        "title": 1,
+        "fileInput": 1,
+        "secretTextarea": 1,
+        "cacheQuota": 1,
+        "cacheRetention": 2,
+        "statusText": "Companion Runtime request was rejected."
+      }
+    },
+    {
+      "id": "axe_420",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "media-portal-settings-360x900.png",
+      "byteLength": 99720,
+      "sha256": "9da1a02a74259b4f801e2b7ddd76e63f10a464849518ef08bfe2c31998bf35a4"
+    },
+    {
+      "path": "media-portal-settings-420x900.png",
+      "byteLength": 100985,
+      "sha256": "7202b6299bef03e6ccfe7ffec2cad5a3c70965d709e1f9d06e29edbf8a12b330"
+    }
+  ],
+  "passed": true
+}

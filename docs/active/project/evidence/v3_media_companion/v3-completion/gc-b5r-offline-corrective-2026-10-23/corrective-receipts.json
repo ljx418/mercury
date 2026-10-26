@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "v3-5.10-gc-b5r-corrective-receipts/v1",
+  "note": "The receipts record what the production owners decided. Only the dependency probes and the synthesis Provider (the network edge) are replaced.",
+  "appComposition": {
+    "authorityType": "MediaInputAuthority",
+    "taskStoreIsTheAppTaskStore": true,
+    "localImportStoreIsTheAppImportStore": true,
+    "coordinatorIsTheAppCoordinator": true,
+    "serviceUsesTheAppAuthority": true,
+    "oneRuntimeDatabase": true,
+    "generationSeamIsManagerOwned": true,
+    "globalLeaseMirror": {}
+  },
+  "freshProcessSameGeneration": {
+    "currentGeneration": "depgen_edc19bc76c47d43a5630256d1069d5672663cffc1ba331a8c55d56b93f1a872c",
+    "freshInstanceHeldALeaseBeforeUse": false,
+    "decision": "accepted",
+    "providerCallCount": 1,
+    "providerFactoryInvocationCount": 1,
+    "publishedArtifactCount": 1,
+    "publishedArtifactSha256": "39461a7fb51af0ffc76de248af0b602d88a7a73eb35d1fdc05ce522f08b7c03b"
+  },
+  "changedGeneration": {
+    "currentGeneration": "depgen_edc19bc76c47d43a5630256d1069d5672663cffc1ba331a8c55d56b93f1a872c",
+    "assetGeneration": "depgen_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "decision": "refused",
+    "failureCode": "V3_MEDIA_CROSS_TASK_REUSE",
+    "providerCallCount": 0,
+    "providerFactoryInvocationCount": 0,
+    "publishedArtifactCount": 0
+  },
+  "unverifiableGeneration": {
+    "decision": "refused",
+    "failureCode": "V3_MEDIA_DEPENDENCY_NOT_READY",
+    "providerCallCount": 0,
+    "providerFactoryInvocationCount": 0,
+    "publishedArtifactCount": 0
+  }
+}

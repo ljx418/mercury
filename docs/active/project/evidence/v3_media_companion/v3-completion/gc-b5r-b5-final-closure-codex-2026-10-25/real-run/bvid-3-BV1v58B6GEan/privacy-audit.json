@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-privacy-audit/v1",
+  "absolutePathCount": 0,
+  "redactedFiles": [],
+  "secretHitCount": 0,
+  "note": "The evidence carries no absolute runtime, database, profile or repository path, and no matched secret character."
+}

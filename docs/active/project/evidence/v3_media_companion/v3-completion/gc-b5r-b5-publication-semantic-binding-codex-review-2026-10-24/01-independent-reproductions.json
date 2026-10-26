@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "gc-b5r-b5-publication-semantic-binding-reproduction/v1",
+  "date": "2026-10-24",
+  "externalActions": 0,
+  "cases": [
+    {
+      "id": "missing-machine-revision-and-source",
+      "mutation": "delete taskRevision and sourceIdentity from all six otherwise valid machine receipts",
+      "observed": {
+        "positive": true,
+        "failures": []
+      },
+      "expected": "non-positive identity mismatch"
+    },
+    {
+      "id": "limited-artifact-claimed-complete",
+      "mutation": "set one artifact quality.status to limited, recompute exact artifact hashes, retain row and machine disposition complete",
+      "observed": {
+        "positive": true,
+        "failures": [],
+        "artifactQuality": "limited",
+        "rowDisposition": "complete"
+      },
+      "expected": "non-positive quality/disposition mismatch"
+    },
+    {
+      "id": "unsupported-schema-keywords",
+      "mutation": "validate rejecting samples using not, minProperties and exclusiveMinimum",
+      "observed": {
+        "not": true,
+        "minProperties": true,
+        "exclusiveMinimum": true
+      },
+      "expected": "unsupported keyword hard failure or correct constraint enforcement"
+    }
+  ]
+}
+

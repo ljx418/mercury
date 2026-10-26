@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261013T093529294Z",
+  "bvid": "BV1hMpE6FEXG",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "NJ-08 quality control unavailable after evidence scan: {\"hash\":\"#/media/tasks/media_task_d55edef97e8c40b9824d697d31afe129/outline\",\"routeKind\":\"outline\",\"shellTaskId\":\"\",\"shellRevision\":\"\",\"qualityControlCount\":0,\"loadingCount\":1,\"alertText\":[],\"runtimeStatus\":\"本机伴侣已连接\"}"
+  }
+}

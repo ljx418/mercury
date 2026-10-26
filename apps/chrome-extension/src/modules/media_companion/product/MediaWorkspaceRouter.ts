@@ -48,3 +48,13 @@ export function resolveMediaWorkspaceRoute(hash: string): MediaWorkspaceResoluti
 export function mediaTaskPath(taskId: string, child?: "outline" | "timeline" | "mindmap" | "ask" | "export"): string {
   return `#/media/tasks/${taskId}${child ? `/${child}` : ""}`;
 }
+
+export function mediaChapterPath(taskId: string, chapterId: string): string {
+  return `${mediaTaskPath(taskId, "outline")}?chapter=${encodeURIComponent(chapterId)}`;
+}
+
+export function selectedMediaChapter(hash: string): string | null {
+  const query = hash.split("?", 2)[1];
+  const value = query ? new URLSearchParams(query).get("chapter") : null;
+  return value && /^chapter_[a-f0-9]{16}$/.test(value) ? value : null;
+}

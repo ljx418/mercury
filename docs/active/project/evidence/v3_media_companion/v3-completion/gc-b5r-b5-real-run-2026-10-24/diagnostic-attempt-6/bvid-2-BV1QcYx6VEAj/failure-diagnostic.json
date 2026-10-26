@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1QcYx6VEAj",
+  "order": "2",
+  "finalDisposition": "failed",
+  "finishReason": "Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter count is invalid.\",\"recoverable\":false},\"request_id\":null}",
+  "error": {
+    "name": "Error",
+    "message": "Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter count is invalid.\",\"recoverable\":false},\"request_id\":null}",
+    "stack": "Error: Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter count is invalid.\",\"recoverable\":false},\"request_id\":null}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:719:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792777260647,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_c8d45bcaa8e94c1eb47619bc5617d2df"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792777374762,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_c8d45bcaa8e94c1eb47619bc5617d2df",
+      "status": 200
+    },
+    {
+      "at": 1792777375061,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777376272,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_c8d45bcaa8e94c1eb47619bc5617d2df",
+      "status": 200
+    },
+    {
+      "at": 1792777376589,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_c8d45bcaa8e94c1eb47619bc5617d2df/materialize-visual",
+      "status": 200
+    },
+    {
+      "at": 1792777376597,
+      "method": "DELETE",
+      "path": "/v1/media/credential-leases/pcl_f3543199eb7e8e62d9186d5274bdfa8f",
+      "status": 410
+    },
+    {
+      "at": 1792777377778,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_c8d45bcaa8e94c1eb47619bc5617d2df",
+      "status": 200
+    },
+    {
+      "at": 1792777380072,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777385081,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777390086,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777396653,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777401658,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777406663,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777411668,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777416675,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777421679,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777428279,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777433284,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777438289,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777443294,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777448301,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777453307,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777458312,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777465061,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777470066,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777475071,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777480078,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777485083,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777490088,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777497026,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777502031,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777507036,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777512041,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777517048,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777522053,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777527059,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777533817,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777538821,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777543826,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777548831,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777553836,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    }
+  ],
+  "startedAtUtc": "2026-10-23T17:40:47.924Z",
+  "finishedAtUtc": "2026-10-23T17:45:54.289Z"
+}

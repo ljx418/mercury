@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v3-media-capture-relay-v11-sender-matrix/v1",
+  "positiveCases": [
+    {"caseId":"SP11-P01","senderDocumentId":"present_equal","context":"one_authoritative","expected":"accept_bind_context_document_id"},
+    {"caseId":"SP11-P02","senderDocumentId":"absent","context":"one_authoritative","expected":"accept_bind_context_document_id"},
+    {"caseId":"SP11-P03","senderDocumentId":"absent","context":"empty_then_one_within_bounded_wait","expected":"accept_bind_context_document_id"}
+  ],
+  "negativeCases": [
+    {"caseId":"SP11-N01","mutation":"extension_id_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N02","mutation":"sender_tab_present","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N03","mutation":"sender_url_absent_or_not_exact","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N04","mutation":"sender_frame_nonzero","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N05","mutation":"context_lookup_throws","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N06","mutation":"context_zero_after_bounded_wait","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N07","mutation":"context_multiple","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N08","mutation":"context_type_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N09","mutation":"context_url_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N10","mutation":"context_origin_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N11","mutation":"context_incognito_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N12","mutation":"context_document_id_absent_or_empty","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N13","mutation":"present_sender_document_id_mismatch","expected":"V3_MEDIA_CAPTURE_PORT_FORBIDDEN"},
+    {"caseId":"SP11-N14","mutation":"bound_document_replacement","expected":"V3_MEDIA_CAPTURE_BINDING_MISMATCH_OR_EXISTING_SINGLE_OWNER_REJECTION"}
+  ],
+  "invariants": {
+    "senderDocumentIdOptional": true,
+    "authoritativeContextDocumentIdRequired": true,
+    "urlOnlyAcceptanceForbidden": true,
+    "exactContextCount": 1,
+    "boundedWait": true,
+    "dualVersionFallbackForbidden": true,
+    "v10HistoricalMutationForbidden": true,
+    "visibleRunBudget": 1,
+    "chromeMuteAudioRequired": true
+  }
+}

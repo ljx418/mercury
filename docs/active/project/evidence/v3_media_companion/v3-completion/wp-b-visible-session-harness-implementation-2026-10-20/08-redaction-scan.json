@@ -1,0 +1,121 @@
+{
+  "changedFiles": {
+    "hits": [
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 266,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 267,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 776,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 821,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 825,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 839,
+        "pattern": "real-private-path",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 778,
+        "pattern": "bearer-value",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 331,
+        "pattern": "api-key-value",
+        "scope": "changed-files"
+      },
+      {
+        "explained": true,
+        "explanation": "the negative fixtures declare the forbidden literals on purpose",
+        "file": "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs",
+        "line": 781,
+        "pattern": "raw-media",
+        "scope": "changed-files"
+      }
+    ],
+    "scannedFiles": 16,
+    "unexplainedHits": []
+  },
+  "evidenceFiles": {
+    "hits": [
+      {
+        "explained": true,
+        "explanation": "the scan document demonstrates the refused shapes as examples",
+        "file": "docs/active/project/evidence/v3_media_companion/v3-completion/wp-b-visible-session-harness-implementation-2026-10-20/05-redaction-scan.md",
+        "line": 12,
+        "pattern": "real-private-path",
+        "scope": "evidence"
+      },
+      {
+        "explained": true,
+        "explanation": "the scan document demonstrates the refused shapes as examples",
+        "file": "docs/active/project/evidence/v3_media_companion/v3-completion/wp-b-visible-session-harness-implementation-2026-10-20/05-redaction-scan.md",
+        "line": 12,
+        "pattern": "real-private-path",
+        "scope": "evidence"
+      },
+      {
+        "explained": true,
+        "explanation": "the scan document demonstrates the refused shapes as examples",
+        "file": "docs/active/project/evidence/v3_media_companion/v3-completion/wp-b-visible-session-harness-implementation-2026-10-20/05-redaction-scan.md",
+        "line": 13,
+        "pattern": "windows-private-path",
+        "scope": "evidence"
+      },
+      {
+        "explained": true,
+        "explanation": "the scan document demonstrates the refused shapes as examples",
+        "file": "docs/active/project/evidence/v3_media_companion/v3-completion/wp-b-visible-session-harness-implementation-2026-10-20/05-redaction-scan.md",
+        "line": 13,
+        "pattern": "windows-private-path",
+        "scope": "evidence"
+      }
+    ],
+    "scannedFiles": 11,
+    "unexplainedHits": []
+  },
+  "note": "A real private path, a bearer, a cookie, an API key or raw media is a leak. A route prefix and a hash route are not paths. The redaction rule file, the negative fixtures and the scan document declare the forbidden literals on purpose: those are known negatives.",
+  "schemaVersion": "v3-wp-b-visible-harness-redaction-scan/v1",
+  "unexplainedTotal": 0
+}

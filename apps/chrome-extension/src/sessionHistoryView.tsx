@@ -6,12 +6,16 @@ export function SessionHistoryList({
   sessions,
   currentSessionId,
   disabled,
-  onSelect
+  onSelect,
+  onDelete,
+  deletingSessionId
 }: {
   sessions: ChatSession[];
   currentSessionId?: string;
   disabled: boolean;
   onSelect: (sessionId: string) => void;
+  onDelete: (sessionId: string) => void;
+  deletingSessionId?: string;
 }) {
   return (
     <>
@@ -22,19 +26,30 @@ export function SessionHistoryList({
         </div>
       ) : null}
       {sessions.map((session) => (
-        <button
-          className={`session-menu-item ${session.id === currentSessionId ? "active" : ""}`}
-          type="button"
-          key={session.id}
-          disabled={disabled}
-          onClick={() => onSelect(session.id)}
-        >
-          <span className="session-menu-row">
-            <span className="session-menu-title">{session.title || "新会话"}</span>
-            <span className="session-time">{formatSessionTime(session.lastMessageAt ?? session.updatedAt)}</span>
-          </span>
-          <span className="session-menu-source">{getSessionHistorySubtitle(session)}</span>
-        </button>
+        <div className={`session-menu-entry ${session.id === currentSessionId ? "active" : ""}`} key={session.id}>
+          <button
+            className="session-menu-item"
+            type="button"
+            disabled={disabled}
+            onClick={() => onSelect(session.id)}
+          >
+            <span className="session-menu-row">
+              <span className="session-menu-title">{session.title || "新会话"}</span>
+              <span className="session-time">{formatSessionTime(session.lastMessageAt ?? session.updatedAt)}</span>
+            </span>
+            <span className="session-menu-source">{getSessionHistorySubtitle(session)}</span>
+          </button>
+          <button
+            className="session-menu-delete"
+            type="button"
+            aria-label={`删除会话：${session.title || "新会话"}`}
+            title="删除这条会话"
+            disabled={disabled}
+            onClick={() => onDelete(session.id)}
+          >
+            {deletingSessionId === session.id ? "…" : "×"}
+          </button>
+        </div>
       ))}
     </>
   );

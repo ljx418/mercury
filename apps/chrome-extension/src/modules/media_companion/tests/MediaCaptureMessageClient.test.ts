@@ -16,6 +16,13 @@ const grant: PublicMediaCaptureGrant = {
 };
 
 describe("MediaCaptureMessageClient", () => {
+  it("prepares the offscreen document without issuing a capture grant", async () => {
+    const sendMessage = vi.fn(async () => ({ ok: true, state: "prepared" }));
+    const client = new MediaCaptureMessageClient(sendMessage);
+    await expect(client.prepare()).resolves.toEqual({ ok: true, state: "prepared" });
+    expect(sendMessage).toHaveBeenCalledWith({ type: "navia.mediaCapture", command: "prepare" });
+  });
+
   it("arms once and polls until the Chrome invocation starts capture", async () => {
     const responses: MediaCaptureResponse[] = [
       { ok: true, state: "armed", grantId: grant.grantId },

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "gc-b6d-codex-checkpoint-changed-files/v1",
+  "files": [
+    {"path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py", "sha256": "0895e81a1ea87b802247eae4e4fe798430ac5b6b7009637dd47035fcf1b84bdf"},
+    {"path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py", "sha256": "211cbd055699a43c1342f3dd42697d86643edb127013dce876743c68d2de00ea"},
+    {"path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py", "sha256": "b6ce36c429e19fcd4a3b6eddeff4fd340e380fbb1567e42f02f19209f35c8505"},
+    {"path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py", "sha256": "f8c13c13cf391410f27a3564057032086f91b04c3f73d1e64163321a3e4c4d17"},
+    {"path": "services/local-runtime/tests/test_v3_gc_b6d_chapter_balance.py", "sha256": "184d913738a138f91540c37f6acf159fd999e65643fa8cd6d23eef3ae27b2689"},
+    {"path": "scripts/stage_b_b5_3/run_one_bvid.mjs", "sha256": "02db1e731626f6f1e824053de131004a1a9ffe0630d9ee685a27074b5de52a34"},
+    {"path": "scripts/stage_b_b5_3/test/b6d_balance_diagnostic.node-test.mjs", "sha256": "dc6c2a1171facc131fae83698da6911767ccc24e7ea861b1d24a8e58de5a61c9"}
+  ],
+  "codexCorrectedFiles": [
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+    "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+    "services/local-runtime/tests/test_v3_gc_b6d_chapter_balance.py",
+    "scripts/stage_b_b5_3/run_one_bvid.mjs",
+    "scripts/stage_b_b5_3/test/b6d_balance_diagnostic.node-test.mjs"
+  ]
+}

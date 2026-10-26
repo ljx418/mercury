@@ -1,0 +1,91 @@
+{
+  "b01b30Denominator": {
+    "note": "not re-attested in this corrective round; the previous round's 25/30 was REJECTED by the checkpoint as false-green and is not carried forward"
+  },
+  "candidate": "wp-b-explicit-local-media-import-corrective-implementation-2026-10-20",
+  "checkpointFindings": {
+    "closed": 2,
+    "fatal": 2,
+    "major": 6,
+    "open": 6
+  },
+  "closed": [
+    {
+      "area": "PUT coroutine/iterator",
+      "evidence": "3/3 targeted: real successful PUT through the ASGI route; >1 MiB transport chunk accepted; writer slices all <=1 MiB; durable byte count exact; mid-stream failure leaks no exception, leaves no live session",
+      "finding": "Fatal 1",
+      "plan": "C2",
+      "status": "CLOSED"
+    },
+    {
+      "area": "public/internal schema conformance",
+      "evidence": "frozen schemaVersion `v3-media-local-import/v1` + `v3-media-local-import-store/v1`; importId `media_import_<32 hex>`; public `recoverable` and `media`; store back to the frozen 15 columns",
+      "finding": "Major 4",
+      "plan": "C1",
+      "status": "CLOSED"
+    }
+  ],
+  "externalInput": [
+    {
+      "area": "registry-compliant 100 MB asset",
+      "case": "B29",
+      "note": "no compliant private seed; host real speech totals 12,290 ms vs the frozen 30,000 ms floor",
+      "plan": "B29/B30",
+      "status": "EXTERNAL_INPUT_BLOCKER"
+    },
+    {
+      "area": "registry-compliant ~1 GiB asset",
+      "case": "B30",
+      "note": "same seed requirement",
+      "plan": "B29/B30",
+      "status": "EXTERNAL_INPUT_BLOCKER"
+    }
+  ],
+  "open": [
+    {
+      "area": "production Runtime never composes preparer / T1-T4 barrier / transcript task / product materializer",
+      "finding": "Fatal 2",
+      "note": "app.py builds no local-import orchestrator; B21/B22 remain structurally disconnected",
+      "plan": "C4",
+      "status": "OPEN"
+    },
+    {
+      "area": "browser reachability",
+      "finding": "Major 1",
+      "note": "OPTIONS lacks exact allow-origin; XHR uses a relative extension URL without the Runtime bearer; LocalMediaImportCard is not mounted in a production eligible-blocked surface",
+      "plan": "C6",
+      "status": "OPEN"
+    },
+    {
+      "area": "durable consumer terminal state",
+      "finding": "Major 2",
+      "note": "transcript/visual terminal receipts are still process-local; the audio owner receipt is discarded; barrier cleanup still calls incompatible coordinator methods",
+      "plan": "C5",
+      "status": "OPEN"
+    },
+    {
+      "area": "startup recovery composition",
+      "finding": "Major 3",
+      "note": "no startup reconciliation of active imports; recovery may still delete shared input before T3/audio staging",
+      "plan": "C5",
+      "status": "OPEN"
+    },
+    {
+      "area": "eligibility before allocation",
+      "finding": "Major 5",
+      "note": "POST create still allocates an import record/quota without proving the task/source is an eligible blocked acquisition",
+      "plan": "C3",
+      "status": "OPEN"
+    },
+    {
+      "area": "anti-false-green coverage",
+      "finding": "Major 6",
+      "note": "client abort/polling and the production-composition matrix beyond C2 are not yet production-driven",
+      "plan": "C7",
+      "status": "OPEN"
+    }
+  ],
+  "oracleLowered": false,
+  "schemaVersion": "wp-b-corrective-case-results/v1",
+  "status": "WP-B CORRECTIVE NO-GO"
+}

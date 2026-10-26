@@ -1,0 +1,22 @@
+# Changes And Hashes
+
+Public contract changes: none.
+
+The correction changed internal Stage B harness, tests, canonical review protocol bytes, and stage authority documents. It did not change the V2.1 schema, public API, FailureCode inventory, quality thresholds, eight-request limit, source registry, fixed denominator, Provider registry, Origin/auth order, or historical evidence.
+
+```text
+65537416897f14903d028311ccf6b62fda7afffd37bf71c46448c16a9e025bd4  scripts/stage_b_b5_3/lib/execution_closure.mjs
+5b13ba3962599bfb9f8a22d32545eef1626647285eb12a14b5692d486e76ddbd  scripts/stage_b_b5_3/lib/public_evidence.mjs
+7501db218a37db0f6d2488cb9f3773c4e213a756e28cbd5a6d1ff4191a2c9548  scripts/stage_b_b5_3/lib/review_protocol.mjs
+01f9a3fd5e32d4179e27f86db7239ef1cfccf0a53619072f379bc43757645a20  scripts/stage_b_b5_3/lib/candidate_prepare.mjs
+52ada512464ad767d448ee887d3825768266f7b72f7f666067a33b924f5a51d0  scripts/stage_b_b5_3/run_one_bvid.mjs
+35d8d8391a2d984f7ad5eb7c013f3bc0880244bf965e34b7468fb1c48a445803  scripts/stage_b_b5_3/sequencer.mjs
+39bc8f9b95ac0645b44479e216257e113882e1bdacf76df8ebe12e78131db414  scripts/stage_b_b5_3/publish_public_evidence.mjs
+60a32cd9a9334a702a6b588ae864194426c82c7130d43cd2f979748e1255f5de  scripts/stage_b_b5_3/protocol/review-rubric.v1.md
+6c1f53f2aab1981937aa0f97f8c95a9102ed0ff763e30212bc65ae89826e87d2  scripts/stage_b_b5_3/protocol/review-prompt.v1.md
+fdfe76ee39476a1d5e8b65a45356e5ce7335b4077bf6fff22c34c9708703f329  scripts/stage_b_b5_3/test/_fixtures/b6hr_public_evidence.mjs
+94ae6766a3d1144de3adc3d1b1285ed1c1eca6b9e89c0cd0ee1c038e15884506  scripts/stage_b_b5_3/test/b6hr_offline_corrective.node-test.mjs
+f4cbd1bf894bf068359effc78c9abdbb7409fd20365497ea83e2a7b3eec59263  AGENTS.md
+fb798bafcbac6994f407036f0522fe222171a6cad6fc8de79f3b03064f9e2d22  docs/active/project/stage-gates/v3-media-companion.md
+```
+

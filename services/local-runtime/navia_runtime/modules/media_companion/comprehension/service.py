@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from ..outline import canonical_hash
 from ..task_store import MediaTaskStore, MediaTaskStoreError
+from .quality import compose_brief_from_validated_claims, validate_grounded_comprehension
+from .synthesis import GroundedSynthesisReceipt, MiniMaxGroundedSynthesisProvider, synthesis_style
 
 
 _SENTENCE_SPLIT = re.compile(r"(?<=[。！？!?；;])\s*|\n+")
@@ -18,6 +21,26 @@ _TRANSITION_PREFIX = re.compile(
     r"^(?:首先|第一|其次|第二|然后|接下来|随后|另一方面|最后|最终|总结|结论|这里|现在|我们(?:先|再|来|看))"
 )
 _VISUAL_KINDS = {"frame", "ocr_block", "vision_caption"}
+_BRIEF_COMPOSER_FAILURES = {"V3510B_BRIEF_LENGTH_INVALID", "V3510B_BRIEF_RAW_PREFIX"}
+_NO_RETRY_FAILURES = {
+    "V3510B_PROVIDER_REFUSAL",
+    "V3510B_PROVIDER_AUTHORIZATION_DENIED",
+    "V3510B_PROVIDER_QUALIFICATION_DENIED",
+    "V3510B_PROVIDER_REGION_MISMATCH",
+    "V3510B_PROVIDER_CONTRACT_MISMATCH",
+}
+# The input-authority refusals. Every code here already exists in the frozen
+# media failure inventory; this workpack adds no code and edits no inventory.
+_INPUT_REFUSAL_MESSAGES = {
+    "V3510B_TASK_REVISION_CONFLICT": "Task revision changed.",
+    "V3_MEDIA_TRANSCRIPT_SOURCE_MISMATCH": "The media input does not belong to this task under this identity.",
+    "V3_MEDIA_CROSS_TASK_REUSE": "The media input was prepared for another task or another run.",
+    "V3_MEDIA_IMPORT_CANCELLED": "The local media import of this task was cancelled.",
+    "V3_MEDIA_IMPORT_WRITE_FAILED": "The local media import of this task did not complete.",
+    "V3_MEDIA_DEPENDENCY_NOT_READY": "The current dependency generation of this task could not be verified.",
+}
+_INPUT_REFUSAL_CODES = frozenset(_INPUT_REFUSAL_MESSAGES)
+logger = logging.getLogger(__name__)
 
 
 def _stable_id(prefix: str, *parts: object, length: int) -> str:
@@ -51,11 +74,24 @@ def _jaccard(left: set[str], right: set[str]) -> float:
 
 
 class MediaComprehensionService:
-    """Builds one local, deterministic, evidence-closed workspace projection."""
+    """Builds an evidence-closed local preview or validated grounded projection."""
 
-    def __init__(self, store: MediaTaskStore, private_evidence_root: str | Path) -> None:
+    def __init__(
+        self,
+        store: MediaTaskStore,
+        private_evidence_root: str | Path,
+        synthesis_provider_factory: Callable[[], MiniMaxGroundedSynthesisProvider] | None = None,
+        input_authority: Any | None = None,
+    ) -> None:
         self._store = store
         self._private_root = Path(private_evidence_root).resolve()
+        self._synthesis_provider_factory = synthesis_provider_factory
+        # The ONE composition point that binds the input of a task to the
+        # grounded chain. When no authority is injected, the service composes
+        # the default one from the durable owners of the SAME Runtime: the
+        # local-import binding and the task's dependency lease.
+        self._input_authority = input_authority
+        self._default_input_authority: Any | None = None
 
     def get(self, task_id: str, expected_revision: int | None = None) -> dict[str, Any]:
         task = self._store.get(task_id)
@@ -70,10 +106,35 @@ class MediaComprehensionService:
         evidence = [self._evidence_with_text(item) for item in catalog]
         ordered = sorted(evidence, key=lambda item: (item["timestampStartMs"], item["timestampEndMs"], item["evidenceId"]))
         duration_ms = max(item["timestampEndMs"] for item in ordered)
-        chapters = self._chapters(task_id, task["revision"], ordered, duration_ms)
+        evidence_sha256 = canonical_hash([
+            {key: item[key] for key in ("evidenceId", "contentSha256", "timestampStartMs", "timestampEndMs")}
+            for item in ordered
+        ])
+        grounded_v2 = (
+            self._load_grounded_v2_1(task_id, task["revision"], evidence_sha256)
+            or self._load_grounded_v2(task_id, task["revision"], evidence_sha256)
+        )
+        synthesis = self._load_synthesis(task_id, task["revision"], evidence_sha256) if grounded_v2 is None else None
+        grounded_result = None
+        if grounded_v2 is not None:
+            grounded_result = {
+                "summary": grounded_v2["brief"]["text"],
+                "chapters": [{
+                    **chapter,
+                    "keyPoints": [chapter["thesis"]],
+                    "evidenceNote": "",
+                } for chapter in grounded_v2["chapters"]],
+            }
+        projection_result = grounded_result or (synthesis["result"] if synthesis else None)
+        chapters = (
+            self._synthesized_chapters(task_id, task["revision"], ordered, projection_result)
+            if projection_result else self._chapters(task_id, task["revision"], ordered, duration_ms)
+        )
         outline_id = _stable_id(
-            "outline", task_id, task["revision"], "comprehension-v1",
-            canonical_hash([{key: item[key] for key in ("evidenceId", "contentSha256") } for item in ordered]),
+            "outline", task_id, task["revision"], "grounded-v2" if grounded_v2 else ("comprehension-v2" if synthesis else "comprehension-v1"),
+            evidence_sha256,
+            canonical_hash(projection_result) if projection_result else "local",
+            synthesis.get("style", "structured") if synthesis else ("structured" if grounded_v2 else "local"),
             length=32,
         )
         title = _clean(bundle["outline"].get("title")) or task["sourceIdentity"].split(":")[2]
@@ -82,7 +143,7 @@ class MediaComprehensionService:
             "taskId": task_id,
             "taskRevision": task["revision"],
             "title": title[:240],
-            "summary": " ".join(chapter["thesis"] for chapter in chapters)[:4000],
+            "summary": projection_result["summary"] if projection_result else " ".join(chapter["thesis"] for chapter in chapters)[:4000],
             "chapters": chapters,
         }
         outline["contentSha256"] = canonical_hash(outline)
@@ -100,7 +161,7 @@ class MediaComprehensionService:
             for item in ordered
         ]
         return {
-            "schemaVersion": "v3-media-workspace-comprehension-projection/v1",
+            "schemaVersion": "v3-media-workspace-comprehension-projection/v2" if projection_result else "v3-media-workspace-comprehension-projection/v1",
             "task": {
                 "taskId": task_id,
                 "taskRevision": task["revision"],
@@ -109,17 +170,530 @@ class MediaComprehensionService:
                 "outlineId": outline_id,
             },
             "authorization": {
-                "groundedTextCloudStatus": "disabled",
-                "providerId": None,
-                "modelId": None,
-                "outboundDerivedTextSha256": None,
+                "groundedTextCloudStatus": "granted" if projection_result else "disabled",
+                "providerId": (grounded_v2 or synthesis)["receipt"]["providerId"] if projection_result else None,
+                "modelId": (grounded_v2 or synthesis)["receipt"]["modelId"] if projection_result else None,
+                "outboundDerivedTextSha256": (grounded_v2 or synthesis)["receipt"]["outboundDerivedTextSha256"] if projection_result else None,
                 "rawMediaUploadCount": 0,
             },
+            "quality": {
+                "mode": "grounded_model" if projection_result else "local_extract_only",
+                "humanQualityReviewRequired": True,
+                "warning": (
+                    "当前结果证据覆盖受限，不能标记为完整视频理解。"
+                    if grounded_v2 and grounded_v2["quality"]["status"] == "limited"
+                    else (None if projection_result else "当前为本地提取预览，不能代表完整视频理解。")
+                ),
+                "style": synthesis.get("style") if synthesis else None,
+                "styleRisk": synthesis.get("styleRisk") if synthesis else None,
+                "status": grounded_v2["quality"]["status"] if grounded_v2 else None,
+                "failureCodes": grounded_v2["quality"]["failureCodes"] if grounded_v2 else [],
+            },
+            "grounded": ({
+                "brief": grounded_v2["brief"],
+                "claims": grounded_v2["claims"],
+                "regions": grounded_v2["regions"],
+            } if grounded_v2 else None),
             "evidenceCatalog": public_catalog,
             "outline": outline,
             "timeline": timeline,
             "mindmap": mindmap,
         }
+
+    def _write_stage_b_diagnostic(
+        self,
+        *,
+        task_id: str,
+        stage: str,
+        failure_code: str,
+        candidate: Any,
+        evidence: list[dict[str, Any]],
+        provider: Any = None,
+    ) -> None:
+        """Write the PRIVATE redacted diagnostic of a failed validation stage.
+
+        It is an internal record: it never changes a public endpoint, a public
+        schema or a public error envelope, and it never contains a Provider
+        response, a transcript, an evidence text, a title, a Cookie, a key, a
+        private path, raw media or an evidence id.
+        """
+        from .diagnostics import build_stage_b_diagnostic
+
+        stages: list[dict[str, Any]] = []
+        for entry in getattr(provider, "stage_b_diagnostics", []) or []:
+            if isinstance(entry, dict):
+                stages.append(entry)
+        stages.append(build_stage_b_diagnostic(
+            stage=stage,
+            failure_code=failure_code,
+            candidate=candidate,
+            evidence=evidence,
+            final_outcome="fail_closed",
+            provider_outbound_http_attempts=self._provider_outbound_attempts(provider),
+        ))
+        payload = {
+            "schemaVersion": "v3-media-grounded-chapter-diagnostic-set/v1",
+            "taskId": task_id,
+            "stages": stages,
+        }
+        try:
+            directory = self._private_root / "diagnostics" / task_id
+            directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+            target = directory / "stage-b-diagnostic.json"
+            temporary = target.with_name(target.name + ".tmp")
+            temporary.write_bytes(
+                json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            )
+            try:
+                temporary.chmod(0o600)
+            except OSError:
+                pass
+            temporary.replace(target)
+        except OSError:
+            # The diagnostic is a record, never a gate: a failed write must not
+            # change the failure the caller sees.
+            logger.warning("V3510B_DIAGNOSTIC_WRITE_FAILED taskId=%s stage=%s", task_id, stage)
+
+    @staticmethod
+    def _provider_outbound_attempts(provider: Any) -> int | None:
+        """The ACTUAL number of outbound Provider HTTP attempts.
+
+        It is owned by the production adapter and it is a COUNT only: no
+        response text, no prompt, no evidence id, no path and no secret.
+        """
+        value = getattr(provider, "provider_outbound_http_attempts", None)
+        if isinstance(value, int) and not isinstance(value, bool) and value >= 0:
+            return value
+        return None
+
+    @staticmethod
+    def _provider_receipt_extras(provider: Any) -> dict[str, Any]:
+        """The Provider's receipt extras, read AFTER its request."""
+        extras = getattr(provider, "b5_provider_receipt_extras", None)
+        if callable(extras):
+            try:
+                extras = extras()
+            except Exception:  # noqa: BLE001 - the extras are a record, not a gate
+                extras = {}
+        return extras if isinstance(extras, dict) else {}
+
+    def _default_authority(self) -> Any:
+        """The default input authority, composed from the durable owners.
+
+        It is composed once per service and reads only the durable owners. It
+        carries NO dependency-generation resolver, so a LOCAL input can never
+        be verified against a CURRENT generation here and the local route is
+        refused before the Provider. The production composition in
+        `navia_runtime/app.py` injects the manager-owned resolver.
+        """
+        if self._default_input_authority is None:
+            from ..input_authority import MediaInputAuthority
+
+            self._default_input_authority = MediaInputAuthority.for_task_store(self._store)
+        return self._default_input_authority
+
+    def _require_current_input(self, task_id: str, expected_revision: int) -> None:
+        """Refuse a task whose input is not the CURRENT task's own input.
+
+        The refusal happens BEFORE any Provider is asked and again before the
+        publication, so a stale or foreign asset can never reach a Provider
+        and can never be published.
+        """
+        authority = self._input_authority
+        if authority is None:
+            authority = self._default_authority()
+        try:
+            authority.require_current_input(
+                task_id, expected_revision=expected_revision
+            )
+        except ValueError as error:
+            code = str(error)
+            if code in _INPUT_REFUSAL_CODES:
+                raise MediaTaskStoreError(
+                    code, _INPUT_REFUSAL_MESSAGES[code], status=409,
+                ) from error
+            raise MediaTaskStoreError(
+                "V3_MEDIA_TRANSCRIPT_SOURCE_MISMATCH",
+                "The media input does not belong to this task under this identity.",
+                status=409,
+            ) from error
+
+    def synthesize(self, task_id: str, expected_revision: int, consent: bool, style: str = "structured") -> dict[str, Any]:
+        self._store.require_current_authority(task_id)
+        # G1: the input must be the current task's own input BEFORE any
+        # Provider is asked.
+        self._require_current_input(task_id, expected_revision)
+        if consent is not True:
+            raise MediaTaskStoreError(
+                "V3510B_CONSENT_REQUIRED",
+                "发送派生字幕与画面描述前需要本次任务授权。",
+                status=403,
+            )
+        if self._synthesis_provider_factory is None:
+            raise MediaTaskStoreError("V352_SYNTHESIS_PROVIDER_MISSING", "没有可用的高质量理解模型。", status=409)
+        style_risk = synthesis_style(style)
+        task = self._store.get(task_id)
+        if task["revision"] != expected_revision:
+            raise MediaTaskStoreError("V3510B_TASK_REVISION_CONFLICT", "Task revision changed.", status=409)
+        bundle = task.get("projections")
+        if task["state"] not in {"ready", "degraded"} or not isinstance(bundle, dict):
+            raise MediaTaskStoreError("V351_TASK_NOT_READY", "Workspace comprehension requires a published media task.", status=409)
+        evidence = [self._evidence_with_text(item) for item in bundle.get("evidenceCatalog", [])]
+        ordered = sorted(evidence, key=lambda item: (item["timestampStartMs"], item["timestampEndMs"], item["evidenceId"]))
+        if not ordered:
+            raise MediaTaskStoreError("V351_EVIDENCE_REQUIRED", "Workspace comprehension requires evidence.", status=409)
+        evidence_sha256 = canonical_hash([
+            {key: item[key] for key in ("evidenceId", "contentSha256", "timestampStartMs", "timestampEndMs")}
+            for item in ordered
+        ])
+        title = _clean(bundle.get("outline", {}).get("title")) or task["sourceIdentity"].split(":")[2]
+        outbound = [{
+            "evidenceId": item["evidenceId"],
+            "kind": item["kind"],
+            "timestampStartMs": item["timestampStartMs"],
+            "timestampEndMs": item["timestampEndMs"],
+            "text": item["text"],
+        } for item in ordered]
+        provider = self._synthesis_provider_factory()
+        # The Provider's receipt extras (attempt id, request/response digests,
+        # latency, finish reason) are a record of the request that ALREADY
+        # HAPPENED. They are therefore read AFTER the request, never before it:
+        # reading them before would publish an empty attemptId and empty
+        # digests, and the published V2.1 derivative would not satisfy the
+        # frozen schema.
+        provider_receipt_extras = {}
+        if hasattr(provider, "synthesize_v2"):
+            try:
+                candidate, receipt = provider.synthesize_v2(title=title, evidence=outbound, style=style)
+            except MediaTaskStoreError as error:
+                # The adapter refused. The INTERNAL diagnostic records the
+                # ACTUAL number of outbound Provider HTTP attempts, so the
+                # runner never has to guess one attempt per endpoint call.
+                self._write_stage_b_diagnostic(
+                    task_id=task_id,
+                    stage="provider_attempt",
+                    failure_code=error.code,
+                    candidate=None,
+                    evidence=ordered,
+                    provider=provider,
+                )
+                if error.code == "V352_SYNTHESIS_TIMEOUT":
+                    raise MediaTaskStoreError("V3510B_PROVIDER_TIMEOUT", str(error), status=error.status) from error
+                if error.code == "V352_SYNTHESIS_PROVIDER_UNAVAILABLE":
+                    raise MediaTaskStoreError("V3510B_PROVIDER_UNAVAILABLE", str(error), status=error.status) from error
+                if error.code == "V352_SYNTHESIS_CREDENTIAL_REGION_MISMATCH":
+                    raise MediaTaskStoreError("V3510B_PROVIDER_AUTHORIZATION_DENIED", str(error), status=error.status) from error
+                if error.code.startswith("V352_SYNTHESIS_"):
+                    raise MediaTaskStoreError("V3510B_PROVIDER_RESPONSE_INVALID", str(error), status=error.status) from error
+                raise
+            provider_receipt_extras = self._provider_receipt_extras(provider)
+            validation_args = {
+                "task_id": task_id,
+                "task_revision": expected_revision,
+                "source_identity": task["sourceIdentity"],
+                "evidence_catalog_sha256": evidence_sha256,
+                "media_duration_ms": max(item["timestampEndMs"] for item in ordered),
+                "schema_version": "v3-media-grounded-comprehension/v2.1",
+                "provider_receipt_extras": provider_receipt_extras,
+            }
+            try:
+                derivative = validate_grounded_comprehension(
+                    candidate, ordered, receipt=self._receipt_dict(receipt), **validation_args,
+                )
+            except MediaTaskStoreError as error:
+                self._write_stage_b_diagnostic(
+                    task_id=task_id,
+                    stage="validator_initial",
+                    failure_code=error.code,
+                    candidate=candidate,
+                    evidence=ordered,
+                    provider=provider,
+                )
+                if error.code in _NO_RETRY_FAILURES:
+                    logger.warning(
+                        "V3510B_NO_REPAIR taskId=%s revision=%s code=%s",
+                        task_id, expected_revision, error.code,
+                    )
+                    raise
+                repair = getattr(provider, "repair_v2", None)
+                if repair is None or not error.code.startswith("V3510B_"):
+                    raise
+                try:
+                    candidate, receipt = repair(
+                        title=title, evidence=outbound, candidate=candidate,
+                        failure_code=error.code, style=style,
+                    )
+                except MediaTaskStoreError as repair_refusal:
+                    # The bounded repair REFUSED. The INTERNAL diagnostic
+                    # records the ACTUAL number of outbound Provider HTTP
+                    # attempts, so the runner never has to guess one attempt
+                    # per endpoint call, and it records the FINAL refusal
+                    # rather than the previous one.
+                    self._write_stage_b_diagnostic(
+                        task_id=task_id,
+                        stage="provider_bounded_repair",
+                        failure_code=repair_refusal.code,
+                        candidate=None,
+                        evidence=ordered,
+                        provider=provider,
+                    )
+                    raise
+                provider_receipt_extras = self._provider_receipt_extras(provider)
+                validation_args["provider_receipt_extras"] = provider_receipt_extras
+                try:
+                    derivative = validate_grounded_comprehension(
+                        candidate, ordered, receipt=self._receipt_dict(receipt), **validation_args,
+                    )
+                except MediaTaskStoreError as repair_error:
+                    self._write_stage_b_diagnostic(
+                        task_id=task_id,
+                        stage="validator_bounded_repair",
+                        failure_code=repair_error.code,
+                        candidate=candidate,
+                        evidence=ordered,
+                        provider=provider,
+                    )
+                    if repair_error.code in _NO_RETRY_FAILURES:
+                        logger.warning(
+                            "V3510B_NO_COMPOSER taskId=%s revision=%s code=%s",
+                            task_id, expected_revision, repair_error.code,
+                        )
+                        raise
+                    if repair_error.code not in _BRIEF_COMPOSER_FAILURES:
+                        raise
+                    composition = compose_brief_from_validated_claims(
+                        candidate,
+                        ordered,
+                        task_id=task_id,
+                        task_revision=expected_revision,
+                        media_duration_ms=validation_args["media_duration_ms"],
+                    )
+                    if composition is None:
+                        logger.warning(
+                            "V3510B_COMPOSER_NO_VALID_SUBSET taskId=%s revision=%s catalog=%s original=%s",
+                            task_id,
+                            expected_revision,
+                            evidence_sha256,
+                            repair_error.code,
+                        )
+                        raise
+                    derivative = validate_grounded_comprehension(
+                        composition.candidate,
+                        ordered,
+                        receipt=self._receipt_dict(receipt),
+                        brief_origin="deterministic_claim_composer",
+                        source_claim_indexes=composition.source_claim_indexes,
+                        **validation_args,
+                    )
+            # Coverage-only output is valid and publishable, but the brief can
+            # often be completed without another cloud request. Recompose it
+            # exclusively from already validated claims; if no closed subset
+            # exists, retain the honest limited result unchanged.
+            if derivative["quality"]["failureCodes"] == ["V3510B_BRIEF_COVERAGE_INSUFFICIENT"]:
+                composition = compose_brief_from_validated_claims(
+                    candidate,
+                    ordered,
+                    task_id=task_id,
+                    task_revision=expected_revision,
+                    media_duration_ms=validation_args["media_duration_ms"],
+                )
+                if composition is not None:
+                    derivative = validate_grounded_comprehension(
+                        composition.candidate,
+                        ordered,
+                        receipt=self._receipt_dict(receipt),
+                        brief_origin="deterministic_claim_composer",
+                        source_claim_indexes=composition.source_claim_indexes,
+                        **validation_args,
+                    )
+            # G1: the authority is checked again immediately before the
+            # atomic publication, so a task that moved during the Provider
+            # call can never publish.
+            self._require_current_input(task_id, expected_revision)
+            self._assert_current_binding(task_id, expected_revision, evidence_sha256)
+            self._save_grounded_v2_1(derivative)
+        else:
+            result, receipt = provider.synthesize(title=title, evidence=outbound, style=style)
+            self._store.require_current_authority(task_id)
+            # The V1 route publishes its own bytes, so the same input
+            # authority applies to it.
+            self._require_current_input(task_id, expected_revision)
+            self._save_synthesis(task_id, expected_revision, evidence_sha256, result, receipt, style, style_risk)
+        return self.get(task_id, expected_revision)
+
+    def _synthesis_path(self, task_id: str, revision: int) -> Path:
+        return self._private_root / "synthesis" / task_id / f"revision-{revision}.json"
+
+    def _grounded_v2_path(self, task_id: str, revision: int, evidence_sha256: str) -> Path:
+        return self._private_root / "grounded-comprehension-v2" / task_id / f"revision-{revision}" / f"{evidence_sha256}.json"
+
+    def _grounded_v2_1_path(self, task_id: str, revision: int, evidence_sha256: str) -> Path:
+        return self._private_root / "grounded-comprehension-v2.1" / task_id / f"revision-{revision}" / f"{evidence_sha256}.json"
+
+    def _load_grounded_v2_1(self, task_id: str, revision: int, evidence_sha256: str) -> dict[str, Any] | None:
+        return self._load_versioned_grounded(
+            self._grounded_v2_1_path(task_id, revision, evidence_sha256),
+            "v3-media-grounded-comprehension/v2.1",
+            task_id,
+            revision,
+            evidence_sha256,
+        )
+
+    def _load_grounded_v2(self, task_id: str, revision: int, evidence_sha256: str) -> dict[str, Any] | None:
+        return self._load_versioned_grounded(
+            self._grounded_v2_path(task_id, revision, evidence_sha256),
+            "v3-media-grounded-comprehension/v2",
+            task_id,
+            revision,
+            evidence_sha256,
+        )
+
+    @staticmethod
+    def _load_versioned_grounded(
+        path: Path,
+        schema_version: str,
+        task_id: str,
+        revision: int,
+        evidence_sha256: str,
+    ) -> dict[str, Any] | None:
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return None
+        binding = value.get("binding") if isinstance(value, dict) else None
+        if value.get("schemaVersion") != schema_version or not isinstance(binding, dict):
+            return None
+        if (binding.get("taskId"), binding.get("taskRevision"), binding.get("evidenceCatalogSha256")) != (task_id, revision, evidence_sha256):
+            return None
+        return value
+
+    def _assert_current_binding(self, task_id: str, revision: int, evidence_sha256: str) -> None:
+        self._store.require_current_authority(task_id)
+        task = self._store.get(task_id)
+        if task["revision"] != revision:
+            raise MediaTaskStoreError("V3510B_TASK_REVISION_CONFLICT", "Task revision changed before commit.", status=409)
+        bundle = task.get("projections") or {}
+        evidence = [self._evidence_with_text(item) for item in bundle.get("evidenceCatalog", [])]
+        ordered = sorted(evidence, key=lambda item: (item["timestampStartMs"], item["timestampEndMs"], item["evidenceId"]))
+        current_hash = canonical_hash([
+            {key: item[key] for key in ("evidenceId", "contentSha256", "timestampStartMs", "timestampEndMs")}
+            for item in ordered
+        ])
+        if current_hash != evidence_sha256:
+            raise MediaTaskStoreError("V3510B_EVIDENCE_CATALOG_CHANGED", "Evidence catalog changed before commit.", status=409)
+
+    def _save_grounded_v2(self, value: dict[str, Any]) -> None:
+        binding = value["binding"]
+        path = self._grounded_v2_path(binding["taskId"], binding["taskRevision"], binding["evidenceCatalogSha256"])
+        self._atomic_save_grounded(path, value)
+
+    def _save_grounded_v2_1(self, value: dict[str, Any]) -> None:
+        if value.get("schemaVersion") != "v3-media-grounded-comprehension/v2.1":
+            raise MediaTaskStoreError("V3510B_PROVIDER_RESPONSE_INVALID", "V2.1 writer requires a V2.1 derivative.", status=500)
+        binding = value["binding"]
+        path = self._grounded_v2_1_path(binding["taskId"], binding["taskRevision"], binding["evidenceCatalogSha256"])
+        self._atomic_save_grounded(path, value)
+
+    @staticmethod
+    def _atomic_save_grounded(path: Path, value: dict[str, Any]) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        temporary = path.with_name(path.name + ".tmp")
+        temporary.write_bytes(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+        try:
+            temporary.chmod(0o600)
+        except OSError:
+            pass
+        temporary.replace(path)
+
+    @staticmethod
+    def _receipt_dict(receipt: GroundedSynthesisReceipt) -> dict[str, Any]:
+        return {
+            "providerId": receipt.provider_id,
+            "modelId": receipt.model_id,
+            "outboundDerivedTextSha256": receipt.outbound_sha256,
+            "requestCount": receipt.request_count,
+            "usage": dict(receipt.usage) if isinstance(getattr(receipt, "usage", None), dict) else {},
+        }
+
+    def _load_synthesis(self, task_id: str, revision: int, evidence_sha256: str) -> dict[str, Any] | None:
+        path = self._synthesis_path(task_id, revision)
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return None
+        if not isinstance(value, dict) or value.get("evidenceSha256") != evidence_sha256:
+            return None
+        if not isinstance(value.get("result"), dict) or not isinstance(value.get("receipt"), dict):
+            return None
+        return value
+
+    def _save_synthesis(
+        self,
+        task_id: str,
+        revision: int,
+        evidence_sha256: str,
+        result: dict[str, Any],
+        receipt: GroundedSynthesisReceipt,
+        style: str,
+        style_risk: dict[str, str],
+    ) -> None:
+        path = self._synthesis_path(task_id, revision)
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        value = {
+            "schemaVersion": "v3-grounded-media-synthesis/v1",
+            "taskId": task_id,
+            "taskRevision": revision,
+            "evidenceSha256": evidence_sha256,
+            "style": style,
+            "styleRisk": {key: style_risk[key] for key in ("label", "riskLevel", "riskCode", "riskDescription")},
+            "result": result,
+            "receipt": {
+                "providerId": receipt.provider_id,
+                "modelId": receipt.model_id,
+                "outboundDerivedTextSha256": receipt.outbound_sha256,
+                "requestCount": receipt.request_count,
+                "usage": receipt.usage,
+                "rawMediaUploadCount": 0,
+            },
+        }
+        temporary = path.with_suffix(".tmp")
+        temporary.write_bytes(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+        temporary.replace(path)
+        try:
+            path.chmod(0o600)
+        except OSError:
+            pass
+
+    @staticmethod
+    def _synthesized_chapters(
+        task_id: str,
+        revision: int,
+        evidence: list[dict[str, Any]],
+        result: dict[str, Any],
+    ) -> list[dict[str, Any]]:
+        by_id = {item["evidenceId"]: item for item in evidence}
+        chapters: list[dict[str, Any]] = []
+        for order, value in enumerate(result["chapters"]):
+            ids = list(value["evidenceIds"])
+            frames = [by_id[item] for item in ids if by_id[item]["kind"] == "frame"]
+            midpoint = value["startMs"] + (value["endMs"] - value["startMs"]) // 2
+            representative = min(frames, key=lambda item: abs(item["timestampStartMs"] - midpoint))["evidenceId"] if frames else None
+            chapters.append({
+                "chapterId": _stable_id("chapter", task_id, revision, "grounded", order, value["startMs"], length=16),
+                "parentChapterId": None,
+                "depth": 1,
+                "order": order,
+                "startMs": value["startMs"],
+                "endMs": value["endMs"],
+                "title": value["title"],
+                "thesis": value["thesis"],
+                "keyPoints": list(value["keyPoints"]),
+                "evidenceIds": ids,
+                "representativeFrameEvidenceId": representative,
+                "evidenceNote": value.get("evidenceNote", ""),
+                "relationToPrevious": value.get("relationToPrevious", "continuation"),
+            })
+        return chapters
 
     def thumbnail(self, task_id: str, evidence_id: str) -> Path:
         task = self._store.get(task_id)

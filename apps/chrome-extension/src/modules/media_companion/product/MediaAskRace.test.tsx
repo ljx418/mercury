@@ -2,7 +2,7 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { MediaAskResult, MediaOutlineTask } from "../../../runtimeClient";
+import { RuntimeRequestError, type MediaAskResult, type MediaOutlineTask } from "../../../runtimeClient";
 import { MediaWorkspaceShell } from "./MediaWorkspaceShell";
 import { resolveMediaWorkspaceRoute } from "./MediaWorkspaceRouter";
 
@@ -31,6 +31,7 @@ const ask = vi.fn(async () => fresh);
 vi.mock("../../../runtimeClient", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../../runtimeClient")>()),
   getMediaOutlineTask: async () => task,
+  getMediaWorkspaceComprehension: async () => { throw new RuntimeRequestError({ kind: "api", httpStatus: 404, message: "Legacy task has no comprehension projection." }); },
   listMediaOutlineTaskAsks: () => listAsks(),
   askMediaOutlineTask: () => ask(),
 }));

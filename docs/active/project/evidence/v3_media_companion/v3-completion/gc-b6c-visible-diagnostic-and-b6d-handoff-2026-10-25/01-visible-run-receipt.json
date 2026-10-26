@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "navia-gc-b6c-visible-diagnostic-summary/v1",
+  "registryOrder": 2,
+  "bvid": "BV1QcYx6VEAj",
+  "preflight": {
+    "passed": true,
+    "passedChecks": 34,
+    "failedChecks": 0,
+    "externalActionCount": 0
+  },
+  "execution": {
+    "candidate": false,
+    "semanticReviewPerformed": false,
+    "stagePass": false,
+    "disposition": "blocked",
+    "productFailureCode": "V3510B_CHAPTER_IMBALANCE",
+    "harnessSurfaceCode": "CANARY_OBSERVATIONS_MISSING",
+    "sourceCompletionCount": 0
+  },
+  "actions": {
+    "sourceAttempt": 1,
+    "chromeLaunch": 1,
+    "visibleWindow": 1,
+    "runtimeStart": 1,
+    "cookieInjection": 28,
+    "focusEvent": 1,
+    "mediaTask": 1,
+    "runtimeSynthesize": 1,
+    "providerCall": 8,
+    "download": 0,
+    "import": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0,
+    "sourceCompletion": 0
+  },
+  "outputs": {
+    "publishedDerivative": false,
+    "reviewCaptureBundle": false,
+    "blindProjection": false,
+    "reviewRow": false,
+    "sentinel": false
+  },
+  "cleanup": {
+    "ownedChromeAlive": 0,
+    "ownedRuntimeAlive": 0,
+    "ownedListeningPorts": 0
+  }
+}

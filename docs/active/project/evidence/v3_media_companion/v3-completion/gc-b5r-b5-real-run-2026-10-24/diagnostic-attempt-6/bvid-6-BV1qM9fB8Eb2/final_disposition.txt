@@ -1,0 +1,4 @@
+failed
+reason: Stage B synthesize rejected: HTTP 503 body={"ok":false,"data":null,"error":{"code":"V3510B_PROVIDER_UNAVAILABLE","message":"高质量理解服务请求失败，原本地结果保持不变。","recoverable":false},"request_id":null}
+bvid: BV1qM9fB8Eb2
+order: 6

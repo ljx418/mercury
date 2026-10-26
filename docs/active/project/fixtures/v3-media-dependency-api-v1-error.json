@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "data": null,
+  "error": {"code": "V3_MEDIA_DEPENDENCY_JOB_ACTIVE", "message": "A media dependency repair job is already active.", "recoverable": true, "details": {"dependencyId": "yt-dlp", "jobId": "media_dep_job_9ec1bb9d4c3aa4334361ef8c7dcb11e9"}},
+  "request_id": "req_9ec1bb9d4c3aa433"
+}

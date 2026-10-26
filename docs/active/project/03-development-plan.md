@@ -1,5 +1,7 @@
 # Navia / 伴航 V1 开发计划大纲
 
+> **跨阶段工作流程（2026-10-12）**：后续单一开发阶段统一执行“原型开发 -> 原型审查 -> 原型优化 -> 文档迭代 -> 逐子阶段开发验收 -> 阶段性审查”。恢复任务、外部原型协作、文档冻结、独立审计、可视化报告、Git 同步和人工交接的规则见 [项目阶段循环与跨会话交接规则](design/project-stage-workflow.md)。这是流程约束，不改变本计划各阶段技术范围或当前实施授权。
+
 > **2026-10-07 当前执行权威**：既有 `V3-0..V3-7` 仍是唯一技术主干，不废弃、不重编号，也不重复实现已通过阶段。`design/v3-chat-know-development-plan.md` 是增量产品收敛层：新增 `V3-0X`、`V3-1.4` 和 `V3-4.1`，并扩展既有 V3-5..V3-7 的产品验收，但继续复用 V3-1.3 凭据通道、V3-2 媒体/ASR、V3-3 视觉、V3-4 Outline/TaskStore 及其合同和证据。目标为手动本机服务、Chat 网页/视频识读与知识提取、Know 真实管理；Agent 延至 V5+。不得据此跳过原阶段门禁、缩小原 12 页分母或恢复自动启动 Runtime、Mock Know、V3 Agent 等已撤销目标。
 
 > 2026-09-14 V2-PX 当前状态：T02.5 是唯一生产正输入；T03 R3 与 T04 R4 均已取得独立实现出门限定通过。T04 独立审计为 Fatal 0/Major 0/Minor 1。当前已完成 T04.1 全量重跑修复文档与 PX-6 machine/human/final 两阶段文档、Schema 和负例候选；外部文档审查及用户另行代码授权前不得实施。Human Review、G7、final 仍 pending/pending/false，PX-5/PX-6/RKM 均未通过。
@@ -2266,4 +2268,74 @@ V3-2-0b 是恢复 V3-2-A06 的独立工作包，不与 V3-2-1..7 并行。实现
 
 推荐组件只承担渲染，不成为事实源：`vis-timeline` 用于只读时间导航，`markmap` 用于只读层级导图；两者均经 adapter 消费 Navia 强类型投影，不使用 CDN。若 spike 不满足 Chrome Extension CSP、键盘、Axe、包体或 8 GiB/no-GPU 预算，则在同一 adapter 接口下回退自研 DOM/SVG renderer，不降低功能分母。
 
+### 18.9 V3-5.2 全片结构化理解质量修复
+
+V3-5.1 机器候选在 2026-10-10 的用户质量复核中被判定为大面积错误、无关和缺乏概括性，因此保持 `HUMAN QUALITY FAIL / REPLAN`。新增 V3-5.2，不撤销媒体获取、ASR、视觉证据与交互组件的既有实现，只替换语义主路径：派生文本分块提炼、全局结构化归并、视觉一致/补充/冲突校核、严格证据闭合，再由同一结果派生大纲、时间线、导图与 Ask 索引。本地确定性算法降级为明确标识的离线预览。
+
+V3-5.2 代码与真实 MiniMax 候选已实现：三视频结构化投影 3/3，四风格真实对照完成，最终单 run 固定 36 问 36/36，Runtime 694、Extension 351 全量回归通过。该结果只升级机器候选；独立人类内容质量与 8 个视觉节点仍待签署。同步大纲最高约 345 秒、跨章问答最高约 31.5 秒，故新增 `V3-5.3`：后台生成任务、进度、取消、持久分块检查点和恢复。V3-5.3 与人类质量门禁未关闭前，V3-6 保持阻塞。详细路线与验收见 `evidence/v3_media_companion/v3-5.2-grounded-comprehension/bilinote-route-and-development-plan.md`。
+
+2026-10-11 V3-5.2a 交互修复候选：修复 Chat 未自动跟随流式 token、首次等待无可见状态、状态卡片挤占主对话、Media 证据返回路径不明确和同步长请求无等待反馈；增加章节论点目录与截图时间线导航。开源绘制层冻结为 V3-5.3 的 `vis-timeline + React Flow` spike，当前 HTML renderer 保留为无障碍/故障降级。详见 `evidence/v3_media_companion/v3-5.2a-interaction-repair/optimization-candidate.md`。
+
 详细计划：`design/v3-workspace-comprehension-ux-optimization-plan.md`。
+
+### 18.10 V3-5.9 持久登录态与一次下载缓存
+
+| 子阶段 | 实现 | 出门条件 |
+|---|---|---|
+| `V3-5.9-0` | 冻结持久秘密、缓存、回退与清理合同 | Fatal=0 / Major=0 |
+| `V3-5.9-1` | `MediaPortalSettingsStore`、三种 Cookie 输入解析、真实登录校验 | SQLite/日志/响应 0 secret；缺 SESSDATA/未登录 fail closed |
+| `V3-5.9-2` | Settings 开关、文件/粘贴配置、验证/停用/删除 | reload 后状态保留；删除清空 secret 与 cache |
+| `V3-5.9-3` | `MediaDownloadCache` 配额、TTL、LRU、手动清理 | `0700/0600`、hash 复核、异常残留恢复 |
+| `V3-5.9-4` | audio/visual 共用单份低清完整视频 | 同源一次网络下载；转写与 8 帧均成功 |
+| `V3-5.9-5` | 持久 resolver 接入自动分析并保留短租约回退 | 已配置时无需重复 Cookie 授权；未配置时旧路径可用 |
+| `V3-5.9-6` | 全量回归、真实 B站单 run、secret scan、清理 | 0 mock、0 secret、0 私有路径泄漏 |
+| `V3-5.9-7` | PRD review、内部出门审计与人工验收交接 | 机器门槛通过后停止在人工验收 |
+
+## 19. 跨阶段原型、文档、开发与审查主线
+
+后续每个单一开发阶段（V1、V2、V3 等）统一执行以下循环；完整的中断恢复、Gemini 原型包、Archify/Draw.io、外审、可视化报告、Git 和进展同步规则见 [项目阶段循环与跨会话交接规则](design/project-stage-workflow.md)。本节是执行流程，不覆盖各阶段 PRD、固定验收分母或已有审计结论。
+
+```text
+1 原型开发
+-> 2 人类原型审查
+-> 3 阶段性原型优化
+-> 4 开发文档迭代（体验对齐 -> 撰写 -> 内审 -> 外审，可重复）
+-> 5 获明确授权后逐子阶段开发、真实数据端到端验收与 PRD 检视
+-> 6 阶段性审查（原始 PRD/架构图对照 -> 可视化报告 -> 独立复核 -> Git 同步）
+```
+
+任一步发现文档不足、Fatal/Major 未闭环、虚假验证或高风险权限/数据变更，停止实施并向用户说明证据、影响和备选路线。文档/原型认可不等于代码授权；机器验收不能代替人类体验签署。阶段完成后才按 `sync-project-progress` skill 同步已核实的状态。
+
+当前 V3 接续：V3-5.10 Stage A 取消与重启清理屏障已限定复核，但完整 Stage A 尚未通过；B-D 和 V3-6/V3-7 不得凭旧候选直接实施或宣称完成。先按 Stage A 的真实浏览器出门条件补齐证据，再逐阶段冻结后续计划与验收。
+
+> **2026-10-14 V3-5.10 实施计划状态纠偏**（仅冻结当前权威状态词，不改写历史证据）：
+> - **Stage A** LIMITED PASS（固定负向旅程 NJ-01..NJ-10，单 BVID `BV1hMpE6FEXG`，Orta task `task_b307e1598b9e` 独立复算）；B-D 各阶段新交付依据见 `evidence/v3_media_companion/v3-5.10-experience-repair/`。
+> - **Stage B B-0** 冻结 PASS；**B-1..B-4** 实现 LIMITED PASS candidate；**Route 2（确定性 brief composer）** 文档 CONDITIONAL GO + 实现 LIMITED PASS，但 **B-5 真实六视频分母仍 FAIL/REPLAN**（`stage-b-b5-route-2-risk-stop-2026-10-14.md`）。其余五段固定 BVID 不得据旧候选拼接或移除。
+> - **DeepSeek strict adapter DS-1..DS-5** LIMITED PASS（20/20 schema 合规；结构成功不证明内容正确）。
+> - **Chat Provider 默认仍是 MiniMax**；DeepSeek 已通过 Windows Credential Vault 安全导入、模型 `deepseek-chat`、能力 `deepseek_beta_strict_tool_v1`，**未启用**；首次使用不诱导、不自动切换。
+> - **B-5..B-7、Stage C/D/E、V3-6/V3-7 全部 NO-GO**；不得将任何候选升格为 V3 PASS。
+> - **B-5 恢复的实施前顺序（DEV-1）**：先冻结新版开发计划/验收计划/实施前审计，再重新冻结 V2.1 派生目录、Composer 单任务接收与原子发布、配置 Provider 集中授权边界；在 Routes 2 与 DeepSeek strict 资格全部已就绪且 6 个固定 BVID 满足 fresh Runtime/database/profile/task 与 `--mute-audio` 后，才由用户单独下达 “B-5 真实 fresh 实施” 高风险授权才能恢复 `stage-b-real-runs` 机器跑动；本过程文档不包含实际启动 Chrome、Runtime、Provider 或真实 Provider 调用。
+
+> **2026-10-15 Claude Code 完成阶段交接**：完整事实基线、完成态架构、用户体验、P0-P9 剩余开发/验收顺序、双窗口分工和 `429/422/529` 恢复协议已冻结在 `handoffs/v3-claudecode-completion-2026-10-15/`。第一门禁为 B-5.3 Phase 0 runner 可信化；当前测试候选未证明真实成功路径，状态保持 `NO-GO`，不得直接启动六视频 run。完成态可视化见 `design/v3-completion-execution-architecture.html`。
+
+### 19.1 P0 Background Capture Relay 恢复切片
+
+在 B-5.3 六视频前新增且必须顺序完成 `R0..R7`：内部 Port/FailureCode/背压合同冻结；Background Runtime transport；Offscreen PCM producer；Controller 集成；Runtime/CSP/安全回归；固定 BVID 单视频真实静音 canary；真实故障矩阵；immutable candidate 与独立外审。详细计划见 `evidence/v3_media_companion/v3-5.10-experience-repair/stage-b-b5-3-background-capture-relay-development-plan-2026-10-15.md`。
+
+v1-v9 均已作废；当前唯一实施合同为 v10。v10 冻结同步 staging/fsync/hash/shape 屏障、owner-manifest 原子发布、parent-directory fsync、SQLite FULL ownership receipt 与 manifest hash 绑定、existing recover composite cleanup、现有 SQLite 产品终态、11-scope semantic AST 推导的 40 source/20 target code 完备分类、四个递归 discovery roots + non-relay allowlist 闭包和三个独立 revision 域，同时保留 Chrome 116 sender 边界与七类 recovery owner。baseline 50/50、mutation 15/15 已通过。用户已批准继续实际开发并要求不再使用 Claude Code；单次 Codex 独立 Agent 文档审查 Fatal=0/Major=0 后直接执行 R0-R7。R7 出门前 P1 六视频继续阻塞。
+
+### 19.2 R7 后续 WP-A 媒体依赖就绪
+
+WP0 已于 2026-10-19 受限收口；历史 capture 分母与失败证据保持只读。后续顺序固定为 `WP-A 媒体依赖就绪 -> WP-B 显式单文件导入 -> WP-C capture 可选重新资格化`。WP-A 不重做 R0-R7，也不吸收 WP-B/WP-C。
+
+WP-A 按 A0-A7 顺序实施：合同冻结；Runtime manager；认证 API/客户端；Settings 五状态体验；任务 verified generation 接线；故障矩阵；fresh managed-root 工具验证；一次真实受控下载到 SenseVoice。ClaudeCode 只承担产品实现和自验证，完成后停在 `WP-A AWAITING CODEX CHECKPOINT`；Codex 只执行一次集中 checkpoint，不在每个修复后重复外审。
+
+权威实施包：`evidence/v3_media_companion/v3-completion/wp-a-media-dependency-readiness-preimplementation-2026-10-19/`。交互与架构原型：`design/wp-a-media-dependency-readiness-prototype/index.html`。
+
+WP-A 已于 2026-10-19 通过单次 Codex checkpoint：固定 A01-A24 `24/24`，A23/A24 真数据通过，v11 `50/50 + 16/16`，Fatal/Major/Minor=`0/0/0`。纠偏证据位于 `evidence/v3_media_companion/v3-completion/wp-a-media-dependency-readiness-corrective-2026-10-19/`。下一步仅进入 WP-B 的体验对齐与开发文档阶段，不直接授权产品代码。
+
+### 19.3 WP-B 显式本地视频导入
+
+WP-B 按 `B0 文档/合同 -> B1 contracts/store/manager -> B2 privileged 认证流式 API -> B3 媒体验证/准备 -> B4 同任务 ASR/视觉 durable barrier -> B5 Extension 组件 -> B6 生命周期恢复 -> B7 自动化验收 -> B8 checkpoint` 顺序实施。核心边界是浏览器显式单文件、请求/store 无路径、ASGI chunk 由 writer 内切 <=1 MiB、原 task/SourceAuthority，以及音频 owner receipt 与视觉 receipt 均 durable 后才删除原视频。
+
+实施前冻结包、代码实体、四个 endpoint、18 个失败码、SQLite store、内部 receipt、真实大文件资产 registry、B01-B30 分母和 ClaudeCode 唯一 goal 位于 `evidence/v3_media_companion/v3-completion/wp-b-explicit-local-media-import-preimplementation-2026-10-19/`。focused 独立 Codex 审查 Fatal/Major 清零且 verifier 全绿前，产品实现 NO-GO；实施完成后只能停在 `WP-B AWAITING CODEX CHECKPOINT`，WP-C 不自动开始。

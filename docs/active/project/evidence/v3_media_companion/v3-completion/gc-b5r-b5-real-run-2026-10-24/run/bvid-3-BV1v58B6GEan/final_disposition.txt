@@ -1,0 +1,4 @@
+failed
+reason: Stage B synthesize rejected: HTTP 502 body={"ok":false,"data":null,"error":{"code":"V3510B_CHAPTER_TIME_INVALID","message":"Chapter starts must strictly increase.","recoverable":false},"request_id":null}
+bvid: BV1v58B6GEan
+order: 3

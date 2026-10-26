@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "gc-b6d-recovery-cleanup-privacy/v1",
+  "publicEvidence": {
+    "containsDerivativeBytes": false,
+    "containsTranscriptOrOcrText": false,
+    "containsPngBytes": false,
+    "containsCookieOrAuthorizationValue": false,
+    "containsExternalServiceName": false,
+    "containsPrivateOrAbsolutePath": false
+  },
+  "runtimeCloseout": {
+    "ownedProcesses": 0,
+    "ownedChrome": 0,
+    "ownedRuntime": 0,
+    "ownedPortListeners": 0,
+    "audioOutput": 0
+  },
+  "repositoryActions": {
+    "commit": false,
+    "push": false,
+    "reset": false,
+    "clean": false,
+    "checkout": false,
+    "revert": false
+  }
+}

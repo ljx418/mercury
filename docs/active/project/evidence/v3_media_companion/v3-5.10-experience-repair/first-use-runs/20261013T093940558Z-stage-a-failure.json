@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261013T093940558Z",
+  "bvid": "BV1hMpE6FEXG",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.media-product-empty[role=\\'alert\\'] a').first() to be visible\u001b[22m\n"
+  }
+}

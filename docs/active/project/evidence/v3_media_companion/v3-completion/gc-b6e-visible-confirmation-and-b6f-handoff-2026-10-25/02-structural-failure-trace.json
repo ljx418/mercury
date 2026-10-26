@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "gc-b6f-structural-failure-trace/v1",
+  "providerRequestBound": 8,
+  "terminalCode": "V3510B_PROVIDER_RESPONSE_INVALID",
+  "stages": [
+    {
+      "providerHttpAttempts": 3,
+      "stage": "initial_candidate",
+      "shapeViolation": "brief_shape",
+      "unknownEvidenceReference": true,
+      "outcome": "recovering"
+    },
+    {
+      "providerHttpAttempts": 4,
+      "stage": "shape_regeneration",
+      "shapeViolation": "brief_value_domain",
+      "unknownEvidenceReference": true,
+      "lastBoundaryCovered": false,
+      "outcome": "recovering"
+    },
+    {
+      "providerHttpAttempts": 5,
+      "stage": "temporal_repair",
+      "shapeViolation": "none",
+      "unknownEvidenceReference": false,
+      "lastBoundaryCovered": false,
+      "outcome": "recovering"
+    },
+    {
+      "providerHttpAttempts": 6,
+      "stage": "shape_regeneration",
+      "shapeViolation": "brief_value_domain",
+      "unknownEvidenceReference": false,
+      "outcome": "recovering"
+    },
+    {
+      "providerHttpAttempts": 7,
+      "stage": "temporal_repair",
+      "shapeViolation": "none",
+      "unknownEvidenceReference": false,
+      "firstBoundaryCovered": false,
+      "duplicateAnchorCount": 2,
+      "nonIncreasingAnchorCount": 2,
+      "startConcentration": 1.0,
+      "outcome": "recovering"
+    },
+    {
+      "providerHttpAttempts": 8,
+      "stage": "shape_regeneration",
+      "shapeViolation": "brief_value_domain",
+      "unknownEvidenceReference": false,
+      "outcome": "fail_closed"
+    }
+  ],
+  "privacy": {
+    "containsCandidateText": false,
+    "containsEvidenceIds": false,
+    "containsProviderResponse": false,
+    "containsSecret": false,
+    "containsPath": false
+  }
+}

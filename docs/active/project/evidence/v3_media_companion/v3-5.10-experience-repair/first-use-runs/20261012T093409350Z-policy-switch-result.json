@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "v3-stage-a-policy-switch-evidence/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "fixture": "real_bilibili_v1_then_test_only_v2_policy_revision",
+  "oldTaskId": "media_task_74b51b436cde4257b8868ab894f2c4fe",
+  "newTaskId": "media_task_52bc96875e424da890a3c25e85212ab7",
+  "conflictVisibleBeforeClick": true,
+  "switchResponseDropped": true,
+  "beforeClick": {
+    "task_id": "media_task_74b51b436cde4257b8868ab894f2c4fe",
+    "state": "published",
+    "consent_policy_revision": 1
+  },
+  "switchRows": [
+    {
+      "old_task_id": "media_task_74b51b436cde4257b8868ab894f2c4fe",
+      "new_task_id": "media_task_52bc96875e424da890a3c25e85212ab7",
+      "old_policy_revision": 1,
+      "new_policy_revision": 2
+    }
+  ],
+  "oldProductUnchanged": true,
+  "oldOutlineHashUnchanged": true,
+  "newProductState": "degraded",
+  "sidepanelTaskId": "media_task_52bc96875e424da890a3c25e85212ab7",
+  "secondTaskId": "media_task_52bc96875e424da890a3c25e85212ab7",
+  "keyboardRouteHref": "#/media/tasks/media_task_52bc96875e424da890a3c25e85212ab7/outline?chapter=chapter_2607f97e152efd36",
+  "keyboardRouteOutcome": true,
+  "viewportChecks": [
+    {
+      "width": 360,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 158305
+    },
+    {
+      "width": 420,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 187770
+    },
+    {
+      "width": 768,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 119493
+    },
+    {
+      "width": 1280,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 272215
+    }
+  ]
+}

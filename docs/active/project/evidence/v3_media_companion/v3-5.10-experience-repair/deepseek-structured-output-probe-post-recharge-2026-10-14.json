@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "v3-provider-structured-output-probe/v1",
+  "syntheticDataOnly": true,
+  "trialsPerMode": 3,
+  "targetSchemaSha256": "4cf295dd9e1ee1270a4704fa94e5441e8e5e3c5b55ca51206e680a94feafb880",
+  "results": [
+    {
+      "mode": "chat_json_object",
+      "trial": 1,
+      "latencyMs": 2078,
+      "httpStatus": 200,
+      "passed": false,
+      "responseBytes": 1883,
+      "responseSha256": "9945dc0353048f319537061fb32634abed12b0986db0ee63cad95ed11145d91d",
+      "schemaErrorCount": 13,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 0
+    },
+    {
+      "mode": "chat_json_object",
+      "trial": 2,
+      "latencyMs": 1804,
+      "httpStatus": 200,
+      "passed": false,
+      "responseBytes": 1885,
+      "responseSha256": "c12df7dcc8bc7f98aba17b13e72949033d2b2442a1827dbc10043f870397dc46",
+      "schemaErrorCount": 13,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 0
+    },
+    {
+      "mode": "chat_json_object",
+      "trial": 3,
+      "latencyMs": 2491,
+      "httpStatus": 200,
+      "passed": false,
+      "responseBytes": 1883,
+      "responseSha256": "e70bf7111d3210daf49257d42ae6b072b1af5ca263bc8d773086aff748b84975",
+      "schemaErrorCount": 13,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 0
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 1,
+      "latencyMs": 2892,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2420,
+      "responseSha256": "38fc696e5f7f80e725afcdc468a48688baf039787d1865c1e5663e3b9f6041d8",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 5,
+      "chapterCount": 3,
+      "briefLength": 82
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 2,
+      "latencyMs": 2076,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2135,
+      "responseSha256": "d84c1fa53f0e497cc0bed35a2e82a5ed66dade8ad4574a743463d95029648bb7",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 3,
+      "latencyMs": 2118,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 2135,
+      "responseSha256": "54f8d5967ca4de2d37246954d5a50e0d00d4ad590392eeff6558fbf598d1dc59",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 1,
+      "latencyMs": 4079,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 7349,
+      "responseSha256": "0d408d72a3f4beae4242a868ee3392e52c947d6c97d3fc63584029bd3b30ea94",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 61
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 2,
+      "latencyMs": 6191,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 7654,
+      "responseSha256": "abe90c44a7a2578f3e13bf619c151aac98f4644a7d30ef59ce470930d918ac6f",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 59
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 3,
+      "latencyMs": 4549,
+      "httpStatus": 200,
+      "passed": true,
+      "responseBytes": 6686,
+      "responseSha256": "eecb0c7a3f460258fc836cfc064a568aff97ee7e8119aa58c3298b1189912b24",
+      "schemaErrorCount": 0,
+      "topLevelKeys": [
+        "brief",
+        "chapters",
+        "claims",
+        "unresolvedEvidenceConflict"
+      ],
+      "claimCount": 3,
+      "chapterCount": 3,
+      "briefLength": 52
+    }
+  ],
+  "summary": {
+    "chat_json_object": {
+      "passed": 0,
+      "total": 3
+    },
+    "beta_strict_tool": {
+      "passed": 3,
+      "total": 3
+    },
+    "responses_json_schema": {
+      "passed": 3,
+      "total": 3
+    }
+  },
+  "secretMaterialPersisted": false,
+  "realProjectEvidenceUploaded": false
+}

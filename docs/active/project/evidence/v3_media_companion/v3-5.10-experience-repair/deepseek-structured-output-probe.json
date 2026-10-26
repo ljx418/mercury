@@ -1,0 +1,105 @@
+{
+  "schemaVersion": "v3-provider-structured-output-probe/v1",
+  "syntheticDataOnly": true,
+  "trialsPerMode": 3,
+  "targetSchemaSha256": "4cf295dd9e1ee1270a4704fa94e5441e8e5e3c5b55ca51206e680a94feafb880",
+  "results": [
+    {
+      "mode": "chat_json_object",
+      "trial": 1,
+      "latencyMs": 419,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/chat/completions' For more information check: https://developer.mozilla.org/en-US/docs/Web"
+    },
+    {
+      "mode": "chat_json_object",
+      "trial": 2,
+      "latencyMs": 731,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/chat/completions' For more information check: https://developer.mozilla.org/en-US/docs/Web"
+    },
+    {
+      "mode": "chat_json_object",
+      "trial": 3,
+      "latencyMs": 366,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/chat/completions' For more information check: https://developer.mozilla.org/en-US/docs/Web"
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 1,
+      "latencyMs": 372,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/beta/chat/completions' For more information check: https://developer.mozilla.org/en-US/doc"
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 2,
+      "latencyMs": 368,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/beta/chat/completions' For more information check: https://developer.mozilla.org/en-US/doc"
+    },
+    {
+      "mode": "beta_strict_tool",
+      "trial": 3,
+      "latencyMs": 365,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/beta/chat/completions' For more information check: https://developer.mozilla.org/en-US/doc"
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 1,
+      "latencyMs": 388,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/responses' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/S"
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 2,
+      "latencyMs": 365,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/responses' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/S"
+    },
+    {
+      "mode": "responses_json_schema",
+      "trial": 3,
+      "latencyMs": 387,
+      "httpStatus": null,
+      "passed": false,
+      "errorType": "HTTPStatusError",
+      "errorCode": "Client error '402 Payment Required' for url 'https://api.deepseek.com/responses' For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/S"
+    }
+  ],
+  "summary": {
+    "chat_json_object": {
+      "passed": 0,
+      "total": 3
+    },
+    "beta_strict_tool": {
+      "passed": 0,
+      "total": 3
+    },
+    "responses_json_schema": {
+      "passed": 0,
+      "total": 3
+    }
+  },
+  "secretMaterialPersisted": false,
+  "realProjectEvidenceUploaded": false
+}

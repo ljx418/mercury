@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261012T134550770Z",
+  "bvid": "BV1hMpE6FEXG",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "NJ-02 reload/reconnect did not meet its gate: {\"taskId\":\"media_task_9c4d8c65320c487c92b0cbc8f6a27b87\",\"beforeSeconds\":32,\"beforeProgressAge\":0,\"afterSeconds\":33,\"progressAgeAtReload\":1,\"progressAgeAfterWait\":3,\"beforeRevision\":\"\",\"afterRevision\":\"\",\"hidden\":{\"taskId\":\"\",\"taskContentCount\":0,\"notice\":\"本机伴侣未连接，历史任务内容已暂时隐藏；连接恢复后将重新读取当前任务。\"},\"reconnectStatus\":\"本机伴侣已连接\",\"readsBeforeReconnect\":0}"
+  }
+}

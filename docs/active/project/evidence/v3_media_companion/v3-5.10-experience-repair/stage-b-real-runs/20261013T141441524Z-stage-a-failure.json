@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261013T141441524Z",
+  "bvid": "BV1pohR6rEEh",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "TimeoutError",
+    "message": "locator.waitFor: Timeout 300000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('dialog', { name: '允许本次视频进行结构化理解？' }) to be detached\u001b[22m\n\u001b[2m    600 × locator resolved to visible <div role=\"dialog\" aria-modal=\"true\" class=\"media-synthesis-dialog\" aria-labelledby=\"media-synthesis-title\">…</div>\u001b[22m\n"
+  }
+}

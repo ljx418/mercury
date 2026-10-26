@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "gc-b6d-recovery-canary-sanitized/v1",
+  "order": 2,
+  "source": "BV1QcYx6VEAj",
+  "authorization": {
+    "consumed": true,
+    "reusable": false
+  },
+  "preflight": {
+    "passed": true,
+    "checksPassed": 34,
+    "checksTotal": 34,
+    "externalActions": 0
+  },
+  "product": {
+    "taskState": "ready",
+    "materializeVisualStatus": 200,
+    "synthesisAttempts": 1,
+    "providerHttpAttempts": 4,
+    "publishedV21Derivative": true,
+    "evidenceCounts": {
+      "transcript": 49,
+      "frame": 8,
+      "ocr": 8,
+      "visionCaption": 8
+    },
+    "readablePngCount": 8
+  },
+  "capture": {
+    "closed": false,
+    "canaryDisposition": "BLOCKED",
+    "canaryCode": "CANARY_CAPTURE_NOT_CLOSED",
+    "machineCode": "B6_CAPTURE_BUNDLE_INVALID",
+    "detailCode": "B6_BUNDLE_ABSOLUTE_PATH",
+    "bundlePublished": false,
+    "semanticReviewPerformed": false,
+    "stagePass": false
+  },
+  "actions": {
+    "chromeLaunch": 1,
+    "visibleWindow": 1,
+    "runtimeStart": 1,
+    "focusEvent": 1,
+    "mediaTask": 1,
+    "runtimeSynthesize": 1,
+    "providerCall": 4,
+    "sourceCompletion": 0,
+    "audioOutput": 0,
+    "tabCapture": 0,
+    "rawVideoUpload": 0,
+    "rawAudioUpload": 0,
+    "rawFrameUpload": 0
+  },
+  "cleanup": {
+    "ownerCleanupClosed": true,
+    "ownedProcessLeakSightings": 0,
+    "ownedProcessesAliveAtCloseout": 0,
+    "runtimePortListeningAtCloseout": false
+  }
+}

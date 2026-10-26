@@ -32,6 +32,11 @@ export type StartMediaCaptureMessage = {
   acquisitionRecordId: string;
 };
 
+export type PrepareMediaCaptureMessage = {
+  type: typeof MEDIA_CAPTURE_MESSAGE_TYPE;
+  command: "prepare";
+};
+
 export type StatusMediaCaptureMessage = {
   type: typeof MEDIA_CAPTURE_MESSAGE_TYPE;
   command: "status";
@@ -43,10 +48,10 @@ export type StopMediaCaptureMessage = {
   reason: "completed" | "cancelled" | "navigation" | "tab_closed" | "consent_revoked" | "runtime_disconnected" | "timeout" | "failed";
 };
 
-export type MediaCaptureMessage = StartMediaCaptureMessage | StopMediaCaptureMessage | StatusMediaCaptureMessage;
+export type MediaCaptureMessage = PrepareMediaCaptureMessage | StartMediaCaptureMessage | StopMediaCaptureMessage | StatusMediaCaptureMessage;
 
 export type MediaCaptureResponse =
-  | { ok: true; state: "armed" | "starting" | "capturing" | "stopped"; grantId?: string }
+  | { ok: true; state: "prepared" | "armed" | "starting" | "capturing" | "stopped"; grantId?: string }
   | { ok: true; state: "transcribing"; transcript: { taskId: string; state: string } }
   | { ok: false; failureCode: string };
 

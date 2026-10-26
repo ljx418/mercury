@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-sequencer/v1",
+  "runId": "gc-b5r-b5-real-2026-10-24",
+  "startedAtUtc": "2026-10-23T17:24:13.063Z",
+  "finishedAtUtc": null,
+  "stopped": false,
+  "stopReason": null,
+  "bvids": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "disposition": "blocked",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 319401,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-1",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-1",
+        "count": 0,
+        "lines": []
+      }
+    }
+  ],
+  "processAudit": {
+    "leakedBefore": 0,
+    "leakedAfter": 0,
+    "ok": true,
+    "leakedPids": []
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "note": "Identifiers, digests and counts only. No path, no file name, no raw speech, no token.",
+  "receipts": [
+    {
+      "audioOwnerReceiptSha256": "5b060e2d6b1ce43c3fecf1509332e32f905128432df94a2b41108a8cdd28af32",
+      "barrierPhase": "video_deleted",
+      "byteLength": 101644359,
+      "case": "B21",
+      "container": "mov,mp4,m4a,3gp,3g2,mj2",
+      "durationMs": 105000,
+      "heightPx": 720,
+      "importId": "media_import_9215f1ebca0f3825788c81586ff287d3",
+      "publicSchemaVersion": "v3-media-local-import/v1",
+      "sourceIdentity": "portal:bilibili:BVE3CC3098:cid:1",
+      "taskId": "media_task_779855152e7748af81162e20df9ac323",
+      "transcriptCharacters": 662,
+      "transcriptSegments": 9,
+      "uploadedBytes": 101644359,
+      "videoManifestSha256": "5c007b86fa22ffe1fee7c4da33267535898624e89f642f1e99cf995cadf992c4",
+      "visualReceiptSha256": "7a62dea371f19520eb5a79e96ad4b0fc6edce151799a176897dda72333022141",
+      "widthPx": 1280
+    },
+    {
+      "audioOwnerReceiptSha256": "be55bab9a11029b7517939cefe73e7345e1d888cbd0d5a2a9c01f0d78d9f7113",
+      "barrierPhase": "cleaned",
+      "case": "B22",
+      "cleanupCalls": 1,
+      "credentialDispatch": 0,
+      "downloaderDispatch": 0,
+      "evidenceCount": 27,
+      "importId": "media_import_cfcf849100bbfe0332b268dc2ae4b7d7",
+      "mindmapNodes": 3,
+      "outlineId": "outline_fc8308aa74e02cd85ba651fc0e5b8d2d",
+      "outlineSections": 2,
+      "sandboxResidual": 0,
+      "sourceIdentity": "portal:bilibili:BVB2F48167:cid:1",
+      "sourceResidual": 0,
+      "taskId": "media_task_31491c9b7fe691436c53abcfa92bf490",
+      "thumbnailCount": 8,
+      "timelineSegments": 2,
+      "transcriptTerminal": true,
+      "videoManifestSha256": "5c007b86fa22ffe1fee7c4da33267535898624e89f642f1e99cf995cadf992c4",
+      "visualReceiptSha256": "ae8d8ec276eda8f35dc662b0650ea112849dfbbb46bb871a1b62bd21c1600db1",
+      "visualTerminal": true
+    }
+  ],
+  "schemaVersion": "v3-wp-b-real-receipts/v1"
+}

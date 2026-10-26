@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "gc-b6e-cleanup-boundary/v1",
+  "visibleRuns": 1,
+  "retries": 0,
+  "sixSourceRun": false,
+  "blindReview": false,
+  "sentinel": false,
+  "b7": false,
+  "stageC": false,
+  "ownedProcessesAliveAtCloseout": 0,
+  "ownedPortListenersAtCloseout": 0,
+  "publicEvidenceContainsPrivatePayload": false,
+  "repositoryActions": {
+    "commit": false,
+    "push": false,
+    "reset": false,
+    "clean": false,
+    "checkout": false,
+    "revert": false
+  }
+}

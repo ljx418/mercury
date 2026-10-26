@@ -2175,6 +2175,83 @@ V3-2 使用 `evidence/v3_media_companion/v3-2-media-acquisition/v3-2-acceptance-
 
 2026-09-22 真实验收：FW01..FW10 的合同与实现前置通过；sample01/02 8/8 非空且延迟合格；sample03/chunk4 在 RMS=1498.877 的非零窗口输出 0 segment，FW11 失败。故该 run 在 FW11 停止，后续合并/质量/独立出门门槛不能升级为 PASS，FW18..FW20 不启动；结论为 `V3-2-0b-5.3 FAIL / REPLAN`，不得生成 review bundle 或 qualified 状态。
 
+#### 8.20.10a V3-5.2 全片结构化理解质量门禁
+
+V3-5.1 候选的人类内容质量判定为 FAIL。V3-5.2 必须在同一新鲜 run 内证明：三个真实视频的完整派生文本经分块和全局归并；章节、要点和关系均引用真实 evidence ID；视觉只作支持、补充或显式冲突，不静默覆盖 ASR；固定 12 问无关键含义错误且引用支持率不低于 90%；未授权、Provider 失败、无效 JSON、未知证据和时间冲突均保留本地预览并 fail closed。此前机器 PASS 不得替代该质量分母。
+
+2026-10-11 机器候选：三视频结构化投影 3/3；按每视频 6 内容 + 2 视觉 + 2 跨章 + 2 拒答冻结的最终单 run 为 36/36，引用闭合、视觉证据类型和正文内部 ID 门禁通过，公开摘要 SHA-256 为 `a4ade25a5920e6964df0192606d0af5830b9f1414a23f8776e733f42fbfaa992`。该结果不替代独立人类判断。V3-5.3 还必须证明长任务异步进度、取消和检查点恢复；在此之前同步 36–345 秒大纲与最高约 31.5 秒跨章问答阻止 V3-6。
+
+V3-5.2a 交互门槛：Chat 提交 300ms 内必须有可见状态并逐 `response.delta` 增量渲染；底部自动跟随但主动上滚不抢焦点；连接/授权/任务详情默认折叠；Media 子路由必须有可见确定返回动作；同步长请求至少显示真实等待秒数且不得伪造百分比；大纲目录显示章节论点，时间线显示截图、章节范围与反跳动作。机器候选已通过 typecheck、29 项定向测试、351 项全量测试和 production build，真实 Provider 首 token 与人类视觉体验仍待签署。
+
+#### 8.20.12a V3-5.10 Stage A/B 验收状态冻结（2026-10-14）
+
+> 本节仅冻结当前权威验收状态词，不改写历史证据。
+
+- **Stage A**：固定负向旅程 NJ-01..NJ-10 LIMITED PASS（单 BVID `BV1hMpE6FEXG`，独立审查 `stage-a-final-independent-exit-audit-2026-10-13.md`，Fatal=0 / Major=0 / Minor=3）。MiniMax 历史真实失败保留为只读，不作为当前阻塞。
+- **Stage B B-0**：合同冻结 PASS（schema meta、失败码 17、负例 18、客观验收、六 BVID 注册表）。
+- **Stage B B-1..B-4**：实现 LIMITED PASS candidate；仅关闭文档/单元测试级，不替代 B-5 真实 fresh。
+- **Stage B Route 2（确定性 brief composer）**：文档 CONDITIONAL GO（外部独立审查 Fatal=0 / Major=0 / Minor=5，SHA-256 `b3db4ffc82283712c28737a0ee569403e1194ea280b74ab24408f2c66eb72079`），实现 LIMITED PASS；**B-5 真实六视频分母仍 FAIL/REPLAN**（`stage-b-b5-route-2-risk-stop-2026-10-14.md`）。本阶段门禁不得用 Route 2 候选/单元测试/合规模包含 fallback 判定为 B-5 PASS。
+- **DeepSeek strict adapter DS-1..DS-5**：LIMITED PASS（`deepseek-chat + /beta/chat/completions + strict tool` 资格 20/20）。仅证明结构稳定，不证明内容正确，亦不改变 Chat 默认 MiniMax。
+- **Chat Provider 默认**：MiniMax；DeepSeek 已导入 Windows Credential Vault、未选中；保存不等于选择；首次使用不自动切换、不诱导。
+- **B-5..B-7、Stage C/D/E、V3-6/V3-7**：NO-GO；不得据任何上述候选扩大为 V3 PASS。
+- 实施顺序：单任务锁单一 Provider，禁止跨 Provider 拼接/隐式 fallback；所有浏览器实例必须 `--mute-audio`；6 个固定 BVID 全程 fresh Runtime/database/profile/task；0 原始视频/音频/帧/Cookie/密钥泄漏，派生 transcript/OCR/vision-caption 文本仅在既有授权范围内发送。
+
 #### 8.20.11 V3-2-0c 路线 C 最小 Spike 门禁
 
 固定 SC01..SC15 只判断供应链、三个真实窗口、CPU/内存/磁盘、seccomp 断网、SRT 结构、遗漏恢复、清理和公开隐私。权威 run 3/3 非空且时间戳合法，资产 `258371224` bytes、peak RSS 最大 `325156864` bytes，结论 `SPIKE_FEASIBLE`。该门禁明确不含语义质量、24-bin、双 reviewer、Settings 或跨平台，因此 `productionQualified=false`，不能替代 V3-2-A06。
+
+#### 8.20.12 V3-5.9 持久登录态与一次下载缓存门禁
+
+- [ ] Cookie 文件、Netscape cookies.txt、Cookie header 三种输入均可解析；缺必需字段、域不符、控制字符、超过 128 KiB 或 B站 `isLogin=false` 均拒绝保存/启用。
+- [ ] 原始 Cookie 只存在 OS credential store；扩展 storage、SQLite、HTTP 响应、日志、任务事件和公开包扫描 0 命中。
+- [ ] 设置页可保存并验证、启停、重验和二次确认删除；reload 后只恢复非秘密状态；删除同时清空媒体缓存。
+- [ ] 缓存默认 5 GiB / 24h，可切换 1/2/5/10 GiB 与 1h/6h/24h/3d/7d；展示条目和字节占用；手动清空后条目与字节均为 0。
+- [ ] 同一真实 B站视频同一分P完成音频获取和 8 帧视觉材料时，yt-dlp 网络下载次数为 1；重复分析命中同一 SHA-256 缓存。
+- [ ] 缓存目录/文件权限、普通文件、单链接、来源键、长度和 hash 全部通过；stage/cookie 异常残留在恢复时删除。
+- [ ] 已配置持久登录态的日常路径不再要求浏览器 Cookie channel；未配置时既有一次性 lease 回退继续通过。
+- [ ] 真实视频最终发布至少 1 个 frame evidence，时间线/大纲显示缩略图；点击证据反跳误差 <=2 秒。机器验收不得代签最终人工视觉体验。
+
+## 28. P0 Background Capture Relay 专项门槛（2026-10-15）
+
+- [ ] Offscreen 网络调用为 0；Background 是 Runtime capture WebSocket 唯一 owner。
+- [ ] WXT/build manifest 声明 `minimum_chrome_version: "116"`；Chrome 116+ 中 `runtime.getContexts` capability probe 通过，旧浏览器不得降级到弱 sender 校验。
+- [ ] 内部 Port 只接受精确 Offscreen：五个 `MessageSender` 字段（extension ID/URL/tab/frame/document）通过，且 `runtime.getContexts(documentId)` 恰好返回一个 URL 匹配的 OFFSCREEN_DOCUMENT，其 `ExtensionContext.incognito` 与当前 extension context 一致；streamId 只在一次性 start 控制消息内存活；PCM sequence 从 0 严格递增。
+- [ ] Base64 JSON chunk raw <=49,152 bytes、encoded <=65,536 chars；单信用；producer 用 local queued + credit consumed 计 outstanding，<=32 chunks/1,572,864 raw bytes；下一 enqueue 将超限时先 abort；非法编码、重复/跳号/倒序、无信用均产生唯一固定 FailureCode。
+- [ ] 正常完成严格执行 quiesce source -> drain existing queue -> Offscreen stopped -> Runtime finalize；Runtime stop 发出后 chunk=0。
+- [x] R5-A：固定 `BV1pohR6rEEh` 在 fresh visible muted Chrome 中经真实用户动作和产品仲裁到达 `credentialed_subtitle -> acquisition succeeded -> materialize -> degraded`，task/source/revision/UI terminal 一致且 cleanup/secret 为 0；该项只证明生产用户路径，不冒充 tabCapture/SenseVoice。
+- [ ] R5-B：固定 `BV1Bb411w741 / CID 61744125 / p1`，在 owned Runtime 将下载器明确置为 unavailable 的隔离环境中，由生产 route 自行得到 `credentialed_subtitle=V3_MEDIA_SUBTITLE_UNAVAILABLE`、`credentialed_media_asr=V3_MEDIA_RUNTIME_OFFLINE`，再由真实页面上下文得到 `public_or_page_subtitle=V3_MEDIA_SUBTITLE_UNAVAILABLE`；随后经用户动作 -> Background -> Offscreen 非空 PCM -> Runtime sink -> SenseVoice -> acquisition/materialize -> `ready|degraded`。runner 0 次直写 route failure/Controller/grant/materialize/database/store。R5-B 未通过时 R5/P0 仍 NO-GO，R6 不得开始。
+- [ ] resolve、authority、acquisition、transcript、outline 和 Workspace 在字段存在时使用同一 taskId/sourceIdentity；consent、transcript、product 三个 revision 域分别满足自身单调/fence，禁止强求跨域相等；runner 0 次直调 controller/materialize/database。
+- [ ] permission、ticket replay/binding、Port disconnect、Runtime crash、WS loss、worker restart、tab close、cancel、SIGTERM 和 cleanup failure 均有真实 typed evidence。
+- [ ] worker restart marker 为 `TRUSTED_CONTEXTS`，仅含 schemaVersion/session ID/taskId/time/phase/expiry；expiry=startedAt+1,080,000ms 且不刷新。同步 stage barrier 必须在异步 worker 前完成 copy/fsync/hash/length/WAV-shape；barrier 前 handler、barrier 后 transcript service 各自是唯一 cleanup owner；frame send 仅通知 handoff，不宣称产品成功。
+- [ ] recovery owner 按 phase/ownership 固定：connecting-before-start 使用既有已认证 DELETE+GET；valid-start/runtime-alive 由唯一 artifact owner 清理；graceful/hard crash 使用既有 recover；owner manifest 完成临时 O_EXCL write、file fsync、atomic replace 与 parent-directory fsync 后，必须提交绑定 manifest canonical SHA-256 的 SQLite FULL receipt，八类 manifest/receipt 缺失、未提交或损坏必须 fail-closed；仅 SQLite ready/degraded 产品提交允许 published，否则 abandoned+cleanup+fresh analysis。GET 404 停止轮询并显示 pending；marker expiry 只清 marker。
+- [ ] 40 项现行 source code 通过中央 registry + 11-scope semantic AST boundary scan 精确相等，并完备映射到内部 relay 20 项 FailureCode；四个递归 discovery roots 的其他 `V3_MEDIA_*` 必须来自冻结 non-relay allowlist；两项 TaskArtifactError 有显式映射；不得以修改公共合同关闭内部错误码冲突。
+- [ ] Cookie/ticket/streamId/PCM/WAV/API key/private path 公开命中 0；track/context/Port/WS/offscreen/sink/profile/runtime/port 全归零。
+- [ ] 所有 Chrome 明确 `--mute-audio`，不播放声音；可见 UIAutomation 先通知用户。
+- [ ] immutable candidate 独立审查 Fatal=0/Major=0；否则 P1 六视频继续 NO-GO。
+
+完整 A01-A18、RLY10-N01..N30、OM10-N01..N08、24+8+6+13 步 trace、七类 recovery case、六类 handoff/product failure case、after-stage hard-crash 四类残留归零门槛、11-scope 推导的 40/20 错误码 inventory、四个递归 discovery roots + non-relay allowlist 和三个 revision 域见 `evidence/v3_media_companion/v3-5.10-experience-repair/stage-b-b5-3-background-capture-relay-acceptance-plan-2026-10-15.md`。
+
+## 29. WP-A 媒体依赖就绪门槛（2026-10-19）
+
+- 固定分母 `A01..A24` 必须 24/24：合同 4、聚合状态 4、安装 7、恢复 3、任务 generation 2、Settings 2、真实工具安装 1、真实受控媒体到 SenseVoice 1。
+- `yt-dlp` 只允许冻结 `2026.08.19` 来源、长度、SHA-256 和参数；`ffmpeg/ffprobe` 只验证；SenseVoice 委托既有 manager。客户端 URL/path/hash、自动 apt 和工具自更新均为 0。
+- ready 必须同时证明精确摘要、自检、四项状态和已发布 generation；文件存在、版本输出、mock HTTP 或 fixture shape 不能单独通过。
+- repair 失败、取消、并发或重启不得覆盖旧 ready；暂存、owned 进程、端口和 profile 全部清零。运行中 acquisition 不得热切换 generation。
+- A23 使用本轮 owned 临时 managed root 真实安装，不能复用本机已有文件冒充 fresh。A24 必须经过公开产品 API、生产 factory/acquirer 和 SenseVoice，不得直调 downloader、写库或伪造 transcript。
+- 全程无声；确需 Chrome 时提前通知、集中一次、owned profile、显式 `--mute-audio`。Fatal/Major 非零或任一分母失败即 `WP-A NO-GO`。
+
+详细矩阵与反假绿规则见 `evidence/v3_media_companion/v3-completion/wp-a-media-dependency-readiness-preimplementation-2026-10-19/05-acceptance-plan.md`。
+
+**实施结果（2026-10-19）**：A01-A24 `24/24 PASS`；A23 fresh owned root 下载、摘要、自检与清理通过；A24 公开 API 真凭据走 `credentialed_media_asr`，SenseVoice 产出 64 个非空且时间单调片段，capture/Chrome/声音/Provider 均为 0。WP-A 出门门槛已满足。
+
+## 30. WP-B 显式本地视频导入门槛（2026-10-19）
+
+- 固定分母 `B01..B30` 必须 30/30：schema/API/状态 7、文件边界与媒体准备 11、同任务产品接线 5、取消/恢复 5、100 MB/1 GB 真实 UI 路径 2。
+- create 请求禁止 fileName/path/url/hash/lastModified/relativePath；content 必须经过 exact Origin、bearer、one-shot token。ASGI transport chunk 不设 1 MiB 拒绝阈值，writer 必须用 memoryview 内切为 <=1 MiB slices；2 GiB hard bound，不得全量载入内存。
+- 真实成功必须同时证明 `explicit_local_media_asr`、非空单调转写、至少一张真实截图、同任务工作台与原视频/WAV/非证据帧零残留；HTTP 200、ready 或 mock metadata 均不能单独通过。
+- local route 的 downloader、credential resolver、tabCapture dispatch 必须为 0；SourceAuthority task/source 不变。视觉不得再次下载平台媒体。
+- 取消、断连、重启、页面切换、expiry 和 commit 竞争必须只有一个 terminal；SQLite record 不丢失，重启 GET 不得 404。ASR/视觉双 receipts 与 consumer barrier 必须证明原视频删除顺序，writer/worker/subprocess/双沙箱/active slot 清零并可重选。
+- 100 MB/1 GB 资产必须来自经 SenseVoice 和动态帧预检的私有真实有声视频，再由 verified ffmpeg 真转码；禁止 sparse、truncate、尾部填零和 mock。Runtime RSS 增量 <=256 MiB、Extension JS heap 增量 <=128 MiB。
+- 浏览器测试全程无声；优先 headless。确需可见 Chrome 时提前通知、集中一次、owned profile、显式 `--mute-audio`，不触碰用户 Chrome 或抢占焦点。
+
+详细矩阵与反假绿规则见 `evidence/v3_media_companion/v3-completion/wp-b-explicit-local-media-import-preimplementation-2026-10-19/05-acceptance-plan.md`。Fatal/Major 非零、任一真实分母失败、路径/秘密/原始媒体泄漏或清理非零即 `WP-B NO-GO`。

@@ -1,0 +1,420 @@
+{
+  "schemaVersion": "v3-5.10-b5-authority-completeness-changes/v1",
+  "batch": "GC-B5R B-5 AUTHORITY COMPLETENESS CORRECTION",
+  "recordedAtUtc": "2026-10-25T04:00:00Z",
+  "note": "The ACTUAL FINAL SOURCE SET of the workpack area: every file is listed with its SHA-256, so nothing is omitted. 'modified' and 'new' mean this batch changed or added it; 'carried' means it belongs to the earlier V3 work and this batch did not touch it.",
+  "sourceFileCount": 58,
+  "modifiedInThisBatch": 9,
+  "newInThisBatch": 0,
+  "carriedUnchanged": 49,
+  "generatedArtifactsInTheSourceTree": [],
+  "removedByThisBatch": [],
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/action_ledger.mjs",
+      "change": "carried",
+      "sha256": "af346b1979d4258477f505fbcbaba0b31a2d1383c7a8eb60f72bcfc576501a22",
+      "bytes": 10917,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/aggregate.mjs",
+      "change": "modified",
+      "sha256": "ed834f527d137472caef98d8f76f054dc2143c1e6c0721e9a45a8fd4f304e38c",
+      "bytes": 32588,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/artifact_integrity.mjs",
+      "change": "carried",
+      "sha256": "77b29ac20ff1689c46144823ad8b03129203818e8843f49a41bebcbe50b3e16f",
+      "bytes": 6102,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/audit_finalizer.mjs",
+      "change": "carried",
+      "sha256": "3a11d084633eeed87f8973fe456d8ba569cf1e9bb05cdd6b4b03dd07ba0bb2e1",
+      "bytes": 11064,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/authorization.mjs",
+      "change": "carried",
+      "sha256": "6bbd44a7517738791ea1adb74cb48e7c4e37652accc1b9cb6c4f7ab0f4b47776",
+      "bytes": 14852,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/contracts.mjs",
+      "change": "carried",
+      "sha256": "4349868e367f3d0be595268233456b716a69a56f73194eef346cf3d079c5a0c8",
+      "bytes": 6953,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/extension_fixture.mjs",
+      "change": "carried",
+      "sha256": "0bdee8a7f5e361ef2acbe8e98732884fb362c878f60bf915e86bf62e9cdd8cc0",
+      "bytes": 4039,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/machine_identity.mjs",
+      "change": "modified",
+      "sha256": "caaab5cb5977e3adbda6f8320b42d56c4a7e1204b678309a680675070af67eed",
+      "bytes": 12285,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "change": "carried",
+      "sha256": "9a5f8a1dde9ccd3916557f0dbd405d029394b6a3b05cd0ac866f65b51d524a43",
+      "bytes": 5973,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/preflight.mjs",
+      "change": "carried",
+      "sha256": "b541be0c3ff7806673393b67f7799c3d11ea96d30ed54e36c58e18c8e447d286",
+      "bytes": 11295,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/privacy.mjs",
+      "change": "carried",
+      "sha256": "ed24ba386d61c4c5b2ecbe85c05fbdb52a1563038c3c295e54f018f09b992024",
+      "bytes": 5848,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/process_ownership.mjs",
+      "change": "carried",
+      "sha256": "51c431f8e8bd9dff20070c5b45b0c132e77638b73de18a414d170f3aca282072",
+      "bytes": 4446,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/registry.mjs",
+      "change": "carried",
+      "sha256": "15bbb4d8660459312a9ce460ec26b0909f08139d6a62b7676ab241865da054dd",
+      "bytes": 5946,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/retained_logs.mjs",
+      "change": "carried",
+      "sha256": "70409bee2e92a4e3b51227b01442f7fc928e3882eb08152d52de5673f4796f57",
+      "bytes": 2340,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/sequencer_copy.mjs",
+      "change": "carried",
+      "sha256": "d2c40d246a8a401e5d5e811344dd07902e71bbd2889606d98358f4d642b3ca43",
+      "bytes": 2089,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/task_id.mjs",
+      "change": "carried",
+      "sha256": "a2553603cc4d0a3d6d45279c1eb0c000b12337473cc92d1750bbc6f03da2b30b",
+      "bytes": 2126,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/temp_roots.mjs",
+      "change": "carried",
+      "sha256": "a15b6a4ff8d1e499970b2a20ec33c8b26ce0a581f22acaebede8a9dacc01aaee",
+      "bytes": 1529,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/v21_artifact.mjs",
+      "change": "modified",
+      "sha256": "e64e38de7f0b5348682c9e11ade43fc0e5156cb52dc8ca7fe81323e5a36e567b",
+      "bytes": 13542,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "change": "carried",
+      "sha256": "034d9e60ea7f3df9ea39bbca754d64c9a657eb60e48d9d6506169360acd52386",
+      "bytes": 23584,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "change": "carried",
+      "sha256": "d5d93a210b20dca815666fe4cc5f52686bf613c2e68123c4fa10f54ba8cd76b4",
+      "bytes": 70017,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "change": "modified",
+      "sha256": "ddaa09ba3981beea1e41dc2399e792c54a32e19f70f9b91e437d9839e0d6ac0a",
+      "bytes": 27419,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/attempt_harness.mjs",
+      "change": "carried",
+      "sha256": "63a9fb96579408e02d7465f8591540b373b75a15767a6db5e13669097c5bd8ba",
+      "bytes": 9695,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/contract_shaped_stub.mjs",
+      "change": "modified",
+      "sha256": "61df4b0df5c30dab8a82ff327fd390eef84f170d50100c10d8696b78209ea5f6",
+      "bytes": 20393,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/grant_stub_runner.mjs",
+      "change": "carried",
+      "sha256": "6401934785ab9af41c68233a46eaa0f0f915a5ded24d384ad2b3893966e10664",
+      "bytes": 1270,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/action_ledger.node-test.mjs",
+      "change": "carried",
+      "sha256": "0a00436aab52df6bf1ea007fdd67bbb522aa584539e54724c36f5d63355e6e75",
+      "bytes": 8911,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/aggregate_identity.node-test.mjs",
+      "change": "modified",
+      "sha256": "b1728f24e58efa7a09fe0ac8c2e6475deb82c19fdcbd0794b448734fdb970510",
+      "bytes": 15814,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/artifact_integrity.node-test.mjs",
+      "change": "carried",
+      "sha256": "14717147409d5b0498671979a1331a6a56ece64f87138e98d546a6e3af523ca9",
+      "bytes": 12534,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/audit_finalizer.node-test.mjs",
+      "change": "carried",
+      "sha256": "e686a008e340ecba28c5bc6701b094f5709ecb33997787eb197101fe2a81644b",
+      "bytes": 13285,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/authorization_composition.node-test.mjs",
+      "change": "carried",
+      "sha256": "7f14bd9032f9c1160aa1002c4afe7514bacf585fb5b01824e4745214d648b166",
+      "bytes": 21639,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_bvid1.node-test.mjs",
+      "change": "carried",
+      "sha256": "ed3f6a78c5e8e83a074df067a31413cae179f8cf43a5165bbb986dcffa7ce8b9",
+      "bytes": 69045,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_cookie_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "e2e466141cd36170a9ff6c7af492da311a623a484df7eea1a02cc046c8f592e0",
+      "bytes": 18571,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_purity_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "8d5dc44ee9fb5fdba97419332304e110bcb43abba50cf2215cfb031fdd07254e",
+      "bytes": 8869,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/contracts.node-test.mjs",
+      "change": "carried",
+      "sha256": "9d577ad0f80df87a1f1a1bf991c07449705c0c7c3dca78141babfd2a3d8c480f",
+      "bytes": 19768,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/cookie_prereq.mjs",
+      "change": "carried",
+      "sha256": "075e3603edad4642c8192ae17e5a65324bafb930cb39211db5113d59000ea177",
+      "bytes": 7995,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/cookie_prereq.node-test.mjs",
+      "change": "carried",
+      "sha256": "a2adca300061f92dd16b91732190e8bb0d4500fa70ebfe105dfb55f2285f4fee",
+      "bytes": 15127,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/gc_b5r_preflight.node-test.mjs",
+      "change": "carried",
+      "sha256": "b51590c3a85cc1c7f4afce866a6e41a4e0e431324fae991d65026a8da26adaf6",
+      "bytes": 22677,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/integration_runtime_api.node-test.mjs",
+      "change": "carried",
+      "sha256": "b1def362d18c3d4ad1ec571dfc738c3c485d77c913419adfd85214a879059db9",
+      "bytes": 10259,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/machine_identity.node-test.mjs",
+      "change": "modified",
+      "sha256": "a5fd748455704ea7a61ce7a893f81a50463fa90e04dc81c991a562381ce5b0a9",
+      "bytes": 10792,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/privacy_scan.node-test.mjs",
+      "change": "carried",
+      "sha256": "899fc8065b5ce5245ee48fd4b45dd6e50add076292442579c23c8641031a9cb9",
+      "bytes": 5706,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/production_preflight.node-test.mjs",
+      "change": "carried",
+      "sha256": "d1502ea6471bd11b0b21e0fd84a66efb54ee8a717c31f62826244fb6a3774e7d",
+      "bytes": 4873,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/provider_attempt_accounting.node-test.mjs",
+      "change": "carried",
+      "sha256": "0d872c73b20afc880c898315c99eaefce3b8387b9eee4da4e576bd07fd623cf6",
+      "bytes": 5544,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/real_branches.node-test.mjs",
+      "change": "carried",
+      "sha256": "a122beabb89e5b68d33b6a3b3e1c127a4773b41005cdf8ab9478c02c04406219",
+      "bytes": 16364,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/relay_ownership_contract.node-test.mjs",
+      "change": "carried",
+      "sha256": "7ac32075adf2fecee857320bf2988c2c5b5e713c7eb5e841d32ca5a90cfe7768",
+      "bytes": 44046,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/run_offline_suite.mjs",
+      "change": "carried",
+      "sha256": "1cf981914197ee64dd29d4a30d1f7e748fa413ba73aa5398a0335ec0127962fb",
+      "bytes": 2390,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_failure_evidence.node-test.mjs",
+      "change": "carried",
+      "sha256": "06482e22fb73d399b762b9b862f1a7ba9b3bbd1a82a8d91f89eac308ff249823",
+      "bytes": 10722,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_static_check.node-test.mjs",
+      "change": "carried",
+      "sha256": "6a37a30268074ad03bd3b88bf66686f531f34bfe0b2d79d3ded79ae220e1b687",
+      "bytes": 7540,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/schema_keywords.node-test.mjs",
+      "change": "modified",
+      "sha256": "e3e4aae2cfe06a494cac0e61feee9e36a138396266aef4c952e93ca2d13dc035",
+      "bytes": 8770,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+      "change": "modified",
+      "sha256": "ea09ddaf4264a100295e4a75340f4831a79f25321a661cb52d400f0f432799b0",
+      "bytes": 37348,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/structured_failure_evidence.node-test.mjs",
+      "change": "carried",
+      "sha256": "08d0da72c61864efa31a89cff7afc09290d729e8e3593363c6963a7bf8069a09",
+      "bytes": 15947,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/task_id.node-test.mjs",
+      "change": "carried",
+      "sha256": "864ddb6b61d8fbb5375bc153079d82044b00a080b51dfa1b864a066e3f0fe0f0",
+      "bytes": 2264,
+      "generatedArtifact": false
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/windows_extension_invocation.node-test.mjs",
+      "change": "carried",
+      "sha256": "57e9b3c58156e008f4550a68f8048c617ad6bb47e4b9f609183a991ce4e07e98",
+      "bytes": 3497,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/__init__.py",
+      "change": "carried",
+      "sha256": "3e61bfb2026890c068ce0e6a60547507c0afe4b4bf28ab79cbfeb47354627df6",
+      "bytes": 325,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "change": "carried",
+      "sha256": "1970c7dc696f28f180e4650a31b408ce92f73fca7022b8f3d870f571e430a474",
+      "bytes": 13529,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+      "change": "carried",
+      "sha256": "414584d588db427cefabc86758e5e5656e749274ae4e5ef3514f06532add7fcc",
+      "bytes": 20200,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+      "change": "carried",
+      "sha256": "b746fd68c2b67c27a5b08a62280709c024ca0b26ce6d83a617e5ba3aeecfb1d0",
+      "bytes": 44387,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+      "change": "carried",
+      "sha256": "043493cc26c8190785b801779f0e5d58ce224b44347ad6e1a3bf023bb4815779",
+      "bytes": 64609,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_final_offline_correction.py",
+      "change": "carried",
+      "sha256": "55b72b57b50b8bd3fa4c93c3c29b8e609063835a2e4494734dd7595228f73625",
+      "bytes": 21608,
+      "generatedArtifact": false
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_v21_artifact_validator_equivalence.py",
+      "change": "carried",
+      "sha256": "1003e983f639a5c63e8ea7fccdafd2435e2499d45bccd4ceb58a30e478af51d3",
+      "bytes": 17827,
+      "generatedArtifact": false
+    }
+  ]
+}

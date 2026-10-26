@@ -62,6 +62,19 @@ describe("chat provider selection", () => {
     expect(draft.llmProviderId).toBe("prov_1");
   });
 
+  it("does not activate the first saved provider when no default was explicitly selected", () => {
+    const draft = resolveChatProviderDraft({
+      ...settings,
+      defaultProviderId: null,
+      defaultModel: null,
+      coreProvider: null,
+      chatProvider: null,
+      profiles: null
+    });
+
+    expect(draft).toEqual({ coreProvider: "piagent", llmProviderId: undefined, model: undefined });
+  });
+
   it("sends the current chat provider for page generation intents", () => {
     const options = chatStreamOptions("summarize_page", true, { coreProvider: "piagent", llmProviderId: "prov_1", model: "deepseek-v4-flash" });
 

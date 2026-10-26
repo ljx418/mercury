@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "gc-b6e-visible-confirmation-sanitized/v1",
+  "source": {
+    "order": 2,
+    "bvid": "BV1QcYx6VEAj"
+  },
+  "authorization": {
+    "consumed": true,
+    "reusable": false,
+    "attempts": 1
+  },
+  "preflight": {
+    "passed": true,
+    "checksPassed": 34,
+    "checksTotal": 34,
+    "externalActions": 0
+  },
+  "result": {
+    "verdict": "BLOCKED",
+    "failureCode": "V3510B_PROVIDER_RESPONSE_INVALID",
+    "taskReady": false,
+    "derivativePublished": false,
+    "pngConfirmed": 0,
+    "bundlePublished": false,
+    "semanticReviewPerformed": false,
+    "stagePass": false
+  },
+  "actions": {
+    "chromeLaunch": 1,
+    "visibleWindow": 1,
+    "runtimeStart": 1,
+    "cookieInjection": 28,
+    "focusEvent": 1,
+    "mediaTask": 1,
+    "runtimeSynthesize": 1,
+    "providerHttpAttempts": 8,
+    "sourceCompletion": 0,
+    "audioOutput": 0,
+    "tabCapture": 0
+  },
+  "uploads": {
+    "rawVideo": 0,
+    "rawAudio": 0,
+    "frameBytes": 0,
+    "cookie": 0,
+    "key": 0,
+    "localPath": 0
+  },
+  "cleanup": {
+    "runtimeScratchDeleted": true,
+    "profileRootDeleted": true,
+    "cleanupFailure": null,
+    "ownedLeakSightings": 0
+  }
+}

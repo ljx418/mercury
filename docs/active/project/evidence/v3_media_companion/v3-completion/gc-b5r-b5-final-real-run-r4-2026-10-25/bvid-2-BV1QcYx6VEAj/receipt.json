@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-receipt-mirror/v2",
+  "taskId": "media_task_b3f8c24d775a4789b1c191147c728717",
+  "receipt": null,
+  "published": false,
+  "derivativeSha256": null,
+  "taskIdNamespace": "media_task_f37382e967e847a1923677ca687af4aa",
+  "providerLock": "minimax_chat_completions",
+  "selectedProviderId": "minimax-cn-openai-vision",
+  "selectedEndpointClass": "minimax_chat_completions",
+  "derivedTextScope": [
+    "transcript",
+    "ocr",
+    "vision-caption"
+  ]
+}

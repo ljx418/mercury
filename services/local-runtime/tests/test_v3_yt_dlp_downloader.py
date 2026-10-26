@@ -5,6 +5,7 @@ import stat
 import subprocess
 import wave
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -12,6 +13,7 @@ from navia_runtime.modules.media_companion.acquisition.contracts import MediaIde
 from navia_runtime.modules.media_companion.acquisition.coordinator import MediaAcquisitionError
 from navia_runtime.modules.media_companion.acquisition.downloaders import YtDlpMediaDownloader
 from navia_runtime.modules.media_companion.acquisition.task_artifacts import TaskArtifactSandbox
+from navia_runtime.modules.media_companion.media_cache import MediaDownloadCache
 
 
 TASK_ID = "media_task_33333333333333333333333333333333"
@@ -119,3 +121,38 @@ def test_failed_download_removes_partial_staging_file(tmp_path: Path):
         subject.acquire_audio(TASK_ID, IDENTITY, CREDENTIALS)
     assert raised.value.code == "V3_MEDIA_PLATFORM_REJECTED"
     assert not any(path.name.startswith(".stage_") for path in (tmp_path / "tasks").rglob("*"))
+
+
+def test_cached_route_downloads_video_once_for_audio_and_frames(tmp_path: Path):
+    sandbox = TaskArtifactSandbox(tmp_path / "tasks")
+    sandbox.create(TASK_ID)
+    yt, yt_hash = binary(tmp_path / "yt-dlp", b"frozen-yt-dlp")
+    ff, ff_hash = binary(tmp_path / "ffmpeg", b"frozen-ffmpeg")
+    cache = MediaDownloadCache(tmp_path / "cache", tmp_path / "cache.sqlite3")
+    subject = YtDlpMediaDownloader(
+        sandbox, yt_dlp=yt, yt_dlp_sha256=yt_hash, ffmpeg=ff, ffmpeg_sha256=ff_hash,
+        media_cache=cache,
+    )
+    commands = []
+
+    def fake_run(command, *, capture_text=False):
+        commands.append(command)
+        if command[0] == str(yt):
+            Path(command[command.index("--output") + 1]).write_bytes(b"complete-low-resolution-video")
+            Path(command[command.index("--output") + 1]).chmod(0o600)
+        elif command[0].endswith("ffprobe"):
+            return SimpleNamespace(stdout="60.0\n")
+        else:
+            with wave.open(str(command[-1]), "wb") as writer:
+                writer.setnchannels(1)
+                writer.setsampwidth(2)
+                writer.setframerate(16000)
+                writer.writeframes(b"\x00\x00" * 16000)
+        return SimpleNamespace(stdout="")
+
+    subject._run = fake_run
+    audio = subject.acquire_audio(TASK_ID, IDENTITY, CREDENTIALS)
+    video, duration_ms = subject.acquire_video(TASK_ID, IDENTITY, CREDENTIALS)
+    assert audio.artifact.kind == "audio" and video.kind == "video" and duration_ms == 60_000
+    assert sum(command[0] == str(yt) for command in commands) == 1
+    assert cache.status()["entryCount"] == 1

@@ -62,6 +62,26 @@ export type VisionProviderSettings = {
   selectedProviderId: string | null;
 };
 
+export type MediaPortalSettings = {
+  adapterId: "bilibili";
+  enabled: boolean;
+  configured: boolean;
+  cookieCount: number;
+  expiresAt: string | null;
+  testStatus: { status: "ok"; verifiedAt: string; loggedIn: boolean } | null;
+  secretStorage: "windows_credential_vault" | "os_keyring" | string | null;
+  updatedAt: string | null;
+};
+
+export type MediaCacheStatus = {
+  entryCount: number;
+  usedBytes: number;
+  maximumBytes: number;
+  retentionHours: number;
+  oldestCreatedAt: string | null;
+  nextExpiryAt: string | null;
+};
+
 export type VisionProviderTestResult = {
   status: "ok";
   model: string;
@@ -774,6 +794,7 @@ export type MediaAcquisitionTask = {
   state: "created" | "acquiring" | "capturing" | "transcribing" | "cleaning" | "succeeded" | "degraded" | "blocked" | "failed" | "cancelled";
   consentPolicyId: string;
   consentPolicyRevision: number;
+  startedAt?: string;
   failureCode: string | null;
 };
 
@@ -863,6 +884,7 @@ export type MediaOutlineTask = {
   knowledgeImportStatus: "deferred_to_v4";
   terminalFailureCode: string | null;
   currentOutlineId: string | null;
+  policyContext?: { status: "current" | "historical" | "unverified"; consentPolicyId: string | null; consentPolicyRevision: number | null };
   projections?: MediaOutlineProjections | null;
   events?: Array<{ sequence: number; taskRevision: number; eventType: string; createdAt: string }>;
 };
@@ -880,7 +902,7 @@ export type MediaAskResult = {
   category?: "factual" | "visual" | "cross_chapter";
   answerBlocks?: Array<{ text: string; evidenceIds: string[]; timestampMs: number }>;
   retrievalPlanSha256?: string;
-  executionMode?: "local_deterministic";
+  executionMode?: "local_deterministic" | "structured_projection" | "grounded_model";
 };
 
 export type MediaComprehensionEvidence = MediaOutlineEvidence & {
@@ -900,10 +922,14 @@ export type MediaComprehensionChapter = {
   keyPoints: string[];
   evidenceIds: string[];
   representativeFrameEvidenceId: string | null;
+  evidenceNote?: string;
+  relationToPrevious?: "opening" | "continuation" | "contrast" | "cause_effect" | "example" | "conclusion";
 };
 
+export type MediaSynthesisStyle = "concise" | "structured" | "detailed" | "tutorial";
+
 export type MediaComprehensionProjection = {
-  schemaVersion: "v3-media-workspace-comprehension-projection/v1";
+  schemaVersion: "v3-media-workspace-comprehension-projection/v1" | "v3-media-workspace-comprehension-projection/v2";
   task: {
     taskId: string;
     taskRevision: number;
@@ -912,12 +938,48 @@ export type MediaComprehensionProjection = {
     outlineId: string;
   };
   authorization: {
-    groundedTextCloudStatus: "disabled";
-    providerId: null;
-    modelId: null;
-    outboundDerivedTextSha256: null;
+    groundedTextCloudStatus: "disabled" | "granted";
+    providerId: string | null;
+    modelId: string | null;
+    outboundDerivedTextSha256: string | null;
     rawMediaUploadCount: 0;
   };
+  quality?: {
+    mode: "local_extract_only" | "grounded_model";
+    humanQualityReviewRequired: true;
+    warning: string | null;
+    style: MediaSynthesisStyle | null;
+    styleRisk: {
+      label: string;
+      riskLevel: "low" | "medium" | "high";
+      riskCode: string;
+      riskDescription: string;
+    } | null;
+    status?: "complete" | "limited" | null;
+    failureCodes?: string[];
+  };
+  grounded?: {
+    brief: {
+      text: string;
+      evidenceIds: string[];
+      regions: Array<"opening" | "middle" | "ending">;
+      origin?: "provider" | "deterministic_claim_composer";
+      sourceClaimIds?: string[];
+    };
+    claims: Array<{
+      claimId: string;
+      text: string;
+      evidenceIds: string[];
+      regions: Array<"opening" | "middle" | "ending">;
+    }>;
+    regions: Array<{
+      name: "opening" | "middle" | "ending";
+      startMs: number;
+      endMs: number;
+      availability: "substantive" | "empty_or_unavailable";
+      evidenceIds: string[];
+    }>;
+  } | null;
   evidenceCatalog: MediaComprehensionEvidence[];
   outline: {
     outlineId: string;
@@ -999,7 +1061,7 @@ async function privilegedMediaJson<T>(path: string, method: "GET" | "POST" | "DE
   if (generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
   const value = JSON.parse(await response.text()) as ApiResponse<T>;
   if (!response.ok || !value.ok || value.data == null) {
-    throw new RuntimeRequestError({ kind: response.status === 401 ? "authentication" : "api", message: value.error?.message ?? "媒体任务请求失败。", code: value.error?.code });
+    throw new RuntimeRequestError({ kind: response.status === 401 ? "authentication" : "api", httpStatus: response.status, message: value.error?.message ?? "媒体任务请求失败。", code: value.error?.code });
   }
   return value.data as T;
 }
@@ -1015,6 +1077,63 @@ export function createMediaAcquisition(input: {
   consentPolicyRevision: number;
 }) {
   return privilegedMediaJson<{ task: MediaAcquisitionTask }>("/v1/media/acquisitions", "POST", input);
+}
+
+export type MediaAcquisitionResolution =
+  | { disposition: "created" | "attached"; authoritativeTaskId: string; task: MediaAcquisitionTask }
+  | { disposition: "published"; authoritativeTaskId: string; task: null; publishedRevision: number; policyProvenance: "verified_current" | "unverified_legacy" };
+
+export function resolveMediaAcquisition(input: {
+  taskId: string;
+  sourceIdentity: string;
+  adapterId: string;
+  mediaId: string;
+  playbackUnitId: string;
+  partId: string;
+  consentPolicyId: string;
+  consentPolicyRevision: number;
+}) {
+  return privilegedMediaJson<MediaAcquisitionResolution>("/v1/media/acquisitions/resolve", "POST", input);
+}
+
+export function replaceMediaAcquisitionPolicy(input: {
+  taskId: string;
+  sourceIdentity: string;
+  adapterId: string;
+  mediaId: string;
+  playbackUnitId: string;
+  partId: string;
+  consentPolicyId: string;
+  consentPolicyRevision: number;
+  expectedPreviousTaskId: string;
+  expectedPreviousConsentPolicyId: string;
+  expectedPreviousConsentPolicyRevision: number;
+  confirmation: "reanalyze_under_current_policy";
+}) {
+  return privilegedMediaJson<{
+    disposition: "created" | "replayed";
+    authoritativeTaskId: string;
+    task: MediaAcquisitionTask;
+    switchReceipt?: { oldTaskId: string; newTaskId: string; confirmedAt: string };
+  }>("/v1/media/acquisitions/replace-policy", "POST", input);
+}
+
+export function recoverInterruptedMediaAcquisition(sourceIdentity: string) {
+  return privilegedMediaJson<{
+    disposition: "abandoned" | "published";
+    authoritativeTaskId: string;
+  }>("/v1/media/acquisitions/recover", "POST", { sourceIdentity });
+}
+
+export function getMediaSourceAuthority(sourceIdentity: string) {
+  return privilegedMediaJson<{ authority: null | {
+    taskId: string;
+    state: "active" | "active_elsewhere" | "interrupted" | "ownership_uncertain" | "published" | "cancelling" | "failed" | "cancelled" | "cleanup_incomplete";
+    adapterId: string;
+    consentPolicyId: string;
+    consentPolicyRevision: number;
+    policyProvenance: "verified_current" | "unverified_legacy";
+  } }>(`/v1/media/source-authority?sourceIdentity=${encodeURIComponent(sourceIdentity)}`, "GET");
 }
 
 export function executeMediaAcquisition(taskId: string) {
@@ -1034,6 +1153,78 @@ export function getMediaTranscript(taskId: string) {
     `/v1/media/transcripts/${encodeURIComponent(taskId)}`,
     "GET"
   );
+}
+
+/* ------------------------------------------------------------------ *
+ * WP-B explicit local media import.
+ *
+ * These four routes carry the companion bearer and NOTHING else. No
+ * file name, path, URL, digest or last-modified value is ever sent, and
+ * the one-shot upload token is the only credential the PUT may add.
+ * ------------------------------------------------------------------ */
+
+/** The current companion bearer, or null when no Runtime is connected. */
+export function getLocalRuntimeBearer(): string | null {
+  return localRuntimeSession.token || null;
+}
+
+/** Bumped on every token change; the import client aborts on a change. */
+export function getLocalRuntimeGeneration(): number {
+  return localRuntimeSession.generation;
+}
+
+export function localMediaImportContentUrl(importId: string): string {
+  return `${RUNTIME_URL}/v1/media/local-imports/${encodeURIComponent(importId)}/content`;
+}
+
+/**
+ * The raw `{ok, data, error, requestId}` envelope plus the HTTP status.
+ *
+ * The local-import client unwraps this itself, so a non-2xx ERROR body can
+ * never be mistaken for a record by a transport that already "succeeded".
+ */
+async function rawLocalMediaJson(path: string, method: "GET" | "POST" | "DELETE", body?: unknown) {
+  if (!localRuntimeSession.token) {
+    throw new RuntimeRequestError({ kind: "authentication", message: "请先连接本机 Runtime。", code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED" });
+  }
+  if (typeof location === "undefined" || location.protocol !== "chrome-extension:") {
+    throw new RuntimeRequestError({ kind: "api", message: "本地导入仅允许在 Navia 扩展页面发起。", code: "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH" });
+  }
+  const generation = localRuntimeSession.generation;
+  const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
+  const response = await fetch(`${RUNTIME_URL}${path}`, {
+    method,
+    headers: {
+      "Authorization": `Bearer ${localRuntimeSession.token}`,
+      "Content-Type": "application/json",
+      "X-Request-ID": requestId
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
+    cache: "no-store",
+    credentials: "omit",
+    redirect: "error",
+    referrerPolicy: "no-referrer"
+  });
+  if (generation !== localRuntimeSession.generation) throw staleRuntimeRequestError(requestId);
+  const payload = (await response.json()) as unknown;
+  return { status: response.status, payload };
+}
+
+export function createLocalMediaImport(body: {
+  taskId: string;
+  sourceIdentity: string;
+  declaredMediaType: string;
+  byteLength: number;
+}) {
+  return rawLocalMediaJson("/v1/media/local-imports", "POST", body);
+}
+
+export function getLocalMediaImport(importId: string) {
+  return rawLocalMediaJson(`/v1/media/local-imports/${encodeURIComponent(importId)}`, "GET");
+}
+
+export function cancelLocalMediaImport(importId: string) {
+  return rawLocalMediaJson(`/v1/media/local-imports/${encodeURIComponent(importId)}`, "DELETE");
 }
 
 export function getMediaCaptureEligibility(taskId: string) {
@@ -1093,6 +1284,14 @@ export function getMediaWorkspaceComprehension(taskId: string, revision: number)
   ).then((value) => value.projection);
 }
 
+export function synthesizeMediaWorkspaceComprehension(taskId: string, expectedRevision: number, style: MediaSynthesisStyle) {
+  return privilegedMediaJson<{ projection: MediaComprehensionProjection }>(
+    `/v1/media/tasks/${encodeURIComponent(taskId)}/comprehension/synthesize`,
+    "POST",
+    { expectedRevision, consent: true, style }
+  ).then((value) => value.projection);
+}
+
 export async function downloadMediaEvidenceThumbnail(taskId: string, evidenceId: string): Promise<Blob> {
   if (!localRuntimeSession.token) {
     throw new RuntimeRequestError({ kind: "authentication", message: "请先连接本机 Runtime。", code: "V3_MEDIA_RUNTIME_AUTH_REQUIRED" });
@@ -1121,12 +1320,58 @@ export function materializeMediaOutlineTask(taskId: string) {
   ).then((value) => value.task);
 }
 
-export function materializeVisualMediaOutlineTask(taskId: string, credentialLeaseId: string) {
+export function materializeVisualMediaOutlineTask(taskId: string, credentialLeaseId?: string) {
   return privilegedMediaJson<{ task: MediaOutlineTask }>(
     `/v1/media/outline-tasks/${encodeURIComponent(taskId)}/materialize-visual`,
     "POST",
-    { credentialLeaseId }
+    credentialLeaseId ? { credentialLeaseId } : {}
   ).then((value) => value.task);
+}
+
+export async function getMediaPortalSettings(): Promise<MediaPortalSettings> {
+  return unwrapApiResponse(await runtimeJson<{ settings: MediaPortalSettings }>({
+    path: "/v1/media/portal-settings/bilibili"
+  })).settings;
+}
+
+export async function saveMediaPortalSettings(cookieText: string, enabled = true): Promise<MediaPortalSettings> {
+  return unwrapApiResponse(await runtimeJson<{ settings: MediaPortalSettings }>({
+    path: "/v1/media/portal-settings/bilibili", method: "PUT", body: { cookieText, enabled }
+  })).settings;
+}
+
+export async function toggleMediaPortalSettings(enabled: boolean): Promise<MediaPortalSettings> {
+  return unwrapApiResponse(await runtimeJson<{ settings: MediaPortalSettings }>({
+    path: "/v1/media/portal-settings/bilibili", method: "PATCH", body: { enabled }
+  })).settings;
+}
+
+export async function testMediaPortalSettings(): Promise<MediaPortalSettings> {
+  return unwrapApiResponse(await runtimeJson<{ settings: MediaPortalSettings }>({
+    path: "/v1/media/portal-settings/bilibili/test", method: "POST"
+  })).settings;
+}
+
+export async function deleteMediaPortalSettings(): Promise<MediaPortalSettings> {
+  return unwrapApiResponse(await runtimeJson<{ settings: MediaPortalSettings }>({
+    path: "/v1/media/portal-settings/bilibili", method: "DELETE"
+  })).settings;
+}
+
+export async function getMediaCacheStatus(): Promise<MediaCacheStatus> {
+  return unwrapApiResponse(await runtimeJson<{ cache: MediaCacheStatus }>({ path: "/v1/media/cache" })).cache;
+}
+
+export async function configureMediaCache(maximumBytes: number, retentionHours: number): Promise<MediaCacheStatus> {
+  return unwrapApiResponse(await runtimeJson<{ cache: MediaCacheStatus }>({
+    path: "/v1/media/cache", method: "PATCH", body: { maximumBytes, retentionHours }
+  })).cache;
+}
+
+export async function clearMediaCache(): Promise<{ cleared: { removedEntries: number; removedBytes: number }; cache: MediaCacheStatus }> {
+  return unwrapApiResponse(await runtimeJson<{ cleared: { removedEntries: number; removedBytes: number }; cache: MediaCacheStatus }>({
+    path: "/v1/media/cache", method: "DELETE"
+  }));
 }
 
 export function cancelMediaOutlineTask(taskId: string, expectedRevision: number) {
@@ -1410,8 +1655,8 @@ export async function importProvider(input: {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: {
-      type: input.type ?? input.providerType ?? "deepseek",
-      name: input.name ?? input.displayName ?? "DeepSeek",
+      type: input.type ?? input.providerType,
+      name: input.name ?? input.displayName,
       baseUrl: input.baseUrl,
       apiKey: input.apiKey,
       defaultModel: input.defaultModel,
@@ -1894,7 +2139,8 @@ type RuntimeProxyResponse<T> = {
 async function runtimeJson<T>(request: RuntimeRequest): Promise<ApiResponse<T>> {
   const knowledgeRequest = request.path.startsWith("/v1/knowledge/") || request.path.startsWith("/v3/knowledge/");
   const visionProviderRequest = request.path.startsWith("/v1/vision/providers");
-  const authenticatedRequest = knowledgeRequest || visionProviderRequest;
+  const mediaSettingsRequest = request.path.startsWith("/v1/media/portal-settings") || request.path.startsWith("/v1/media/cache");
+  const authenticatedRequest = knowledgeRequest || visionProviderRequest || mediaSettingsRequest;
   const requestId = `req_${crypto.randomUUID().replace(/-/g, "")}`;
   const generation = localRuntimeSession.generation;
   const controllerId = knowledgeRequest ? ++localRuntimeControllerId : null;

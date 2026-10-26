@@ -16,13 +16,13 @@ export function resolveChatProviderDraft(settings: MercurySettings): ChatProvide
   return {
     coreProvider: configured?.coreProvider ?? settings.coreProvider ?? "piagent",
     llmProviderId: provider?.id,
-    model: configured?.model ?? provider?.defaultModel ?? settings.defaultModel ?? "deepseek-v4-flash"
+    model: configured?.model ?? provider?.defaultModel ?? settings.defaultModel ?? undefined
   };
 }
 
 function getDefaultProvider(settings: MercurySettings | null): LLMProviderConfig | null {
   const providers = settings?.providers ?? [];
-  return providers.find((provider) => provider.id === settings?.defaultProviderId) ?? providers[0] ?? null;
+  return providers.find((provider) => provider.id === settings?.defaultProviderId) ?? null;
 }
 
 function getProviderById(settings: MercurySettings | null, providerId: string | undefined): LLMProviderConfig | null {

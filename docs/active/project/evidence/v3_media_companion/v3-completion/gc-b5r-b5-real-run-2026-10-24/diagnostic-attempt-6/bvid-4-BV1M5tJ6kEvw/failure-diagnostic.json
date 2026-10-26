@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1M5tJ6kEvw",
+  "order": "4",
+  "finalDisposition": "failed",
+  "finishReason": "Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}",
+  "error": {
+    "name": "Error",
+    "message": "Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}",
+    "stack": "Error: Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:719:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792777864456,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_5abb3e8a5f494156b2b5d11714952fdd"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792777876262,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777877767,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777879273,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777879672,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777880778,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777882284,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777885042,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777885930,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777886547,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777888053,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777889558,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777890935,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777891065,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777892570,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777894075,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777895579,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777895939,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777897084,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777898589,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777900096,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777900946,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777901602,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777903108,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777904614,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777905952,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777906119,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777907625,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777909233,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777910740,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777910957,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777912245,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777913754,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777915259,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777915963,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777916765,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777919476,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    },
+    {
+      "at": 1792777920431,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_5abb3e8a5f494156b2b5d11714952fdd/materialize-visual",
+      "status": 502
+    },
+    {
+      "at": 1792777920476,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_5abb3e8a5f494156b2b5d11714952fdd/materialize",
+      "status": 200
+    },
+    {
+      "at": 1792777920482,
+      "method": "DELETE",
+      "path": "/v1/media/credential-leases/pcl_f8039e7ed7a77898d3e2f69dda4c2bcf",
+      "status": 200
+    },
+    {
+      "at": 1792777920981,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_5abb3e8a5f494156b2b5d11714952fdd",
+      "status": 200
+    }
+  ],
+  "startedAtUtc": "2026-10-23T17:50:50.863Z",
+  "finishedAtUtc": "2026-10-23T17:52:02.025Z"
+}

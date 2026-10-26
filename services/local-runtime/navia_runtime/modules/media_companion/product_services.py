@@ -17,16 +17,21 @@ from .task_store import MediaTaskStore, MediaTaskStoreError, utc_now
 
 _VISUAL_TERMS = ("画面", "屏幕", "显示", "人物", "图像", "截图", "视觉")
 _BROAD_QUESTIONS = ("概括开头", "总结开头", "开头内容")
-_CROSS_CHAPTER_TERMS = ("各章", "跨章节", "前后", "整体", "关系", "如何关联", "比较", "分别", "从开头到结尾")
+_CROSS_CHAPTER_TERMS = (
+    "各章", "各章节", "跨章节", "前后", "整体", "关系", "如何关联", "比较", "分别",
+    "逐步", "推进到", "两部分", "从开头到结尾",
+)
 _TOKEN = re.compile(r"[\u4e00-\u9fff]{2,}|[A-Za-z0-9_]{2,}")
 
 
 class MediaAskService:
-    """Low-resource evidence-grounded Ask provider with durable deterministic results."""
+    """Answers from durable local evidence or a validated grounded projection."""
 
-    def __init__(self, store: MediaTaskStore, private_evidence_root: str | Path) -> None:
+    def __init__(self, store: MediaTaskStore, private_evidence_root: str | Path, comprehension: Any | None = None) -> None:
         self._store = store
         self._private_root = Path(private_evidence_root).resolve()
+        self._comprehension = comprehension
+        self._grounded_provider_factory = None
         self._lock = RLock()
         self._conn = sqlite3.connect(store.db_path, check_same_thread=False, isolation_level=None)
         self._conn.row_factory = sqlite3.Row
@@ -41,7 +46,21 @@ class MediaAskService:
             """
         )
 
+    def set_comprehension(self, comprehension: Any) -> None:
+        self._comprehension = comprehension
+
+    def set_grounded_provider_factory(self, factory: Any) -> None:
+        self._grounded_provider_factory = factory
+
+    def invalidate(self, task_id: str, revision: int) -> None:
+        with self._lock, self._conn:
+            self._conn.execute(
+                "DELETE FROM media_ask_results WHERE task_id=? AND task_revision=?",
+                (task_id, revision),
+            )
+
     def ask(self, task_id: str, expected_revision: int, question: str) -> dict[str, Any]:
+        self._store.require_current_authority(task_id)
         normalized = " ".join(question.split()).strip() if isinstance(question, str) else ""
         if not normalized or len(normalized) > 500:
             raise MediaTaskStoreError("ASK_QUESTION_INVALID", "Question must contain 1 to 500 characters.")
@@ -60,6 +79,16 @@ class MediaAskService:
 
         catalog = task["projections"]["evidenceCatalog"]
         category = self._category(normalized)
+        structured = self._structured_answer(task_id, expected_revision, normalized, category)
+        if structured is not None:
+            payload = canonical_bytes(structured).decode("utf-8")
+            self._store.require_current_authority(task_id)
+            with self._lock, self._conn:
+                self._conn.execute(
+                    "INSERT OR IGNORE INTO media_ask_results VALUES (?,?,?,?,?,?)",
+                    (structured["answerId"], task_id, expected_revision, normalized, payload, structured["createdAt"]),
+                )
+            return structured
         visual = category == "visual"
         cross_chapter = category == "cross_chapter"
         allowed_kinds = {"frame", "ocr_block", "vision_caption"} if visual else {"transcript", "ocr_block", "vision_caption"}
@@ -112,6 +141,7 @@ class MediaAskService:
                 "retrievalPlanSha256": retrieval_plan_sha256, "executionMode": "local_deterministic",
             }
         payload = canonical_bytes(result).decode("utf-8")
+        self._store.require_current_authority(task_id)
         with self._lock, self._conn:
             self._conn.execute(
                 "INSERT OR IGNORE INTO media_ask_results VALUES (?,?,?,?,?,?)",
@@ -122,6 +152,105 @@ class MediaAskService:
                 (task_id, expected_revision, normalized),
             ).fetchone()
         return json.loads(stored["result_json"])
+
+    def _structured_answer(
+        self,
+        task_id: str,
+        revision: int,
+        question: str,
+        category: str,
+    ) -> dict[str, Any] | None:
+        if self._comprehension is None:
+            return None
+        try:
+            projection = self._comprehension.get(task_id, revision)
+        except MediaTaskStoreError:
+            return None
+        if projection.get("quality", {}).get("mode") != "grounded_model":
+            return None
+        chapters = projection["outline"]["chapters"]
+        q_tokens = self._tokens(question)
+        broad_opening = any(term in question for term in ("开头", "首先"))
+        broad_ending = any(term in question for term in ("最后", "结论", "限制"))
+        if category in {"cross_chapter", "visual"}:
+            selected = chapters
+        elif broad_ending:
+            selected = chapters[-2:] if "限制" in question else chapters[-1:]
+        elif broad_opening:
+            selected = chapters[:1]
+        else:
+            ranked = sorted(
+                chapters,
+                key=lambda chapter: -sum(
+                    (3 if len(token) >= 3 else 1)
+                    for token in q_tokens
+                    if token in " ".join([chapter["title"], chapter["thesis"], *chapter["keyPoints"]]).lower()
+                ),
+            )
+            score = lambda chapter: sum(
+                (3 if len(token) >= 3 else 1)
+                for token in q_tokens
+                if token in " ".join([chapter["title"], chapter["thesis"], *chapter["keyPoints"]]).lower()
+            )
+            selected = [chapter for chapter in ranked[:3] if score(chapter) > 0]
+        if not selected:
+            selected = chapters
+        created_at = utc_now()
+        digest = hashlib.sha256(f"{task_id}:{revision}:{question}:structured".encode()).hexdigest()[:16]
+        plan = {
+            "category": category,
+            "chapterIds": [chapter["chapterId"] for chapter in selected],
+            "executionMode": "structured_projection",
+            "outlineSha256": projection["outline"]["contentSha256"],
+        }
+        plan_sha = hashlib.sha256(canonical_bytes(plan)).hexdigest()
+        if self._grounded_provider_factory is not None:
+            task = self._store.get(task_id)
+            catalog = task["projections"]["evidenceCatalog"]
+            cited = set(item for chapter in selected for item in chapter["evidenceIds"])
+            if category == "visual":
+                cited = {item["evidenceId"] for item in catalog if item["kind"] in {"ocr_block", "vision_caption"}}
+            context = []
+            for item in catalog:
+                if item["evidenceId"] not in cited:
+                    continue
+                context.append({
+                    "evidenceId": item["evidenceId"], "kind": item["kind"],
+                    "timestampStartMs": item["timestampStartMs"], "timestampEndMs": item["timestampEndMs"],
+                    "text": self._read_text(item),
+                })
+            model_result = self._grounded_provider_factory().answer(
+                question=question,
+                category=category,
+                chapters=[{
+                    "chapterId": chapter["chapterId"], "title": chapter["title"], "thesis": chapter["thesis"],
+                    "keyPoints": chapter["keyPoints"], "evidenceIds": chapter["evidenceIds"],
+                    "relationToPrevious": chapter.get("relationToPrevious", "continuation"),
+                } for chapter in selected],
+                evidence=context,
+            )
+            blocks = model_result["answerBlocks"]
+            status = model_result["status"]
+            execution_mode = "grounded_model"
+        else:
+            blocks = []
+            for chapter in selected:
+                key_points = chapter["keyPoints"][:2]
+                text = chapter["thesis"]
+                if key_points:
+                    text += " 关键点：" + "；".join(key_points)
+                blocks.append({"text": text[:700], "evidenceIds": chapter["evidenceIds"], "timestampMs": chapter["startMs"]})
+            status = "answered"
+            execution_mode = "structured_projection"
+        evidence_ids = list(dict.fromkeys(item for block in blocks for item in block["evidenceIds"]))
+        return {
+            "answerId": f"answer_{digest}", "taskId": task_id, "taskRevision": revision,
+            "question": question, "answer": "\n".join(block["text"] for block in blocks),
+            "evidenceIds": evidence_ids, "status": status,
+            "failureCode": None if status == "answered" else "ASK_EVIDENCE_INSUFFICIENT",
+            "createdAt": created_at, "category": category, "answerBlocks": blocks,
+            "retrievalPlanSha256": plan_sha, "executionMode": execution_mode,
+        }
 
     def list_results(self, task_id: str, revision: int) -> list[dict[str, Any]]:
         with self._lock:
@@ -217,6 +346,7 @@ class MediaExportService:
         self._comprehension = comprehension
 
     def create(self, task_id: str, expected_revision: int, format_name: str) -> dict[str, Any]:
+        self._store.require_current_authority(task_id)
         if format_name not in self.FORMATS:
             raise MediaTaskStoreError("EXPORT_FORMAT_INVALID", "Unsupported export format.")
         task = self._store.get(task_id)
@@ -241,6 +371,7 @@ class MediaExportService:
             for name, value in sorted(members.items())
         ]
         path = directory / filename
+        self._store.require_current_authority(task_id)
         path.write_bytes(artifact)
         manifest = {
             "exportId": export_id, "taskId": task_id, "taskRevision": expected_revision,

@@ -3,6 +3,10 @@ import { MEDIA_CAPTURE_MESSAGE_TYPE, type PublicMediaCaptureGrant, type MediaCap
 export class MediaCaptureMessageClient {
   constructor(private readonly sendMessage: (message: unknown) => Promise<unknown>) {}
 
+  prepare() {
+    return this.sendMessage({ type: MEDIA_CAPTURE_MESSAGE_TYPE, command: "prepare" }) as Promise<MediaCaptureResponse>;
+  }
+
   async start(input: {
     trustedClick: boolean;
     userActivation: boolean;
@@ -30,6 +34,7 @@ export class MediaCaptureMessageClient {
       const status = await this.sendMessage({ type: MEDIA_CAPTURE_MESSAGE_TYPE, command: "status" }) as MediaCaptureResponse;
       if (!status.ok || status.state === "capturing") return status;
     }
+    await this.stop("timeout").catch(() => undefined);
     return { ok: false, failureCode: "V3_MEDIA_CAPTURE_GRANT_EXPIRED" };
   }
 

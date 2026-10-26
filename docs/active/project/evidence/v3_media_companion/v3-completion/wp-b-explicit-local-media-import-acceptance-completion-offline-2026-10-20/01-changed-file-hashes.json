@@ -1,0 +1,198 @@
+{
+  "files": {
+    "apps/chrome-extension/e2e/lib/v3WpBLocalImportOwnedSession.mjs": {
+      "bytes": 13964,
+      "sha256": "139703377d791da950a4d50f7091d04ea929b4a5c63816c1c5a0277e2e4e722a"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBLocalImportOwnedSession.node-test.mjs": {
+      "bytes": 7711,
+      "sha256": "018992b267a181bd63de8af7e51fbf8de57c0c4727411226cb67649be2b76ede"
+    },
+    "apps/chrome-extension/e2e/v3-wp-b-local-import-owned-session.mjs": {
+      "bytes": 10092,
+      "sha256": "c30cd38d2f51c8d663e7abcf1c5621abbf9fc3b36970ff92c853ddf4983a42da"
+    },
+    "apps/chrome-extension/package.json": {
+      "bytes": 8932,
+      "sha256": "d8a52c4e297c626854985e91337892ee61dd78e49673f6972979e6bb76d1886d"
+    },
+    "apps/chrome-extension/src/modules/media_companion/LocalMediaImportClient.ts": {
+      "bytes": 16332,
+      "sha256": "3209e4d00e104e1173623a289de06a03b8c71a82e59dbe8bae0c638e4265ade4"
+    },
+    "apps/chrome-extension/src/modules/media_companion/MediaCredentialWorkspacePage.tsx": {
+      "bytes": 19326,
+      "sha256": "a936d1e52e6a5d35b3f0c7dfc764124758850740caa0acc872cee22f173c82e6"
+    },
+    "apps/chrome-extension/src/modules/media_companion/createLocalImportRuntimeClient.ts": {
+      "bytes": 1621,
+      "sha256": "020eb7f4403a714519f4ecde23644916511437b1bf578e0f6f09089837d727b6"
+    },
+    "apps/chrome-extension/src/modules/media_companion/localImportEntry.ts": {
+      "bytes": 2277,
+      "sha256": "fe7f383c5c047790ad4df6a0fae34503807d5e7ea1428b524c4cca257fe97997"
+    },
+    "apps/chrome-extension/src/modules/media_companion/settings/LocalMediaImportCard.tsx": {
+      "bytes": 7681,
+      "sha256": "caba8758a7e4ae5c2375e8e4be8a43c095469dc44ac690fd476975277e555a3f"
+    },
+    "apps/chrome-extension/src/modules/media_companion/tests/LocalMediaImportClient.test.tsx": {
+      "bytes": 30909,
+      "sha256": "82a3d849ff3d80410713840e1162ab9964b5cf45f7b76eeb80495a1a249fe055"
+    },
+    "apps/chrome-extension/src/modules/media_companion/tests/MediaCredentialWorkspacePageComposition.test.tsx": {
+      "bytes": 11579,
+      "sha256": "4ce6370823c88adecb0603458a09d0b87c391fa71f913bbfd82df84e8b06e1b2"
+    },
+    "apps/chrome-extension/src/runtimeClient.ts": {
+      "bytes": 86281,
+      "sha256": "b724e4c3e857e60f22483e451e2fb43bc7b13191c41d3e4ce5de9cc35b8e1d86"
+    },
+    "services/local-runtime/navia_runtime/app.py": {
+      "bytes": 170399,
+      "sha256": "7d7f92c2dc5a4b42f9bb2e3323791230486c9c9283ad3bdd831536bd749a5e09"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py": {
+      "bytes": 49638,
+      "sha256": "dd7c223245a4869383369979e02fb23a76d4d3408383a216f75dd04a9afcbacd"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/acquisition/transcript_service.py": {
+      "bytes": 17036,
+      "sha256": "88a2a4653481d6f97e75d6d7a8abbb7b2c70c4968452b74fa25c44d4707a8cf4"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/consumer_barrier.py": {
+      "bytes": 14929,
+      "sha256": "ad7e107568bb95d9c522c5621d454eb32da835a4adc27941164385c1006fa888"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/contracts.py": {
+      "bytes": 17073,
+      "sha256": "28f66e1fbb2bba960ee6ae63b72c610014fe81b8ce31084d187bc8e12ec76ad4"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/manager.py": {
+      "bytes": 8662,
+      "sha256": "8d995065c11d7c340ed27f7718e20daf6ecc2ca0447d17714480a17329be5530"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/orchestrator.py": {
+      "bytes": 18852,
+      "sha256": "8681a05cc4ca1eea2b38689c39f037a367781b15ddec44084bdd12a47c60e027"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/preparer.py": {
+      "bytes": 15020,
+      "sha256": "3ea522cc8b95b8ea8e5837786a367a5b628cc8104bcb58a197b9af294c0e13d8"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/runtime.py": {
+      "bytes": 15254,
+      "sha256": "a5a16e5c873d2554c9f07d1859d0996e716130f77fa3f2b64e9988a2a12e4dfa"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/store.py": {
+      "bytes": 30035,
+      "sha256": "3e5c00150c1e1ab5bfae520409b111eb065dd4b95d82df2707d754cd8a156e09"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/product_materializer.py": {
+      "bytes": 37205,
+      "sha256": "6d45dc35a39d527b1f70b86558f0520ed8c71dcd07fab74d7850682c41ef6a32"
+    },
+    "services/local-runtime/scripts/build_wp_b_acceptance_completion_evidence.py": {
+      "bytes": 7622,
+      "sha256": "12db9c6af875003f46917ce5a620a289edb981e3e86aa4abf8a8d14f3b9fd6b1"
+    },
+    "services/local-runtime/scripts/v3_media_local_import_wp_b_probe.py": {
+      "bytes": 13440,
+      "sha256": "b88f347a3126ffd7c99116530892aa8c4fa7fb0e13e3368f223951716cb4fee0"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_api.py": {
+      "bytes": 15267,
+      "sha256": "fed2cd1921268b03090cd644b2ce97633d7e695485b83348b768726894027695"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_barrier.py": {
+      "bytes": 17539,
+      "sha256": "f28068b8f07b7e1ede7b2a47441c4009aa4c4533e3a397a1ce8793e818559849"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_contracts_store.py": {
+      "bytes": 10682,
+      "sha256": "fd47c28e6d5eabffbdd652f657040f4782e21107910dde772fedacbad0d582ba"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_gates.py": {
+      "bytes": 7843,
+      "sha256": "57d376c44f76a6ed167873b55cc2de864d1625f6c16be9eeabb3f17638cfdf72"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_manager.py": {
+      "bytes": 6751,
+      "sha256": "38f9c05a6bd83712793aa590eba8fa128d87375373fc00612148def17a8ce2f6"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_preparer.py": {
+      "bytes": 8745,
+      "sha256": "a60013bd1bc8d75dcc959f4d14b9ed23de3b9964ba8d2062be50b7bd3a21fa4b"
+    },
+    "services/local-runtime/tests/test_v3_media_local_import_restart.py": {
+      "bytes": 11296,
+      "sha256": "1ba76156b2f2a0cd781a95cdc7ed202963e9353b9617b13a01a7b20d740127c6"
+    },
+    "services/local-runtime/tests/test_wp0_r4_restart_and_security.py": {
+      "bytes": 14194,
+      "sha256": "5b6126333dfbfeda573a3493863e924b0156061ce33999976094c76676777f23"
+    },
+    "services/local-runtime/tests/test_wp_b_ac1_visual_terminal_durability.py": {
+      "bytes": 8344,
+      "sha256": "a058a06781d6c64f3de39976a92901ad419f26008db9da0e0cf8ad9e22eacc9f"
+    },
+    "services/local-runtime/tests/test_wp_b_ac2_b01_schemas_fixtures.py": {
+      "bytes": 14193,
+      "sha256": "fd7ca38180c79a033253816578a4697a507ab37f4c67a3759ef0a37d08c37164"
+    },
+    "services/local-runtime/tests/test_wp_b_ac2_lifecycle.py": {
+      "bytes": 22487,
+      "sha256": "22f03324e13403491ef5a6bcb5978538a0a865d7d39f95ed05e4d4698ac6a4b1"
+    },
+    "services/local-runtime/tests/test_wp_b_ac2_preparation.py": {
+      "bytes": 14395,
+      "sha256": "4d2b8350fb1570c0cda5f69deae31fd7bfd78511fbf94241a90fce0706308800"
+    },
+    "services/local-runtime/tests/test_wp_b_ac2_routed_transport.py": {
+      "bytes": 12319,
+      "sha256": "f500e3199d8a8247ff5b89f0a66f70522e8eb526213844ad1573189af3284c13"
+    },
+    "services/local-runtime/tests/test_wp_b_c2_streaming_put.py": {
+      "bytes": 8683,
+      "sha256": "bde8cebec0d41d9931865bb46ad999710fd21c5f1273aeca49a3dbd4e9ae0085"
+    },
+    "services/local-runtime/tests/test_wp_b_c3_eligibility.py": {
+      "bytes": 6821,
+      "sha256": "b759f781f414b541373bafdf95c1ef348b3bc2d4ac48db023618c52fc31fbc1e"
+    },
+    "services/local-runtime/tests/test_wp_b_c4_orchestrator.py": {
+      "bytes": 15838,
+      "sha256": "afa86d1993f72299db81a5e57a8275e395ccea6e7aaecd034bf25d5ca6920802"
+    },
+    "services/local-runtime/tests/test_wp_b_c5_startup_recovery.py": {
+      "bytes": 10273,
+      "sha256": "01a5a4fb49a10d0c86670def7460f2e99420c076d01fd11800a090c414c4f657"
+    },
+    "services/local-runtime/tests/test_wp_b_c6_routed_http.py": {
+      "bytes": 7623,
+      "sha256": "6e724eb09804dcfa4e94fc4e8addc5c09364418245826c89203219966867f989"
+    },
+    "services/local-runtime/tests/test_wp_b_c7_production.py": {
+      "bytes": 27565,
+      "sha256": "3579cad7d2919a7cfb8b9f05c9efe93547cf35aea5b60163cb8496c4f15c5b2b"
+    },
+    "services/local-runtime/tests/test_wp_b_fc1_client_headers.py": {
+      "bytes": 8662,
+      "sha256": "8d69c0994a8a2d2bd702b13977ee771718a655e4d3ef4e7e04125de7ad3f5a2b"
+    },
+    "services/local-runtime/tests/test_wp_b_fc4_fixed_cases.py": {
+      "bytes": 26364,
+      "sha256": "d4af1699d71397e94f78d086e9ab8c4ccd315a26b6e87a64bb05e30cbd62702b"
+    },
+    "services/local-runtime/tests/wp_b_ac1_stack.py": {
+      "bytes": 10985,
+      "sha256": "ef8f147d4fb669a3a49799397791429b2652f9c2934a38cd3d5f3554fc691266"
+    },
+    "services/local-runtime/tests/wp_b_local_import_harness.py": {
+      "bytes": 6305,
+      "sha256": "f883476448cf1a0b5e4de881d9702bfb1fb82f4feae0f12714d12a5aeddd3b62"
+    }
+  },
+  "note": "Hashes of the FINAL stable worktree. The builder re-hashes every file after writing and fails if anything moved.",
+  "schemaVersion": "v3-wp-b-changed-file-hashes/v1"
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "v3-stage-a-policy-switch-evidence/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "fixture": "real_bilibili_v1_then_test_only_v2_policy_revision",
+  "oldTaskId": "media_task_993ac2a8fb3d4e0c8a9d9a3022883f13",
+  "newTaskId": "media_task_5e635b38119d47ea9a42e4a1a813cf24",
+  "conflictVisibleBeforeClick": true,
+  "switchResponseDropped": false,
+  "beforeClick": {
+    "task_id": "media_task_993ac2a8fb3d4e0c8a9d9a3022883f13",
+    "state": "published",
+    "consent_policy_revision": 1
+  },
+  "switchRows": [
+    {
+      "old_task_id": "media_task_993ac2a8fb3d4e0c8a9d9a3022883f13",
+      "new_task_id": "media_task_5e635b38119d47ea9a42e4a1a813cf24",
+      "old_policy_revision": 1,
+      "new_policy_revision": 2
+    }
+  ],
+  "oldProductUnchanged": true,
+  "oldOutlineHashUnchanged": true,
+  "newProductState": "degraded",
+  "sidepanelTaskId": "media_task_5e635b38119d47ea9a42e4a1a813cf24",
+  "secondTaskId": "media_task_5e635b38119d47ea9a42e4a1a813cf24",
+  "keyboardRouteHref": "#/media/tasks/media_task_5e635b38119d47ea9a42e4a1a813cf24/outline?chapter=chapter_00bdf9d163345c88",
+  "keyboardRouteOutcome": true,
+  "viewportChecks": [
+    {
+      "width": 360,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 158305
+    },
+    {
+      "width": 420,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 187770
+    },
+    {
+      "width": 768,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 119493
+    },
+    {
+      "width": 1280,
+      "chapterCount": 12,
+      "contentChars": 830,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 272375
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -104,3 +106,17 @@ def test_companion_config_contains_no_secret_and_lock_rejects_second_process(tmp
         with pytest.raises(RuntimeError, match="V3_COMPANION_ALREADY_RUNNING"):
             with single_instance_lock(path.with_suffix(".lock")):
                 pass
+        contender = subprocess.run(
+            [sys.executable, "-c", """
+import sys
+from pathlib import Path
+from navia_runtime.companion import single_instance_lock
+try:
+    with single_instance_lock(Path(sys.argv[1])):
+        sys.exit(0)
+except RuntimeError as error:
+    sys.exit(3 if str(error) == 'V3_COMPANION_ALREADY_RUNNING' else 4)
+""", str(path.with_suffix(".lock"))],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert contender.returncode == 3, contender.stderr

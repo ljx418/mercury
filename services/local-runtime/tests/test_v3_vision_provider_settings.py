@@ -256,6 +256,37 @@ def test_minimax_frame_analysis_bounds_valid_overlong_caption() -> None:
     assert result["usage"] == {"inputTokens": 20, "outputTokens": 400, "estimatedCostUsd": None}
 
 
+def test_minimax_frame_analysis_retries_transient_failure_without_new_dispatch() -> None:
+    attempts = 0
+    delays: list[float] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return httpx.Response(429, json={"error": {"message": "rate limited"}})
+        return httpx.Response(200, json={
+            "model": MINIMAX_MODEL_IDS[0],
+            "choices": [{"message": {"content": json.dumps({"caption": "恢复后的画面说明"})}}],
+            "usage": {"prompt_tokens": 20, "completion_tokens": 10, "total_tokens": 30},
+            "base_resp": {"status_code": 0, "status_msg": ""},
+        })
+
+    result = MiniMaxChatVisionAdapter(
+        lambda: httpx.Client(transport=httpx.MockTransport(handler)),
+        retry_delays=(0.25,),
+        sleeper=delays.append,
+    ).analyze_frame({
+        "baseUrl": MINIMAX_API_BASE,
+        "model": MINIMAX_MODEL_IDS[0],
+        "apiKey": SECRET,
+    }, b"selected-frame")
+
+    assert result["caption"] == "恢复后的画面说明"
+    assert attempts == 2
+    assert delays == [0.25]
+
+
 def test_minimax_auth_failure_reports_region_mismatch() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(401, json={"error": {"message": "invalid api key (2049)"}})

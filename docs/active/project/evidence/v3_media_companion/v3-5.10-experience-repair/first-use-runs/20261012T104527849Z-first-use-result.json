@@ -1,0 +1,734 @@
+{
+  "schemaVersion": "v3-stage-a-first-use-evidence/v1",
+  "runId": "20261012T104527849Z",
+  "bvid": "BV1hMpE6FEXG",
+  "outcome": "ready",
+  "permissionFixture": "pregranted_in_temporary_extension_only",
+  "nativePromptClicked": false,
+  "finalPermission": {
+    "cookies": true,
+    "bilibili": true
+  },
+  "identityClosed": true,
+  "taskIds": [
+    "media_task_c77dd34cb1da41ec917577508809fb78"
+  ],
+  "productStates": [
+    "degraded"
+  ],
+  "embeddedTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+  "embeddedTaskIdBeforeWorkspace": "media_task_c77dd34cb1da41ec917577508809fb78",
+  "embeddedTaskIdAfterWorkspace": "media_task_c77dd34cb1da41ec917577508809fb78",
+  "secondTabTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+  "resolutionPosts": 1,
+  "executeCount": 1,
+  "authorityReadCount": 43,
+  "cancelClicked": false,
+  "visualRequestCount": 0,
+  "authorityRows": [
+    {
+      "task_id": "media_task_c77dd34cb1da41ec917577508809fb78",
+      "state": "published"
+    }
+  ],
+  "privateResiduals": [],
+  "cancelClosed": false,
+  "workspaceLive": {
+    "createdTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+    "initial": {
+      "revision": "",
+      "hasOutline": false,
+      "text": "NNavia Media视频任务知识导入将在 V4 提供返回视频任务MEDIA COMPANION任务概览本机伴侣已连接连接与运行状态本机 Runtime 安全会话本机伴侣已连接实例 23a06fc9断开会话停止本机伴侣createdBV1hMpE6FEXG正在处理当前视频；大纲尚未发布，页面会在同一任务完成后自动更新。"
+    },
+    "final": {
+      "taskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+      "revision": "6",
+      "hasOutline": true
+    },
+    "samePage": true
+  },
+  "workspacePendingChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 32041,
+      "distinctSampleColors": 110,
+      "nonWhiteSampleFraction": 0.433
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 32344,
+      "distinctSampleColors": 110,
+      "nonWhiteSampleFraction": 0.426
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 37073,
+      "distinctSampleColors": 124,
+      "nonWhiteSampleFraction": 0.335
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 38761,
+      "distinctSampleColors": 134,
+      "nonWhiteSampleFraction": 0.218
+    }
+  ],
+  "workspaceOverviewChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 100533,
+      "distinctSampleColors": 371,
+      "nonWhiteSampleFraction": 0.647
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 117947,
+      "distinctSampleColors": 407,
+      "nonWhiteSampleFraction": 0.676
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 219154,
+      "distinctSampleColors": 633,
+      "nonWhiteSampleFraction": 0.744
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 333403,
+      "distinctSampleColors": 931,
+      "nonWhiteSampleFraction": 0.6
+    }
+  ],
+  "workspaceChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 146971,
+      "distinctSampleColors": 462,
+      "nonWhiteSampleFraction": 0.409
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 200209,
+      "distinctSampleColors": 581,
+      "nonWhiteSampleFraction": 0.248
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 118481,
+      "distinctSampleColors": 307,
+      "nonWhiteSampleFraction": 0.353
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 213925,
+      "distinctSampleColors": 560,
+      "nonWhiteSampleFraction": 0.302
+    }
+  ],
+  "workspaceMindmapChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 144809,
+      "distinctSampleColors": 406,
+      "nonWhiteSampleFraction": 0.886
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 165071,
+      "distinctSampleColors": 456,
+      "nonWhiteSampleFraction": 0.901
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 194571,
+      "distinctSampleColors": 553,
+      "nonWhiteSampleFraction": 0.903
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 276377,
+      "distinctSampleColors": 676,
+      "nonWhiteSampleFraction": 0.858
+    }
+  ],
+  "workspaceKeyboardRoute": true,
+  "workspaceMindmapKeyboard": true,
+  "observations": [
+    {
+      "seconds": 0,
+      "state": {
+        "top": "Navia 已就绪",
+        "detail": "当前视频与连接详情",
+        "launch": "正在准备",
+        "launchDetail": "授权有效，Navia 将自动开始分析当前视频。",
+        "transcriptPreview": false,
+        "transcriptTaskId": null,
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": null,
+        "technical": ""
+      }
+    },
+    {
+      "seconds": 1,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:01 · 最近进展 1 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 2,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:02 · 最近进展 2 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 3,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:03 · 最近进展 3 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 4,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:04 · 最近进展 4 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 5,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:05 · 最近进展 5 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 6,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:06 · 最近进展 6 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 7,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:07 · 最近进展 7 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 8,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:09 · 最近进展 9 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 9,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:10 · 最近进展 10 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 10,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:11 · 最近进展 11 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 11,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:12 · 最近进展 12 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 12,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:13 · 最近进展 13 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 13,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:14 · 最近进展 14 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 14,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:15 · 最近进展 15 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 15,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:16 · 最近进展 16 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 16,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:17 · 最近进展 17 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 17,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:18 · 最近进展 18 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 18,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:19 · 最近进展 19 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 19,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:20 · 最近进展 20 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 20,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:21 · 最近进展 21 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 21,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:22 · 最近进展 22 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 22,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:23 · 最近进展 23 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 23,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:24 · 最近进展 24 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 24,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:25 · 最近进展 25 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 25,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:26 · 最近进展 26 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 26,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:27 · 最近进展 27 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 27,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:28 · 最近进展 28 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 28,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:29 · 最近进展 29 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "created",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 29,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:30 · 最近进展 0 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "acquiring",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 30,
+      "state": {
+        "top": "正在获取视频内容",
+        "detail": "任务已用时 0:31 · 最近进展 1 秒前",
+        "launch": "正在分析",
+        "launchDetail": "已自动建立安全会话，正在准备字幕与本地媒体。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": false,
+        "materializing": false,
+        "progressState": "acquiring",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    },
+    {
+      "seconds": 31,
+      "state": {
+        "top": "视频内容已就绪",
+        "detail": "当前视频与连接详情",
+        "launch": "视频已就绪",
+        "launchDetail": "当前视频内容已准备完成，可以继续伴读和提问。",
+        "transcriptPreview": true,
+        "transcriptTaskId": "media_task_c77dd34cb1da41ec917577508809fb78",
+        "restoredTaskId": null,
+        "restoredOutline": false,
+        "publishedOutline": true,
+        "materializing": false,
+        "progressState": "succeeded",
+        "technical": "诊断：V3_MEDIA_TASK_AWAITING_START"
+      }
+    }
+  ]
+}

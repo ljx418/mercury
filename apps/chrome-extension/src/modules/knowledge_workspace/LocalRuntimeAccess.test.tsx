@@ -65,6 +65,10 @@ describe("LocalRuntimeAccess", () => {
     await flush();
     expect(mounted.container.querySelector("[data-testid='local-runtime-status']")?.textContent).toBe("本机伴侣需要重新配置");
     expect(mounted.container.querySelector("[data-testid='local-runtime-instance']")).toBeNull();
+    expect(mounted.onChange.mock.calls.at(-1)?.[0]).toMatchObject({
+      status: "authentication_required",
+      generation: getLocalRuntimeSessionSnapshot().generation,
+    });
     await act(async () => mounted.root.unmount());
   });
 

@@ -2270,6 +2270,18 @@ V3 首版的本地 ASR 是限定 fallback，不代表通用音频理解、云端
 
 若为章节或问答质量增加云端文本合成，只能通过独立的 `GroundedMediaSynthesisProvider` 和新增授权 scope 发送任务期派生文本；它不继承 `selected_frame_cloud_vision` 授权。未授权时必须使用本地确定性回退且 0 文本网络调用。具体开发顺序、组件 spike 和验收分母见 `design/v3-workspace-comprehension-ux-optimization-plan.md`。
 
+2026-10-12 用户批准 `V3-5.10 Media Experience Repair`，作为既有 V3-5.1 路线的增量修复而非替代。转写完成后必须立即显示明确标记的转写预览；整个任务的简要概览不得由首段转写冒充。Chat 和 Workspace 必须显示同一个任务/修订权威状态、耗时与最近进展；视频结构入口和任何截图/节点反跳不得落到无效路由或静默失败。`VIDEO BRIEF` 必须从全片证据形成不超过 100 字的内容、焦点和主要论点，证据不足时显式降级；章节时间必须覆盖全片且边界分布经过校验。大纲只展示视频综述、章节和证据，原有知识长文/图文笔记/深度专栏迁入导出。导出新增至少五种独立生成风格，允许选择范围、篇幅、候选真实截图和引用。媒体导图增加有证据绑定的概念节点与关系，支持拖动和保存布局；旧章节树仍可读。新增输出必须保持同任务/修订/证据闭合，不能以生成图冒充真实视频帧，也不能扩大已有云端文本授权。完整阶段验收见 `design/v3-5.10-media-experience-repair-plan.md`。
+
+> **2026-10-14 V3-5.10 子阶段状态纠偏**（仅修正当前权威状态词，不改写历史证据）：
+> - **Stage A**：固定负向旅程 NJ-01..NJ-10 取得 `LIMITED PASS`（Fatal=0 / Major=0 / Minor=3，单 BVID `BV1hMpE6FEXG`、临时扩展预授权 fixture、四视口 bounded evidence）。Orca worker `task_b307e1598b9e` 在 `evidence/v3_media_companion/v3-5.10-experience-repair/stage-a-final-independent-exit-audit-2026-10-13.md` 独立复算。
+> - **Stage B B-0**：合同冻结 PASS（schema meta、失败码 17、负例 18、客观验收、固定 BVID 注册表）。
+> - **Stage B B-1..B-4**：实现候选 `LIMITED PASS candidate`（注意：未构成 Stage B 出门，不替代 B-5 实测）。
+> - **Stage B Route 2（确定性 brief composer）**：文档 CONDITIONAL GO（Claude Code CLI 独立复算 Fatal 0/Major 0/Minor 5，外部审查报告 SHA-256 `b3db4ffc82283712c28737a0ee569403e1194ea280b74ab24408f2c66eb72079`），实现 LIMITED PASS 但 **B-5 真实六视频分母仍 FAIL / REPLAN**（`BV1pohR6rEEh` 多次 `V3510B_BRIEF_LENGTH_INVALID`；`stage-b-b5-route-2-risk-stop-2026-10-14.md`）。
+> - **DeepSeek strict adapter DS-1..DS-5**：LIMITED PASS（20/20 schema 合规；结构成功仅证明 JSON 形状，不证明内容正确性，亦不替代默认权限）。
+> - **Chat Provider 默认**：MiniMax 保持默认；DeepSeek 已通过 Windows Credential Vault 安全导入，模型 `deepseek-chat`、能力标签 `deepseek_beta_strict_tool_v1`，**未选中**；首次使用不自动切换、不诱导。
+> - **B-5..B-7、Stage C/D/E、V3-6/V3-7**：均 **NO-GO**，不得据任何 Stage A/Route 2/DeepSeek DS 候选扩大为 V3 PASS。
+> - 详细诊断证据全部保留为 `evidence/v3_media_companion/v3-5.10-experience-repair/` 下的 `stage-a-*`、`stage-b-*`、`stage-b-route-2-*`、`stage-b-deepseek-strict-adapter-*` 和 `chat-provider-secure-secret-migration-and-deepseek-import-2026-10-14.md`；本节只冻结状态词，不删除、不重述历史失败证据。
+
 V3 不再以 `H01-RDS` 或 PX-6 为前置。媒体产物进入本地 `MediaTaskStore` 并可导出，`knowledgeImportStatus` 必须为 `deferred_to_v4`。已封存 H01/PX-6 事实保持不变且仍不得声明通过。BiliNote 路线研究与采纳/拒绝决定见 `design/v3-bilinote-bilibili-route-study.md`。
 
 当前真实 UI 基线仍可能显示 V2 mock adapter；该状态只证明既有容器和未完成边界，不能作为 V3 媒体能力或真实知识服务证据。V3 目标页面的功能与文本权威只来自确定性 HTML 原型、合同和 Draw.io；AI 生成样张不得定义功能、视频事实或验收结果。BiliNote clean commit 的允许研究文件、源字节 hash 与默认拒绝策略由 `design/v3-bilinote-migration-allowlist.json` 冻结，V3-0 不授权复制其实质代码。
@@ -2417,3 +2429,19 @@ Paraformer 固定窗仍在非静音窗口完整遗漏后，路线 C 采用官方
 V3-2-1 Runtime acquisition core 已于 2026-09-22 完成限定实现与真实私有 B站 WAV 验收；V3-2-2 前必须新增 sample registry revision 3。Revision 3 保留 12 个唯一 URL、`6 subtitle + 3 ASR + 1 multipart + 1 restricted + 1 low_signal`、页面身份/分P/授权探测/hash 与真实预期路线，但不再要求 V4 范围内的跨模型 review/adjudication。Revision 2 保持历史只读，禁止原地放宽。
 
 人工产品验收 `H01..H10` 统一推迟到 V3-5 双容器产品体验完成后执行；V3-2 至 V3-4 不请求人类操作，只能使用真实数据自动验收、机器审计与独立文档/实现复审。V3-5.1 自动质量门槛通过后只增加一次结构清晰度和交互质量的最小复核，不重复听写或重做 H01-H10。V3-6 重放已签署的人类结果并执行全量自动矩阵，V3-7 只做最终独立出门审计，不得自动代签或补写人工项。
+
+### 18.10 V3-5.9 持久 B站登录态下载与私有媒体缓存
+
+用户可在 `Settings / 媒体与语音` 显式开启“B站登录态下载”，通过选择 Cookie 文件或粘贴 Cookie 完成一次配置与在线校验。原始 Cookie 只进入操作系统凭据库；扩展存储、SQLite、日志、任务事件、公开证据和审计包均不得保存或返回秘密值。用户可随时停用、重新验证或删除配置；删除配置必须同步清空私有媒体缓存。既有浏览器一次性租约继续作为未配置持久登录态时的兼容回退，不得删除。
+
+同一视频同一分P的音频转写、关键帧抽取和重试必须复用一份 Runtime 私有低清完整视频，避免按关键帧重复下载。缓存默认上限 5 GiB、保留 24 小时，设置页必须显示占用量、条目数、自动清理周期，并提供明确的手动清空二次确认。缓存目录与文件分别为私有 `0700/0600`，拒绝链接、跨来源复用和超额文件；到期、LRU、用户清理或 Cookie 删除均须删除本地文件和索引。缓存与持久登录态不改变选定帧云端上传边界：仍最多 8 张固定帧，禁止上传原始视频、音频、全文转写或 OCR 全文。
+
+### 18.11 2026-10-15 P0 可信捕获内部中继纠偏
+
+无字幕且前置媒体路线不可用时，用户体验继续保持一次可信扩展动作；不得增加 ticket、WebSocket 或 Runtime 连接类操作。30 秒 one-shot grant、task/tab/page/adapter/surface 绑定、本地 SenseVoice、同源唯一 task/revision 和原始音频不上云均保持不变。
+
+为关闭真实 Chrome 中 Offscreen Document 无法把 WebSocket 请求送达 Runtime 的阻塞，扩展内部调整为 Background Service Worker 持有 Runtime capture WebSocket，Offscreen 只负责 `tabCapture` 音频采集、降采样和经受信内部 Port 发送有序 PCM。Chrome Port 数据面固定为 JSON 可序列化的 Base64 PCM，不使用不可实现的 transferable `ArrayBuffer`；单信用、producer 侧有界队列和硬超限 abort 必须同时成立。正常完成采用“两阶段停止”：先 quiesce 音频源，再 drain 已入队 chunk，Offscreen stopped 后才允许 Runtime finalize。该变化不得扩大公共 API/schema、Origin、权限、ticket TTL 或云端上传范围。
+
+Background 重启、Port/WS 断线、队列超限、页签关闭、导航变化、用户取消和 Runtime crash 均须 fail-closed：旧 PCM/ticket/streamId 不持久化、不续传；受信 session marker 只保存旧 task 的非秘密失败对账字段。capture stream 只承诺安全 handoff：sink finalize、transcript create、同步 `TaskAudioStager.stage()` 的 copy/fsync/hash/length/WAV-shape 屏障和 worker start 全部成功后才转移 cleanup ownership；屏障前由 handler 清理，屏障后由 transcript service 清理，双方不得重叠。terminal frame 只是 handoff 通知，不能表示产品成功。唯一 durable 产品终态为现有 SQLite `MediaTaskStore.commit_terminal(ready|degraded)`。
+
+恢复所有权按 marker phase 和 staging receipt 固定：`connecting` 且尚无合法 start 时，新 worker只能调用既有已认证 acquisition DELETE 后再 GET；合法 start 且 Runtime 仍存活时按屏障前/后唯一 owner 清理；Runtime graceful/hard crash 后在产品重新附着时走既有 recover。owner manifest 必须位于 `private_asr_staging_root/<taskId>/owner.json`，按临时文件 `O_EXCL` canonical write、file fsync、atomic replace、parent-directory fsync 后才发布 transfer receipt；recover 只凭 authoritativeTaskId 定位，missing/torn/corrupt/mismatch/unsafe 均 fail-closed。composite cleanup 必须清 acquisition sandbox、ASR staged root 和未发布产品证据，并连同 active sink 验证四项残留全零。只有 SQLite ready/degraded 已提交才允许 `published`，否则必须 `abandoned`、清理私有原件并 fresh analysis。公开可观察证据仍是 recover HTTP 成功、`disposition=published|abandoned`、匹配 taskId、持久产品终态或未发布清理和 fresh begin；不虚构响应字段。GET 404 必须停止轮询并显示 recovery pending。40 个现行 source code 必须由 11 个冻结源码 scope 的 Python/TypeScript semantic AST boundary selector 实际推导，并通过中央 registry 与 20 个 relay target code 完备归一化；四个递归 discovery root 的 `V3_MEDIA_*` universe 必须精确等于 source inventory + 冻结 non-relay allowlist。v1-v8 已拒绝；v9 双重外部文档审查 Fatal=0/Major=0、用户明确授权、单视频真实静音 canary和故障矩阵完成前，P0 与 P1 六视频保持 NO-GO。

@@ -5,6 +5,7 @@ import { MediaCompanionLaunchCard, type MediaCompanionLaunchCardProps } from "..
 import { BILIBILI_CONSENT_SCOPE_ITEMS } from "../session/bilibili/bilibiliConsentCopy";
 import { BILIBILI_SESSION_POLICY_DEFINITION } from "../session/bilibili/bilibiliCookiePolicy";
 import { createDefaultConsentPolicy } from "../session/contracts";
+import { createClosedCapability } from "../session/contracts";
 
 const roots: ReturnType<typeof createRoot>[] = [];
 
@@ -89,6 +90,23 @@ describe("MediaCompanionLaunchCard", () => {
     });
     expect(container.textContent).toContain("本机媒体临时目录不满足私有权限要求");
     expect(container.textContent).not.toContain("本机伴侣未启动，请先运行");
+  });
+
+  it("stops checking and explains a confirmed missing browser session", async () => {
+    const policy = createDefaultConsentPolicy(BILIBILI_SESSION_POLICY_DEFINITION);
+    policy.status = "granted";
+    const capability = createClosedCapability({
+      definition: BILIBILI_SESSION_POLICY_DEFINITION,
+      status: "unavailable",
+      failureCode: "V3_MEDIA_SESSION_COOKIE_MISSING",
+      now: new Date("2026-10-18T00:00:00Z")
+    });
+    const { container, props } = await render({ policy, capability, runtimeStatus: "connected" });
+    expect(container.textContent).toContain("需要登录会话");
+    expect(container.textContent).toContain("请先在当前浏览器登录 B站");
+    expect(container.textContent).not.toContain("正在确认当前浏览器");
+    await act(async () => (container.querySelector("[data-testid='media-companion-retry']") as HTMLButtonElement).click());
+    expect(props.onRetry).toHaveBeenCalledOnce();
   });
 });
 

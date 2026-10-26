@@ -1,0 +1,4 @@
+failed
+reason: Stage B synthesize rejected: HTTP 502 body={"ok":false,"data":null,"error":{"code":"V3510B_PROVIDER_RESPONSE_INVALID","message":"Chapter fields are invalid.","recoverable":false},"request_id":null}
+bvid: BV1HTbi6LERi
+order: 5

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "v3-5.10-b5-stage-reconciliation/v1",
+  "generatedAtUtc": "2026-10-24T05:12:27.758Z",
+  "note": "The retained logs are READ ONLY. The reconciliation is a LOWER BOUND: only the EXPLICIT launch records are counted and a log that cannot be parsed contributes nothing. No counter is guessed.",
+  "reconciliation": {
+    "method": "explicit_chrome_launch_records_in_the_retained_logs",
+    "perLog": [
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/aborted-attempt-1/sequencer-console.log",
+        "launches": 6,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/aborted-attempt-2/sequencer-console.log",
+        "launches": 6,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/aborted-attempt-3/sequencer-console.log",
+        "launches": 2,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/aborted-attempt-4/sequencer-console.log",
+        "launches": 2,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/aborted-attempt-5/sequencer-console.log",
+        "launches": 6,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-real-run-2026-10-24/diagnostic-attempt-6/sequencer-console.log",
+        "launches": 6,
+        "reason": null
+      },
+      {
+        "file": "/mnt/c/workSpace/navia/docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-b5-offline-corrective-2026-10-24/retained-logs/clean-run-console.log",
+        "launches": 6,
+        "reason": null
+      }
+    ],
+    "lowerBound": {
+      "chromeLaunch": 34
+    },
+    "unreadableOrMissing": 0,
+    "note": "A lower bound: only the EXPLICIT launch records are counted. A log that cannot be parsed contributes nothing."
+  },
+  "stageLowerBound": {
+    "ownedChromeLaunches": 34
+  },
+  "perAttempt": [
+    {
+      "attempt": "aborted-attempt-1",
+      "explicitChromeLaunches": 6
+    },
+    {
+      "attempt": "aborted-attempt-2",
+      "explicitChromeLaunches": 6
+    },
+    {
+      "attempt": "aborted-attempt-3",
+      "explicitChromeLaunches": 2
+    },
+    {
+      "attempt": "aborted-attempt-4",
+      "explicitChromeLaunches": 2
+    },
+    {
+      "attempt": "aborted-attempt-5",
+      "explicitChromeLaunches": 6
+    },
+    {
+      "attempt": "diagnostic-attempt-6",
+      "explicitChromeLaunches": 6
+    },
+    {
+      "attempt": "clean-run",
+      "explicitChromeLaunches": 6
+    }
+  ],
+  "stageTotalLowerBound": 34
+}

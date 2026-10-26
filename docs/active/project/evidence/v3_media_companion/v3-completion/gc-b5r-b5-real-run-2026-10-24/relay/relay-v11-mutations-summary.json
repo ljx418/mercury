@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "v3-media-capture-internal-relay-v11-mutation-verification/v1",
+  "command": "python3 docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-mutations.py",
+  "exit": 0,
+  "passed": true,
+  "summary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0
+  },
+  "cases": [
+    {
+      "name": "sender_policy_weakened_to_url_only",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "owner_manifest_failure_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "owner_manifest_parent_fsync_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "owner_receipt_write_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "owner_receipt_manifest_hash_mismatch",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "hard_crash_trace_step_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "authoritative_scope_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "source_inventory_entry_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "source_inventory_entry_added",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "non_relay_allowlist_entry_removed",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "non_relay_allowlist_entry_added",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "offscreen_direct_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "offscreen_nested_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "python_acquisition_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "offscreen_imported_enum_boundary_emit",
+      "expectedExit": 2,
+      "actualExit": 2,
+      "passed": true
+    },
+    {
+      "name": "non_boundary_lexical_string_control",
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true
+    }
+  ]
+}

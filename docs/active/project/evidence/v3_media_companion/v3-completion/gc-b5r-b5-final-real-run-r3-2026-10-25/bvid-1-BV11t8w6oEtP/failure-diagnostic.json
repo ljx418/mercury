@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v2",
+  "bvid": "BV11t8w6oEtP",
+  "order": "1",
+  "finalDisposition": "failed",
+  "finishReason": "unknown",
+  "failureCode": "TypeError",
+  "error": {
+    "name": "TypeError",
+    "message": "context.pages is not a function",
+    "stack": "TypeError: context.pages is not a function\n    at file:///mnt/c/workspace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:934:16"
+  },
+  "runtimeFailureStatus": null,
+  "resolveObservations": [],
+  "runtimeCalls": [],
+  "startedAtUtc": "2026-10-24T18:27:15.119Z",
+  "finishedAtUtc": "2026-10-24T18:27:15.600Z"
+}

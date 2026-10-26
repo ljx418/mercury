@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B27",
+    "failure": "The local-import card did not become eligible. state={\"launchStatus\":\"分析受阻\",\"launchDetail\":\"当前视频准备失败，可以重新尝试；诊断信息已保留在下方设置中。\",\"diagnostic\":\"诊断：<redacted>\",\"controls\":[\"media-companion-launch\",\"media-companion-retry\",\"<redacted>\",\"media-consent-revoke\",\"<redacted>\",\"media-transcript-open\"]}",
+    "ownedResidue": null
+  }
+}

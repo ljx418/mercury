@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Navia V3 P0 可信音频捕获后台中继架构",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/zhouhouze/mercury",
+      "provider": "github",
+      "link_mode": "local-only",
+      "revision": "a303551a5bf89c26ff36b24ac06c7e30c334db27"
+    },
+    "viewBox": [1390, 850],
+    "views": [
+      { "id": "user-path", "label": "用户主路径", "focus": ["user", "sidepanel", "controller", "runtime"], "note": "用户操作不增加：一次确认后由扩展内部完成采集、传输和本机转写。" },
+      { "id": "audio-path", "label": "PCM 数据流", "focus": ["offscreen", "port", "transport", "runtime"], "note": "Offscreen 用 Base64 JSON + 单信用发送有界 PCM；quiesce 后排空既有队列再 finalize。" },
+      { "id": "security-path", "label": "安全与恢复", "focus": ["ticket", "port", "transport", "cleanup"], "note": "Chrome 116+ 身份校验、协议终态提交和按 phase 分派的恢复 owner 均 fail-closed。" }
+    ]
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "用户与 B站页面", "sublabel": "可信 extension action", "pos": [30, 300], "size": [150, 72] },
+    { "id": "sidepanel", "type": "frontend", "label": "Side Panel", "sublabel": "arm / stop / 状态", "pos": [230, 300], "size": [160, 72], "sources": [{ "path": "apps/chrome-extension/entrypoints/sidepanel/main.tsx" }] },
+    { "id": "ticket", "type": "security", "label": "Capture Ticket", "sublabel": "30 秒一次性绑定", "pos": [230, 110], "size": [160, 72], "sources": [{ "path": "services/local-runtime/navia_runtime/app.py" }] },
+    { "id": "controller", "type": "backend", "label": "MediaCaptureController", "sublabel": "Background 唯一编排者", "pos": [450, 300], "size": [190, 72], "sources": [{ "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts" }] },
+    { "id": "offscreen", "type": "frontend", "label": "Offscreen Capture", "sublabel": "getUserMedia + downsample", "pos": [700, 105], "size": [180, 72], "sources": [{ "path": "apps/chrome-extension/entrypoints/media-capture-offscreen/main.ts" }] },
+    { "id": "port", "type": "messagebus", "label": "受信 Port + Context Resolver", "sublabel": "Chrome 116+ / getContexts", "pos": [700, 300], "size": [180, 72] },
+    { "id": "transport", "type": "backend", "label": "RuntimeCaptureTransport", "sublabel": "Background WebSocket owner", "pos": [950, 300], "size": [190, 72] },
+    { "id": "runtime", "type": "backend", "label": "Local Runtime", "sublabel": "capture-stream + SenseVoice", "pos": [1195, 300], "size": [160, 72], "sources": [{ "path": "services/local-runtime/navia_runtime/app.py" }] },
+    { "id": "authority", "type": "database", "label": "Source Authority", "sublabel": "唯一 taskId / revision", "pos": [1195, 105], "size": [160, 72], "sources": [{ "path": "services/local-runtime/navia_runtime/modules/media_companion/task_store.py" }] },
+    { "id": "cleanup", "type": "security", "label": "Terminal / Recovery Owner", "sublabel": "finally / DELETE / recover", "pos": [950, 510], "size": [190, 72] }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "Chrome Extension", "wraps": ["sidepanel", "controller", "offscreen", "port", "transport"] },
+    { "kind": "security-group", "label": "本机回环边界", "wraps": ["transport", "runtime", "authority", "cleanup"] }
+  ],
+  "connections": [
+    { "id": "user-arm", "from": "user", "to": "sidepanel", "label": "arm / finish", "variant": "emphasis", "labelAt": [240, 392] },
+    { "id": "sidepanel-controller", "from": "sidepanel", "to": "controller", "label": "trusted internal command", "variant": "security", "labelAt": [470, 392] },
+    { "id": "ticket-controller", "from": "ticket", "to": "controller", "label": "task/tab/page binding", "variant": "security", "labelAt": [465, 215] },
+    { "id": "controller-offscreen", "from": "controller", "to": "offscreen", "label": "streamId + start/quiesce", "variant": "emphasis", "labelAt": [720, 210] },
+    { "id": "offscreen-port", "from": "offscreen", "to": "port", "label": "Base64 PCM16", "variant": "emphasis", "labelAt": [860, 205] },
+    { "id": "port-transport", "from": "port", "to": "transport", "label": "credit=1 + bounded", "variant": "emphasis", "labelAt": [990, 392] },
+    { "id": "controller-transport", "from": "controller", "to": "transport", "label": "open / finalize / abort", "variant": "security", "fromSide": "bottom", "toSide": "bottom", "via": [[545, 445], [1045, 445]], "labelAt": [800, 462] },
+    { "id": "transport-runtime", "from": "transport", "to": "runtime", "label": "loopback WebSocket", "variant": "emphasis", "labelAt": [1255, 392] },
+    { "id": "runtime-authority", "from": "runtime", "to": "authority", "label": "same task / revision" },
+    { "id": "controller-cleanup", "from": "controller", "to": "cleanup", "label": "all terminal paths", "variant": "security", "labelAt": [805, 585] },
+    { "id": "transport-cleanup", "from": "transport", "to": "cleanup", "label": "disconnect / backpressure", "variant": "security", "labelAt": [1245, 485] },
+    { "id": "cleanup-runtime", "from": "cleanup", "to": "runtime", "label": "task terminal + cleanup receipt", "variant": "dashed", "fromSide": "right", "toSide": "right", "via": [[1370, 546], [1370, 336]], "labelAt": [1315, 440] }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "保持不变", "items": ["用户仍只执行一次可信确认", "Runtime API、30 秒票据和同源权威不变", "原始音频不上传、不进入公开证据"] },
+    { "dot": "amber", "title": "内部纠偏", "items": ["WebSocket 所有权从 Offscreen 移到 Background", "协议终态在 task terminal + frame send 后提交", "connecting / alive / crash 按 phase 指定恢复 owner"] },
+    { "dot": "rose", "title": "出门门槛", "items": ["v6 verifier 34/34 且变异全部失败", "五注入点和七类恢复 owner 实测", "双重独立复审后才可请求实施授权"] }
+  ]
+}

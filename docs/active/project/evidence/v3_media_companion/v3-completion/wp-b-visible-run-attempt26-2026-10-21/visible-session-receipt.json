@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+  "case": null,
+  "failure": "EXTERNAL-INPUT BLOCK: the visible session is not ready: EXTERNAL-INPUT BLOCK: no owned Chrome executable was supplied.",
+  "ownedResidue": {
+    "ownedRoot": false
+  }
+}

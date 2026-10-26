@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "v3-stage-a-policy-switch-evidence/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "fixture": "real_bilibili_v1_then_test_only_v2_policy_revision",
+  "oldTaskId": "media_task_c1c053251d754c46963767dd8c555e5c",
+  "newTaskId": "media_task_f142d4f84c0e47ddbe86f27e9215aafa",
+  "conflictVisibleBeforeClick": true,
+  "beforeClick": {
+    "task_id": "media_task_c1c053251d754c46963767dd8c555e5c",
+    "state": "published",
+    "consent_policy_revision": 1
+  },
+  "switchRows": [
+    {
+      "old_task_id": "media_task_c1c053251d754c46963767dd8c555e5c",
+      "new_task_id": "media_task_f142d4f84c0e47ddbe86f27e9215aafa",
+      "old_policy_revision": 1,
+      "new_policy_revision": 2
+    }
+  ],
+  "oldProductUnchanged": true,
+  "oldOutlineHashUnchanged": true,
+  "newProductState": "degraded",
+  "sidepanelTaskId": "media_task_f142d4f84c0e47ddbe86f27e9215aafa",
+  "secondTaskId": "media_task_f142d4f84c0e47ddbe86f27e9215aafa",
+  "viewportChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 116601
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 125853
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 196584
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 211867
+    }
+  ]
+}

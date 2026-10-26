@@ -18,11 +18,20 @@ import { LocalRuntimeAccess, type LocalRuntimeAccessChange } from "../../src/mod
 import { KnowledgeDraftCard } from "../../src/modules/knowledge_workspace/KnowledgeDraftCard";
 import { KnowledgeItemsPanel } from "../../src/modules/knowledge_workspace/KnowledgeItemsPanel";
 import { MediaCompanionLaunchCard } from "../../src/modules/media_companion/MediaCompanionLaunchCard";
+import type { MediaPageContext } from "../../src/modules/media_companion/contracts";
+import { resolveMediaActivity, type MediaActivity } from "../../src/modules/media_companion/acquisition/mediaActivity";
 import type { MediaCredentialLeaseUiState } from "../../src/modules/media_companion/MediaCredentialLeaseCard";
 import { AsrModelSettingsPanel } from "../../src/modules/media_companion/settings/AsrModelSettingsPanel";
 import { VisionProviderSettingsPanel } from "../../src/modules/media_companion/settings/VisionProviderSettingsPanel";
+import { MediaPortalSettingsPanel } from "../../src/modules/media_companion/settings/MediaPortalSettingsPanel";
+import { LocalMediaImportCard } from "../../src/modules/media_companion/settings/LocalMediaImportCard";
+import {
+  createLocalImportRuntimeClient,
+  localImportSessionGeneration
+} from "../../src/modules/media_companion/createLocalImportRuntimeClient";
+import { hasPublishedMediaProjection, localImportEntryEligible } from "../../src/modules/media_companion/localImportEntry";
 import { resolveMediaPortalAdapter } from "../../src/modules/media_companion/MediaPortalRegistry";
-import { MediaCaptureMessageClient, TrustedTabCaptureCard } from "../../src/modules/media_companion/capture";
+import { MediaCaptureMessageClient, TrustedTabCaptureCard, resolveCaptureGrantBinding } from "../../src/modules/media_companion/capture";
 import {
   MediaAcquisitionClient,
   MediaAcquisitionStatusCard,
@@ -56,18 +65,25 @@ import { deriveConversationTurns, groupMessagesByTurn, shouldShowTurnNavigator }
 import {
   checkRuntimeHealth,
   checkPiSidecarHealth,
+  archiveChatSession,
   createKnowledgeStatusPoller,
   askKnowledgeSources,
   bootstrapMediaCredentialChannel,
   bootstrapMediaCaptureGrant,
-  createMediaAcquisition,
+  resolveMediaAcquisition,
+  replaceMediaAcquisitionPolicy,
+  recoverInterruptedMediaAcquisition,
   cancelMediaTranscriptProjection,
   executeMediaAcquisition,
+  getMediaAcquisition,
+  getMediaSourceAuthority,
   createChatSession,
   deleteProvider,
   forgetKnowledgeSource,
   getKnowledgeServiceStatus,
   getMediaCaptureEligibility,
+  getMediaOutlineTask,
+  getMediaPortalSettings,
   materializeMediaOutlineTask,
   materializeVisualMediaOutlineTask,
   recordMediaCaptureRouteFailure,
@@ -82,7 +98,6 @@ import {
   isRuntimeRequestError,
   isStaleRuntimeRequestError,
   listChatSessions,
-  listMediaOutlineTasks,
   listKnowledgeSources,
   listKnowledgeWorkspaces,
   patchSettings,
@@ -115,6 +130,7 @@ import {
   type MercurySettings,
   type MediaAcquisitionInput,
   type MediaOutlineTask,
+  type MediaPortalSettings,
   type PiSidecarHealth,
   type ProviderTestResult,
   type RuntimeStatus,
@@ -123,6 +139,7 @@ import {
 } from "../../src/runtimeClient";
 
 declare const __NAVIA_E2E_BRIDGE__: boolean;
+import { installLocalImportDiagnostics } from "../../src/modules/media_companion/localImportDiagnostics";
 const showDevelopmentNavigation = import.meta.env.DEV;
 
 const mediaSessionRegistry = createBilibiliBrowserSessionRegistry();
@@ -144,7 +161,7 @@ const mediaCaptureMessageClient = new MediaCaptureMessageClient((message) => chr
 const collectCurrentMediaContext = createChromeMediaContextCollector();
 const mediaAcquisitionClient = new MediaAcquisitionClient({
   collectCurrentContext: collectCurrentMediaContext,
-  create: createMediaAcquisition,
+  resolve: resolveMediaAcquisition,
   execute: executeMediaAcquisition,
   recordPublicSubtitleFailure: recordMediaCaptureRouteFailure
 });
@@ -172,9 +189,55 @@ type SessionState = {
   switchingSession: boolean;
 };
 const DEFAULT_DEEPSEEK_MODELS = ["deepseek-v4-flash", "deepseek-v4-pro", "deepseek-chat", "deepseek-reasoner"];
+const DEFAULT_MINIMAX_MODELS = ["MiniMax-M3", "MiniMax-M3.1-Flash-Preview"];
+const LLM_PROVIDER_PRESETS = {
+  minimax: { displayName: "MiniMax", baseUrl: "https://api.minimax.io/v1", models: DEFAULT_MINIMAX_MODELS },
+  deepseek: { displayName: "DeepSeek", baseUrl: "https://api.deepseek.com", models: DEFAULT_DEEPSEEK_MODELS }
+} as const;
 const CORE_PROVIDERS: CoreProviderId[] = ["piagent", "llm_direct", "mock"];
 const CHAT_PROVIDER_TEST_PROMPT = "请只用普通文本回复 pong，不调用任何工具。";
 const CHAT_PROVIDER_TEST_TIMEOUT_MS = 20_000;
+
+function chatActivityLabel(runtime: RuntimeStatus, turn: ChatTurnState, media: MediaActivity): string {
+  if (runtime !== "online") return runtime === "checking" ? "正在连接本机伴侣" : "本机伴侣未连接";
+  if (turn === "intent_detecting") return "正在理解问题";
+  if (turn === "context_strategy_deciding" || turn === "context_resolving") return "正在准备页面上下文";
+  if (turn === "executing_chat") return "等待模型响应";
+  if (turn === "streaming_response") return "正在回答";
+  if (turn === "error") return "回答遇到问题";
+  return media.label;
+}
+
+function chatActivityTone(runtime: RuntimeStatus, turn: ChatTurnState, media: MediaActivity): "ready" | "busy" | "error" {
+  if (runtime !== "online" || turn === "error") return "error";
+  if (["intent_detecting", "context_strategy_deciding", "context_resolving", "executing_chat", "streaming_response"].includes(turn)) return "busy";
+  return media.tone;
+}
+
+function useMediaWaitClock(taskId: string | null, running: boolean, startedAt: string | null): { seconds: number; nowMs: number; authoritative: boolean } {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  const localStartedAtRef = useRef(Date.now());
+  useEffect(() => {
+    localStartedAtRef.current = Date.now();
+    setNowMs(Date.now());
+  }, [taskId]);
+  useEffect(() => {
+    if (!running) return;
+    const timer = window.setInterval(() => setNowMs(Date.now()), 1_000);
+    return () => window.clearInterval(timer);
+  }, [running]);
+  const authoritativeStart = startedAt ? Date.parse(startedAt) : NaN;
+  const authoritative = Number.isFinite(authoritativeStart) && authoritativeStart <= nowMs;
+  return {
+    seconds: running ? Math.max(0, Math.floor((nowMs - (authoritative ? authoritativeStart : localStartedAtRef.current)) / 1_000)) : 0,
+    nowMs,
+    authoritative,
+  };
+}
+
+function formatMediaWait(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+}
 
 function App() {
   const [runtimeStatus, setRuntimeStatus] = useState<RuntimeStatus>("checking");
@@ -186,6 +249,8 @@ function App() {
   });
   const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
   const [sessionSwitchError, setSessionSwitchError] = useState<string | null>(null);
+  const [deletingSessionId, setDeletingSessionId] = useState<string | undefined>();
+  const [clearingSessions, setClearingSessions] = useState(false);
   const [pageContext, setPageContext] = useState<ExtractedPageContext | null>(null);
   const [pageContextState, setPageContextState] = useState<PageContextState>("unknown");
   const [mediaSessionAdapterId, setMediaSessionAdapterId] = useState<string | null>(null);
@@ -197,6 +262,7 @@ function App() {
   const [mediaRuntimeStatus, setMediaRuntimeStatus] = useState<LocalRuntimeAccessChange["status"]>("connecting");
   const [mediaRuntimeError, setMediaRuntimeError] = useState<string | null>(null);
   const [mediaRuntimeRetrySignal, setMediaRuntimeRetrySignal] = useState(0);
+  const [mediaPortalSettings, setMediaPortalSettings] = useState<MediaPortalSettings | null>(null);
   const [mediaCredentialState, setMediaCredentialState] = useState<MediaCredentialLeaseUiState>("idle");
   const [mediaCredentialLease, setMediaCredentialLease] = useState<PortalCredentialLease | null>(null);
   const [mediaCredentialError, setMediaCredentialError] = useState<string | null>(null);
@@ -207,45 +273,77 @@ function App() {
   const [mediaAcquisitionInput, setMediaAcquisitionInput] = useState<MediaAcquisitionInput | null>(null);
   const [mediaAcquisitionFailure, setMediaAcquisitionFailure] = useState<string | null>(null);
   const [mediaAcquisitionSourceIdentity, setMediaAcquisitionSourceIdentity] = useState<string | null>(null);
+  const [mediaPolicyProvenance, setMediaPolicyProvenance] = useState<"verified_current" | "unverified_legacy" | null>(null);
+  const [mediaPolicySwitchAuthority, setMediaPolicySwitchAuthority] = useState<Awaited<ReturnType<typeof getMediaSourceAuthority>>["authority"]>(null);
+  const [mediaPolicySwitchBusy, setMediaPolicySwitchBusy] = useState(false);
   const [restoredMediaTaskId, setRestoredMediaTaskId] = useState<string | null>(null);
   const [mediaResumeChecked, setMediaResumeChecked] = useState(false);
   const [mediaTaskActionState, setMediaTaskActionState] = useState<"cancelling" | "retrying" | null>(null);
   const [mediaOutlineTask, setMediaOutlineTask] = useState<MediaOutlineTask | null>(null);
   const [mediaOutlineState, setMediaOutlineState] = useState<"idle" | "materializing" | "ready" | "failed">("idle");
+  const [mediaAcquisitionStartedAt, setMediaAcquisitionStartedAt] = useState<string | null>(null);
+  const [mediaTabRevision, setMediaTabRevision] = useState(0);
+  const localImportClient = useMemo(() => createLocalImportRuntimeClient(), []);
+  const mediaTabEpochRef = useRef(0);
   const [mediaOutlineError, setMediaOutlineError] = useState<string | null>(null);
+  const cancelledMediaTaskIdsRef = useRef(new Set<string>());
   const mediaTaskAuthority = useMediaAcquisitionTask({
     taskId: mediaCredentialLease?.taskId ?? restoredMediaTaskId,
     sourceIdentity: mediaAcquisitionSourceIdentity
   });
+  const activeMediaTaskId = mediaTaskAuthority.projection?.taskId ?? mediaCredentialLease?.taskId ?? restoredMediaTaskId;
+  useEffect(() => {
+    let active = true;
+    setMediaAcquisitionStartedAt(null);
+    if (!activeMediaTaskId || !mediaRuntimeConnected) return () => { active = false; };
+    void (async () => {
+      for (let attempt = 0; attempt < 4 && active; attempt += 1) {
+        try {
+          const { task } = await getMediaAcquisition(activeMediaTaskId);
+          if (active && task.taskId === activeMediaTaskId && task.startedAt) setMediaAcquisitionStartedAt(task.startedAt);
+          return;
+        } catch {
+          if (attempt < 3) await new Promise((resolve) => window.setTimeout(resolve, 500));
+        }
+      }
+    })();
+    return () => { active = false; };
+  }, [activeMediaTaskId, mediaRuntimeConnected]);
 
   const materializeCurrentMediaTask = useCallback(async (taskId: string) => {
     setMediaOutlineState("materializing");
     setMediaOutlineError(null);
     let visualLease: PortalCredentialLease | null = null;
     try {
-      const result = await mediaCredentialChannelClient.establish({
-        taskId,
-        adapterId: BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
-        policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
-        policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
-        credentialNameSetSha256: BILIBILI_SESSION_POLICY_DEFINITION.credentialNameSetSha256
-      });
-      if (!result.ok || !isPortalCredentialLease(result.value)) {
-        throw new Error(result.ok ? "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED" : result.failureCode);
+      if (!mediaPortalSettings?.enabled) {
+        const result = await mediaCredentialChannelClient.establish({
+          taskId,
+          adapterId: BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
+          policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+          policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
+          credentialNameSetSha256: BILIBILI_SESSION_POLICY_DEFINITION.credentialNameSetSha256
+        });
+        if (!result.ok || !isPortalCredentialLease(result.value)) {
+          throw new Error(result.ok ? "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED" : result.failureCode);
+        }
+        visualLease = result.value;
       }
-      visualLease = result.value;
-      const task = await materializeVisualMediaOutlineTask(taskId, visualLease.leaseId);
+      const task = await materializeVisualMediaOutlineTask(taskId, visualLease?.leaseId);
+      if (cancelledMediaTaskIdsRef.current.has(taskId)) return;
       setMediaOutlineTask(task);
       setRestoredMediaTaskId(task.taskId);
       setMediaOutlineState("ready");
     } catch (error) {
+      if (cancelledMediaTaskIdsRef.current.has(taskId)) return;
       const visualFailure = error instanceof Error ? error.message : "V3_MEDIA_VISUAL_MATERIALIZE_FAILED";
       try {
         const degraded = await materializeMediaOutlineTask(taskId);
+        if (cancelledMediaTaskIdsRef.current.has(taskId)) return;
         setMediaOutlineTask(degraded);
         setMediaOutlineState("ready");
         setMediaOutlineError(visualFailure);
       } catch (fallbackError) {
+        if (cancelledMediaTaskIdsRef.current.has(taskId)) return;
         setMediaOutlineTask(null);
         setMediaOutlineState("failed");
         setMediaOutlineError(fallbackError instanceof Error ? fallbackError.message : visualFailure);
@@ -253,7 +351,7 @@ function App() {
     } finally {
       if (visualLease) await mediaCredentialMessageClient.revokeLease(visualLease.leaseId);
     }
-  }, []);
+  }, [mediaPortalSettings?.enabled]);
 
   useEffect(() => {
     const projection = mediaTaskAuthority.projection;
@@ -302,16 +400,18 @@ function App() {
   const [settingsSection, setSettingsSection] = useState<"chat" | "media">("chat");
   const [sidecarHealth, setSidecarHealth] = useState<PiSidecarHealth | null>(null);
   const [providerTestResult, setProviderTestResult] = useState<ProviderTestResult | null>(null);
+  const [managedProviderId, setManagedProviderId] = useState<string | null>(null);
   const [providerDraft, setProviderDraft] = useState({
-    displayName: "DeepSeek",
-    baseUrl: "https://api.deepseek.com",
+    providerType: "" as "" | keyof typeof LLM_PROVIDER_PRESETS,
+    displayName: "",
+    baseUrl: "",
     apiKey: "",
-    defaultModel: "deepseek-v4-flash"
+    defaultModel: ""
   });
   const [chatProviderDraft, setChatProviderDraft] = useState<ChatProviderConfig>({
     coreProvider: "piagent",
     llmProviderId: undefined,
-    model: "deepseek-v4-flash"
+    model: undefined
   });
   const [chatView, dispatchChatView] = useReducer(chatViewReducer, undefined, () => createChatViewState("chat"));
   const [streamStatus, setStreamStatus] = useState("idle");
@@ -328,7 +428,8 @@ function App() {
   const overflowRafRef = useRef<number | null>(null);
   const overflowDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const mediaAutoStartAttemptedRef = useRef(false);
+  const followConversationRef = useRef(true);
+  const mediaAutoStartSourceRef = useRef<string | null>(null);
   const e2eStateRef = useRef<Record<string, unknown>>({});
   const e2eHandlersRef = useRef<E2EHandlers>({});
   const canChat = runtimeStatus === "online" && streamStatus !== "streaming";
@@ -386,7 +487,11 @@ function App() {
     setMediaRuntimeConnected(change.status === "connected");
     setMediaRuntimeStatus(change.status);
     setMediaRuntimeError(change.error ?? null);
+    if (change.status === "connected") {
+      void getMediaPortalSettings().then(setMediaPortalSettings).catch(() => setMediaPortalSettings(null));
+    }
     if (change.status !== "connected") {
+      setMediaPortalSettings(null);
       setMediaCredentialState("idle");
       setMediaCredentialLease(null);
       setMediaCredentialError(null);
@@ -433,7 +538,7 @@ function App() {
 
   function authorizeMediaSession() {
     if (!mediaSessionAdapterId || mediaSessionBusy) return;
-    mediaAutoStartAttemptedRef.current = false;
+    mediaAutoStartSourceRef.current = null;
     const adapterId = mediaSessionAdapterId;
     const permissionRequest = mediaPermissionClient.request(adapterId);
     setMediaSessionBusy(true);
@@ -492,7 +597,7 @@ function App() {
       setMediaAcquisitionInput(null);
       setMediaAcquisitionFailure(null);
       setMediaCaptureEligibility(null);
-      mediaAutoStartAttemptedRef.current = false;
+      mediaAutoStartSourceRef.current = null;
     } catch (error) {
       setMediaSessionError(error instanceof Error ? error.message : "撤销授权失败");
     } finally {
@@ -500,7 +605,7 @@ function App() {
     }
   }
 
-  async function establishMediaCredentialLease() {
+  async function establishMediaCredentialLease(switchedTaskId?: string) {
     if (
       mediaSessionAdapterId !== BILIBILI_SESSION_POLICY_DEFINITION.adapterId
       || mediaConsentPolicy?.status !== "granted"
@@ -508,11 +613,14 @@ function App() {
       || !mediaRuntimeConnected
       || mediaCredentialState === "establishing"
     ) return;
+    const tabEpoch = mediaTabEpochRef.current;
+    const currentTab = () => mediaTabEpochRef.current === tabEpoch;
     setMediaCredentialState("establishing");
     setMediaCredentialLease(null);
     setMediaCredentialError(null);
     try {
       const policyResponse = await mediaSessionMessageClient.getPolicy(BILIBILI_SESSION_POLICY_DEFINITION.adapterId);
+      if (!currentTab()) return;
       if (!policyResponse.ok || policyResponse.value.status !== "granted") {
         if (policyResponse.ok) setMediaConsentPolicy(policyResponse.value);
         throw new Error("V3_MEDIA_POLICY_NOT_GRANTED");
@@ -521,6 +629,7 @@ function App() {
         BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
         policyResponse.value.policyRevision
       );
+      if (!currentTab()) return;
       if (!capabilityResponse.ok || !capabilityResponse.value.ok || capabilityResponse.value.capability.status !== "available") {
         throw new Error(capabilityResponse.ok && !capabilityResponse.value.ok
           ? capabilityResponse.value.failureCode
@@ -529,7 +638,7 @@ function App() {
       setMediaConsentPolicy(policyResponse.value);
       setMediaSessionCapability(capabilityResponse.value.capability);
       const result = await mediaCredentialChannelClient.establish({
-        taskId: `media_task_${crypto.randomUUID().replace(/-/g, "")}`,
+        taskId: switchedTaskId ?? `media_task_${crypto.randomUUID().replace(/-/g, "")}`,
         adapterId: BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
         policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
         policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
@@ -537,6 +646,10 @@ function App() {
       });
       if (!result.ok) throw new Error(result.failureCode);
       if (!isPortalCredentialLease(result.value)) throw new Error("V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED");
+      if (!currentTab()) {
+        await mediaCredentialMessageClient.revokeLease(result.value.leaseId);
+        return;
+      }
       setMediaCredentialLease(result.value);
       setRestoredMediaTaskId(null);
       setMediaOutlineTask(null);
@@ -550,26 +663,195 @@ function App() {
           policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
           policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
         });
-        setMediaAcquisitionInput(acquisition.execution.input);
+        if (!currentTab()) return;
+        setMediaPolicyProvenance(acquisition.policyProvenance ?? null);
+        if (acquisition.disposition !== "created") {
+          const revoked = await mediaCredentialMessageClient.revokeLease(result.value.leaseId);
+          if (!currentTab()) return;
+          if (!revoked.ok) throw new Error(revoked.failureCode);
+          setMediaCredentialLease(null);
+          setRestoredMediaTaskId(acquisition.taskId);
+          try {
+            const published = await getMediaOutlineTask(acquisition.taskId);
+            if (!currentTab()) return;
+            if (published.projections) { setMediaOutlineTask(published); setMediaOutlineState("ready"); }
+          } catch { /* The attached acquisition may still be running. */ }
+        }
+        setMediaAcquisitionInput(acquisition.execution?.input ?? null);
         setMediaAcquisitionSourceIdentity(mediaSourceIdentity(acquisition.context));
         setMediaAcquisitionFailure(acquisition.failureCode);
         setMediaAcquisitionState(acquisition.status);
         setMediaCaptureEligibility(acquisition.eligibility);
-        if (acquisition.execution.transcript) void monitorMediaTranscript(acquisition.execution.transcript.taskId);
+        if (acquisition.execution?.transcript) void monitorMediaTranscript(acquisition.execution.transcript.taskId);
       } catch (error) {
+        if (!currentTab()) return;
         setMediaAcquisitionState("failed");
         setMediaAcquisitionFailure(isRuntimeRequestError(error)
           ? error.code ?? error.message
           : error instanceof Error ? error.message : "V3_MEDIA_TASK_INVALID");
       }
     } catch (error) {
+      if (!currentTab()) return;
       setMediaCredentialState("failed");
       setMediaCredentialError(error instanceof Error ? error.message : "V3_MEDIA_CREDENTIAL_TRANSPORT_FAILED");
     }
   }
 
-  function retryAutomaticMediaFlow() {
-    mediaAutoStartAttemptedRef.current = false;
+  async function startConfiguredMediaSession(switchedTaskId?: string) {
+    if (
+      mediaSessionAdapterId !== BILIBILI_SESSION_POLICY_DEFINITION.adapterId
+      || mediaConsentPolicy?.status !== "granted"
+      || !mediaRuntimeConnected
+      || !mediaPortalSettings?.enabled
+      || mediaCredentialState === "establishing"
+    ) return;
+    const tabEpoch = mediaTabEpochRef.current;
+    const currentTab = () => mediaTabEpochRef.current === tabEpoch;
+    const taskId = switchedTaskId ?? `media_task_${crypto.randomUUID().replace(/-/g, "")}`;
+    setMediaCredentialState("establishing");
+    setMediaCredentialLease(null);
+    setMediaCredentialError(null);
+    setRestoredMediaTaskId(taskId);
+    setMediaOutlineTask(null);
+    setMediaOutlineState("idle");
+    setMediaOutlineError(null);
+    setMediaCaptureEligibility(null);
+    setMediaAcquisitionState("starting");
+    try {
+      const acquisition = await mediaAcquisitionClient.startConfigured(
+        taskId,
+        BILIBILI_SESSION_POLICY_DEFINITION.adapterId,
+        {
+          policyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+          policyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
+        }
+      );
+      if (!currentTab()) return;
+      setMediaPolicyProvenance(acquisition.policyProvenance ?? null);
+      setMediaCredentialState("ready");
+      setRestoredMediaTaskId(acquisition.taskId);
+      if (acquisition.disposition !== "created") {
+        try {
+          const published = await getMediaOutlineTask(acquisition.taskId);
+          if (!currentTab()) return;
+          if (published.projections) { setMediaOutlineTask(published); setMediaOutlineState("ready"); }
+        } catch { /* The attached acquisition may still be running. */ }
+      }
+      setMediaAcquisitionInput(acquisition.execution?.input ?? null);
+      setMediaAcquisitionSourceIdentity(mediaSourceIdentity(acquisition.context));
+      setMediaAcquisitionFailure(acquisition.failureCode);
+      setMediaAcquisitionState(acquisition.status);
+      setMediaCaptureEligibility(acquisition.eligibility);
+      if (acquisition.execution?.transcript) void monitorMediaTranscript(acquisition.execution.transcript.taskId);
+    } catch (error) {
+      if (!currentTab()) return;
+      setMediaCredentialState("failed");
+      setMediaAcquisitionState("failed");
+      const code = isRuntimeRequestError(error)
+        ? error.code ?? error.message
+        : error instanceof Error ? error.message : "V3_MEDIA_PERSISTENT_SESSION_UNAVAILABLE";
+      setMediaCredentialError(code);
+      setMediaAcquisitionFailure(code);
+    }
+  }
+
+  async function confirmMediaPolicySwitch() {
+    const expected = mediaPolicySwitchAuthority;
+    const sourceIdentity = mediaAcquisitionSourceIdentity;
+    if (!expected || !sourceIdentity || mediaPolicySwitchBusy || !mediaRuntimeConnected) return;
+    if (!window.confirm(expected.state === "active"
+      ? `取消旧版授权 ${expected.consentPolicyRevision} 下正在运行的任务，清理完成后按当前授权重新分析？`
+      : `按当前授权重新分析此视频？\n旧版授权 ${expected.consentPolicyRevision} 的结果会保留为隔离历史，不会用于本次分析。`)) return;
+    const tabEpoch = mediaTabEpochRef.current;
+    setMediaPolicySwitchBusy(true);
+    try {
+      const context = await collectCurrentMediaContext();
+      if (tabEpoch !== mediaTabEpochRef.current || mediaSourceIdentity(context) !== sourceIdentity) {
+        throw new Error("V3_MEDIA_PAGE_IDENTITY_INCOMPLETE");
+      }
+      const fresh = (await getMediaSourceAuthority(sourceIdentity)).authority;
+      if (!fresh || fresh.taskId !== expected.taskId || fresh.consentPolicyId !== expected.consentPolicyId
+        || fresh.consentPolicyRevision !== expected.consentPolicyRevision || fresh.state !== expected.state) {
+        throw new Error("V3_MEDIA_SOURCE_POLICY_CONFLICT");
+      }
+      const taskId = `media_task_${crypto.randomUUID().replace(/-/g, "")}`;
+      let nextTaskId = taskId;
+      if (fresh.state === "active") {
+        await cancelMediaTranscriptProjection(fresh.taskId);
+        const cleaned = (await getMediaSourceAuthority(sourceIdentity)).authority;
+        if (!cleaned || cleaned.taskId !== fresh.taskId || cleaned.state !== "cancelled") {
+          throw new Error("V3_MEDIA_CLEANUP_INCOMPLETE");
+        }
+      } else if (fresh.state === "published") {
+        const switched = await replaceMediaAcquisitionPolicy({
+          taskId, sourceIdentity, adapterId: context.adapterId, mediaId: context.mediaId,
+          playbackUnitId: context.playbackUnitId, partId: context.part.id,
+          consentPolicyId: BILIBILI_SESSION_POLICY_DEFINITION.policyId,
+          consentPolicyRevision: BILIBILI_SESSION_POLICY_DEFINITION.policyRevision,
+          expectedPreviousTaskId: expected.taskId,
+          expectedPreviousConsentPolicyId: expected.consentPolicyId,
+          expectedPreviousConsentPolicyRevision: expected.consentPolicyRevision,
+          confirmation: "reanalyze_under_current_policy"
+        });
+        nextTaskId = switched.authoritativeTaskId;
+      } else {
+        throw new Error("V3_MEDIA_SOURCE_POLICY_CONFLICT");
+      }
+      if (tabEpoch !== mediaTabEpochRef.current) return;
+      setMediaPolicySwitchAuthority(null);
+      setMediaAcquisitionFailure(null);
+      if (mediaPortalSettings?.enabled) await startConfiguredMediaSession(nextTaskId);
+      else await establishMediaCredentialLease(nextTaskId);
+    } catch (error) {
+      if (tabEpoch === mediaTabEpochRef.current) {
+        try {
+          if (await resumeCurrentCreatedMediaTask(sourceIdentity, expected.taskId)) {
+            setMediaPolicySwitchAuthority(null);
+            return;
+          }
+        } catch { /* Preserve the original switch error if reconciliation fails. */ }
+        setMediaAcquisitionFailure(isRuntimeRequestError(error) ? error.code ?? error.message
+          : error instanceof Error ? error.message : "V3_MEDIA_SOURCE_POLICY_CONFLICT");
+      }
+    } finally {
+      setMediaPolicySwitchBusy(false);
+    }
+  }
+
+  async function resumeCurrentCreatedMediaTask(sourceIdentity: string, previousTaskId?: string): Promise<boolean> {
+    const tabEpoch = mediaTabEpochRef.current;
+    const { authority } = await getMediaSourceAuthority(sourceIdentity);
+    if (tabEpoch !== mediaTabEpochRef.current || !authority || authority.state !== "active"
+      || authority.consentPolicyId !== BILIBILI_SESSION_POLICY_DEFINITION.policyId
+      || authority.consentPolicyRevision !== BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
+      || authority.taskId === previousTaskId) return false;
+    const { task } = await getMediaAcquisition(authority.taskId);
+    if (tabEpoch !== mediaTabEpochRef.current || task.state !== "created"
+      || task.sourceIdentity !== sourceIdentity) return false;
+    setMediaAcquisitionFailure(null);
+    if (mediaPortalSettings?.enabled) await startConfiguredMediaSession(authority.taskId);
+    else await establishMediaCredentialLease(authority.taskId);
+    return true;
+  }
+
+  async function retryAutomaticMediaFlow() {
+    if (mediaAcquisitionSourceIdentity) {
+      try {
+        if (await resumeCurrentCreatedMediaTask(mediaAcquisitionSourceIdentity)) return;
+      } catch { /* Existing retry path reports the authoritative Runtime state. */ }
+    }
+    if (["V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN", "V3_MEDIA_CLEANUP_INCOMPLETE"].includes(mediaAcquisitionFailure ?? "") && mediaAcquisitionSourceIdentity) {
+      try {
+        await recoverInterruptedMediaAcquisition(mediaAcquisitionSourceIdentity);
+      } catch (error) {
+        setMediaAcquisitionFailure(isRuntimeRequestError(error) ? error.code ?? error.message : "V3_MEDIA_CLEANUP_INCOMPLETE");
+        return;
+      }
+    }
+    mediaAutoStartSourceRef.current = null;
+    setMediaSessionError(null);
+    setMediaAcquisitionSourceIdentity(null);
+    setMediaResumeChecked(false);
     setMediaCredentialState("idle");
     setMediaCredentialLease(null);
     setMediaCredentialError(null);
@@ -581,13 +863,16 @@ function App() {
   }
 
   async function monitorMediaTranscript(taskId: string) {
+    const tabEpoch = mediaTabEpochRef.current;
     setMediaAcquisitionState("transcribing");
     try {
       const task = await waitForMediaTranscript(taskId);
+      if (mediaTabEpochRef.current !== tabEpoch) return;
       if (task.state !== "succeeded") throw new Error(task.result?.failureCode ?? "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED");
       setMediaAcquisitionState("succeeded");
       setMediaCaptureState("succeeded");
     } catch (error) {
+      if (mediaTabEpochRef.current !== tabEpoch) return;
       setMediaAcquisitionState("failed");
       setMediaCaptureState("failed");
       setMediaAcquisitionFailure(error instanceof Error ? error.message : "V3_MEDIA_TRANSCRIPT_PROCESS_FAILED");
@@ -606,21 +891,28 @@ function App() {
   async function startTrustedTabCapture(event: React.MouseEvent<HTMLButtonElement>) {
     const trustedClick = event.nativeEvent.isTrusted;
     const userActivation = navigator.userActivation?.isActive === true;
-    if (!trustedClick || !userActivation || !mediaCaptureEligibility?.captureFallbackEligible || !mediaCredentialLease) {
+    const captureBinding = resolveCaptureGrantBinding(mediaCredentialLease, activeMediaTaskId, mediaSessionAdapterId);
+    if (!trustedClick || !userActivation || !mediaCaptureEligibility?.captureFallbackEligible || !captureBinding) {
       setMediaCaptureState("failed");
       setMediaCaptureError("V3_MEDIA_CAPTURE_BACKGROUND_FORBIDDEN");
       return;
     }
     setMediaCaptureState("starting");
     setMediaCaptureError(null);
+    let capturePrepared = false;
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (typeof tab?.id !== "number" || !tab.url?.startsWith("https://www.bilibili.com/video/")) throw new Error("V3_MEDIA_CAPTURE_TAB_INVALID");
+      const prepared = await mediaCaptureMessageClient.prepare();
+      if (!prepared.ok || prepared.state !== "prepared") {
+        throw new Error(prepared.ok ? "V3_MEDIA_CAPTURE_PREPARE_FAILED" : prepared.failureCode);
+      }
+      capturePrepared = true;
       const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value))))
         .map((byte) => byte.toString(16).padStart(2, "0")).join("");
       const grant = await bootstrapMediaCaptureGrant({
-        taskId: mediaCredentialLease.taskId,
-        adapterId: mediaCredentialLease.adapterId,
+        taskId: captureBinding.taskId,
+        adapterId: captureBinding.adapterId,
         pageIdentitySha256: await hash(tab.url),
         tabId: tab.id,
         tabIdSha256: await hash(String(tab.id)),
@@ -631,12 +923,13 @@ function App() {
         userActivation,
         grant: grant.grant,
         ticket: grant.ticket,
-        sourceIdentity: mediaAcquisitionSourceIdentity ?? `portal:${mediaCredentialLease.adapterId}:current:current:current`,
+        sourceIdentity: mediaAcquisitionSourceIdentity ?? `portal:${captureBinding.adapterId}:current:current:current`,
         acquisitionRecordId: `mar_${crypto.randomUUID().replace(/-/g, "")}`
       });
       if (!response.ok) throw new Error(response.failureCode);
       setMediaCaptureState("capturing");
     } catch (error) {
+      if (capturePrepared) await mediaCaptureMessageClient.stop("failed").catch(() => undefined);
       setMediaCaptureState("failed");
       setMediaCaptureError(error instanceof Error ? error.message : "V3_MEDIA_CAPTURE_START_FAILED");
     }
@@ -665,11 +958,20 @@ function App() {
     const startedAt = Date.now();
     setMediaTaskActionState("cancelling");
     setMediaCaptureError(null);
+    cancelledMediaTaskIdsRef.current.add(projection.taskId);
     try {
-      if (projection.state === "capturing" && !(await stopTrustedTabCapture("cancelled"))) return;
-      await cancelMediaTranscriptProjection(projection.taskId);
+      if (projection.state === "capturing" && !(await stopTrustedTabCapture("cancelled"))) {
+        cancelledMediaTaskIdsRef.current.delete(projection.taskId);
+        return;
+      }
+      const cancelled = await cancelMediaTranscriptProjection(projection.taskId);
+      mediaTaskAuthority.acceptProjection(cancelled);
+      setMediaOutlineTask(null);
+      setMediaOutlineState("idle");
+      setMediaOutlineError(null);
       setMediaCaptureState("awaiting_user");
     } catch (error) {
+      cancelledMediaTaskIdsRef.current.delete(projection.taskId);
       setMediaCaptureError(error instanceof Error ? error.message : "V3_MEDIA_TASK_CANCEL_FAILED");
     } finally {
       const remaining = 600 - (Date.now() - startedAt);
@@ -680,13 +982,20 @@ function App() {
 
   async function retryCurrentMediaTask() {
     if (mediaTaskActionState) return;
+    const requiresInterruptedRecovery = ["V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN", "V3_MEDIA_CLEANUP_INCOMPLETE"].includes(mediaAcquisitionFailure ?? "");
     setMediaTaskActionState("retrying");
     setMediaCaptureError(null);
     setMediaAcquisitionFailure(null);
     setMediaCaptureEligibility(null);
     setMediaCaptureState("awaiting_user");
     try {
-      await establishMediaCredentialLease();
+      if (requiresInterruptedRecovery && mediaAcquisitionSourceIdentity) {
+        await recoverInterruptedMediaAcquisition(mediaAcquisitionSourceIdentity);
+      }
+      if (mediaPortalSettings?.enabled) await startConfiguredMediaSession();
+      else await establishMediaCredentialLease();
+    } catch (error) {
+      setMediaAcquisitionFailure(isRuntimeRequestError(error) ? error.code ?? error.message : "V3_MEDIA_CLEANUP_INCOMPLETE");
     } finally {
       setMediaTaskActionState(null);
     }
@@ -1039,19 +1348,32 @@ function App() {
     setSettingsStatus("loading");
     setSettingsMessage("正在加载 LLM 设置...");
     try {
-      const next = await getSettings();
+      let next = await getSettings();
+      let provider = getDefaultProvider(next);
+      let chatProvider = resolveChatProviderDraft(next);
+      if (chatProvider.coreProvider === "piagent" && provider) {
+        const health = await refreshSidecarHealth({ force: true });
+        if (health?.status !== "ok") {
+          const fallback = { ...chatProvider, coreProvider: "llm_direct" as const };
+          next = await patchSettings({ coreProvider: fallback.coreProvider, chatProvider: fallback });
+          provider = getDefaultProvider(next);
+          chatProvider = resolveChatProviderDraft(next);
+        }
+      }
       setSettings(next);
-      const provider = getDefaultProvider(next);
-      const chatProvider = resolveChatProviderDraft(next);
       setProviderDraft({
-        displayName: provider?.name ?? "DeepSeek",
-        baseUrl: provider?.baseUrl ?? "https://api.deepseek.com",
+        providerType: (provider?.type === "minimax" || provider?.type === "deepseek" ? provider.type : ""),
+        displayName: provider?.name ?? "",
+        baseUrl: provider?.baseUrl ?? "",
         apiKey: "",
-        defaultModel: provider?.defaultModel ?? next.defaultModel ?? "deepseek-v4-flash"
+        defaultModel: provider?.defaultModel ?? next.defaultModel ?? ""
       });
+      setManagedProviderId(provider?.id ?? null);
       setChatProviderDraft(chatProvider);
       setSettingsStatus("idle");
-      setSettingsMessage(provider ? "LLM 设置已加载。" : "尚未配置默认 Provider，请先填写 API Key 并保存。");
+      setSettingsMessage(provider
+        ? `Chat 凭据已保存在本机（${provider.apiKeyMasked}）。${chatProvider.coreProvider === "llm_direct" ? "当前直接连接模型服务。" : "当前通过 Pi Sidecar 连接。"}`
+        : "尚未配置默认 Provider，请先填写 API Key 并保存。");
       if (chatProvider.coreProvider === "piagent") void refreshSidecarHealth();
     } catch (error) {
       setSettingsStatus("error");
@@ -1073,7 +1395,7 @@ function App() {
         recoverable: true,
         code: "piagent_sidecar_unavailable",
         message: "Pi Sidecar 未启动或暂不可用。",
-        nextSteps: ["启动 Pi Sidecar", "检查 DeepSeek Provider / model", "或在 Settings 中手动切换到 LLM Direct"],
+        nextSteps: ["启动 Pi Sidecar", "检查模型服务与 model", "或在 Settings 中手动切换到 LLM Direct"],
         checkedAt: new Date().toISOString()
       };
       setSidecarHealth(fallback);
@@ -1130,7 +1452,7 @@ function App() {
   }
 
   async function startNewSession(): Promise<ChatSession | null> {
-    if (shouldReuseActiveSessionForNewChat(currentSession)) {
+    if (shouldReuseActiveSessionForNewChat(currentSession, chatView.messages.length)) {
       setSessionMenuOpen(false);
       setSessionSwitchError(null);
       setInput("");
@@ -1157,6 +1479,42 @@ function App() {
       setSessionSwitchError("会话加载失败，请重试。");
     } finally {
       setSessionState((current) => ({ ...current, switchingSession: false }));
+    }
+  }
+
+  async function deleteChatHistorySession(sessionId: string) {
+    if (deletingSessionId || clearingSessions || sessionState.switchingSession) return;
+    setDeletingSessionId(sessionId);
+    setSessionSwitchError(null);
+    try {
+      await archiveChatSession(sessionId);
+      const remaining = sessionState.sessions.filter((session) => session.id !== sessionId);
+      setSessionState((current) => ({ ...current, sessions: current.sessions.filter((session) => session.id !== sessionId) }));
+      if (sessionId === sessionState.currentSessionId) {
+        const next = getHistorySessions(remaining)[0];
+        if (next) await hydrateSession(next.id);
+        else await createNewSession({ resetView: true, sessions: remaining });
+      }
+    } catch {
+      setSessionSwitchError("删除会话失败，请重试。");
+    } finally {
+      setDeletingSessionId(undefined);
+    }
+  }
+
+  async function clearChatHistory() {
+    if (clearingSessions || deletingSessionId || sessionState.switchingSession) return;
+    setClearingSessions(true);
+    setSessionSwitchError(null);
+    try {
+      const visibleIds = getHistorySessions(sessionState.sessions).map((session) => session.id);
+      await Promise.all(visibleIds.map((sessionId) => archiveChatSession(sessionId)));
+      const remaining = sessionState.sessions.filter((session) => !visibleIds.includes(session.id));
+      await createNewSession({ resetView: true, sessions: remaining });
+    } catch {
+      setSessionSwitchError("清空聊天历史失败，请重试。");
+    } finally {
+      setClearingSessions(false);
     }
   }
 
@@ -1275,22 +1633,31 @@ function App() {
       setSettingsMessage("请输入 API Key。");
       return;
     }
+    if (!providerDraft.providerType) {
+      setSettingsStatus("error");
+      setSettingsMessage("请先选择服务商。");
+      return;
+    }
     setSettingsStatus("saving");
     setSettingsMessage("正在保存 Provider...");
     try {
+      const preset = LLM_PROVIDER_PRESETS[providerDraft.providerType];
+      const defaultModel = providerDraft.defaultModel.trim() || preset.models[0];
+      const providerModels = Array.from(new Set([defaultModel, ...preset.models]));
       const result = await importProvider({
-        providerType: "deepseek",
-        displayName: providerDraft.displayName.trim() || "DeepSeek",
-        baseUrl: providerDraft.baseUrl.trim() || "https://api.deepseek.com",
+        providerType: providerDraft.providerType,
+        displayName: providerDraft.displayName.trim() || preset.displayName,
+        baseUrl: providerDraft.baseUrl.trim() || preset.baseUrl,
         apiKey: providerDraft.apiKey.trim(),
-        defaultModel: providerDraft.defaultModel.trim() || "deepseek-v4-flash",
-        models: DEFAULT_DEEPSEEK_MODELS
+        defaultModel,
+        models: providerModels
       });
       setSettings(result.settings);
+      setManagedProviderId(result.provider.id);
       setProviderTestResult(null);
       setProviderDraft((current) => ({ ...current, apiKey: "" }));
       setSettingsStatus("idle");
-      setSettingsMessage(`API Key 已配置并保存成功。${result.provider.name ? `（${result.provider.name}）` : ""}`);
+      setSettingsMessage(`Provider 已保存但未切换。需要使用时，请在下方 Chat Provider 中明确选择并保存。${result.provider.name ? `（${result.provider.name} · ${result.provider.apiKeyMasked}）` : ""}`);
     } catch (error) {
       setSettingsStatus("error");
       setSettingsMessage(error instanceof Error ? error.message : "Provider 保存失败。");
@@ -1298,7 +1665,7 @@ function App() {
   }
 
   async function runProviderTest() {
-    const provider = getDefaultProvider(settings);
+    const provider = getProviderById(settings, managedProviderId ?? chatProviderDraft.llmProviderId) ?? getDefaultProvider(settings);
     if (!provider) {
       setSettingsStatus("error");
       setSettingsMessage("请先保存 Provider。");
@@ -1323,13 +1690,14 @@ function App() {
   }
 
   async function removeProvider() {
-    const provider = getDefaultProvider(settings);
+    const provider = getProviderById(settings, managedProviderId ?? chatProviderDraft.llmProviderId) ?? getDefaultProvider(settings);
     if (!provider) return;
     setSettingsStatus("saving");
     setSettingsMessage("正在删除 Provider...");
     try {
       const result = await deleteProvider(provider.id);
       setSettings(result.settings);
+      setManagedProviderId(null);
       setProviderTestResult(null);
       setSettingsStatus("idle");
       setSettingsMessage("Provider 已删除。");
@@ -1449,13 +1817,17 @@ function App() {
     setChatTurnState("intent_detecting");
     const intent = intentHint ?? detectChatIntent(trimmed);
     const turnId = createClientTurnId();
+    followConversationRef.current = true;
     dispatchChatView({ type: "start_turn", turnId, text: trimmed, intentHint: intent });
+    dispatchChatView({ type: "agent_event", event: syntheticEvent("state.transition", turnId, { to: "intent_detecting" }) });
     setInput("");
     if (isDeferredIntent(intent)) {
       setChatTurnState("capability_boundary");
     } else {
       setChatTurnState("context_strategy_deciding");
+      dispatchChatView({ type: "agent_event", event: syntheticEvent("state.transition", turnId, { to: "context_strategy_deciding" }) });
     }
+    let pageContextSessionId: string | undefined;
     if (intentRequiresPageContext(intent, trimmed)) {
       setChatTurnState("context_resolving");
       dispatchChatView({ type: "agent_event", event: syntheticEvent("state.transition", turnId, { from: "context_strategy_deciding", to: "context_resolving" }) });
@@ -1465,31 +1837,45 @@ function App() {
         setChatTurnState("error");
         return;
       }
+      pageContextSessionId = contextResult.sessionId;
     }
-    const id = await ensureSession();
+    const id = pageContextSessionId ?? await ensureSession();
     setChatTurnState("executing_chat");
+    dispatchChatView({ type: "agent_event", event: syntheticEvent("state.transition", turnId, { to: "executing_chat" }) });
     setStreamStatus("streaming");
     try {
-      if (chatProviderDraft.coreProvider === "piagent") {
-        await refreshSidecarHealth();
+      let effectiveChatProvider = chatProviderDraft;
+      if (effectiveChatProvider.coreProvider === "piagent") {
+        const health = await refreshSidecarHealth({ force: true });
+        if (health?.status !== "ok" && effectiveChatProvider.llmProviderId) {
+          effectiveChatProvider = { ...effectiveChatProvider, coreProvider: "llm_direct" };
+          const next = await patchSettings({ coreProvider: "llm_direct", chatProvider: effectiveChatProvider });
+          setSettings(next);
+          setChatProviderDraft(effectiveChatProvider);
+          setSettingsMessage("Pi Sidecar 不可用，已自动切换到本机保存的 LLM Direct 配置。");
+        }
       }
       await streamRuntimeChat(
         id,
         trimmed,
         async (event) => {
+          if (event.type === "response.delta") setChatTurnState("streaming_response");
           if (
             event.type === "error" &&
             event.data.code === "page_context_auto_capture_required" &&
             event.data.action === "capture_page_and_retry" &&
             !retriedAfterCapture
           ) {
-            const contextResult = await ensurePageContext({ forceRefresh: true });
+            const contextResult = await ensurePageContext({ forceRefresh: true, sessionId: id });
             if (contextResult.ok) {
               await streamRuntimeChat(
                 id,
                 trimmed,
-                (nextEvent) => dispatchChatView({ type: "agent_event", event: nextEvent }),
-                chatStreamOptions(intent, false, chatProviderDraft)
+                (nextEvent) => {
+                  if (nextEvent.type === "response.delta") setChatTurnState("streaming_response");
+                  dispatchChatView({ type: "agent_event", event: nextEvent });
+                },
+                chatStreamOptions(intent, false, effectiveChatProvider)
               );
             } else {
               dispatchChatView({ type: "agent_event", event: syntheticEvent("error", turnId, { message: contextResult.message, recoverable: true }) });
@@ -1498,7 +1884,7 @@ function App() {
           }
           dispatchChatView({ type: "agent_event", event });
         },
-        chatStreamOptions(intent, intentRequiresPageContext(intent, trimmed), chatProviderDraft)
+        chatStreamOptions(intent, intentRequiresPageContext(intent, trimmed), effectiveChatProvider)
       );
       await refreshChatSessions();
       setStreamStatus("done");
@@ -1514,23 +1900,23 @@ function App() {
     }
   }
 
-  async function ensurePageContext(options: { forceRefresh?: boolean } = {}): Promise<{ ok: true } | { ok: false; message: string }> {
+  async function ensurePageContext(options: { forceRefresh?: boolean; sessionId?: string } = {}): Promise<{ ok: true; sessionId: string } | { ok: false; message: string }> {
     try {
       const currentUrl = await getActiveTabUrl();
       const reusable = pageSubmitted && pageContext && currentUrl && isSamePageUrl(pageContext.url, currentUrl);
-      if (reusable && !options.forceRefresh) return { ok: true };
+      if (reusable && !options.forceRefresh) return { ok: true, sessionId: options.sessionId ?? await ensureSession() };
       setPageContextState(options.forceRefresh || pageContext ? "stale" : "capture_ready");
       setPageContextState("capturing");
       const context = await readCurrentPageContext();
       setPageContext(context);
-      const id = await ensureSession();
+      const id = options.sessionId ?? await ensureSession();
       setSubmitStatus("正在提交页面上下文...");
       const result = await submitRuntimePageContext(context, id);
       setPageSubmitted(result.ok);
       setPageContextState(result.ok ? "captured" : "failed");
       setSubmitStatus(result.ok ? `已提交：${result.pageId}` : result.message ?? "提交失败");
       if (result.ok) await refreshChatSessions();
-      return result.ok ? { ok: true } : { ok: false, message: result.message ?? "页面读取失败，可重试或继续普通聊天。" };
+      return result.ok ? { ok: true, sessionId: id } : { ok: false, message: result.message ?? "页面读取失败，可重试或继续普通聊天。" };
     } catch (error) {
       const unsupported = error instanceof PageUnsupportedError;
       setPageContextState(unsupported ? "unsupported" : "failed");
@@ -1572,6 +1958,10 @@ function App() {
 
   useEffect(() => {
     if (!__NAVIA_E2E_BRIDGE__) return;
+    // The PASSIVE local-import diagnostics. It only exposes a read-only
+    // snapshot of facts the normal product path already produced. It cannot
+    // create, upload, cancel, poll, bind, materialize or clean anything.
+    installLocalImportDiagnostics(globalThis as unknown as Record<string, unknown>);
     const port = chrome.runtime.connect({ name: "navia.e2e.sidepanel" });
     const observedEntryTargets: Record<string, QuickWorkspaceRequest["origin"]> = {
       "view-source": "view_source",
@@ -1629,36 +2019,114 @@ function App() {
 
   useEffect(() => {
     let active = true;
+    let createdWatchdog: number | null = null;
     setMediaResumeChecked(false);
-    if (mediaRuntimeConnected && mediaSessionAdapterId) {
-      void collectCurrentMediaContext().then(async (context) => {
+    if (mediaRuntimeConnected && mediaSessionAdapterId && mediaConsentPolicy?.status === "granted") {
+      void (async () => {
+        let context: MediaPageContext | null = null;
+        for (let attempt = 0; attempt < 8 && active; attempt += 1) {
+          try {
+            context = await collectCurrentMediaContext();
+            break;
+          } catch {
+            if (attempt < 7) await new Promise((resolve) => window.setTimeout(resolve, 750));
+          }
+        }
+        if (!context || !active) throw new Error("V3_MEDIA_PAGE_CONTEXT_UNAVAILABLE");
         const sourceIdentity = mediaSourceIdentity(context);
         if (!active) return;
         setMediaAcquisitionSourceIdentity(sourceIdentity);
-        const tasks = await listMediaOutlineTasks();
+        const { authority } = await getMediaSourceAuthority(sourceIdentity);
         if (!active) return;
-        const restored = tasks.find((task) => task.sourceIdentity === sourceIdentity && ["ready", "degraded"].includes(task.state)) ?? null;
-        if (restored) {
-          setRestoredMediaTaskId(restored.taskId);
-          setMediaOutlineTask(restored);
-          setMediaOutlineState("ready");
-          mediaAutoStartAttemptedRef.current = true;
+        setMediaPolicyProvenance(authority?.policyProvenance ?? null);
+        if (authority && authority.policyProvenance !== "unverified_legacy" && (
+          authority.adapterId !== BILIBILI_SESSION_POLICY_DEFINITION.adapterId
+          || authority.consentPolicyId !== BILIBILI_SESSION_POLICY_DEFINITION.policyId
+          || authority.consentPolicyRevision !== BILIBILI_SESSION_POLICY_DEFINITION.policyRevision
+        )) {
+          setMediaPolicySwitchAuthority(authority);
+          setRestoredMediaTaskId(null);
+          setMediaAcquisitionState("failed");
+          setMediaAcquisitionFailure("V3_MEDIA_SOURCE_POLICY_CONFLICT");
+          mediaAutoStartSourceRef.current = sourceIdentity;
+          setMediaResumeChecked(true);
+          return;
+        }
+        if (authority && ["interrupted", "cleanup_incomplete", "active_elsewhere", "ownership_uncertain", "cancelling"].includes(authority.state)) {
+          setRestoredMediaTaskId(null);
+          setMediaAcquisitionState("failed");
+          setMediaAcquisitionFailure(
+            authority.state === "interrupted" ? "V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN"
+              : authority.state === "active_elsewhere" ? "V3_MEDIA_SOURCE_TASK_ACTIVE"
+                : authority.state === "ownership_uncertain" ? "V3_MEDIA_AUTHORITY_OWNERSHIP_UNCERTAIN"
+                  : authority.state === "cancelling" ? "V3_MEDIA_CANCELLATION_IN_PROGRESS"
+                  : "V3_MEDIA_CLEANUP_INCOMPLETE"
+          );
+          mediaAutoStartSourceRef.current = sourceIdentity;
+          setMediaResumeChecked(true);
+          return;
+        }
+        if (authority?.state === "active") {
+          setRestoredMediaTaskId(authority.taskId);
+          let created = false;
+          try {
+            const { task } = await getMediaAcquisition(authority.taskId);
+            created = task.state === "created" && task.sourceIdentity === sourceIdentity;
+          } catch { /* The authoritative task may be running in another process. */ }
+          try {
+            const eligibility = await getMediaCaptureEligibility(authority.taskId);
+            if (active) setMediaCaptureEligibility(eligibility);
+          } catch {
+            if (active) setMediaCaptureEligibility(null);
+          }
+          if (!active) return;
+          setMediaAcquisitionState("attached");
+          setMediaAcquisitionFailure(null);
+          if (created) createdWatchdog = window.setTimeout(() => {
+            void (async () => {
+              try {
+                const { authority: latestAuthority } = await getMediaSourceAuthority(sourceIdentity);
+                if (!active || latestAuthority?.state !== "active" || latestAuthority.taskId !== authority.taskId) return;
+                const { task } = await getMediaAcquisition(authority.taskId);
+                if (!active || task.sourceIdentity !== sourceIdentity || task.state !== "created") return;
+                setMediaAcquisitionState("failed");
+                setMediaAcquisitionFailure("V3_MEDIA_TASK_AWAITING_START");
+              } catch { /* Transport and authentication errors have their own visible paths. */ }
+            })();
+          }, 45_000);
+          mediaAutoStartSourceRef.current = sourceIdentity;
+          setMediaResumeChecked(true);
+          return;
+        }
+        if (authority?.state === "published") {
+          const detail = await getMediaOutlineTask(authority.taskId);
+          if (!active) return;
+          if (detail.taskId === authority.taskId && detail.sourceIdentity === sourceIdentity && detail.projections?.outline) {
+            setRestoredMediaTaskId(detail.taskId);
+            setMediaOutlineTask(detail);
+            setMediaOutlineState("ready");
+            mediaAutoStartSourceRef.current = sourceIdentity;
+          } else {
+            setRestoredMediaTaskId(null);
+          }
         } else {
           setRestoredMediaTaskId(null);
-          mediaAutoStartAttemptedRef.current = false;
         }
         setMediaResumeChecked(true);
-      }).catch(() => {
+      })().catch((error) => {
         if (active) {
           setMediaAcquisitionSourceIdentity(null);
+          if (error instanceof Error && error.message === "V3_MEDIA_PAGE_CONTEXT_UNAVAILABLE") {
+            setMediaSessionError(error.message);
+          }
           setMediaResumeChecked(true);
         }
       });
     } else {
       setMediaResumeChecked(true);
     }
-    return () => { active = false; };
-  }, [mediaRuntimeConnected, mediaSessionAdapterId]);
+    return () => { active = false; if (createdWatchdog !== null) window.clearTimeout(createdWatchdog); };
+  }, [mediaRuntimeConnected, mediaSessionAdapterId, mediaConsentPolicy?.status, mediaRuntimeRetrySignal, mediaTabRevision]);
 
   async function executeE2ECommand(command: unknown): Promise<Record<string, unknown>> {
     if (!isE2ECommand(command)) throw new Error("Invalid E2E command.");
@@ -1758,10 +2226,26 @@ function App() {
       setMediaSessionAdapterId(sessionAdapter.definition.adapterId);
       await refreshMediaSession(sessionAdapter.definition.adapterId);
     };
-    const onTabUpdated: Parameters<typeof chrome.tabs.onUpdated.addListener>[0] = (_tabId, change) => {
-      if (change.url || change.status === "complete") void syncActiveMediaAdapter();
+    const invalidateMediaTab = () => {
+      mediaTabEpochRef.current += 1;
+      setMediaResumeChecked(false);
+      setMediaAcquisitionSourceIdentity(null);
+      setMediaPolicyProvenance(null);
+      setMediaPolicySwitchAuthority(null);
+      setMediaCredentialLease(null);
+      setRestoredMediaTaskId(null);
+      setMediaCredentialState("idle");
+      setMediaAcquisitionState("idle");
+      setMediaAcquisitionFailure(null);
+      setMediaOutlineTask(null);
+      setMediaOutlineState("idle");
+      setMediaTabRevision((value) => value + 1);
+      void syncActiveMediaAdapter();
     };
-    const onTabActivated = () => { void syncActiveMediaAdapter(); };
+    const onTabUpdated: Parameters<typeof chrome.tabs.onUpdated.addListener>[0] = (_tabId, change, tab) => {
+      if (tab.active && (change.url || change.status === "complete")) invalidateMediaTab();
+    };
+    const onTabActivated = () => invalidateMediaTab();
     chrome.tabs.onUpdated.addListener(onTabUpdated);
     chrome.tabs.onActivated.addListener(onTabActivated);
     void syncActiveMediaAdapter();
@@ -1773,22 +2257,26 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const persistentReady = mediaPortalSettings?.enabled === true;
     const ready = mediaSessionAdapterId === BILIBILI_SESSION_POLICY_DEFINITION.adapterId
       && mediaConsentPolicy?.status === "granted"
-      && mediaSessionCapability?.status === "available"
+      && (persistentReady || mediaSessionCapability?.status === "available")
       && mediaRuntimeConnected
       && mediaResumeChecked
       && mediaCredentialState === "idle"
       && mediaAcquisitionState === "idle";
-    if (!ready || mediaAutoStartAttemptedRef.current) return;
-    mediaAutoStartAttemptedRef.current = true;
-    void establishMediaCredentialLease();
+    if (!ready || !mediaAcquisitionSourceIdentity || mediaAutoStartSourceRef.current === mediaAcquisitionSourceIdentity) return;
+    mediaAutoStartSourceRef.current = mediaAcquisitionSourceIdentity;
+    if (persistentReady) void startConfiguredMediaSession();
+    else void establishMediaCredentialLease();
   }, [
     mediaSessionAdapterId,
     mediaConsentPolicy?.status,
     mediaSessionCapability?.status,
+    mediaPortalSettings?.enabled,
     mediaRuntimeConnected,
     mediaResumeChecked,
+    mediaAcquisitionSourceIdentity,
     mediaCredentialState,
     mediaAcquisitionState
   ]);
@@ -1842,6 +2330,15 @@ function App() {
   useEffect(() => {
     scheduleTurnNavigatorMeasure();
   }, [chatView.messages, chatView.activeStatus, scheduleTurnNavigatorMeasure]);
+
+  useEffect(() => {
+    const container = messagesRef.current;
+    if (!container || !followConversationRef.current) return;
+    const frame = requestAnimationFrame(() => {
+      container.scrollTop = container.scrollHeight;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [chatView.messages, chatView.activeStatus]);
 
   useEffect(() => {
     const container = messagesRef.current;
@@ -1905,6 +2402,14 @@ function App() {
     void refreshV3KnowledgeItems();
   }, [activeView, runtimeStatus]);
 
+  const restoredOutlineTaskId = mediaOutlineTask?.sourceIdentity === mediaAcquisitionSourceIdentity ? mediaOutlineTask.taskId : null;
+  const mediaActivity = resolveMediaActivity(mediaTaskAuthority.projection, mediaOutlineState, restoredOutlineTaskId, mediaAcquisitionState, mediaAcquisitionFailure);
+  const visibleMediaFailure = mediaAcquisitionFailure === "V3_MEDIA_TASK_AWAITING_START" && mediaTaskAuthority.projection?.state !== "created"
+    ? null : mediaAcquisitionFailure;
+  const mediaWaitClock = useMediaWaitClock(activeMediaTaskId, mediaActivity.running, mediaAcquisitionStartedAt);
+  const lastProgressSeconds = mediaTaskAuthority.projection?.updatedAt
+    ? Math.max(0, Math.floor((mediaWaitClock.nowMs - new Date(mediaTaskAuthority.projection.updatedAt).getTime()) / 1_000))
+    : null;
   return (
     <main className="shell shell-layout" data-testid="navia-sidepanel-root">
       <section className="main-pane">
@@ -1959,46 +2464,79 @@ function App() {
             currentSessionId={sessionState.currentSessionId}
             switchingSession={sessionState.switchingSession}
             creatingSession={sessionState.creatingSession}
+            deletingSessionId={deletingSessionId}
+            clearingSessions={clearingSessions}
             canCreateSession={runtimeStatus === "online" && !isStreamingOrExecuting}
             error={sessionSwitchError}
             onClose={() => closeSessionMenu()}
             onSelect={switchSession}
             onCreate={() => void startNewSession()}
+            onDelete={(sessionId) => void deleteChatHistorySession(sessionId)}
+            onClear={() => void clearChatHistory()}
           />
         ) : null}
 
         {activeView === "chat" ? (
           <section className="chat-stage" data-testid="chat-scroll-panel" tabIndex={0}>
+            {mediaSessionAdapterId ? (
+              <MediaCompanionLaunchCard
+                portalLabel={mediaSessionAdapterId === "bilibili" ? "B站" : mediaSessionAdapterId}
+                policy={mediaConsentPolicy}
+                capability={mediaSessionCapability}
+                scopes={mediaSessionAdapterId === "bilibili" ? BILIBILI_CONSENT_SCOPE_ITEMS : []}
+                sessionBusy={mediaSessionBusy}
+                sessionError={mediaSessionError}
+                runtimeStatus={mediaRuntimeStatus}
+                runtimeError={mediaRuntimeError}
+                credentialState={mediaCredentialState}
+                credentialError={mediaCredentialError}
+                acquisitionState={mediaActivity.state}
+                acquisitionError={visibleMediaFailure ?? (restoredOutlineTaskId ? null : mediaTaskAuthority.error)}
+                persistentSessionEnabled={mediaPortalSettings?.enabled === true}
+                onEnable={authorizeMediaSession}
+                onRetry={retryAutomaticMediaFlow}
+                onRevoke={() => void revokeMediaSession()}
+              />
+            ) : null}
+            <details className="chat-context-dock" data-testid="chat-context-dock">
+              <summary>
+                <span className={`chat-context-pulse is-${chatActivityTone(runtimeStatus, chatTurnState, mediaActivity)}`} aria-hidden="true" />
+                <span className="chat-context-summary-copy">
+                  <strong>{chatActivityLabel(runtimeStatus, chatTurnState, mediaActivity)}</strong>
+                  <small>{mediaActivity.running
+                    ? `${mediaWaitClock.authoritative ? "任务已用时" : "本页等待"} ${formatMediaWait(mediaWaitClock.seconds)}${lastProgressSeconds !== null && Number.isFinite(lastProgressSeconds) ? ` · 最近进展 ${lastProgressSeconds} 秒前` : ""}`
+                    : pageContext?.title ?? (mediaSessionAdapterId ? "当前视频与连接详情" : "页面与连接详情")}</small>
+                </span>
+                <span className="chat-context-summary-action">详情</span>
+              </summary>
+              <div className="chat-context-dock-body">
             <section className="current-page-card" data-testid="current-page-context-card" aria-label="Current page context">
               <div className="current-page-copy">
                 <span className="current-page-kicker">当前上下文</span>
                 <strong title={pageContext?.title ?? undefined}>{pageContext?.title ?? "等待读取当前网页"}</strong>
-                <span>{pageSubmitted ? submitStatus : pageContext ? "页面已读取，尚未提交上下文。" : "点击读取当前页面后，Navia 会基于网页内容回答。"}</span>
+                <span>{pageSubmitted ? submitStatus : pageContext ? "页面已读取；提问时会自动更新并提交上下文。" : "总结或提问时会自动读取当前页面。"}</span>
               </div>
               <div className="current-page-status">
                 <span className={`context-state context-state-${pageContextState}`}>{pageStateLabel(pageContextState)}</span>
                 <span>{pageContext?.domain ?? "host page"}</span>
               </div>
+              <details className="current-page-advanced-actions">
+                <summary>上下文诊断</summary>
+                <div>
+                  <button data-testid="read-current-page" disabled={runtimeStatus !== "online"} onClick={captureCurrentPage} type="button">重新读取</button>
+                  <button data-testid="submit-page-context" disabled={runtimeStatus !== "online" || !pageContext} onClick={submitPageContext} type="button">重新提交</button>
+                </div>
+              </details>
             </section>
             {mediaSessionAdapterId ? (
               <>
-                <MediaCompanionLaunchCard
-                  portalLabel={mediaSessionAdapterId === "bilibili" ? "B站" : mediaSessionAdapterId}
-                  policy={mediaConsentPolicy}
-                  capability={mediaSessionCapability}
-                  scopes={mediaSessionAdapterId === "bilibili" ? BILIBILI_CONSENT_SCOPE_ITEMS : []}
-                  sessionBusy={mediaSessionBusy}
-                  sessionError={mediaSessionError}
-                  runtimeStatus={mediaRuntimeStatus}
-                  runtimeError={mediaRuntimeError}
-                  credentialState={mediaCredentialState}
-                  credentialError={mediaCredentialError}
-                  acquisitionState={mediaAcquisitionState}
-                  acquisitionError={mediaAcquisitionFailure ?? mediaTaskAuthority.error}
-                  onEnable={authorizeMediaSession}
-                  onRetry={retryAutomaticMediaFlow}
-                  onRevoke={() => void revokeMediaSession()}
-                />
+                {mediaPolicyProvenance === "unverified_legacy" ? <p role="status">这是历史视频结果，生成时的授权版本无法核验；本次仅供查看，未重新采集或分析。</p> : null}
+                {mediaAcquisitionFailure === "V3_MEDIA_SOURCE_POLICY_CONFLICT" && mediaPolicySwitchAuthority ? <section className="media-policy-switch" role="alert" data-testid="media-policy-switch">
+                  <strong>此视频的旧结果使用不同的授权版本</strong>
+                  <p>旧结果保留为历史，不会作为当前授权下的证据。确认后将重新分析当前视频。</p>
+                  <button type="button" data-testid="media-policy-switch-confirm" disabled={mediaPolicySwitchBusy || !["active", "published"].includes(mediaPolicySwitchAuthority.state)} onClick={() => void confirmMediaPolicySwitch()}>{mediaPolicySwitchBusy ? "正在切换…" : mediaPolicySwitchAuthority.state === "active" ? "取消旧任务并重新分析" : "按当前授权重新分析"}</button>
+                  {!["active", "published"].includes(mediaPolicySwitchAuthority.state) ? <small>旧任务尚未安全结束；请先处理本机服务或清理故障。</small> : null}
+                </section> : null}
                 <LocalRuntimeAccess
                   title="本机 Runtime 安全会话"
                   mode="automatic"
@@ -2018,19 +2556,14 @@ function App() {
                   onRetryOutline={() => void materializeCurrentMediaTask(mediaTaskAuthority.projection!.taskId)}
                   onCancel={() => void cancelCurrentMediaTask()}
                   onRetry={() => void retryCurrentMediaTask()}
-                /> : <MediaAcquisitionStatusCard
-                  state={mediaAcquisitionState}
+                /> : restoredOutlineTaskId && mediaOutlineTask?.projections?.outline ? <section className="media-transcript-quick-card" data-testid="media-restored-outline-card" data-task-id={restoredOutlineTaskId} aria-label="已恢复的视频大纲">
+                  <div className="media-transcript-quick-heading"><div><span>当前视频任务</span><h3>视频内容已就绪</h3></div><button type="button" onClick={() => void chrome.tabs.create({ url: chrome.runtime.getURL(`workspace.html#/media/tasks/${restoredOutlineTaskId}`) })}>查看完整大纲</button></div>
+                  <p>{mediaOutlineTask.projections.outline.title}</p><small>已恢复本机保存的媒体产物；历史转写临时任务已清理。</small>
+                </section> : <MediaAcquisitionStatusCard
+                  state={mediaActivity.state}
                   input={mediaAcquisitionInput}
-                  failureCode={mediaAcquisitionFailure ?? mediaTaskAuthority.error}
+                  failureCode={visibleMediaFailure ?? (restoredOutlineTaskId ? null : mediaTaskAuthority.error)}
                 />}
-                {mediaCaptureEligibility?.captureFallbackEligible ? <TrustedTabCaptureCard
-                  failures={mediaCaptureEligibility.failures}
-                  state={mediaCaptureState}
-                  error={mediaCaptureError}
-                  onStart={(event) => void startTrustedTabCapture(event)}
-                  onFinish={() => void stopTrustedTabCapture("completed")}
-                  onCancel={() => void cancelCurrentMediaTask()}
-                /> : null}
               </>
             ) : null}
             <KnowledgeDraftCard
@@ -2044,8 +2577,41 @@ function App() {
               onCancel={() => void cancelKnowledgeDraft()}
               onConfirm={() => void confirmKnowledgeDraft()}
             />
+              </div>
+            </details>
+            {mediaCaptureEligibility?.captureFallbackEligible ? <TrustedTabCaptureCard
+              failures={mediaCaptureEligibility.failures}
+              state={mediaCaptureState}
+              error={mediaCaptureError}
+              onStart={(event) => void startTrustedTabCapture(event)}
+              onFinish={() => void stopTrustedTabCapture("completed")}
+              onCancel={() => void cancelCurrentMediaTask()}
+            /> : null}
+            {localImportEntryEligible({
+              captureFallbackEligible: mediaCaptureEligibility?.captureFallbackEligible === true,
+              captureState: mediaCaptureState,
+              acquisitionState: mediaActivity.state,
+              hasProjection: hasPublishedMediaProjection(mediaTaskAuthority.projection),
+              taskId: activeMediaTaskId,
+              sourceIdentity: mediaAcquisitionSourceIdentity
+            }) ? <LocalMediaImportCard
+              eligible
+              blockedReason="自动字幕与媒体获取均不可用，可以选择本地视频继续解析。"
+              taskId={activeMediaTaskId ?? ""}
+              sourceIdentity={mediaAcquisitionSourceIdentity ?? ""}
+              client={localImportClient}
+              generation={localImportSessionGeneration}
+            /> : null}
             <div className="messages-frame">
-              <div className="messages" aria-live="polite" ref={messagesRef}>
+              <div
+                className="messages"
+                aria-live="polite"
+                ref={messagesRef}
+                onScroll={(event) => {
+                  const element = event.currentTarget;
+                  followConversationRef.current = element.scrollHeight - element.scrollTop - element.clientHeight < 72;
+                }}
+              >
                 {messageGroups.map((group) => {
                   if (group.kind === "single") return renderChatMessage(group.message);
                   return (
@@ -2079,10 +2645,8 @@ function App() {
                 aria-label="Navia quick actions"
                 tabIndex={0}
               >
-                <button data-testid="read-current-page" disabled={runtimeStatus !== "online"} onClick={captureCurrentPage} type="button">读取当前页面</button>
-                <button data-testid="submit-page-context" disabled={runtimeStatus !== "online"} onClick={submitPageContext} type="button">提交上下文</button>
-                <button data-testid="summarize-page" disabled={!canStartChatAction} onClick={() => sendChat("总结当前页面", "summarize_page")} type="button">总结</button>
-                <button data-testid="mindmap-page" disabled={!canStartChatAction} onClick={() => sendChat("生成当前页面的思维导图", "mindmap_page")} type="button">Mindmap</button>
+                <button className="primary-quick-action" data-testid="summarize-page" disabled={!canStartChatAction} onClick={() => sendChat("总结当前页面", "summarize_page")} type="button">总结当前页</button>
+                <button data-testid="mindmap-page" disabled={!canStartChatAction} onClick={() => sendChat("生成当前页面的思维导图", "mindmap_page")} type="button">生成导图</button>
                 <button data-testid="explain-selection" disabled={!canStartChatAction} onClick={() => sendChat("解释选中内容", "explain_selection")} type="button">解释选区</button>
               </div>
 
@@ -2258,7 +2822,11 @@ function App() {
               <button type="button" role="tab" aria-selected={settingsSection === "chat"} className={settingsSection === "chat" ? "active" : ""} onClick={() => setSettingsSection("chat")}>聊天模型</button>
               <button type="button" role="tab" aria-selected={settingsSection === "media"} className={settingsSection === "media" ? "active" : ""} onClick={() => setSettingsSection("media")}>媒体与语音</button>
             </div>
-            {settingsSection === "media" ? <><VisionProviderSettingsPanel runtimeStatus={runtimeStatus} /><AsrModelSettingsPanel runtimeStatus={runtimeStatus} /></> : (
+            {settingsSection === "media" ? <>
+              <MediaPortalSettingsPanel runtimeStatus={runtimeStatus} onSettingsChange={setMediaPortalSettings} />
+              <VisionProviderSettingsPanel runtimeStatus={runtimeStatus} />
+              <AsrModelSettingsPanel runtimeStatus={runtimeStatus} />
+            </> : (
             <>
             <div className="settings-summary">
               <div>
@@ -2271,6 +2839,29 @@ function App() {
               </div>
             </div>
             <div className="settings-grid">
+              <label>
+                <span>服务商</span>
+                <select
+                  value={providerDraft.providerType}
+                  onChange={(event) => {
+                    const providerType = event.target.value as "" | keyof typeof LLM_PROVIDER_PRESETS;
+                    const preset = providerType ? LLM_PROVIDER_PRESETS[providerType] : null;
+                    setProviderDraft({
+                      providerType,
+                      displayName: preset?.displayName ?? "",
+                      baseUrl: preset?.baseUrl ?? "",
+                      apiKey: "",
+                      defaultModel: preset?.models[0] ?? ""
+                    });
+                    setManagedProviderId(null);
+                    setSettingsMessage(providerType ? "填写密钥只会保存配置，不会切换当前 Chat 模型。" : "请选择要配置的服务商。");
+                  }}
+                >
+                  <option value="">请选择服务商</option>
+                  <option value="minimax">MiniMax</option>
+                  <option value="deepseek">DeepSeek</option>
+                </select>
+              </label>
               <label>
                 <span>显示名称</span>
                 <input
@@ -2294,7 +2885,7 @@ function App() {
                   value={providerDraft.apiKey}
                   onChange={(event) => setProviderDraft((current) => ({ ...current, apiKey: event.target.value }))}
                   autoComplete="off"
-                  placeholder="sk-..."
+                  placeholder="仅保存在本机；保存不会自动切换"
                 />
               </label>
               <label>
@@ -2303,7 +2894,7 @@ function App() {
                   value={providerDraft.defaultModel}
                   onChange={(event) => setProviderDraft((current) => ({ ...current, defaultModel: event.target.value }))}
                 >
-                  {(getDefaultProvider(settings)?.models ?? DEFAULT_DEEPSEEK_MODELS).map((model) => (
+                  {(providerDraft.providerType ? LLM_PROVIDER_PRESETS[providerDraft.providerType].models : []).map((model) => (
                     <option value={model} key={model}>{model}</option>
                   ))}
                 </select>
@@ -2312,11 +2903,11 @@ function App() {
             <div className="settings-summary">
               <div>
                 <dt>API Key</dt>
-                <dd>{getDefaultProvider(settings)?.apiKeyMasked ?? "未配置"}</dd>
+                <dd>{getProviderById(settings, managedProviderId)?.apiKeyMasked ?? "未配置"}</dd>
               </div>
               <div>
                 <dt>连接状态</dt>
-                <dd>{getDefaultProvider(settings)?.testStatus?.status ?? "untested"}</dd>
+                <dd>{getProviderById(settings, managedProviderId)?.testStatus?.status ?? "untested"}</dd>
               </div>
             </div>
             <div className="panel-heading panel-heading-tight settings-subheading">
@@ -2407,7 +2998,7 @@ function App() {
               <button disabled={runtimeStatus !== "online" || settingsStatus === "saving" || settingsStatus === "testing"} onClick={runProviderTest} type="button">
                 测试连接
               </button>
-              <button disabled={runtimeStatus !== "online" || settingsStatus === "saving" || !getDefaultProvider(settings)} onClick={removeProvider} type="button">
+              <button disabled={runtimeStatus !== "online" || settingsStatus === "saving" || !getProviderById(settings, managedProviderId ?? chatProviderDraft.llmProviderId)} onClick={removeProvider} type="button">
                 删除 Provider
               </button>
               <button disabled={runtimeStatus !== "online" || settingsStatus === "saving" || settingsStatus === "testing"} onClick={saveChatProvider} type="button">
@@ -3009,10 +3600,10 @@ function extractPageContextInTab(): ExtractedPageContext {
 
 function getDefaultProvider(settings: MercurySettings | null): LLMProviderConfig | null {
   const providers = settings?.providers ?? [];
-  return providers.find((provider) => provider.id === settings?.defaultProviderId) ?? providers[0] ?? null;
+  return providers.find((provider) => provider.id === settings?.defaultProviderId) ?? null;
 }
 
-function getProviderById(settings: MercurySettings | null, providerId: string | undefined): LLMProviderConfig | null {
+function getProviderById(settings: MercurySettings | null, providerId: string | null | undefined): LLMProviderConfig | null {
   if (!providerId) return null;
   return (settings?.providers ?? []).find((provider) => provider.id === providerId) ?? null;
 }
@@ -3034,7 +3625,7 @@ function sidecarHealthLabel(health: PiSidecarHealth | null): string {
 function sidecarNextStepText(health: PiSidecarHealth | null): string {
   if (!health) return "打开 Settings / Debug 或发送 PiAgent 消息时检查。";
   if (health.status === "ok") return "PiAgent Sidecar 可用。";
-  return (health.nextSteps ?? ["启动 Pi Sidecar", "检查 DeepSeek Provider / model", "或手动切换到 LLM Direct"]).join(" / ");
+  return (health.nextSteps ?? ["启动 Pi Sidecar", "检查模型服务与 model", "或手动切换到 LLM Direct"]).join(" / ");
 }
 
 async function getActiveTabUrl(): Promise<string | null> {

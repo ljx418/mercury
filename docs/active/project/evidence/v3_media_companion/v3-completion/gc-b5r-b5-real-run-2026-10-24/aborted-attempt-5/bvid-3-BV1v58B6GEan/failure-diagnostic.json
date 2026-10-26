@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1v58B6GEan",
+  "order": "3",
+  "finalDisposition": "failed",
+  "finishReason": "outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}",
+  "error": {
+    "name": "Error",
+    "message": "outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}",
+    "stack": "Error: outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:657:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792776809881,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_dc0ad7ee47734640b50f8361d183b62c"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792776809642,
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200
+    },
+    {
+      "at": 1792776809642,
+      "method": "GET",
+      "path": "/v1/settings",
+      "status": 200
+    },
+    {
+      "at": 1792776809643,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792776809666,
+      "method": "POST",
+      "path": "/v1/companion/sessions",
+      "status": 201
+    },
+    {
+      "at": 1792776809676,
+      "method": "GET",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792776809678,
+      "method": "GET",
+      "path": "/v1/knowledge/permissions",
+      "status": 200
+    },
+    {
+      "at": 1792776809679,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792776809699,
+      "method": "POST",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792776809702,
+      "method": "GET",
+      "path": "/v1/media/portal-settings/bilibili",
+      "status": 200
+    },
+    {
+      "at": 1792776809814,
+      "method": "GET",
+      "path": "/v1/media/source-authority",
+      "status": 200
+    },
+    {
+      "at": 1792776809815,
+      "method": "GET",
+      "path": "/v1/media/task-projections",
+      "status": 404
+    },
+    {
+      "at": 1792776809825,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792776809839,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    },
+    {
+      "at": 1792776809853,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 404
+    },
+    {
+      "at": 1792776809854,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 404
+    },
+    {
+      "at": 1792776809880,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/resolve",
+      "status": 201
+    },
+    {
+      "at": 1792776810361,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776810968,
+      "method": "GET",
+      "path": "/v1/media/source-authority",
+      "status": 200
+    },
+    {
+      "at": 1792776810970,
+      "method": "GET",
+      "path": "/v1/media/task-projections",
+      "status": 200
+    },
+    {
+      "at": 1792776810978,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776810979,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776810980,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776810986,
+      "method": "GET",
+      "path": "/v1/media/capture-eligibility/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776811131,
+      "method": "GET",
+      "path": "/v1/pi/sidecar/health",
+      "status": 200
+    },
+    {
+      "at": 1792776811727,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/media_task_dc0ad7ee47734640b50f8361d183b62c/execute",
+      "status": 200
+    },
+    {
+      "at": 1792776812489,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_dc0ad7ee47734640b50f8361d183b62c",
+      "status": 200
+    },
+    {
+      "at": 1792776812499,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792776812504,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    }
+  ],
+  "startedAtUtc": "2026-10-23T17:33:17.722Z",
+  "finishedAtUtc": "2026-10-23T17:33:32.821Z"
+}

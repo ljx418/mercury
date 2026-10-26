@@ -107,9 +107,23 @@ def test_capture_sink_rejects_acoustically_empty_pcm(tmp_path):
         sample_width_bytes=2,
     )
     sink.write(0, b"\x00\x00" * 16_000)
+    assert sink.observation() == {
+        "capturedMs": 1000,
+        "byteLength": 32_000,
+        "chunkCount": 1,
+        "nonZeroSampleCount": 0,
+        "peakAbsSample": 0,
+    }
     with pytest.raises(CaptureSinkFailure, match="V3_MEDIA_CAPTURE_EMPTY"):
         sink.finalize()
     assert sink.active_count() == 0
+    assert sink.observation() == {
+        "capturedMs": 0,
+        "byteLength": 0,
+        "chunkCount": 0,
+        "nonZeroSampleCount": 0,
+        "peakAbsSample": 0,
+    }
 
 
 def test_capture_sink_abort_removes_private_staging_file(tmp_path):

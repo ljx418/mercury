@@ -1,0 +1,7 @@
+65a079433d5193dcfb75d53a7d2d06ffe2f4ecbed7ffe31343993027a1c92dfe  00-status-and-scope.md
+ea947574df8dfe32b6ac1a0bb149a652ec72fc64ae193e496c8976d074f3968c  01-implementation-map.md
+e07369ce79cd31deba2e90531925e0670931155afc4b1dda41143088fdb0231f  02-commands-and-exits.md
+8e12ce537d26bbf4a35c6743518b60244e3152073c445b012bd3633f8bfb1811  03-zero-action-and-cleanup-audit.md
+3b258456a0728258398d1f19a6bcff32072faf510b3362eadfee522359804aa2  04-secret-path-raw-media-scan.json
+3561fa244e9339f4a9f5c8ce108cab9b9f246b59e34234a06051cc9923987c13  05-closure-protocol-and-retention.json
+70037b3fc93fe7c8173d07934420d3ea1ecbebb2bb7adef9e070b36d4317c802  06-risks-and-next-decision.md

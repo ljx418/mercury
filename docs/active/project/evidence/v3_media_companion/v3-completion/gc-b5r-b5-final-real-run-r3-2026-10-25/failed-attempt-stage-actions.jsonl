@@ -1,0 +1,3 @@
+{"schemaVersion":"v3-5.10-b5-stage-action/v1","event":"sourceAttempt","count":1,"candidateRunId":"gc-b5r-b5-final-r3-20261024T182714Z","at":"2026-10-24T18:27:15.120Z","detail":{"stage":"authorization_granted"}}
+{"schemaVersion":"v3-5.10-b5-stage-action/v1","event":"chromeLaunch","count":1,"candidateRunId":"gc-b5r-b5-final-r3-20261024T182714Z","at":"2026-10-24T18:27:15.545Z","detail":{"stage":"chrome_launched"}}
+{"schemaVersion":"v3-5.10-b5-stage-action/v1","event":"visibleWindow","count":1,"candidateRunId":"gc-b5r-b5-final-r3-20261024T182714Z","at":"2026-10-24T18:27:15.545Z","detail":{"stage":"chrome_launched"}}

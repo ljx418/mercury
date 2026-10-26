@@ -1,0 +1,82 @@
+{
+  "files": {
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession.node-test.mjs": {
+      "bytes": 58012,
+      "sha256": "cb072306405a394f899a6a293f4e0c71395031894c14cf2706efb8a28985a700"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b27.mjs": {
+      "bytes": 4851,
+      "sha256": "212bf740f66d80c3d0941ff03634ed40c9607f5bda6fc4f3c26c47dbf8ffdeb5"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/cases/b30.mjs": {
+      "bytes": 7680,
+      "sha256": "cee6f123c22146919266271fa8bb354b512cda134621ec95a52debea436184fc"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/driver.mjs": {
+      "bytes": 5394,
+      "sha256": "d4bc0792e9c3a799d73e82268ed5fd22e81e5f145c41fbfbd0bfacf19a85f29e"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/index.mjs": {
+      "bytes": 8857,
+      "sha256": "b93f88b58a26ffa63cb241bb04bb1a42a9ed99612c991e27d79ed32269a1efa1"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/preflight.mjs": {
+      "bytes": 9665,
+      "sha256": "b64e1c2db208076e35b678b13587870afb8d0f40dbdf7306bb0ccb3949aa0de9"
+    },
+    "apps/chrome-extension/e2e/lib/v3WpBVisibleSession/realAdapters.mjs": {
+      "bytes": 27949,
+      "sha256": "21f030d72ab9e93a48036c53de95d05604cf1a4102eb2229ddb737e8cd671b96"
+    },
+    "apps/chrome-extension/e2e/v3-wp-b-local-import-owned-session.mjs": {
+      "bytes": 7603,
+      "sha256": "d24d8bb800c2e617911258818f9cdff51cbf45b1f21bc4cddd03f0b6be675e5e"
+    },
+    "apps/chrome-extension/entrypoints/sidepanel/main.tsx": {
+      "bytes": 166038,
+      "sha256": "093c0e0640160094b63764a19da1c419b2efdd995bbb5dd008ad5b717be76606"
+    },
+    "apps/chrome-extension/src/modules/media_companion/LocalMediaImportClient.ts": {
+      "bytes": 17454,
+      "sha256": "4df976aef4253b773269167fd0e4de73a1fb190fa3e92846571fad55cf173d6b"
+    },
+    "apps/chrome-extension/src/modules/media_companion/localImportDiagnostics.ts": {
+      "bytes": 8113,
+      "sha256": "2e313da2b8b147bdf495b487960e0c3c595920e4b4b5337c9607aab0ea8c3ee4"
+    },
+    "apps/chrome-extension/src/modules/media_companion/settings/LocalMediaImportCard.tsx": {
+      "bytes": 9177,
+      "sha256": "ae24147396a6fe514d0897332e8a2a1b4cf03b016167dd4ae9a77257451a2071"
+    },
+    "apps/chrome-extension/src/modules/media_companion/tests/LocalMediaImportClient.test.tsx": {
+      "bytes": 33942,
+      "sha256": "f0d96e2d449855721b8425f73eedb15c08a35bf2d13da953595ce9235b827f5b"
+    },
+    "apps/chrome-extension/src/modules/media_companion/tests/localImportDiagnostics.test.ts": {
+      "bytes": 6157,
+      "sha256": "8d9b05239552a02d0cae6a24b54fe29f966b7eda1551e182f53c4e684d10e076"
+    },
+    "services/local-runtime/navia_runtime/app.py": {
+      "bytes": 172042,
+      "sha256": "577e6a0aa83c3481278d25b2d299d8bbbc198e206296dd1769d018014cf5e427"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/consumer_barrier.py": {
+      "bytes": 15106,
+      "sha256": "8a45e3990cd1cbc00b54f89fe1f68553a6f49497ffc1839bba89da94150a5647"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/manager.py": {
+      "bytes": 9069,
+      "sha256": "a5915a9221d666b75668998c8ff4f692ffd7acb4b9b5f2638d1ed193fcc486e1"
+    },
+    "services/local-runtime/navia_runtime/modules/media_companion/local_import/observations.py": {
+      "bytes": 3425,
+      "sha256": "a10954bf42507c2aeb20823a290a7dfcb680a95db2d1c004d87df5097ecdc207"
+    },
+    "services/local-runtime/scripts/build_wp_b_visible_product_seam_evidence.py": {
+      "bytes": 5154,
+      "sha256": "bc93d9a6f971de383aa9032a53b55220079ac9b9a28d33e3e0a5c6127ad24c65"
+    }
+  },
+  "note": "Hashes of the FINAL stable worktree. The builder re-hashes every file after writing and fails if anything moved.",
+  "schemaVersion": "v3-wp-b-visible-product-seam-changed-file-hashes/v1"
+}

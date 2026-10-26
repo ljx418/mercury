@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "v3-stage-a-runtime-restart-evidence/v5",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_c304feea991c4940a2ff1edc1ff8943f",
+  "newTaskId": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+  "authority": [
+    {
+      "task_id": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+      "state": "degraded"
+    }
+  ],
+  "permissionFixture": "optional_permission_first_use",
+  "nativePromptClicked": true,
+  "finalPermission": {
+    "cookies": true,
+    "bilibili": true
+  },
+  "oldOwnedDirectoryToken": "task_3cd5cc936236be3ac63299e48328cf64",
+  "ownerManifestMatchedBeforeCrash": true,
+  "oldPrivateArtifactBeforeCrash": {
+    "name": "artifact_aa066cbd03562925444b960842f29124.json",
+    "byteLength": 172751,
+    "segmentCount": 1101,
+    "jsonParsed": true
+  },
+  "oldPrivateAfterCrash": true,
+  "oldPrivateAfterRestartBeforeRetry": false,
+  "oldPrivateBeforeRetry": false,
+  "visibleOutlineForNewTask": true,
+  "visibleOutlineMatchesStored": true,
+  "originalEmbeddedTaskId": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+  "secondEmbeddedTaskId": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+  "crossSurfaceRestored": true,
+  "workspaceChecks": [
+    {
+      "width": 360,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 153805
+    },
+    {
+      "width": 420,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 200209
+    },
+    {
+      "width": 768,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 118481
+    },
+    {
+      "width": 1280,
+      "overflowPx": 0,
+      "violations": [],
+      "screenshotBytes": 214050
+    }
+  ],
+  "workspaceKeyboardRoute": true,
+  "visibleOutlineTitleLength": 12,
+  "visibleOutlineSummaryLength": 4000,
+  "stablePublishedSnapshot": true,
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_c304feea991c4940a2ff1edc1ff8943f",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_ad0880bfa12346f1b641586b9b8737dc",
+      "failureCode": null
+    }
+  ],
+  "fixture": "optional_permission_first_use;real_artifact_then_SIGKILL"
+}

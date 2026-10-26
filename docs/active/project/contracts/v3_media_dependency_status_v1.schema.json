@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_dependency_status_v1.schema.json",
+  "title": "Navia V3 media dependency status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "overallState", "generation", "verifiedAt", "activeJobId", "latestJobId", "routeReadiness", "dependencies"],
+  "properties": {
+    "schemaVersion": {"const": "v3-media-dependency-status/v1"},
+    "overallState": {"enum": ["ready", "action_required", "installing", "failed"]},
+    "generation": {"type": ["string", "null"], "pattern": "^depgen_[a-f0-9]{64}$"},
+    "verifiedAt": {"type": ["string", "null"], "format": "date-time"},
+    "activeJobId": {"type": ["string", "null"], "pattern": "^media_dep_job_[a-f0-9]{32}$"},
+    "latestJobId": {"type": ["string", "null"], "pattern": "^media_dep_job_[a-f0-9]{32}$"},
+    "routeReadiness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credentialedMediaAsr", "failureCode"],
+      "properties": {
+        "credentialedMediaAsr": {"enum": ["ready", "blocked"]},
+        "failureCode": {
+          "type": ["string", "null"],
+          "enum": [null, "V3_MEDIA_DEPENDENCY_SYSTEM_TOOL_MISSING", "V3_MEDIA_DEPENDENCY_NOT_READY", "V3_MEDIA_DEPENDENCY_HASH_MISMATCH", "V3_MEDIA_DEPENDENCY_SELF_TEST_FAILED"]
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/dependency"}
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "dependencies": {
+          "allOf": [
+            {"contains": {"properties": {"dependencyId": {"const": "yt-dlp"}}, "required": ["dependencyId"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"dependencyId": {"const": "ffmpeg"}}, "required": ["dependencyId"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"dependencyId": {"const": "ffprobe"}}, "required": ["dependencyId"]}, "minContains": 1, "maxContains": 1},
+            {"contains": {"properties": {"dependencyId": {"const": "sensevoice"}}, "required": ["dependencyId"]}, "minContains": 1, "maxContains": 1}
+          ]
+        }
+      }
+    },
+    {
+      "if": {"properties": {"overallState": {"const": "ready"}}},
+      "then": {
+        "properties": {
+          "generation": {"type": "string"},
+          "verifiedAt": {"type": "string"},
+          "activeJobId": {"type": "null"},
+          "routeReadiness": {"properties": {"credentialedMediaAsr": {"const": "ready"}, "failureCode": {"type": "null"}}},
+          "dependencies": {
+            "allOf": [
+              {"contains": {"properties": {"dependencyId": {"const": "yt-dlp"}, "state": {"const": "ready"}}, "required": ["dependencyId", "state"]}, "minContains": 1, "maxContains": 1},
+              {"contains": {"properties": {"dependencyId": {"const": "ffmpeg"}, "state": {"const": "ready"}}, "required": ["dependencyId", "state"]}, "minContains": 1, "maxContains": 1},
+              {"contains": {"properties": {"dependencyId": {"const": "ffprobe"}, "state": {"const": "ready"}}, "required": ["dependencyId", "state"]}, "minContains": 1, "maxContains": 1},
+              {"contains": {"properties": {"dependencyId": {"const": "sensevoice"}, "state": {"const": "ready"}}, "required": ["dependencyId", "state"]}, "minContains": 1, "maxContains": 1}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"overallState": {"const": "installing"}}},
+      "then": {"properties": {"activeJobId": {"type": "string"}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dependencyId", "required", "kind", "installMode", "state", "version", "expectedSha256", "observedSha256", "verifiedAt", "storageScope", "failureCode"],
+      "properties": {
+        "dependencyId": {"enum": ["yt-dlp", "ffmpeg", "ffprobe", "sensevoice"]},
+        "required": {"const": true},
+        "kind": {"enum": ["managed_tool", "system_tool", "asr_model"]},
+        "installMode": {"enum": ["managed_download", "system_verified", "delegated_manager"]},
+        "state": {"enum": ["missing", "checking", "downloading", "verifying", "installing", "self_testing", "ready", "failed", "corrupt"]},
+        "version": {"type": ["string", "null"], "minLength": 1},
+        "expectedSha256": {"$ref": "#/$defs/sha256"},
+        "observedSha256": {"$ref": "#/$defs/sha256"},
+        "verifiedAt": {"type": ["string", "null"], "format": "date-time"},
+        "storageScope": {"enum": ["windows_persistent", "runtime_system", "asr_managed"]},
+        "failureCode": {
+          "type": ["string", "null"],
+          "enum": [null, "V3_MEDIA_DEPENDENCY_SOURCE_NOT_ALLOWED", "V3_MEDIA_DEPENDENCY_SIZE_MISMATCH", "V3_MEDIA_DEPENDENCY_HASH_MISMATCH", "V3_MEDIA_DEPENDENCY_DISK_SPACE_LOW", "V3_MEDIA_DEPENDENCY_PERMISSION_DENIED", "V3_MEDIA_DEPENDENCY_SELF_TEST_FAILED", "V3_MEDIA_DEPENDENCY_SYSTEM_TOOL_MISSING", "V3_MEDIA_DEPENDENCY_NOT_READY"]
+        }
+      },
+      "allOf": [
+        {"if": {"properties": {"dependencyId": {"const": "yt-dlp"}}}, "then": {"properties": {"kind": {"const": "managed_tool"}, "installMode": {"const": "managed_download"}, "storageScope": {"const": "windows_persistent"}}}},
+        {"if": {"properties": {"dependencyId": {"enum": ["ffmpeg", "ffprobe"]}}}, "then": {"properties": {"kind": {"const": "system_tool"}, "installMode": {"const": "system_verified"}, "storageScope": {"const": "runtime_system"}}}},
+        {"if": {"properties": {"dependencyId": {"const": "sensevoice"}}}, "then": {"properties": {"kind": {"const": "asr_model"}, "installMode": {"const": "delegated_manager"}, "storageScope": {"const": "asr_managed"}}}},
+        {"if": {"properties": {"state": {"const": "ready"}}}, "then": {"properties": {"verifiedAt": {"type": "string"}, "failureCode": {"type": "null"}}}},
+        {"if": {"properties": {"dependencyId": {"enum": ["yt-dlp", "ffmpeg", "ffprobe"]}, "state": {"const": "ready"}}}, "then": {"properties": {"expectedSha256": {"type": "string"}, "observedSha256": {"type": "string"}}}}
+      ]
+    }
+  }
+}

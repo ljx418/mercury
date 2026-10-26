@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1HTbi6LERi",
+  "order": "5",
+  "finalDisposition": "failed",
+  "finishReason": "Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter fields are invalid.\",\"recoverable\":false},\"request_id\":null}",
+  "error": {
+    "name": "Error",
+    "message": "Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter fields are invalid.\",\"recoverable\":false},\"request_id\":null}",
+    "stack": "Error: Stage B synthesize rejected: HTTP 502 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_RESPONSE_INVALID\",\"message\":\"Chapter fields are invalid.\",\"recoverable\":false},\"request_id\":null}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:719:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792813701438,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_ba06e17e68ee4869a127907a9d583f8e"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792813723275,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813724782,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813726047,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813726289,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813727794,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813728349,
+      "method": "GET",
+      "path": "/v1/media/source-authority",
+      "status": 200
+    },
+    {
+      "at": 1792813728349,
+      "method": "GET",
+      "path": "/v1/media/task-projections",
+      "status": 200
+    },
+    {
+      "at": 1792813728355,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813728356,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813728356,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813728363,
+      "method": "GET",
+      "path": "/v1/media/capture-eligibility/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813728365,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792813728376,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    },
+    {
+      "at": 1792813729862,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813731053,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813731368,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813732874,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813734382,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813735887,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813736059,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813737392,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813738898,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813740402,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813740454,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_ba06e17e68ee4869a127907a9d583f8e/materialize-visual",
+      "status": 200
+    },
+    {
+      "at": 1792813740455,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_ba06e17e68ee4869a127907a9d583f8e/materialize-visual",
+      "status": 200
+    },
+    {
+      "at": 1792813740462,
+      "method": "DELETE",
+      "path": "/v1/media/credential-leases/pcl_32e1982100fe823eab50a00a22228dca",
+      "status": 200
+    },
+    {
+      "at": 1792813740462,
+      "method": "DELETE",
+      "path": "/v1/media/credential-leases/pcl_ff76d72767e5981b6bbdd6392461fc8e",
+      "status": 200
+    },
+    {
+      "at": 1792813741066,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813741907,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_ba06e17e68ee4869a127907a9d583f8e",
+      "status": 200
+    },
+    {
+      "at": 1792813746073,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813751081,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813756087,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813761093,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813766099,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813771106,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813776114,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813781121,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813786129,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813791135,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792813796140,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    }
+  ],
+  "startedAtUtc": "2026-10-24T03:48:08.934Z",
+  "finishedAtUtc": "2026-10-24T03:50:00.052Z"
+}

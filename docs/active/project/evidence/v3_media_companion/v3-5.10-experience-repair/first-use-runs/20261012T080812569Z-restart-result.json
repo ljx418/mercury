@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "v3-stage-a-runtime-restart-evidence/v5",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": false,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_5778ddb3a3004b9da054194d8315b6ee",
+  "newTaskId": "media_task_4c52c43d959841b2bf37c43e9a1aeda4",
+  "authority": [
+    {
+      "task_id": "media_task_4c52c43d959841b2bf37c43e9a1aeda4",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_4c52c43d959841b2bf37c43e9a1aeda4",
+      "state": "degraded"
+    }
+  ],
+  "oldOwnedDirectoryToken": "task_cb43cda447593d4a0eb65e580b0b9913",
+  "ownerManifestMatchedBeforeCrash": true,
+  "oldPrivateArtifactBeforeCrash": {
+    "name": "artifact_702940fafe2819b5f21183ccadd0ae27.json",
+    "byteLength": 172751,
+    "segmentCount": 1101,
+    "jsonParsed": true
+  },
+  "oldPrivateAfterCrash": true,
+  "oldPrivateAfterRestartBeforeRetry": false,
+  "oldPrivateBeforeRetry": false,
+  "visibleOutlineForNewTask": true,
+  "visibleOutlineMatchesStored": true,
+  "originalEmbeddedTaskId": null,
+  "secondEmbeddedTaskId": "media_task_4c52c43d959841b2bf37c43e9a1aeda4",
+  "crossSurfaceRestored": false,
+  "visibleOutlineTitleLength": 12,
+  "visibleOutlineSummaryLength": 4000,
+  "stablePublishedSnapshot": true,
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_5778ddb3a3004b9da054194d8315b6ee",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_4c52c43d959841b2bf37c43e9a1aeda4",
+      "failureCode": null
+    }
+  ],
+  "fixture": "pregranted_in_temporary_extension_only;real_artifact_then_SIGKILL"
+}

@@ -1,0 +1,47 @@
+{
+  "storeRecord": {
+    "schemaVersion": "v3-media-local-import-store/v1",
+    "importId": "media_import_22222222222222222222222222222222",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "sourceIdentity": "portal:bilibili:BV1Bb411w741:CID61744125:p1",
+    "state": "ready",
+    "sequence": 6,
+    "byteLength": 104857600,
+    "uploadedBytes": 104857600,
+    "declaredMediaType": "video/mp4",
+    "dependencyGeneration": "depgen_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "videoManifestSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "visualReceiptSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "barrierPhase": "video_deleted",
+    "failureCode": null,
+    "createdAt": "2026-10-19T08:00:00Z",
+    "updatedAt": "2026-10-19T08:02:00Z"
+  },
+  "visualReceipt": {
+    "schemaVersion": "v3-media-import-visual-receipt/v1",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "sourceIdentity": "portal:bilibili:BV1Bb411w741:CID61744125:p1",
+    "mediaSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "durationMs": 60000,
+    "frames": [{
+      "timestampMs": 12000,
+      "artifact": {
+        "artifactId": "artifact_33333333333333333333333333333333",
+        "kind": "frame",
+        "byteLength": 20480,
+        "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      }
+    }]
+  },
+  "consumerBarrier": {
+    "schemaVersion": "v3-media-import-consumer-barrier/v1",
+    "importId": "media_import_22222222222222222222222222222222",
+    "taskId": "media_task_11111111111111111111111111111111",
+    "phase": "video_deleted",
+    "audioOwnerReceiptSha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "visualReceiptSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "transcriptTerminal": false,
+    "visualTerminal": false,
+    "updatedAt": "2026-10-19T08:02:00Z"
+  }
+}

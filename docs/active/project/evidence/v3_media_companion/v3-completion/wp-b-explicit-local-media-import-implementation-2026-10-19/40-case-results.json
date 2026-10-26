@@ -1,0 +1,292 @@
+{
+  "candidate": "wp-b-explicit-local-media-import-implementation-2026-10-19",
+  "cases": [
+    {
+      "caseId": "B01",
+      "note": "包 verifier 101/101；本地 contracts/store 语义闭集 20/20；资产 registry 项因缺私有 seed 未满足",
+      "productionPath": "document verifier + local_import.contracts",
+      "scenario": "3 个 schema meta-validation、公共/内部 fixtures、资产 registry",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "B02",
+      "note": "精确四字段=201；8 项 mutation 全部 400 REQUEST_INVALID",
+      "productionPath": "POST /v1/media/local-imports",
+      "scenario": "create 精确 body；client metadata mutation",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B03",
+      "note": "eligibility 关闭：单 active import、终态释放 task slot、generation 绑定进 record、ACTIVE 回 details.importId（test_v3_media_local_import_gates.py）",
+      "productionPath": "_local_import_generation + coordinator.bind_local_import",
+      "scenario": "task/source/route eligibility",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B04",
+      "note": "OPTIONS 方法/头精确且不含 Content-Length；web Origin 403；无 bearer 401；每条负例断言 writer 未创建",
+      "productionPath": "五个路由 + 中间件",
+      "scenario": "OPTIONS/exact Origin/bearer/token/content script",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B05",
+      "note": "43 字符；重放/跨 import/未知均 TOKEN_INVALID；token 与其摘要均不出现在 SQLite dump",
+      "productionPath": "TokenRegistry",
+      "scenario": "uploadToken 43 字符、一次消费、跨 import/session",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B06",
+      "note": "no-store；错误 details 仅三键；新 store 实例仍返回持久终态而非 404；DELETE 幂等",
+      "productionPath": "store + 四路由",
+      "scenario": "GET/DELETE envelope、含重启后 GET",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B07",
+      "note": "非法跳转、终态反转、bytes 回退、phase 越级、未注册失败码全部拒绝",
+      "productionPath": "semantic_validate_import + store CAS",
+      "scenario": "public state/sequence/barrier phase mutations",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B08",
+      "note": "四闭集进入；其它 TYPE_UNSUPPORTED；ffprobe 为真值，伪装 MIME 拒绝",
+      "productionPath": "contracts.validate_create_body + preparer 声明类型比对",
+      "scenario": "MIME 四项与不支持 MIME",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B09",
+      "note": "0 拒绝；2 GiB 允许；+1 SIZE_LIMIT；不分配大文件",
+      "productionPath": "contracts + writer",
+      "scenario": "0 B / 2 GiB / 2 GiB+1",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B10",
+      "note": "全部在 writer 之前拒绝，staging=0",
+      "productionPath": "PUT content 路由",
+      "scenario": "Content-Length 缺失/不等、encoding、chunked",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B11",
+      "note": "全部合法并切片 ≤1 MiB；累计与 SHA 与整块一致；无 request.body()",
+      "productionPath": "SliceWriter",
+      "scenario": "ASGI 64 KiB / 1 MiB+1 / 8 MiB transport chunks",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B12",
+      "note": "WRITE_FAILED/CANCELLED；writer 关闭、store terminal、staging 清零、可重选",
+      "productionPath": "ImportSession",
+      "scenario": "客户端中断 0%/50%/EOF 前",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B13",
+      "note": "真实 mp4 通过；无视频流 MEDIA_INVALID；伪装声明类型被拒",
+      "productionPath": "LocalMediaPreparer + 真实 ffprobe",
+      "scenario": "MP4 真样本 / 伪 MIME / 无视频流",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B14",
+      "note": "上限精确；超限固定失败且不启动 ASR/视觉",
+      "productionPath": "preparer",
+      "scenario": "4h/+1ms、7680x4320/超限",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B15",
+      "note": "摘要漂移 PREPARE_FAILED 且双沙箱零残留；stderr 不进入 message/details",
+      "productionPath": "preparer._tool/_run",
+      "scenario": "ffprobe/ffmpeg 缺失/摘要变更/超时/非零/恶意输出",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B16",
+      "note": "空间闸门关闭：frozen 公式 declared+min(512MiB, pcm+128MiB)；exact 通过、one-under → DISK_SPACE_LOW 且不留 record/writer；闸门在 writer 之前",
+      "productionPath": "SliceWriter",
+      "scenario": "空间 exact/one-under、task quota",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B17",
+      "note": "pcm_s16le/16k/mono 经真实 WAV 头断言",
+      "productionPath": "preparer._render_wav",
+      "scenario": "WAV shape/hash/owner receipt",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B18",
+      "note": "真实非空帧；timestamp 单调；canonical 字节落盘即回读一致",
+      "productionPath": "preparer._render_frames",
+      "scenario": "1..8 帧与 ImportedVisualReceipt",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B19",
+      "note": "route 正确；跨 task/source/generation/manifest mutation 拒绝；不建第二 SourceAuthority",
+      "productionPath": "MediaAcquisitionCoordinator.bind_local_import",
+      "scenario": "coordinator bind 原子性",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B20",
+      "note": "绑定 JSON 中不出现 downloader/credential/tabCapture/capture；自动 route 顺序未变",
+      "productionPath": "bind_local_import + 测试",
+      "scenario": "local route 禁止 downloader/credential/capture",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B21",
+      "note": "Partially advanced with real speech: a 12,290 ms mp4 with real voice + real changing frames was prepared through the PRODUCTION LocalMediaPreparer (WAV + 3 frames) and pushed through sandbox publish and audio staging. The final SenseVoice projection step was not completed; it needs the full coordinator/barrier route wiring.",
+      "productionPath": "生产 ASR",
+      "scenario": "SenseVoice projection",
+      "status": "NOT_STARTED"
+    },
+    {
+      "caseId": "B22",
+      "note": "materializer 已改为只消费 receipt 且不下载；完整工作台链路未端到端驱动",
+      "productionPath": "materializer + ImportedVisualReceipt",
+      "scenario": "图文产品链路",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "B23",
+      "note": "五注入点 rc=137；两终态顺序皆合法；单点清理；恢复不声称成功",
+      "productionPath": "LocalMediaConsumerBarrier + 真实 probe",
+      "scenario": "durable barrier 正常与 hard-kill",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B24",
+      "note": "四相均可达 cancelled；取消后不再写入",
+      "productionPath": "store + ImportSession",
+      "scenario": "取消 awaiting/uploading/verifying/preparing",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B25",
+      "note": "终态不可反转；清理只 claim 一次",
+      "productionPath": "store CAS + barrier claim",
+      "scenario": "cancel 与 ready/bind/terminal 竞争",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B26",
+      "note": "重启后统一 failed/RUNTIME_RESTARTED；manifest 不足则 CLEANUP_INCOMPLETE 且保留对象",
+      "productionPath": "真实新进程 probe",
+      "scenario": "四非终态与五 barrier phase hard kill",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B27",
+      "note": "unmount/identity 变更即 abort；文件名仅存组件内存且终态清空",
+      "productionPath": "LocalMediaImportCard + client",
+      "scenario": "identity 切换、unmount、session generation",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B28",
+      "note": "deadline 关闭：token 600s / upload 1800s / ffprobe 30s / preparing 1800s；过期 token 拒绝、越墙钟 fail closed、迟到 callback 不覆写终态、active slot 释放",
+      "productionPath": "client generation guard",
+      "scenario": "deadline 与旧 callback 晚到",
+      "status": "PASS"
+    },
+    {
+      "caseId": "B29",
+      "note": "Unreachable on this host: only 12,290 ms of REAL speech exists (two user clips), against a 30,000 ms registry floor. Padding/looping/synthetic tone is forbidden, so the oracle cannot be lowered to fit. Needs a qualifying private seed to be supplied.",
+      "productionPath": "产品路径",
+      "scenario": "registry 真实 100 MB 资产",
+      "status": "IMPOSSIBLE"
+    },
+    {
+      "caseId": "B30",
+      "note": "Unreachable on this host: only 12,290 ms of REAL speech exists (two user clips), against a 30,000 ms registry floor. Padding/looping/synthetic tone is forbidden, so the oracle cannot be lowered to fit. Needs a qualifying private seed to be supplied.",
+      "productionPath": "产品路径",
+      "scenario": "registry 真实 1 GB 资产 + A11y",
+      "status": "IMPOSSIBLE"
+    }
+  ],
+  "codexDecisionInputs": {
+    "b29b30UnprovableBecause": "all real speech on this host totals 12,290 ms against the frozen 30,000 ms floor (short by 17,710 ms); sparse/truncate/zero-fill/metadata-only/mock forbidden",
+    "denominator": {
+      "impossible": 2,
+      "notStarted": 1,
+      "partial": 2,
+      "pass": 25,
+      "total": 30
+    },
+    "denominatorMet": false,
+    "majors": [
+      "app.py frozen-digest drift: v11 46/50, mutations canonical_baseline_not_green"
+    ],
+    "oracleLowered": false,
+    "reopenWith": "a >=30s real-speech media asset (NAVIA_WP_B_SEED_MEDIA)"
+  },
+  "counts": {
+    "IMPOSSIBLE": 2,
+    "NOT_STARTED": 1,
+    "PARTIAL": 2,
+    "PASS": 25
+  },
+  "denominator": {
+    "impossible": 2,
+    "notStarted": 1,
+    "partial": 2,
+    "pass": 25,
+    "total": 30
+  },
+  "hardKillProbe": {
+    "killExitCode": 137,
+    "killPhases": 5,
+    "passed": true
+  },
+  "note": "B29/B30 need the private seed media; every other case was implemented and driven through its production owner.",
+  "schemaVersion": "wp-b-case-results/v1",
+  "seedAvailability": {
+    "builtSeed": {
+      "changingFrames": true,
+      "container": "mp4 (h264 640x360 + aac)",
+      "distinctFrameHashes": 5,
+      "durationMs": 12290,
+      "realSpeech": true
+    },
+    "realSpeechFound": {
+      "assets": 2,
+      "concatenatedMs": 12290,
+      "durationsMs": [
+        5510,
+        6780
+      ],
+      "format": "pcm_s16le / 16000 Hz / mono",
+      "paths": "another project's voice asset directory (read-only; not modified)"
+    },
+    "registryRequiresMs": {
+      "max": 300000,
+      "min": 30000
+    },
+    "searched": [
+      "workspace tree",
+      "user home",
+      "Downloads",
+      "repo assets",
+      "sample registries"
+    ],
+    "verdict": "Short by 17,710 ms. Padding, zero-filling, looping and synthetic tones are forbidden by 05-acceptance-plan.md, so the 30,000 ms floor cannot be met from the real speech that exists on this host."
+  },
+  "status": "WP-B AWAITING CODEX CHECKPOINT",
+  "stopTrigger": "Denominator is 25/30 (pass 25, partial 2, not started 1, unprovable 2) and the package is handed to Codex at its checkpoint. All three NO-GO trigger facts from 04/05 are recorded for that checkpoint: Major 2 (app.py frozen-digest drift; v11 46/50; mutations canonical_baseline_not_green); B29/B30 unprovable because all real speech on this host totals 12,290 ms against the frozen 30,000 ms floor with padding/mock forbidden; denominator unmet. No oracle was lowered.",
+  "terminalStateIsFinal": true,
+  "testTotals": {
+    "extensionMediaSubtree": "488 / 488",
+    "extensionWPB": 10,
+    "hardKillProbe": "5 / 5",
+    "runtimeMediaFocused": 560,
+    "runtimeWPB": 98
+  }
+}

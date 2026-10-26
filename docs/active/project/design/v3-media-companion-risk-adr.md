@@ -3,6 +3,44 @@
 状态：`ROUTE A ACCEPTED / DOCUMENT REFREEZE`  
 日期：2026-09-17
 
+## ADR-V3-12：主路径收敛、显式文件 fallback 与 tabCapture 降级（2026-10-19）
+
+**状态**：Accepted，覆盖 ADR-V3-03、ADR-V3-05 与 ADR-V3-09 中把 `tabCapture` 作为 V3 必需最终回退的部分；其余安全决定继续有效。
+
+**背景**：WP0 已完成 relay 所有权、背压、重启、清理和大量负向边界证明，但 owned Chrome 正控中原生 action 无法稳定让生产 Controller 消费已 armed capture。继续把该路径作为 V3 出门硬依赖，会增加可见窗口、浏览器版本和 UIAutomation 成本，却不提升字幕/受控下载/本地 ASR 主路径的用户价值。
+
+**决定**：V3 首版输入顺序收敛为凭据/公开字幕、受控任务期下载、本地 ASR。三者失败时诚实 blocked，不静默 capture。`tabCapture` 代码与 relay v11 合同保留、默认关闭、标记 experimental，不作为 V3-7 immutable candidate 的必需成功路径。后续“选择已下载视频”采用用户显式单文件授权，作为独立 workpack 设计，不允许默认本地文件扫描。
+
+**升格门槛**：只有在至少两个受支持 Chrome 版本上，以 owned profile、真实 Side Panel、可信用户动作和真实 Runtime 连续完成 start/stop/navigation/tab-close/restart，且原始音频与 sink 零残留，才能把 capture 从 experimental 恢复为受支持 fallback。
+
+**代价**：自动下载被平台拒绝且用户尚无本地文件时，V3 会明确 blocked，覆盖率低于原承诺；换取的是主路径更可重复、权限更少、等待更短且不会让用户误以为浏览器卡死或正在后台录音。
+
+## ADR-V3-13：媒体依赖聚合管理与 verified generation（2026-10-19）
+
+**状态**：Accepted for WP-A implementation gate。
+
+**背景**：SenseVoice 已有完整模型管理器，但 `build_media_downloader()` 仅在 `yt-dlp` 和 `ffmpeg` 文件存在且摘要匹配时返回 downloader，否则静默返回 `None`。用户只能在任务失败后看到笼统错误；Runtime 也无法区分缺失、摘要错误、系统工具缺失和模型未生效。
+
+**决定**：新增 `MediaDependencyManager`，聚合 managed `yt-dlp`、system-verified `ffmpeg/ffprobe` 与 delegated `AsrModelManager`。Settings 通过版本化 Runtime API 读取状态并启动单一 repair job。`yt-dlp` 只允许既有冻结 URL、长度、版本和 SHA-256；`ffmpeg/ffprobe` 仅验证，不允许 Runtime 自动安装系统包；SenseVoice 不复制安装状态机。全部必需项 ready 后发布不可变 `VerifiedDependencySnapshot(generation, verifiedAt, tool paths, hashes, effectiveModelId)`，新任务按 generation 构造 downloader。
+
+**并发与恢复**：安装使用私有暂存文件、file fsync、原子 replace 和 parent-directory fsync；失败或取消不覆盖旧 ready 版本。单进程只允许一个 repair job，重启后删除未提交暂存并根据最终文件重新验证，不把 `downloading/installing` 伪恢复为成功。已经运行的 acquisition 不热切换 generation；下一次执行或显式重试才消费新 generation。
+
+**代价**：新增一组 loopback API/schema、失败码、Runtime 管理器和 Settings 组件，需要合同 refreeze；但不改变媒体任务、Cookie、SourceAuthority、Provider 或 relay v11 公共合同。系统 ffmpeg 缺失时用户仍需修复本机伴侣安装，首版不提供一键 apt。
+
+**拒绝**：复用 ASR Manager 存放非模型工具；让 Extension 直接下载二进制；接受客户端 URL/path/hash；依赖文件存在即 ready；安装成功后修改运行中任务；以 WP-A 绕过 WP-B 或重新启用 capture。
+
+## ADR-V3-14：显式单文件字节导入与同任务多消费者屏障（2026-10-19）
+
+**状态**：Accepted for WP-B document gate。
+
+**背景**：WP-A 已让受控下载成为稳定自动输入，但平台拒绝或用户已有本地副本时，现有 blocked 页面没有接续路径。让用户输入路径会引入任意本地文件访问与 Windows/WSL 路径歧义；继续依赖 tabCapture 则保留可信动作、浏览器版本和实时播放成本。
+
+**决定**：采用浏览器原生单文件选择器，Extension 只把本次 `File` 的字节通过认证 loopback 原始流传给 Runtime，不发送文件名或路径。Runtime `LocalMediaImportManager` 持有一次性内存 token、状态、writer、取消和清理；字节写入既有 `TaskArtifactSandbox`，经 ffprobe/ffmpeg 和 WP-A task snapshot 验证后，以 `explicit_local_media_asr` 原子绑定原 task/source identity。禁止新建 `file:*` SourceAuthority。
+
+**多消费者屏障**：本地视频同时服务 ASR 与截图。原视频只有在 16 kHz mono WAV 和候选帧/视觉 handoff 均 durable 后删除；任一消费者失败走统一 cleanup，不能以“只转写成功”冒充图文产品完成，也不能为截图再次调用平台 downloader。原始视频、WAV 与未选帧保持本地并按终态清理；Provider 仍只接收既有授权的 selected frame。
+
+**恢复与代价**：Runtime 重启无法恢复浏览器 File 权限，因此由 SQLite import store 保留无秘密状态、将未完成记录标记 `RUNTIME_RESTARTED`，再按 owner manifest 清理并要求重选；GET 不得退化为 404。新增四个 privileged loopback API、18 个 import failure code、内部分片 writer、ImportedVisualReceipt 和 ASR/视觉双消费者 durable barrier。只有 input bind、audio owner receipt、visual receipt 均 durable 后可删原视频；两个消费者均 terminal 后才由 barrier 单点清理。目录、批量、路径输入、断点续传和云上传均拒绝。
+
 ## ADR-V3-01：V3 不依赖 V2 知识服务出门
 
 **背景**：PX-6、Query、Graph、Durable Forget 与 RKM 尚未完成。若 V3 等待真实知识服务，会继续阻塞首要的视频理解体验。  

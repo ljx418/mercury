@@ -1,0 +1,324 @@
+{
+  "schemaVersion": "v3-5.10-b6-public-evidence/v2",
+  "kind": "machine-results",
+  "runId": "gc-b6b-20261026T080359Z-292745bcb719",
+  "registrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+  "machineGate": {
+    "positive": false,
+    "counts": {
+      "complete": 0,
+      "limited": 0,
+      "blocked": 0,
+      "failed": 6,
+      "total": 6
+    }
+  },
+  "sources": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "disposition": "failed",
+      "failureCode": "Error",
+      "providerOutboundHttpAttempts": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true,
+      "quality": null,
+      "stageADiagnostic": {
+        "code": null,
+        "phase": null,
+        "authorityPollCount": 0,
+        "authorityRowCount": 0,
+        "exactIdentityMatchCount": 0,
+        "authorityStateClass": "absent",
+        "mediaTaskPollCount": 0,
+        "mediaTaskRowCount": 0,
+        "mediaTaskStateClass": "absent",
+        "elapsedBucket": "under-1m",
+        "enableState": "not-attempted",
+        "permissionState": "unknown",
+        "resolveStatusClass": "absent"
+      },
+      "executionClosure": {
+        "stage": "post-source",
+        "present": true,
+        "ok": true,
+        "codes": [],
+        "fileCount": 499,
+        "driftedCount": 0,
+        "missingCount": 0,
+        "extraCount": 0
+      }
+    }
+  ]
+}

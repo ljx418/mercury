@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Navia WP-A 媒体依赖就绪架构",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [1360, 680],
+    "repository": {
+      "url": "https://github.com/zhouhouze/mercury",
+      "provider": "github",
+      "link_mode": "local-only",
+      "revision": "a303551a5bf89c26ff36b24ac06c7e30c334db27"
+    },
+    "views": [
+      {
+        "id": "setup",
+        "label": "一次配置",
+        "focus": ["settings", "runtimeApi", "dependencyManager", "managedTools"],
+        "note": "用户只在 Settings 发起修复；来源校验、自检和发布全部由 Runtime 持有。"
+      },
+      {
+        "id": "task",
+        "label": "日常任务",
+        "focus": ["dependencyManager", "snapshot", "downloaderFactory", "acquirer"],
+        "note": "任务只消费 ready 快照；依赖不完整时明确 blocked，不静默进入 tabCapture。"
+      },
+      {
+        "id": "trust",
+        "label": "信任边界",
+        "focus": ["managedTools", "verifiedLocal", "dependencyManager", "snapshot"],
+        "note": "yt-dlp 采用冻结来源和摘要；ffmpeg/ffprobe 只验证；SenseVoice 委托既有模型管理器。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "settings",
+      "type": "frontend",
+      "label": "MediaDependencySettingsPanel",
+      "sublabel": "状态、修复、取消、恢复建议",
+      "pos": [28, 102],
+      "size": [196, 80],
+      "sources": [{"path": "apps/chrome-extension/src/modules/media_companion/settings/AsrModelSettingsPanel.tsx", "label": "既有设置模式"}]
+    },
+    {
+      "id": "runtimeApi",
+      "type": "security",
+      "label": "Runtime dependency API",
+      "sublabel": "认证 loopback；无秘密返回",
+      "pos": [252, 102],
+      "size": [184, 80],
+      "sources": [{"path": "services/local-runtime/navia_runtime/app.py", "line": 1787, "label": "既有 ASR API"}]
+    },
+    {
+      "id": "dependencyManager",
+      "type": "backend",
+      "label": "MediaDependencyManager",
+      "sublabel": "聚合状态与单一 repair owner",
+      "pos": [464, 102],
+      "size": [194, 80]
+    },
+    {
+      "id": "snapshot",
+      "type": "security",
+      "label": "VerifiedDependencySnapshot",
+      "sublabel": "路径、摘要、verifiedAt、generation",
+      "pos": [686, 102],
+      "size": [194, 80]
+    },
+    {
+      "id": "downloaderFactory",
+      "type": "backend",
+      "label": "build_media_downloader",
+      "sublabel": "只接受 ready 快照",
+      "pos": [908, 102],
+      "size": [184, 80],
+      "sources": [{"path": "services/local-runtime/navia_runtime/app.py", "line": 210, "label": "当前 factory"}]
+    },
+    {
+      "id": "acquirer",
+      "type": "backend",
+      "label": "BilibiliMediaAcquirer",
+      "sublabel": "受控下载 -> 本地 ASR",
+      "pos": [1120, 102],
+      "size": [196, 80],
+      "sources": [{"path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/bilibili/acquirer.py", "label": "现有仲裁器"}]
+    },
+    {
+      "id": "managedTools",
+      "type": "database",
+      "label": "ManagedToolRegistry",
+      "sublabel": "catalog + installer + .navia/tools",
+      "pos": [438, 326],
+      "size": [246, 88],
+      "sources": [{"path": "docs/active/project/evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0-contract-dependency-samples/dependency-manifest.json", "label": "冻结依赖清单"}]
+    },
+    {
+      "id": "verifiedLocal",
+      "type": "external",
+      "label": "Verified local dependencies",
+      "sublabel": "ffmpeg/ffprobe + SenseVoice readiness",
+      "pos": [712, 326],
+      "size": [250, 88],
+      "sources": [
+        {"path": "services/local-runtime/navia_runtime/app.py", "line": 219, "label": "系统工具路径"},
+        {"path": "services/local-runtime/navia_runtime/modules/media_companion/asr/model_manager.py", "line": 57, "label": "模型管理器"}
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "认证本机 Runtime",
+      "wraps": ["runtimeApi", "dependencyManager", "snapshot", "downloaderFactory", "acquirer", "managedTools"],
+      "pad": 16
+    }
+  ],
+  "connections": [
+    {"id": "settings-api", "from": "settings", "to": "runtimeApi", "label": "status / repair / cancel", "labelDy": 58, "variant": "emphasis"},
+    {"id": "api-manager", "from": "runtimeApi", "to": "dependencyManager", "label": "typed command", "labelAt": [450, 196]},
+    {"id": "manager-snapshot", "from": "dependencyManager", "to": "snapshot", "label": "publish ready generation", "labelDy": 58, "variant": "emphasis"},
+    {"id": "snapshot-factory", "from": "snapshot", "to": "downloaderFactory", "label": "verified paths", "labelAt": [894, 196]},
+    {"id": "factory-acquirer", "from": "downloaderFactory", "to": "acquirer", "label": "downloader or blocked", "labelDy": 58},
+    {"id": "manager-tools", "from": "dependencyManager", "to": "managedTools", "label": "frozen install + verify", "fromSide": "bottom", "toSide": "top", "labelAt": [420, 220]},
+    {"id": "local-manager", "from": "verifiedLocal", "to": "dependencyManager", "label": "hash + self-test state", "fromSide": "top", "toSide": "bottom", "labelDx": 94, "variant": "security"}
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "复用而非重写",
+      "items": ["SenseVoice 继续由 AsrModelManager 管理", "yt-dlp 复用 2026.08.19 冻结来源与摘要"]
+    },
+    {
+      "dot": "amber",
+      "title": "V1 边界",
+      "items": ["不静默安装系统包或任意 URL", "不实现本地文件导入，不重新启用 tabCapture"]
+    }
+  ]
+}

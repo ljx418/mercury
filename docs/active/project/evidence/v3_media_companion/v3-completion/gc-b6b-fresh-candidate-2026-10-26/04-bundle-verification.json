@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "v3-5.10-b6b-bundle-verification/v1",
+  "batch": "GC-B6B FRESH SIX-SOURCE CANDIDATE + BLIND SEMANTIC REVIEW",
+  "runId": "gc-b6b-20261025T175243Z",
+  "method": "every private bundle was re-read with the PRODUCTION readReviewBundle() and validated with the PRODUCTION validateReviewBundle(); its manifest was verified file by file",
+  "bundles": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "present": true,
+      "validationOk": true,
+      "validationFailures": [],
+      "manifestOk": true,
+      "manifestFileCount": 14,
+      "captureStatus": "captured",
+      "captureCounts": {
+        "evidence": 107,
+        "thumbnails": 8,
+        "chapters": 6
+      },
+      "captureClosure": {
+        "identityClosed": true,
+        "catalogClosed": true,
+        "thumbnailsClosed": true,
+        "seekClosed": true
+      },
+      "bundleSha256": "b2d4d5ad6099f6145b940c820ea8e8ce1c51d654dadb34b7e82cf226e3675f92",
+      "reviewBindingSha256": "24d6381032b556251d9b923fcfd2fca911d1a7b4263bc9688e85ad5d5faa6d45",
+      "artifactSha256": "a9f5470248a47789608d21223a06a910cce4ba929edfc95f92f138f8881eab18",
+      "evidenceCount": 107,
+      "thumbnailCount": 8,
+      "chapterCount": 6
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "present": false,
+      "validationOk": null,
+      "validationFailures": [],
+      "manifestOk": null,
+      "manifestFileCount": null,
+      "captureStatus": null,
+      "captureCounts": null,
+      "captureClosure": null,
+      "bundleSha256": null,
+      "reviewBindingSha256": null,
+      "artifactSha256": null,
+      "evidenceCount": null,
+      "thumbnailCount": null,
+      "chapterCount": null
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "present": true,
+      "validationOk": true,
+      "validationFailures": [],
+      "manifestOk": true,
+      "manifestFileCount": 14,
+      "captureStatus": "captured",
+      "captureCounts": {
+        "evidence": 90,
+        "thumbnails": 8,
+        "chapters": 6
+      },
+      "captureClosure": {
+        "identityClosed": true,
+        "catalogClosed": true,
+        "thumbnailsClosed": true,
+        "seekClosed": true
+      },
+      "bundleSha256": "15a4d21dfe7a3ef36e198c55c8bc88cbe0d218eb9e8ba9c0a0a027906db78e5f",
+      "reviewBindingSha256": "cb1684891ca37c14177c0b4e3e328169cd2fd2112f95ff89617e0e34d2ef7438",
+      "artifactSha256": "f334bb89e039442e83f2347c1211c1f905e96433132739026e43348a277a3b5f",
+      "evidenceCount": 90,
+      "thumbnailCount": 8,
+      "chapterCount": 6
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "present": true,
+      "validationOk": true,
+      "validationFailures": [],
+      "manifestOk": true,
+      "manifestFileCount": 14,
+      "captureStatus": "captured",
+      "captureCounts": {
+        "evidence": 64,
+        "thumbnails": 8,
+        "chapters": 6
+      },
+      "captureClosure": {
+        "identityClosed": true,
+        "catalogClosed": true,
+        "thumbnailsClosed": true,
+        "seekClosed": true
+      },
+      "bundleSha256": "1ec1a2d9e4a60e22c5ca8b94ca618ed9757f3ad22949a4e676a3ee932798f56c",
+      "reviewBindingSha256": "ec16871c5aaa621df42def4006e12d8d36e809f67cb7f4df973c86a28cb4c485",
+      "artifactSha256": "c87b885ce7901b15687eb50287179c92cfbc4833a1ec14d7b127fb567ddea726",
+      "evidenceCount": 64,
+      "thumbnailCount": 8,
+      "chapterCount": 6
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "present": true,
+      "validationOk": true,
+      "validationFailures": [],
+      "manifestOk": true,
+      "manifestFileCount": 11,
+      "captureStatus": "captured",
+      "captureCounts": {
+        "evidence": 28,
+        "thumbnails": 5,
+        "chapters": 8
+      },
+      "captureClosure": {
+        "identityClosed": true,
+        "catalogClosed": true,
+        "thumbnailsClosed": true,
+        "seekClosed": true
+      },
+      "bundleSha256": "59bb3e7eb2baf392f922af7041bdbd64faf3dd3dc488491dd2637caba593d17e",
+      "reviewBindingSha256": "30bcaa665c59db162b55719e5dcc042b528622841a5fc917a6b369cc5d4e7484",
+      "artifactSha256": "c1569027a8aa60dbb0856625d115cc0fc0c1df9ea4e4edbb41556dcc7eebb204",
+      "evidenceCount": 28,
+      "thumbnailCount": 5,
+      "chapterCount": 8
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "present": true,
+      "validationOk": true,
+      "validationFailures": [],
+      "manifestOk": true,
+      "manifestFileCount": 14,
+      "captureStatus": "captured",
+      "captureCounts": {
+        "evidence": 80,
+        "thumbnails": 8,
+        "chapters": 6
+      },
+      "captureClosure": {
+        "identityClosed": true,
+        "catalogClosed": true,
+        "thumbnailsClosed": true,
+        "seekClosed": true
+      },
+      "bundleSha256": "c9dd9ad4ab3cb6fa448c07f6636d6a38fe06d8e7284500d0f361637cd3d35010",
+      "reviewBindingSha256": "9ddd058a24ebd659b7f655384066bdbfbe601494edcdd29e3178b0d9b2355738",
+      "artifactSha256": "b6a82ad326ff1077e8be0ea7e018d68b5a4069319802f83d8fb581848145c9a1",
+      "evidenceCount": 80,
+      "thumbnailCount": 8,
+      "chapterCount": 6
+    }
+  ],
+  "summary": {
+    "present": 5,
+    "validated": 5,
+    "manifestVerified": 5,
+    "captureClosed": 5
+  }
+}

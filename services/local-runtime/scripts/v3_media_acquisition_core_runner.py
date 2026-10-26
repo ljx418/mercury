@@ -90,6 +90,13 @@ def main() -> int:
     api_root = args.private_root / "api-tasks"
     api_coordinator = MediaAcquisitionCoordinator(TaskArtifactSandbox(api_root))
     previous = runtime_app.media_acquisition_coordinator
+    previous_extension_id = os.environ.get("NAVIA_LOCAL_FILES_EXTENSION_ID")
+    os.environ["NAVIA_LOCAL_FILES_EXTENSION_ID"] = "a" * 32
+    origin = "chrome-extension://" + "a" * 32
+    headers = {
+        "Origin": origin,
+        "Authorization": "Bearer " + runtime_app.companion_session_broker.issue(origin)["token"],
+    }
     runtime_app.media_acquisition_coordinator = api_coordinator
     try:
         client = TestClient(runtime_app.app)
@@ -103,12 +110,16 @@ def main() -> int:
             "consentPolicyId": "bilibili-media-consent/v1",
             "consentPolicyRevision": 1,
         }
-        post = client.post("/v1/media/acquisitions", json=body)
-        get = client.get(f"/v1/media/acquisitions/{TASK_ID}")
-        reject = client.post("/v1/media/acquisitions", json=body | {"cookie": "forbidden"})
-        delete = client.delete(f"/v1/media/acquisitions/{TASK_ID}")
+        post = client.post("/v1/media/acquisitions", json=body, headers=headers)
+        get = client.get(f"/v1/media/acquisitions/{TASK_ID}", headers=headers)
+        reject = client.post("/v1/media/acquisitions", json=body | {"cookie": "forbidden"}, headers=headers)
+        delete = client.delete(f"/v1/media/acquisitions/{TASK_ID}", headers=headers)
     finally:
         runtime_app.media_acquisition_coordinator = previous
+        if previous_extension_id is None:
+            os.environ.pop("NAVIA_LOCAL_FILES_EXTENSION_ID", None)
+        else:
+            os.environ["NAVIA_LOCAL_FILES_EXTENSION_ID"] = previous_extension_id
 
     result = {
         "schemaVersion": "v3-media-acquisition-core-run/v1",

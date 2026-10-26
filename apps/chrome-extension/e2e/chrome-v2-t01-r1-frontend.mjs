@@ -195,11 +195,10 @@ export async function launchExtension(profilePath) {
       "--enable-features=ExtensionsSidePanel,SidePanelPinning",
       "--disable-features=DisableLoadExtensionCommandLineSwitch",
       "--enable-unsafe-extension-debugging",
+      "--force-renderer-accessibility",
       "--window-size=1280,900",
       `--remote-debugging-port=${port}`,
       `--user-data-dir=${windowsPath(profilePath)}`,
-      `--disable-extensions-except=${windowsPath(extensionRoot)}`,
-      `--load-extension=${windowsPath(extensionRoot)}`,
       "about:blank"
     ], { cwd: repoRoot, stdio: ["ignore", "pipe", "pipe"] });
     let log = "";
@@ -208,6 +207,10 @@ export async function launchExtension(profilePath) {
     try {
       const webSocketDebuggerUrl = await waitForCdp(port);
       const browser = await chromium.connectOverCDP(webSocketDebuggerUrl);
+      const browserSession = await browser.newBrowserCDPSession();
+      await browserSession.send("Extensions.loadUnpacked", { path: windowsPath(extensionRoot) });
+      await browserSession.detach();
+      await wait(1_500);
       const context = browser.contexts()[0];
       if (!context) throw new Error("Chrome CDP has no browser context.");
       return {

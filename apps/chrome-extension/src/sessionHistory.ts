@@ -22,8 +22,11 @@ export function hasVisibleHistory(session: ChatSession): boolean {
   return session.messageCount > 0;
 }
 
-export function shouldReuseActiveSessionForNewChat(session: ChatSession | null | undefined): boolean {
-  return Boolean(session && session.archived !== true && !hasVisibleHistory(session));
+export function shouldReuseActiveSessionForNewChat(
+  session: ChatSession | null | undefined,
+  renderedMessageCount = 0
+): boolean {
+  return Boolean(session && session.archived !== true && renderedMessageCount === 0 && !hasVisibleHistory(session));
 }
 
 export function getHistorySessions(sessions: ChatSession[]): ChatSession[] {

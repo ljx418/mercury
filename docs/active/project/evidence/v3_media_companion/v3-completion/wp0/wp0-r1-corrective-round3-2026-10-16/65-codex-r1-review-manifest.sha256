@@ -1,0 +1,9 @@
+65b31eadd4acf41386c6f21f8172ccc7176a604a8a2a1c55a8ccc5ac751c6dd4  ../../../../../contracts/v3_media_capture_internal_relay_v10.schema.json
+1439f0f1952abe87080aa413277032bce5ee1070ccd5612fe821246ec3a0bff9  ../../../../../fixtures/v3-media-capture-internal-relay-v10-fixtures.json
+57380dbf80e3285fe8ff61945b55285d36c42507ac4b05ce2746143fe2dc87aa  ../../../v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v10-contract.py
+9c376719117a8cb0740c9eda28e23cab5b12b2c1da5d0846615fbda9ee453f0e  ../../../v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v10-mutations.py
+2c1f8d9a2e0a3ba71c60260b15867a0c1f0ec543f4db1555381b89fc0d2ea984  60-codex-r1-limited-refreeze-decision.md
+afcdb2bff29508f639e205c605114bec8dfa6bad49799b9d053d2a9756c66ef3  61-codex-r1-checkpoint-review.md
+80722ef70a6cc0e211343f0208474d8a2518d58d64a1a7be14be578898001163  62-codex-r1-refreeze-baseline.json
+d76ef97b94d825f9266d6b7ce1fdffea535380762492991515004e47c59f0f4f  63-codex-r1-refreeze-mutations.json
+e503d85387b783133bed0b591e3bd4011f3c77873f623147f4ac163d4a47cc6a  64-codex-r2-development-and-acceptance.md

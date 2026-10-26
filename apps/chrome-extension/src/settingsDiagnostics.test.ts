@@ -108,7 +108,7 @@ describe("Chat Provider settings diagnostics", () => {
 
     expect(status).toBe("piagent_provider_config_missing");
     expect(result.status).toBe("piagent_provider_config_missing");
-    expect(result.message).toContain("DeepSeek Provider 配置");
+    expect(result.message).toContain("模型服务配置");
   });
 
   it("classifies done without text as invalid_response", () => {

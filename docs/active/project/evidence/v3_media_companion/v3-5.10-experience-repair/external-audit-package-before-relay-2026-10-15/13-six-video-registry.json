@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "v3-5.10-stage-b-source-registry/v1",
+  "sources": [
+    {"order":1,"portalId":"bilibili","bvid":"BV1pohR6rEEh","requiredDisposition":"attempt_fresh"},
+    {"order":2,"portalId":"bilibili","bvid":"BV1hMpE6FEXG","requiredDisposition":"attempt_fresh"},
+    {"order":3,"portalId":"bilibili","bvid":"BV1VHHe6kEH3","requiredDisposition":"attempt_fresh"},
+    {"order":4,"portalId":"bilibili","bvid":"BV1SDHy6aEiB","requiredDisposition":"attempt_fresh"},
+    {"order":5,"portalId":"bilibili","bvid":"BV1vSHD6tEsM","requiredDisposition":"attempt_fresh"},
+    {"order":6,"portalId":"bilibili","bvid":"BV1FCps68EGf","requiredDisposition":"attempt_fresh"}
+  ],
+  "allowedFinalDispositions": ["complete", "limited", "blocked", "failed"],
+  "positiveDisposition": "complete",
+  "maximumBlockedForStageExit": 1,
+  "substitutionAllowed": false,
+  "crossRunArtifactReuseAllowed": false,
+  "freshIsolationRequired": ["runtime", "database", "chromeProfile", "task"],
+  "chromeRequiredFlags": ["--mute-audio"]
+}

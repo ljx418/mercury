@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "v3-gc-b5r-source-candidate-metadata/v1",
+  "observedAt": "2026-10-24",
+  "method": "public_bilibili_view_metadata_only",
+  "limitations": [
+    "metadata_reachability_does_not_prove_playback",
+    "metadata_reachability_does_not_prove_audio_track",
+    "metadata_reachability_does_not_prove_product_download",
+    "no_cookie_used",
+    "no_media_downloaded"
+  ],
+  "candidates": [
+    {"candidateOrder":1,"bvid":"BV11t8w6oEtP","title":"全网唯一！基因编辑“婴儿”8年后！她们为什么会诞生？","durationSeconds":1884,"videos":1,"cid":41095398520,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":2,"bvid":"BV1QcYx6VEAj","title":"我们的发展为什么像日本？我们的美元收入为什么这么低？高新产业为啥没办法解决我们的问题？","durationSeconds":1203,"videos":1,"cid":41727364600,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":3,"bvid":"BV1v58B6GEan","title":"现在的中国给美国的压力比冷战时期苏联给美国的压力大吗？","durationSeconds":1537,"videos":1,"cid":41136295066,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":4,"bvid":"BV1M5tJ6kEvw","title":"世界上最难的可不是珠穆朗玛峰！","durationSeconds":1076,"videos":1,"cid":41521119805,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":5,"bvid":"BV1HTbi6LERi","title":"4年up主，教你怎么找视频资料素材","durationSeconds":271,"videos":1,"cid":41002929285,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":6,"bvid":"BV1qM9fB8Eb2","title":"B站官方AI？updream保姆级教程，20分钟快速上手。","durationSeconds":1371,"videos":1,"cid":38063116031,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":7,"bvid":"BV16woRBfEsH","title":"AI真的好用吗？影视飓风全新工作流分享！","durationSeconds":996,"videos":1,"cid":37821614986,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":8,"bvid":"BV1w7XQB7EsS","title":"用AI分析了100个爆款视频，发现我的创作方向完全错了","durationSeconds":723,"videos":1,"cid":37076404310,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":9,"bvid":"BV1829jBeErD","title":"12分钟把我3年所有的幕后拍摄干货说清楚","durationSeconds":751,"videos":1,"cid":37147774321,"pay":0,"ugcPay":0,"download":1,"metadataCode":0},
+    {"candidateOrder":10,"bvid":"BV1aJAjzsE4j","title":"【准确+省钱】Nano Banana 2 专业实用技巧","durationSeconds":103,"videos":1,"cid":36832873569,"pay":0,"ugcPay":0,"download":1,"metadataCode":0}
+  ]
+}

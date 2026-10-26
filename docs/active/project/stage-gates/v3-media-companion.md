@@ -2,12 +2,24 @@
 
 > **2026-10-07 上位边界**：本文件及既有 `V3-0..V3-7` 媒体计划继续有效，不被 Chat + Know 收敛方案替换。B站媒体子链成为 Chat 当前上下文的技术主干；新增 `V3-1.4` 本机伴侣、`V3-4.1` KnowledgeDraft/Know 投影，并在既有 V3-5..V3-7 上追加整合验收。V3 总门禁同时读取 `design/v3-chat-know-product-convergence.md`、`v3-chat-know-development-plan.md` 和 `v3-chat-know-acceptance-plan.md`。媒体 LIMITED PASS 不等于 Chat/Know 或 V3 PASS；原合同、12 页分母、H01-H10 与历史证据均不得缩减或改写。
 
+> **2026-10-19 WP0 范围修订**：历史 `tabCapture` 实现、矩阵和证据保持只读，不从分母中删除；但它不再是 V3 当前产品候选的必需成功输入。R6 以 `58/65 supported + 0/7 experimental visible lifecycle` 受限收口，不能宣称原 R6 PASS。R7 可封存“主路径候选 + experimental capture limitation”，但必须证明生产默认不会静默进入 capture。后续显式本地视频导入属于独立 workpack，不得在 R7 中冒充已实现。
+
+> **2026-10-19 WP-A 实施门限**：R7 之后先完成“媒体依赖就绪”，再进入显式本地文件导入。WP-A 只管理冻结 `yt-dlp`、验证系统 `ffmpeg/ffprobe`、聚合既有 SenseVoice 状态，并让新媒体任务消费 verified generation；不实现文件导入、不升格 tabCapture、不改变媒体内容或秘密上传范围。WP-A 文档、原型、合同、开发计划和验收矩阵通过 Codex 审查后，才允许 ClaudeCode CLI 修改产品代码。
+
+> **2026-10-19 WP-A 文档结论**：实施前包 verifier `42/42`，隔离审查遗留项定向闭环为 Fatal=0/Major=0/Minor=0；当前坐标 `WP-A IMPLEMENTATION MAY START`。仅允许按唯一 ClaudeCode goal 实施 WP-A，并在 `WP-A AWAITING CODEX CHECKPOINT` 停止；WP-B/WP-C 与 V3 PASS 未授权。
+
+> **2026-10-19 WP-A 实施结论**：Codex 纠正 A24 探针整秒截断、错误 route/endpoint 读取，并关闭 redirect/retry/deadline、repair job 重启持久化、终态不可逆、task snapshot 篡改和 Settings 恢复缺口。A01-A24 为 `24/24 PASS`，A23 fresh 下载与 A24 公开 API `credentialed_media_asr -> SenseVoice` 真数据通过，v11 为 `50/50 + 16/16`，Fatal/Major/Minor=`0/0/0`。当前坐标 `WP-A PASS / WP-B DOCUMENTATION NEXT`；WP-B 产品实现仍未授权。
+
+> **2026-10-19 WP-B 文档门限**：WP-B 只新增用户手势单文件字节导入、privileged Runtime 流式会话与 `explicit_local_media_asr` 同任务接线；不接收路径、不扫描目录、不上传原始媒体、不改变自动 route/SourceAuthority/relay v11/tabCapture 支持级别。实施前包冻结两个公共 schema、一个内部 durable schema、五个 fixture、真实资产 registry、18 个失败码、SQLite store、B01-B30 与 ASR/视觉双消费者 barrier。focused Codex 审查 Fatal/Major 清零且 verifier 全绿前，产品实现 NO-GO。
+
+> **2026-10-19 WP-B 实现入口**：实施前 verifier `95/95`、Archify showcase `9/9`，独立审查问题经单批闭环后 Fatal/Major/Minor=`0/0/0`。当前坐标 `WP-B IMPLEMENTATION MAY START`；只授权唯一 ClaudeCode goal，完成后须停在 `WP-B AWAITING CODEX CHECKPOINT`，不得进入 WP-C 或宣布 V3 PASS。
+
 日期：2026-10-10。状态：`V3-1.4 LIMITED PASS / V3-2 LIMITED PASS / V3-3 LIMITED PASS / V3-4 LIMITED PASS / V3-5 functional flow implemented but formal H01..H10 pending / V3-5.1 MACHINE CANDIDATE PASS + HUMAN QUALITY REVIEW PENDING / V3-6..V3-7 BLOCKED`。
 
 ## 1. 范围与当前事实
 
 - V2/PX-6/RKM：`PAUSED / INCOMPLETE`，保留证据但不阻塞 V3。
-- V3：B站优先，首版包含受控 Cookie 会话主路径、公开字幕与可信 tabCapture 回退、本地 ASR、关键帧、本地 OCR、持久授权下的云端 VLM、大纲、时间线、Media Mindmap、Ask、反跳、任务历史和本地导出。
+- V3：B站优先，首版包含受控 Cookie 会话、公开字幕、受控任务期媒体下载与本地 ASR；可信 tabCapture 降为默认关闭的实验回退。关键帧、本地 OCR、持久授权下的云端 VLM、大纲、时间线、Media Mindmap、Ask、反跳、任务历史和本地导出仍在范围内。
 - V4：承接真实知识持久化、Query、Graph、Durable Forget 和维护。
 - V3-1.1 已实现开放 `MediaPortalAdapter`、仅 B站注册的 build-time registry、窄域自动 bridge、通用页面身份、字幕能力发现、播放读取与 seek；V3-1.2 会话能力已 `QUALIFIED PASS`，V3-1.3 Browser-to-Runtime 一次性凭据通道和短期进程内租约已通过独立实施出门审查。新增 V3-1.4 Manual Companion Runtime 已完成一次配置、桌面手动启动、扩展自动建立短期会话、显式停止和重启换实例闭环；2026-10-08 新鲜真实 Chrome 再验证仍为 7/7 PASS。历史 Small/Base/Paraformer 比较失败保持只读；SenseVoiceSmall Q8 已成为 V3 `development_baseline`。V3-2-1 Runtime acquisition core、V3-2-2 Route B3 和 V3-2-3 三槽位真实媒体获取/全长转写均保留限定通过。V3-2-4 的 production route orchestration 历史失败已由 V3-2.4a..V3-2.7 修复、重采、生产出门和独立审查闭环；当前 V3-2 为 `LIMITED PASS`，不得把历史失败描述为当前阻塞，也不得扩大为 V3 整体通过。
 
@@ -55,7 +67,7 @@ Revision 3 Amendment 1 曾将三个自然无字幕样本限制为当前分 P 不
 打开 B站视频 -> Navia 识别身份、会话和字幕状态
 -> 首次授权五项 scope（持久到撤销）
 -> 用户点击开始，建立短期 Cookie 租约
--> 凭据字幕/临时媒体；失败时公开字幕或可信 tabCapture 回退
+-> 凭据字幕/临时媒体；失败时公开字幕；仍失败则明确 blocked，不静默 capture
 -> 本地 ASR + 关键帧/OCR + 授权云端 VLM
 -> 图文大纲/时间线/Mindmap/Ask/证据
 -> 点击证据跳回真实播放器
@@ -277,3 +289,127 @@ V3-7 完成后：`V3 Bilibili-first media companion passed the frozen subtitle/l
 - Runtime 679、Extension 351、Workspace targeted 6、typecheck/build 全绿；raw media/audio/transcript/OCR 云上传 0，selected-frame upload 24，临时媒体和自动化截图残留 0。
 - 内部假绿审计发现 Ask 的 `criticalMeaningError=false` / `citationSupported=true` 由生产者写入，不能单独作为含义正确的证据。production verifier 已追加独立人类质量 submission 门禁：无提交时固定 `machinePassed=true / status=HUMAN_REVIEW_PENDING / passed=false / exitCode=3`。
 - 当前决定：`V3-5.1 MACHINE CANDIDATE PASS / HUMAN QUALITY REVIEW PENDING`。固定候选 3 x 12 问与锚点五步体验未由人类提交，旧 V3-5 H01..H10 正式 submission 也仍 pending；因此 V3-5.1 未 LIMITED PASS，V3-6/V3-7 不得启动。
+
+## 27. V3-5.10 子阶段状态冻结（2026-10-14）
+
+> 本节仅冻结当前权威状态词，不改写历史失败证据。完整诊断证据见
+> `evidence/v3_media_companion/v3-5.10-experience-repair/` 下的
+> `stage-a-*`、`stage-b-*`、`stage-b-route-2-*`、`stage-b-deepseek-strict-adapter-*`
+> 和 `chat-provider-secure-secret-migration-and-deepseek-import-2026-10-14.md`。
+
+- **Stage A** 固定负向旅程 NJ-01..NJ-10：`LIMITED PASS`（单 BVID `BV1hMpE6FEXG`、临时扩展预授权 fixture、四视口 bounded evidence）。独立审查 `stage-a-final-independent-exit-audit-2026-10-13.md` Fatal=0 / Major=0 / Minor=3；Orca worker `task_b307e1598b9e`。
+- **Stage B B-0**：合同冻结 `PASS`。
+- **Stage B B-1..B-4**：实现 `LIMITED PASS candidate`（不构成 Stage B 出门，不替代 B-5 fresh）。
+- **Stage B Route 2（确定性 brief composer）**：文档 CONDITIONAL GO（外部独立审查 Fatal=0 / Major=0 / Minor=5，SHA-256 `b3db4ffc82283712c28737a0ee569403e1194ea280b74ab24408f2c66eb72079`），实现 LIMITED PASS；**B-5 真实 fresh 六视频分母仍 `FAIL/REPLAN`**（`stage-b-b5-route-2-risk-stop-2026-10-14.md`），其余五段 BVID 不得据旧候选拼接或移除。
+- **DeepSeek strict adapter DS-1..DS-5**：`LIMITED PASS`（`deepseek-chat + /beta/chat/completions + strict tool` 资格 20/20）。结构成功仅证明 JSON 形状，不证明内容正确，亦不替代默认 Provider。
+- **Chat Provider 默认**：`MiniMax`。`chat-provider-secure-secret-migration-and-deepseek-import-2026-10-14.md` 显示 MiniMax / DeepSeek 均经 Windows Credential Vault 安全迁移、SQLite `api_key` 列清空、密钥命中 0；DeepSeek 模型 `deepseek-chat`、能力 `deepseek_beta_strict_tool_v1`、`selected=false`。保存 ≠ 选择；首次使用不诱导，不自动切换。
+- **B-5..B-7、Stage C/D/E、V3-6/V3-7**：均 `NO-GO`。任何当前候选不得升格为 V3 PASS。
+- **实施前必备边界**：单任务锁单一 Provider，禁止跨 Provider 拼接或隐式 fallback；真实 fresh run 必须使用 fresh Runtime/database/profile/task 与 `--mute-audio` Chrome 实例；0 原始视频/音频/帧/Cookie/密钥上传，派生 transcript/OCR/vision-caption 文本仅在既有授权范围内发送；用户对 DeepSeek 任务级选择与真实项目派生文本上传必须另行高风险授权。
+
+## 2026-10-15 P0 Background Capture Relay 门禁补丁
+
+真实诊断已把可信 capture 阻塞收敛到 Offscreen WebSocket 上下文；Background 和 Windows 到同一 Runtime endpoint 均可连接。路线冻结为 Background 持有 Runtime WebSocket、Offscreen 经受信 Port 发送有序 PCM，公共 API、ticket 和用户流程不变。v1-v9 均已被独立复核拒绝；当前唯一候选为 v10。
+
+当前状态：`V10 DOCUMENT CANDIDATE / SINGLE CODEX REVIEW IN PROGRESS / P1 BLOCKED`。v10 baseline 50/50、mutation 15/15 已通过；用户已批准继续实际开发，单次 Codex 独立 Agent 文档审查 Fatal=0/Major=0 后直接进入 R0-R7，不再要求 Claude Code 或第二份文档外审。实现后仍必须通过单视频真实静音 canary、故障矩阵、secret/cleanup 和独立实施出门审查。Chrome 116 sender 身份不可弱化。同步 staging 屏障必须先于 daemon worker；owner manifest 必须原子发布并完成 parent-directory fsync，再以 SQLite FULL receipt 绑定 manifest canonical SHA-256；barrier 前后 cleanup owner 唯一，八类 manifest/receipt 缺失、未提交或损坏 fail-closed。hard crash 后 composite cleanup 必须使 acquisition/ASR/product/sink 四类残留全零；terminal frame 只通知 handoff，唯一持久产品成功是 SQLite ready/degraded。其余绕过项继续阻止通过。
+
+## 28. V3-5.10 Stage B B-6 当前门禁（2026-10-25）
+
+- B-5 grounded-comprehension recovery、发布物字节完整性、机器身份/权威绑定和离线聚合门禁已经完成；这些结果不等于 B-6 语义评审或 Stage B 出门。
+- 首次 fresh GC-B6B 六源捕获批次结论为 `GC-B6 SEMANTIC REVIEW NO-GO`。order 1 与 order 2 均未形成可盲评 bundle，机器门为 negative，盲评未执行；不得把已发布 derivative、Provider 请求成功或历史 B-5 结果替代 B-6 bundle。
+- order 1 暴露的 catalog 排序与捕获诊断丢失已在 `gc-b6b-capture-corrective-codex-2026-10-25` 中离线修复：catalog hash 对齐生产 `(start,end,id)` 排序，稳定诊断码进入私有机器收据，公开五键 capture receipt 不变。定向 43/43、Stage B 离线 584/584、Runtime 50/50 通过；未发生外部动作。
+- order 2 的 `degraded + no PNG -> B6_CAPTURE_SEEK_UNCLOSED` 仍是未归因的真实产品/捕获边界。冻结裁决保持：无 PNG 的来源不可评审；不得采用 text-only、5/6、limited、reserve 替换或降低 seek closure。
+- 下一授权包为 `GC-B6C ORDER-2 DIAGNOSTIC CANARY IMPLEMENTATION`，且仅限离线实现：构造一个窄的单源诊断执行器，复用生产捕获/seek closure 代码，区分“产品未产出可评审 PNG”“workspace/thumbnail 路由不一致”“捕获器错误”三类稳定结果，并证明失败清理、公开证据脱敏和默认零外部动作。
+- 本包必须停在 ClaudeCode 实施 checkpoint。任何真实 Chrome、Cookie 读取/注入、Provider、下载、真实 BVID 或授权消费均为越界。离线候选经 Codex 复核后，真实单源 canary 仍需新的显式授权；只有 canary 证明可捕获后，才可申请 fresh 六源 B-6 重跑。
+- 权威计划与 ClaudeCode 提示词：
+  - `evidence/v3_media_companion/v3-completion/gc-b6b-capture-corrective-codex-2026-10-25/03-order2-diagnostic-plan.md`
+  - `evidence/v3_media_companion/v3-completion/gc-b6b-capture-corrective-codex-2026-10-25/04-claudecode-prompt.md`
+- 2026-10-25 ClaudeCode 离线实现经 Codex checkpoint 发现并修复四项 Major 假绿：正常存活的 owned 后代被提前锁存为泄漏、显式 stage root 未传给 child、child 非零退出/陈旧 observation 可被解释为 READY、离线 fixture 可直接产出 READY。同步收紧错误码/字段/计数、收据写失败与 run/task 绑定。最终 B6C 聚焦 29/29、lifecycle 10/10、Stage B 离线 615/615、Runtime 定向 50/50；外部动作仍为 0。
+- 当前状态：`GC-B6C CORRECTIVE PASS / ONE ORDER-2 VISIBLE DIAGNOSTIC MAY RUN WITH FRESH EXPLICIT INPUTS`。该授权仅覆盖一个 owned、`--mute-audio` 的 order-2 canary；结果无论 READY/BLOCKED 都必须回到 Codex，不自动授权 fresh 六源 B6B。缺 stage/private/Cookie/run/authorization 任一输入时必须在 Chrome 和授权消费前停止。
+- 该一次性可见诊断已执行并消费：preflight 34/34，随后仅启动 1 个 owned `--mute-audio` Chrome、1 个 Runtime、1 个媒体任务和 1 次 synthesize；实际 Provider HTTP 尝试 8 次，命中全局上限。产品在 B6 捕获前以冻结质量码 `V3510B_CHAPTER_IMBALANCE` fail closed，`sourceCompletion=0`，无 bundle、projection、review row 或 sentinel。下载/导入/音频/tabCapture 均为 0；owned 进程和端口最终为 0。
+- 本次也暴露一个 harness Major：早期产品失败没有写 canary observation，外层错误地只报 `CANARY_OBSERVATIONS_MISSING`。Codex 已修为正常异常路径始终写严格、非候选、带 `CANARY_OWNER_FAILED` 的最小观察；冻结章节错误码进入只读 allowlist，null task id 仅在 owner-failed 时可接受。聚焦合同 30/30、真实 runner lifecycle 11/11、合并 Stage B 离线 617/617 全绿。历史可见结果不被补签或改写。
+- 当前状态：`GC-B6C VISIBLE DIAGNOSTIC BLOCKED / AUTHORIZATION CONSUMED / GC-B6D OFFLINE IMPLEMENTATION AUTHORIZED`。下一包只处理章节平衡恢复：让 adapter 的 pre-validator enforcement 与独立 validator 共用同一平衡语义和指标，在硬上限 8 内由同一 Provider 有界重生成，并保留 fail closed。禁止降低 `concentration`/`maxChapterSpanRatio` 阈值、扩大请求预算、在本地重排或改写 Provider 章节、发起任何真实 Chrome/Cookie/Provider/BVID 动作，或重开 B6B。
+- GC-B6D 的详细架构、验收计划与 ClaudeCode 提示词：`evidence/v3_media_companion/v3-completion/gc-b6c-visible-diagnostic-and-b6d-handoff-2026-10-25/04-claudecode-prompt.md`。
+- GC-B6D ClaudeCode 候选经 Codex checkpoint 复现并修复三项 Major：runner 的形状型字符串净化可泄漏短 secret/title；平衡重生成没有携带已授权语义上下文，会要求 Provider 凭时间索引猜测全文；DeepSeek strict 作为可选生产 adapter 无法执行共享的 shape/balance regeneration task。另修正提示仅声明当前实际生效的冻结平衡规则，不在 4–5 章时附加 validator 不要求的集中度约束。
+- 纠偏后：GC-B6D 聚焦 26/26，GC-B5R/comprehension 合并聚焦 199/199，runner/B6C/lifecycle 43/43，Stage B 离线 619/619，Runtime 全量 1282 passed / 3 skipped。外部动作、Chrome、Cookie、Provider、真实 BVID、授权消费均为 0；公开合同、阈值、失败码、八次预算与分母均未变。
+- 当前状态：`GC-B6D CORRECTIVE PASS / FRESH ORDER-2 RECOVERY CANARY REQUIRES NEW EXPLICIT AUTHORIZATION`。下一动作仅允许一个 fresh order-2 canary，用真实产品路径验证失衡候选是否在八次上限内恢复并形成可闭合 B6 bundle；无论 READY/BLOCKED 都回到 Codex。不得直接重开六源 B6B，不得补签历史运行，不得执行盲评/B7/Stage C。
+- Codex 纠偏证据：`evidence/v3_media_companion/v3-completion/gc-b6d-codex-checkpoint-corrective-2026-10-25/`。
+- 新授权的单源 recovery canary 已执行且仅执行一次。产品恢复路径通过：order 2 到达 `ready`，发布有效 V2.1 derivative，形成 transcript 49、frame 8、OCR 8、vision-caption 8 与可读 PNG 8；synthesize 1 次、Provider HTTP 4 次，未触及八次上限。上传原始视频/音频/帧、音频播放和 tabCapture 均为 0，owned 进程与端口最终为 0。
+- B6 捕获仍未通过：捕获器在写 bundle 前以 `B6_BUNDLE_ABSOLUTE_PATH` 拒绝。Codex 定位为 harness 确定性缺陷：隐私扫描把 PNG 压缩字节与 manifest 的重复二进制 payload 解码成 UTF-8，随机形成路径形状。历史运行保持 `BLOCKED`，不得因根因已知而补签 bundle、review row 或 Stage B 结果。
+- Codex 已离线修复：隐私扫描仅遍历结构化语义字符串并显式扫描 textual artifact；不再解码 thumbnail 或 manifest payload；PNG validator 只放行必需结构与 ffmpeg 固定 9 字节 `pHYs`，其余 ancillary chunk 全拒，避免二进制排除成为隐私旁路。新增 4 条反假绿，focused 76/76、最终 PNG 组合 39/39、完整 Stage B 离线 623/623 全绿；公开合同、rubric、prompt、阈值、registry 与分母不变。
+- 当前状态：`GC-B6D PRODUCT RECOVERY PROVEN / GC-B6E CAPTURE BINARY CORRECTIVE PASS / AUTHORIZATION CONSUMED`。下一动作不是新的 ClaudeCode 实现包，而是一个 fresh order-2 capture confirmation；它需要新的明确可见运行授权、fresh owned roots/grant，只允许一个 owned `--mute-audio` Chrome。无论 capture closed 或 blocked 都必须回到 Codex；不得直接启动六源 B6B、盲评、B7 或 Stage C。
+- 本轮证据：`evidence/v3_media_companion/v3-completion/gc-b6d-recovery-canary-capture-corrective-2026-10-25/`。
+- fresh order-2 capture confirmation 已按授权执行一次且未重试。zero-action preflight 34/34；随后仅启动一个 owned `--mute-audio` Chrome、一个隔离 Runtime 和一个媒体任务。运行在 8 次 Provider HTTP 硬上限处以 `V3510B_PROVIDER_RESPONSE_INVALID` fail closed，任务未到 ready，证据/PNG/bundle/sourceCompletion 均为 0；原始视频/音频/帧/Cookie/密钥/路径上传为 0，清理闭合且 owned leak 为 0。
+- 结构诊断显示候选依次在 `brief_shape`、`brief_value_domain`、时间边界/递增锚点之间回归；最后一次仍为 `brief_value_domain`。这次没有到达 B6 capture，因此既不能验证也不能否决上一包的 PNG 二进制修复。历史第一次 recovery canary 的产品成功事实保留，但不得替代本次失败或 B6 bundle。
+- 当前状态：`GC-B6E VISIBLE CONFIRMATION BLOCKED BEFORE CAPTURE / AUTHORIZATION CONSUMED / GC-B6F OFFLINE IMPLEMENTATION AUTHORIZED`。GC-B6F 只允许把初始生成、shape/temporal/balance regeneration 与 repair_v2 的完整冻结不变量收敛到一个 owner，增加只含类型/长度类别/计数/布尔的值域诊断，并以本次真实违规序列做离线回归。禁止提高八次预算、本地重排或改写 Provider 内容、放宽合同、启动 Chrome/Cookie/Provider/真实 BVID、重开 B6B、执行盲评/B7/Stage C。
+- GC-B6F 架构与 ClaudeCode 提示词：`evidence/v3_media_companion/v3-completion/gc-b6e-visible-confirmation-and-b6f-handoff-2026-10-25/04-claudecode-prompt.md`。
+- GC-B6F ClaudeCode 候选经 Codex checkpoint 复现三项 Major 假绿：brief/claim 外来 evidence ID 只进入诊断而不触发 adapter 拒绝；空 `evidenceIds` 在 claim/chapter 诊断中被错误报告为 0 个无效项；runner 虽声明复数值域数组键，却未加入对象键白名单和复数 enum，真实边界会静默丢弃。另发现结构信任允许 evidenceIds 内嵌对象回传 Provider。
+- Codex 窄纠偏关闭上述问题：membership 在 adapter value-domain 阶段 fail closed；空数组使用 `empty_list` 稳定类并计为无效 collection；repair context 只接受字符串 item；runner 双层 allowlist 完整保留复数 enum 且继续丢弃未知键/值。无公开合同、失败码、阈值、请求上限、Provider 锁或分母变更。
+- 纠偏验证：GC-B6F Python 41/41、GC-B5R/B6D/B6F 合并 241/241、runner/lifecycle 46/46、Runtime 全量 1324 passed / 3 skipped、Stage B 离线 626/626。Chrome/Cookie/Provider/真实 BVID/授权消费均为 0。
+- 当前状态：`GC-B6F CORRECTIVE PASS / FRESH ORDER-2 CONFIRMATION REQUIRES NEW EXPLICIT AUTHORIZATION`。下一动作仅允许一个 fresh order-2 canary 验证完整不变量是否在八次上限内形成 ready 产品并穿过修正后的 B6 capture；无论 READY/BLOCKED 都返回 Codex。不得直接重开六源 B6B、盲评、B7 或 Stage C。
+- Codex 纠偏证据：`evidence/v3_media_companion/v3-completion/gc-b6f-codex-checkpoint-corrective-2026-10-25/`。
+- 2026-10-26 的 order-2 收口按预先声明的三次上限完成。第一次产品 `ready` 且形成 49 transcript、8 frame、8 OCR、8 vision-caption，但严格 PNG 校验拒绝冻结 ffmpeg 的 BT.709 `cICP/cHRM/gAMA` 固定块；校验器仅按精确固定 payload 放行并继续拒绝任意 ancillary/text/ICC/EXIF。第二次已证明 8/8 PNG，却因 writer 以输入顺序、reader 以文件名字典序重建八张缩略图而触发 `B6_BUNDLE_MANIFEST_DRIFT` 与 `B6_BUNDLE_RECEIPT_INVALID`；receipt 与 manifest 现统一按 `evidenceId` 规范排序，多缩略图正反输入测试证明字节一致。
+- 两项 harness 纠偏后，focused review-bundle 31/31、capture 组合 86/86、完整 Stage B 离线 629/629。第三次也是最后一次 fresh order-2 可见确认通过 zero-action preflight 34/34 后执行：产品 `ready`，Provider HTTP 4 次，73 条派生证据、8/8 PNG、6 章，capture `captured`；私有 manifest 全量摘要通过，生产 `readReviewBundle()` + `validateReviewBundle()` 重读为 `ok:true`。cleanup 闭合、owned leak 0，原始视频/音频/帧/Cookie/密钥/本地路径上传均为 0。
+- canary 固定为 `candidate:false / semanticReviewPerformed:false / stagePass:false`，所以该结果只证明单源产品与 B6 capture 路径，不得宣布 B6、Stage B 或 V3 通过，也不得把三次 order-2 结果拼成六源候选。
+- 当前状态：`GC-B6 ORDER-2 CAPTURE PATH PROVEN / FRESH B6B SIX-SOURCE CANDIDATE REQUIRES SEPARATE AUTHORIZATION`。下一包必须使用 fresh run/authorization/stage/private roots 按冻结 registry 顺序执行六个 primary source；只有六行机器权威与 bundle 全部闭合、aggregate machine gate 为正，才允许按预承诺顺序进行盲评与双 session sentinel。负机器门禁止盲评；不得使用 reserve、历史行或重试拼接。B7/Stage C 继续 blocked。
+- 收口证据与下一 ClaudeCode 包：`evidence/v3_media_companion/v3-completion/gc-b6g-order2-capture-closure-2026-10-26/`。
+- fresh GC-B6B 六源候选 `gc-b6b-20261025T175243Z` 已执行且授权已消费。机器结果为 `2 complete / 3 limited / 1 blocked`：order 1/4 为 `V3510B_EVIDENCE_CONFLICT_UNRESOLVED`，order 3 为 `V3510B_BRIEF_COVERAGE_INSUFFICIENT`，order 2 在 synthesis 前 blocked，order 5/6 complete。机器门为 negative，盲评、projection、分数和 sentinel 均未执行；这一停止行为正确，历史负结果保持只读。
+- Codex checkpoint 发现该包不能作为可复现的正候选基础：16 文件锁未覆盖实际 Runtime/Extension/build/config/contract 执行闭包且同期间存在并发修改；private rubric/prompt 相比上一 precommit 已换摘要但无仓库内规范字节；Stage A 常量为 authority 5 分钟/media 20 分钟而错误文本与公开摘要写 7 分钟，机器码退化为 `Error`；公开证据为手写投影且已发生事实抄写错误。另需为 negative run 私有产物建立明确 owner/deadline/delete receipt，且永禁作为未来候选或盲评输入。
+- 当前状态：`GC-B6B MACHINE NEGATIVE ACCEPTED / CLOSEOUT CANDIDATE INVALID / GC-B6H OFFLINE CORRECTION AUTHORIZED`。GC-B6H 必须完成完整执行闭包快照与前/逐源/后置摘要校验、仓库内规范 rubric/prompt 与严格 precommit builder、从原始收据生成的确定性公开证据、Stage A 稳定错误码与精确 identity 绑定、brief/conflict 隐私安全结构诊断、以及私有产物留存生命周期。不得把 limited 强制改成 complete，不得放宽 V2.1/质量阈值/八次上限/六源 registry 或分母。
+- GC-B6H 是零外部动作包：禁止 Chrome、Cookie、Provider、下载、真实 BVID、盲评、sentinel 和授权消费。离线候选必须停回 Codex checkpoint；任何后续可见候选需要新的 Codex GO 和用户显式授权。B7/Stage C 继续 blocked。
+- Codex 决定、架构计划与 ClaudeCode 提示词：`evidence/v3_media_companion/v3-completion/gc-b6b-codex-checkpoint-no-go-2026-10-26/`。
+- GC-B6H 离线候选的报告测试与 7/7 manifest 完整，但 Codex 独立变异复现得到 `Fatal 1 / Major 4 / Minor 1`，结论为 NO-GO。Fatal 假绿为：公开证据构建器接受六行全 limited、调用方声明 machine-positive/已盲评、无 bundle、无效 ledger/scan、任意 lock/precommit，仍返回 `ok:true`；删除所有受检 payload 的 run id 后仍通过。
+- H1 未形成执行架构：snapshot 物化函数只有测试调用，Runtime、Extension fixture 和 child harness 仍从工作树执行；closure manifest 缺失时 fail-open；首次校验晚于 grant/Cookie；post-source 漂移被忽略且可在 closeout 前恢复后消失。H2 canonical protocol 未接 preflight/sequencer/review，且篡改实际 first/second pass position 为 99、删除 run id 后 validator 仍通过。H4 的 `stageADiagnostic/executionClosure` 虽列入 merge allowlist，却未写入 runner receipt。H6 的 raw private root 可原样进入公开 retention payload 并通过校验。
+- 当前状态：`GC-B6H OFFLINE CANDIDATE NO-GO / GC-B6H-R CORRECTIVE AUTHORIZED`。纠偏必须让唯一入口从独占 snapshot 执行并在授权/Cookie 前强制校验，锁存逐源漂移；把 canonical protocol 接到唯一评审路径；由 production aggregate/authority/artifact/bundle/ledger/scan owner 复算公开证据而非信任 caller boolean；持久化诊断；将私有 retention 与无路径公开投影分离；修正 brief partial-coverage 结构计数。
+- GC-B6H-R 继续是零外部动作包，禁止 Chrome、Cookie、Provider、下载、真实 BVID、盲评、sentinel 与授权消费。rubric/prompt 提案本 checkpoint 不冻结。任何后续可见候选仍需新的 Codex GO 与用户显式授权；B7/Stage C 继续 blocked。
+- GC-B6H-R 计划、独立复现与 ClaudeCode 提示词：`evidence/v3_media_companion/v3-completion/gc-b6h-codex-checkpoint-no-go-2026-10-26/`。
+- GC-B6H-R ClaudeCode 候选经 Codex checkpoint 复现并关闭三条剩余假绿：正常 B6 capture 过去可在未设置开关时绕过 snapshot；公开证据 publisher 忽略 builder 的非正结果且 validator 可接受 positive machine gate 配零 review/sentinel；依赖“树摘要”过去只绑定包名与版本而未绑定实际执行树。候选权威也改为由原始机器收据与生产 bundle reader 重建，sequencer summary 只作为必须逐字一致的 mirror。
+- 正常 B6 capture 现在在授权/Cookie/Chrome 前强制 sealed snapshot；Runtime venv 与 Playwright 执行树具有内容/元数据身份，工作树或执行依赖漂移均 fail closed；公开 publisher 对 builder、写前 validator、写后重读 validator 三层任一非正即拒绝。完整 Stage B 离线套件 `688/688`、GC-B6H-R 聚焦 `34/34`、B6 lifecycle `11/11`，最终 prepare-only 从仓库外 0700 根封存 `499` 文件且 `unresolved=0`；外部动作与授权消费均为 0。
+- Codex 首次冻结规范盲评协议字节：rubric `60a32cd9a9334a702a6b588ae864194426c82c7130d43cd2f979748e1255f5de`（3838 bytes），prompt `6c1f53f2aab1981937aa0f97f8c95a9102ed0ff763e30212bc65ae89826e87d2`（5353 bytes）。loader 与 precommit 对固定路径、字节数和摘要做硬校验，调用方自洽替换不能通过。
+- 当前状态：`GC-B6H-R CODEX CORRECTIVE PASS / FRESH GC-B6B CANDIDATE REQUIRES NEW EXPLICIT AUTHORIZATION`。下一次候选必须通过 `prepare_candidate.mjs` 从新 snapshot 启动，使用 fresh run/authorization/stage/private roots；机器门非正立即停止且禁止盲评，机器门为正才按预承诺顺序交给独立 host evaluator，执行六行盲评与 order-3 双 session sentinel。不得把独立评审实现成当前实现会话的自评分器。B7/Stage C 继续 blocked。
+- Codex checkpoint、冻结摘要、验证结果与下一阶段 ClaudeCode 交接：`evidence/v3_media_companion/v3-completion/gc-b6hr-codex-checkpoint-corrective-2026-10-26/`。
+- 用户明确授权的 fresh sealed GC-B6B 候选已执行一次且授权已消费。zero-action preflight 为正，但 sealed snapshot child 把默认视觉 Provider 数据库解析到 snapshot 根，而 preflight 验证的是原 tool/worktree 根；因此六个 primary source 各启动一个 owned `--mute-audio` Chrome 后均以“configured vision Provider database is missing”在 Runtime 前失败。机器门为 `0 complete / 0 limited / 0 blocked / 6 failed`，盲评、projection、分数和 sentinel 均未执行。
+- 动作账本：sourceAttempt 6 / chromeLaunch 6 / visibleWindow 6；runtimeStart、mediaTask、runtimeSynthesize、providerCall、download、import、cookieInjection、audio、tabCapture、focusEvent、sourceCompletion 均为 0。六行上传计数全 0，cleanup 的 profile/scratch 均删除，owned process leak 0，17861 无监听。确定性公开 no-go 包由 sealed publisher 生成、写后重读并签名，secret/绝对路径/raw-media 均为 0。
+- Codex 诊断确认这是候选环境接线缺陷：`candidateEnvironment()` 只传 snapshot/tool/repo 根，没有把产品默认的 managed-tools、ASR 与 vision Provider database 解析结果传给 snapshot child；production preflight 又没有以 candidate child environment 复验同一组输入。另有两项 closeout 缺陷：外部输入失败被收据退化为 `Error`；`collectArtifactDigests()` 返回重复摘要，导致合法 retention ledger 首次被 publisher 拒绝（本次私有台账以集合去重后成功发布，候选事实未改）。
+- 当前状态：`GC-B6B SEALED MACHINE NEGATIVE / AUTHORIZATION CONSUMED / GC-B6J OFFLINE CORRECTIVE AUTHORIZED`。GC-B6J 仅修复 snapshot dependency parity、preflight/child 同源解析、稳定失败码和 retention digest 去重；必须用进程级负例证明缺数据库时在授权/Cookie/Chrome 前阻塞，并证明 snapshot child 使用的依赖摘要等于 preflight 收据。禁止 Chrome、Cookie、Provider、下载、真实 BVID、盲评、sentinel、授权消费或重跑六源。B7/Stage C 继续 blocked。
+- 运行公开证据与 GC-B6J 计划/ClaudeCode 提示词：`evidence/v3_media_companion/v3-completion/gc-b6b-sealed-machine-negative-2026-10-26/` 与 `evidence/v3_media_companion/v3-completion/gc-b6b-sealed-machine-negative-codex-2026-10-26/`。
+- GC-B6J ClaudeCode 候选在 Codex checkpoint 中发现四条会使下一候选失真的 harness 缺陷：依赖环境按枚举成员而不是实际环境变量名读取，正例又预先注入变量而掩盖缺陷；官方准备入口未对 prepared object 做同源 preflight；sequencer 重写候选锁时丢失依赖身份；runner 的 identity 探针引用未定义目录并把稳定拒绝降级成通用失败。Codex 已修复并将对应进程级与精确形状负例加入门禁。
+- 依赖私有对象现在要求精确键集、绝对路径与 child environment 四方一致；prepare、preflight、sequencer、runner 均使用同一 owner，sequencer/runner 比较 Provider metadata 摘要而不只比较文件存在性；无 prepared object 的 preflight 也会对缺失依赖 fail closed。官方 prepare-only 从仓库外 0700 根封存 `501` 文件并通过 prepared-object parity；聚焦 B6J `20/20`、受影响组合 `148/148`、最终完整离线 Stage B `708/708`。
+- 当前状态：`GC-B6J CODEX CORRECTIVE PASS / FRESH SEALED GC-B6B CANDIDATE REQUIRES NEW EXPLICIT AUTHORIZATION`。下一候选必须使用全新 run/authorization/stage/private/evidence roots，只能经 `prepare_candidate.mjs` 启动；禁止重试、reserve、替换或历史产物拼接。机器门非正立即停止并禁止盲评；机器门为正才可进入冻结的独立 host review 与 order-3 双 session sentinel。B7/Stage C 继续 blocked。
+- GC-B6J 提交包与 Codex checkpoint：`evidence/v3_media_companion/v3-completion/gc-b6j-offline-corrective-2026-10-26/`、`evidence/v3_media_companion/v3-completion/gc-b6j-codex-checkpoint-corrective-2026-10-26/`。
+
+## 29. V3-CLOSEOUT-R 阶段复盘出门门槛
+
+V3 技术实现与验收通过后，必须完成一次独立的阶段性项目复盘。该复盘不改变 V3 产品合同，也不得用于补签任何缺失的产品证据；它是“V3 已完成并正式关闭/归档”声明的必要条件。V3-7 技术 PASS 与 V3 行政 closeout 必须分开记录：技术门槛未通过时不得提前复盘代替验收，复盘未通过时不得宣布 V3 已正式关闭。
+
+执行顺序固定为：
+
+1. V3 所有技术门槛、人工验收和独立出门审查完成，候选证据封存。
+2. 新建只读输入清单，覆盖计划、门禁决定、失败/纠偏批次、真实运行账本、授权消费记录与最终验收，不修改历史证据。
+3. 复算计划与实际偏差、返工轮次、外部运行次数、缺陷发现阶段、假绿来源、证据成本和关键等待时间。
+4. 对最高成本的返工执行根因分析，至少区分：合同/权威不清、合成夹具与真实路径差异、oracle 缺失、实现所有权错位、外部依赖漂移、并发脏工作树、门禁粒度不当和职责交接失败。
+5. 将已接受的改进写回 `project-stage-workflow.md`、相关模板和 onboarding；未接受项进入带 owner、优先级和目标阶段的后续 backlog。
+6. 由 Codex 做一次独立 closeout 复核；发现产品 Fatal/Major 时重开所属技术门槛，不得仅登记为流程建议。
+
+复盘证据包至少包含：
+
+```text
+00-retrospective-summary.md
+01-plan-vs-actual.json
+02-rework-root-causes.md
+03-gate-and-cost-metrics.json
+04-accepted-process-changes.md
+05-follow-up-backlog.md
+06-independent-closeout-review.md
+PAYLOAD_MANIFEST.sha256
+```
+
+固定验收要求：
+
+- 每个结论可追溯到已有证据或动作账本，不凭会话记忆补事实，不改写历史状态。
+- 至少列出前五项返工根因，并为每项给出预防门槛、检测门槛、责任角色和可验证的完成条件。
+- 对“开发门限、计划粒度、Codex/ClaudeCode/人工分工、真实运行预算、证据保留和脏工作树并发策略”逐项形成明确决定。
+- 统计值必须区分离线测试、真实 canary、可见批次、Provider 调用和人工验收；未知值保持 unknown，不以 0 替代。
+- 已接受流程变更必须落到权威文档并由测试或结构化校验覆盖；只写复盘报告但不更新流程不算通过。
+- 复盘本身不得发起新的产品实现、真实 Provider/Chrome 运行或合同 refreeze；这些动作必须回到对应技术门槛重新授权。
+
+V3 最终可声明状态固定为：`TECHNICAL PASS / RETROSPECTIVE PENDING`、`CLOSEOUT REOPENED` 或 `V3 CLOSED`。只有技术验收通过、复盘包完整、流程改进已落盘且独立 closeout 复核无 Fatal/Major 时，才允许 `V3 CLOSED`。

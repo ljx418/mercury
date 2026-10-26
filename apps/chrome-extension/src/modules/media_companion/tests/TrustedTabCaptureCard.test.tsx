@@ -27,14 +27,28 @@ describe("TrustedTabCaptureCard", () => {
     expect(host.textContent).toBe("");
   });
 
-  it("renders the trusted command and active stop controls", () => {
+  it("shows an honest experimental boundary without an action by default", () => {
     const onStart = vi.fn();
     act(() => root.render(<TrustedTabCaptureCard failures={failures} state="awaiting_user" onStart={onStart} onFinish={vi.fn()} onCancel={vi.fn()} />));
+    expect(host.textContent).toContain("实验能力");
+    expect(host.textContent).toContain("不会自动启动");
+    expect(host.querySelector("[data-testid='media-capture-start']")).toBeNull();
+    expect(onStart).not.toHaveBeenCalled();
+  });
+
+  it("renders the trusted command and active stop controls only when explicitly enabled", () => {
+    const onStart = vi.fn();
+    const onFinish = vi.fn();
+    act(() => root.render(<TrustedTabCaptureCard failures={failures} experimentalEnabled state="awaiting_user" onStart={onStart} onFinish={vi.fn()} onCancel={vi.fn()} />));
     const start = host.querySelector("[data-testid='media-capture-start']") as HTMLButtonElement;
     act(() => start.click());
     expect(onStart).toHaveBeenCalledTimes(1);
-    act(() => root.render(<TrustedTabCaptureCard failures={failures} state="capturing" onStart={onStart} onFinish={vi.fn()} onCancel={vi.fn()} />));
-    expect(host.querySelector("[data-testid='media-capture-finish']")).not.toBeNull();
+    act(() => root.render(<TrustedTabCaptureCard failures={failures} experimentalEnabled state="capturing" onStart={onStart} onFinish={onFinish} onCancel={vi.fn()} />));
+    const card = host.querySelector("[data-testid='media-capture-card']") as HTMLElement;
+    const finish = host.querySelector("[data-testid='media-capture-finish']") as HTMLButtonElement;
+    expect(card.dataset.state).toBe("capturing");
+    act(() => finish.click());
+    expect(onFinish).toHaveBeenCalledTimes(1);
     expect(host.querySelector("[data-testid='media-capture-cancel']")).not.toBeNull();
   });
 });

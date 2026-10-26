@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "v3-media-dependency-status/v1",
+  "overallState": "ready",
+  "generation": "depgen_9ec1bb9d4c3aa4334361ef8c7dcb11e98363f5f9f11de4e1443f839cc9956cf6",
+  "verifiedAt": "2026-10-19T08:00:00Z",
+  "activeJobId": null,
+  "latestJobId": "media_dep_job_9ec1bb9d4c3aa4334361ef8c7dcb11e9",
+  "routeReadiness": {"credentialedMediaAsr": "ready", "failureCode": null},
+  "dependencies": [
+    {"dependencyId": "yt-dlp", "required": true, "kind": "managed_tool", "installMode": "managed_download", "state": "ready", "version": "2026.08.19", "expectedSha256": "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6", "observedSha256": "1fa6733c37ea6fb51c99ad8fe785e7b7e5f3246c9b980230329d4fb72ed8d4d6", "verifiedAt": "2026-10-19T08:00:00Z", "storageScope": "windows_persistent", "failureCode": null},
+    {"dependencyId": "ffmpeg", "required": true, "kind": "system_tool", "installMode": "system_verified", "state": "ready", "version": "6.1.1-3ubuntu5", "expectedSha256": "ed16af623947494a72e284b6eb8ff225f2da22b38b5d5069c2fd4b4ba3384e41", "observedSha256": "ed16af623947494a72e284b6eb8ff225f2da22b38b5d5069c2fd4b4ba3384e41", "verifiedAt": "2026-10-19T08:00:00Z", "storageScope": "runtime_system", "failureCode": null},
+    {"dependencyId": "ffprobe", "required": true, "kind": "system_tool", "installMode": "system_verified", "state": "ready", "version": "6.1.1-3ubuntu5", "expectedSha256": "272f6ebc634a63d9c8b4ca68e964119d980f25154e5aa2c35e5487da48e9a58f", "observedSha256": "272f6ebc634a63d9c8b4ca68e964119d980f25154e5aa2c35e5487da48e9a58f", "verifiedAt": "2026-10-19T08:00:00Z", "storageScope": "runtime_system", "failureCode": null},
+    {"dependencyId": "sensevoice", "required": true, "kind": "asr_model", "installMode": "delegated_manager", "state": "ready", "version": "90c1c619", "expectedSha256": null, "observedSha256": null, "verifiedAt": "2026-10-17T16:57:53Z", "storageScope": "asr_managed", "failureCode": null}
+  ]
+}

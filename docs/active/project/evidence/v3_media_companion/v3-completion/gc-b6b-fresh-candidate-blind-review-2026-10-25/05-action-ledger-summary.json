@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "v3-5.10-b6b-action-ledger-summary/v1",
+  "batch": "GC-B6B FRESH CANDIDATE + BLIND SEMANTIC REVIEW",
+  "note": "The stage action ledger started BEFORE the first external action. The candidate totals are the exact per-candidate counters; the stage totals are the lifetime totals of the owned stage root, and the historical lower bound is the retained-log evidence of the EARLIER attempts of this stage. The three are DISJOINT and nothing is counted twice.",
+  "candidateRunId": "gc-b6b-20261025T061036Z",
+  "ledgerStartedBeforeFirstExternalAction": true,
+  "ledgerIntegrityOk": true,
+  "malformedLedgerLines": 0,
+  "ledgerLineCount": 25,
+  "candidateRunIds": [
+    "gc-b6b-20261025T061036Z"
+  ],
+  "candidateTotals": {
+    "sourceAttempt": 3,
+    "chromeLaunch": 3,
+    "visibleWindow": 3,
+    "runtimeStart": 3,
+    "cookieInjection": 78,
+    "focusEvent": 3,
+    "mediaTask": 3,
+    "runtimeSynthesize": 2,
+    "providerCall": 7,
+    "download": 0,
+    "import": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0,
+    "sourceCompletion": 0
+  },
+  "stageTotals": {
+    "sourceAttempt": 3,
+    "chromeLaunch": 3,
+    "visibleWindow": 3,
+    "runtimeStart": 3,
+    "cookieInjection": 78,
+    "focusEvent": 3,
+    "mediaTask": 3,
+    "runtimeSynthesize": 2,
+    "providerCall": 7,
+    "download": 0,
+    "import": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0,
+    "sourceCompletion": 0
+  },
+  "counterReading": {
+    "sourceAttempt": "three sources were entered: the order 1, the order 2 and the order 3 (the order 3 was interrupted by the batch stop)",
+    "chromeLaunch": "one OWNED Chrome per entered source, every one of them with --mute-audio asserted and none of them the user's Chrome",
+    "visibleWindow": "one OWNED visible window per entered source",
+    "runtimeStart": "one OWNED Runtime per entered source",
+    "cookieInjection": "26 authorized cookies per entered source, 3 sources: 78. No cookie value was ever logged",
+    "focusEvent": "one owned focus event per entered source",
+    "mediaTask": "one media task per entered source",
+    "runtimeSynthesize": "two synthesis endpoint invocations: the order 1 and the order 2. The order 3 was interrupted before its synthesis",
+    "providerCall": "seven ACTUAL outbound Provider HTTP attempts: 4 for the order 1 and 3 for the order 2. The count is KNOWN and it is not null",
+    "download": "the ledger carries NO download event: the media acquisition happens inside the OWNED Runtime, and the UPLOAD BOUNDARY counters of both machine receipts (rawVideo, rawAudio, frameBytes, cookies, apiKeyDisclosure, localPath) are hard zero",
+    "sourceCompletion": "ZERO: no source was ever counted as complete. The two completed syntheses were refused by the B-6 review capture, and the source completion accounting is recorded only after the capture closes"
+  },
+  "historicalLowerBound": {
+    "ownedChromeLaunches": 34,
+    "method": "explicit_chrome_launch_records_in_the_retained_console_logs",
+    "unreadableOrMissing": 0,
+    "note": "A LOWER BOUND over the retained logs of the EARLIER attempts of this stage. It is DISJOINT from the candidate totals and the stage totals of this batch."
+  },
+  "authorization": {
+    "consumed": true,
+    "reason": null,
+    "grantCount": 6,
+    "note": "The one-shot authorization of this candidate was consumed exactly once and it issued the six child grants. The per-source grant consumption is atomic and one-shot. The raw authorization value was never persisted and never appears in the evidence: only its digest does."
+  }
+}

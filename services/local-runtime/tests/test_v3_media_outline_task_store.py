@@ -4,7 +4,9 @@ import copy
 import hashlib
 import json
 import sqlite3
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Barrier
 
 import jsonschema
 import pytest
@@ -56,6 +58,40 @@ def progress_to_synthesizing(store: MediaTaskStore) -> int:
         store.transition(TASK, revision, state)
         revision += 1
     return revision
+
+
+def test_create_and_cancel_source_are_atomic_across_connections(tmp_path: Path) -> None:
+    path = tmp_path / "authority-race.sqlite3"
+    first = MediaTaskStore(path)
+    second = MediaTaskStore(path)
+    first.reserve_source_authority(SOURCE, TASK, "bilibili", "bilibili-media-consent/v1", 1)
+    barrier = Barrier(2)
+
+    def create() -> str:
+        barrier.wait()
+        try:
+            first.create(TASK, SOURCE)
+        except MediaTaskStoreError as error:
+            return error.code
+        return "created"
+
+    def cancel() -> str:
+        barrier.wait()
+        assert second.begin_cancel_source_task(TASK) == "cancelling"
+        return second.finish_cancel_source_task(TASK)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        created = pool.submit(create)
+        cancelled = pool.submit(cancel)
+        assert created.result() in {"created", "TASK_CANCELLED"}
+        assert cancelled.result() == "cancelled"
+    assert second.source_authority(SOURCE)["state"] == "cancelled"
+    with pytest.raises(MediaTaskStoreError, match="can no longer publish"):
+        second.create(TASK, SOURCE)
+    try:
+        assert second.get(TASK)["state"] == "cancelled"
+    except MediaTaskStoreError as error:
+        assert error.code == "TASK_NOT_FOUND"
 
 
 def bundle(revision: int = 7, *, state: str = "ready") -> dict:
@@ -213,3 +249,22 @@ def test_outline_task_api_requires_session_and_recovers_from_store(tmp_path: Pat
         json={"expectedRevision": 1},
     )
     assert cancelled.json()["data"]["task"]["state"] == "cancelled"
+
+
+def test_outline_task_api_reuses_reserved_source_authority(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    store = MediaTaskStore(tmp_path / "authority-api.sqlite3")
+    store.reserve_source_authority(SOURCE, TASK, "bilibili", "bilibili-media-consent/v1", 1)
+    monkeypatch.setattr(app_module, "media_outline_task_store", store)
+    extension_id = "b" * 32
+    origin = f"chrome-extension://{extension_id}"
+    monkeypatch.setenv("NAVIA_LOCAL_FILES_EXTENSION_ID", extension_id)
+    app_module.companion_session_broker.clear()
+    client = TestClient(app_module.app)
+    session = app_module.companion_session_broker.issue(origin)
+    headers = {"Authorization": f"Bearer {session['token']}", "Origin": origin}
+
+    created = client.post("/v1/media/outline-tasks", headers=headers, json={"sourceIdentity": SOURCE})
+
+    assert created.status_code == 201
+    assert created.json()["data"]["task"]["taskId"] == TASK
+    assert store.source_authority(SOURCE)["task_id"] == TASK

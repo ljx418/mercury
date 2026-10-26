@@ -187,6 +187,26 @@ class RuntimeCaptureSink:
         with self._lock:
             return int(self._active is not None)
 
+    def observation(self) -> dict[str, int]:
+        """Return content-free counters for capture failure diagnostics."""
+        with self._lock:
+            active = self._active
+            if active is None:
+                return {
+                    "capturedMs": 0,
+                    "byteLength": 0,
+                    "chunkCount": 0,
+                    "nonZeroSampleCount": 0,
+                    "peakAbsSample": 0,
+                }
+            return {
+                "capturedMs": round(active.frame_count * 1000 / CAPTURE_SAMPLE_RATE_HZ),
+                "byteLength": active.byte_length,
+                "chunkCount": active.next_sequence,
+                "nonZeroSampleCount": active.non_zero_sample_count,
+                "peakAbsSample": active.peak_abs_sample,
+            }
+
     def _require(self) -> _ActiveCapture:
         if self._active is None:
             raise CaptureSinkFailure("V3_MEDIA_CAPTURE_NOT_ACTIVE")

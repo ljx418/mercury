@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Navia V3 完成态与剩余实施架构",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "viewBox": [1390, 600],
+    "output": "v3-completion-execution-architecture.html",
+    "repository": {
+      "url": "https://github.com/zhouhouze/mercury",
+      "link_mode": "local-only",
+      "revision": "a303551a5bf89c26ff36b24ac06c7e30c334db27"
+    },
+    "views": [
+      { "id": "media-path", "label": "媒体事实主链", "focus": ["user", "sidepanel", "portal", "runtime", "authority", "acquisition", "comprehension", "workspace"], "note": "同一 sourceIdentity 只绑定一个权威 task/revision，所有视图从同一证据目录派生。" },
+      { "id": "knowledge-path", "label": "Chat 到 Know", "focus": ["user", "sidepanel", "runtime", "knowledge"], "note": "KnowledgeDraft 只有经用户显式确认后才生成 KnowledgeItem。" },
+      { "id": "quality-gates", "label": "剩余质量门禁", "focus": ["runner", "comprehension", "workspace", "providers"], "note": "先关闭 B-5.3 runner，再完成六视频、交互修复、12 页生产候选和最终独立审计。" }
+    ]
+  },
+  "components": [
+    { "id": "user", "type": "external", "label": "用户", "sublabel": "Chat / Know / Settings", "pos": [30, 255], "size": [130, 68] },
+    { "id": "sidepanel", "type": "frontend", "label": "Side Panel", "sublabel": "main.tsx · 当前页交互", "tag": "需继续收敛 UX", "pos": [220, 250], "size": [175, 78], "sources": [{ "path": "apps/chrome-extension/entrypoints/sidepanel/main.tsx", "label": "入口" }] },
+    { "id": "workspace", "type": "frontend", "label": "Media Workspace", "sublabel": "Shell / Router / Views", "tag": "Stage C/D 待完成", "pos": [220, 430], "size": [175, 78], "sources": [{ "path": "apps/chrome-extension/src/modules/media_companion/product/MediaWorkspaceShell.tsx", "label": "工作台" }] },
+    { "id": "portal", "type": "frontend", "label": "Bilibili Portal Adapter", "sublabel": "身份 · 权限 · seek", "tag": "LIMITED PASS", "pos": [220, 70], "size": [175, 78], "sources": [{ "path": "apps/chrome-extension/src/modules/media_companion/adapters/bilibili/BilibiliMediaPortalAdapter.ts", "label": "适配器" }] },
+    { "id": "runtime", "type": "backend", "label": "Local Runtime API", "sublabel": "FastAPI · exact Origin", "tag": "V3-1..4 基础已实现", "pos": [455, 250], "size": [180, 78], "sources": [{ "path": "services/local-runtime/navia_runtime/app.py", "line": 1200, "label": "媒体 API" }] },
+    { "id": "authority", "type": "database", "label": "Source Authority + TaskStore", "sublabel": "sourceIdentity · task · revision", "tag": "Stage A LIMITED PASS", "pos": [705, 248], "size": [200, 82], "sources": [{ "path": "services/local-runtime/navia_runtime/modules/media_companion/task_store.py", "label": "任务存储" }] },
+    { "id": "acquisition", "type": "backend", "label": "Acquisition / ASR / Vision", "sublabel": "字幕 · SenseVoice · OCR · 帧证据", "tag": "V3-2/3 LIMITED PASS", "pos": [705, 430], "size": [200, 82], "sources": [{ "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py", "label": "采集协调" }, { "path": "services/local-runtime/navia_runtime/modules/media_companion/vision/evidence.py", "label": "视觉证据" }] },
+    { "id": "comprehension", "type": "backend", "label": "Grounded Comprehension", "sublabel": "brief · chapter · claim · evidence", "tag": "B-5.3 当前修复点", "pos": [955, 248], "size": [205, 82], "sources": [{ "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py", "label": "理解服务" }] },
+    { "id": "knowledge", "type": "database", "label": "KnowledgeDraft / Item", "sublabel": "显式确认 · 本地 CRUD", "tag": "V3-4.1 待正式出门", "pos": [955, 430], "size": [205, 82], "sources": [{ "path": "apps/chrome-extension/src/modules/knowledge_workspace/LocalRuntimeAccess.tsx", "label": "Know UI" }] },
+    { "id": "providers", "type": "cloud", "label": "Provider Registry", "sublabel": "MiniMax 默认 · DeepSeek 手动", "tag": "禁止隐式 fallback", "pos": [1190, 250], "size": [180, 78], "sources": [{ "path": "services/local-runtime/navia_runtime/provider_settings.py", "label": "Provider 设置" }] },
+    { "id": "runner", "type": "security", "label": "B-5 / V3-6 验收工具链", "sublabel": "fresh run · seal · secret scan", "tag": "runner NO-GO 待修复", "pos": [705, 70], "size": [200, 82] }
+  ],
+  "connections": [
+    { "id": "user-chat", "from": "user", "to": "sidepanel", "label": "读取 / 提问 / 保存", "variant": "emphasis", "fromSide": "right", "toSide": "left", "route": "orthogonal-h", "labelAt": [190, 246] },
+    { "id": "user-workspace", "from": "user", "to": "workspace", "label": "查看派生视图", "fromSide": "bottom", "toSide": "left", "route": "auto" },
+    { "id": "portal-context", "from": "portal", "to": "sidepanel", "label": "页面身份与 seek", "fromSide": "bottom", "toSide": "top", "route": "straight", "labelAt": [450, 180] },
+    { "id": "side-runtime", "from": "sidepanel", "to": "runtime", "label": "loopback API", "variant": "security", "route": "straight", "labelAt": [425, 342] },
+    { "id": "workspace-runtime", "from": "workspace", "to": "runtime", "label": "task/revision", "fromSide": "right", "toSide": "bottom", "route": "auto" },
+    { "id": "runtime-authority", "from": "runtime", "to": "authority", "label": "原子任务", "fromSide": "right", "toSide": "left", "route": "orthogonal-h", "labelDy": -22 },
+    { "id": "authority-acquisition", "from": "authority", "to": "acquisition", "label": "采集", "fromSide": "bottom", "toSide": "top", "route": "straight", "labelAt": [670, 380] },
+    { "id": "acquisition-comprehension", "from": "acquisition", "to": "comprehension", "label": "派生文本", "fromSide": "right", "toSide": "bottom", "route": "auto" },
+    { "id": "authority-comprehension", "from": "authority", "to": "comprehension", "label": "证据目录", "variant": "emphasis", "fromSide": "right", "toSide": "left", "route": "orthogonal-h", "labelDy": -22 },
+    { "id": "comprehension-knowledge", "from": "comprehension", "to": "knowledge", "label": "用户确认", "fromSide": "bottom", "toSide": "top", "route": "straight", "labelAt": [1210, 380] },
+    { "id": "comprehension-provider", "from": "comprehension", "to": "providers", "label": "单任务单 Provider", "variant": "security", "fromSide": "right", "toSide": "left", "route": "orthogonal-h", "labelAt": [1175, 346] },
+    { "id": "runner-authority", "from": "runner", "to": "authority", "label": "fresh + seal", "variant": "dashed", "fromSide": "bottom", "toSide": "top", "route": "straight", "labelAt": [950, 180] }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "已有限定基础", "items": ["Portal、媒体获取、ASR、视觉、TaskStore 已有真实候选", "历史 LIMITED PASS 不等于 V3 整体完成"] },
+    { "dot": "amber", "title": "当前唯一入口", "items": ["先修 B-5.3 runner 的状态机、任务创建、失败退出和真实测试", "独立审查 Fatal=0/Major=0 后才运行六视频"] },
+    { "dot": "rose", "title": "最终出门", "items": ["Stage B-E + Chat/Know + V3-6 单 run + V3-7 独立审计", "H01..H10 与 CX-H01..CX-H06 只能由人类签署"] }
+  ]
+}

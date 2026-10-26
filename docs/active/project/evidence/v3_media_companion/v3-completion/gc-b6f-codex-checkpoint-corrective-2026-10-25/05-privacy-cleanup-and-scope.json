@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "gc-b6f-codex-corrective-audit/v1",
+  "externalActions": {
+    "chrome": 0,
+    "cookieReadOrInjection": 0,
+    "providerCall": 0,
+    "downloadOrImport": 0,
+    "realMediaTask": 0,
+    "realBvid": 0,
+    "audioOutput": 0,
+    "tabCapture": 0,
+    "authorizationConsumption": 0
+  },
+  "contractChanges": "none",
+  "historicalEvidenceEdited": false,
+  "repositoryActions": {
+    "commit": false,
+    "push": false,
+    "reset": false,
+    "clean": false,
+    "checkout": false,
+    "revert": false
+  }
+}

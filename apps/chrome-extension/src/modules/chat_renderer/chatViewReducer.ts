@@ -384,7 +384,10 @@ function assistantIdForTurn(state: ChatViewState, turnId: string): string | unde
 }
 
 function statusText(state: string): string | null {
+  if (state === "intent_detecting") return "正在理解你的问题……";
+  if (state === "context_strategy_deciding") return "正在准备回答……";
   if (state === "context_resolving") return "正在读取当前页面……";
+  if (state === "executing_chat") return "已连接模型，等待首个回答片段……";
   if (state === "streaming_response") return "正在生成回答……";
   if (state === "artifact_rendering") return "正在生成结果……";
   return null;

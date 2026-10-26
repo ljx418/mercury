@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "v3-5.10-gc-b5r-relay-v11-semantic-inventory/v1",
+  "verifier": "docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-contract.py",
+  "note": "The extraction is the verifier's own code, applied to the CURRENT sources. The verifier, the fixtures and the inventories are unmodified.",
+  "sourceInventory": {
+    "frozenCount": 40,
+    "actualCount": 40,
+    "missing": [],
+    "extra": [],
+    "exact": true
+  },
+  "targetInventory": {
+    "frozenCount": 20,
+    "actualCount": 20,
+    "missing": [],
+    "extra": [],
+    "exact": true
+  },
+  "codeUniverse": {
+    "frozenUniverseCount": 59,
+    "actualUniverseCount": 59,
+    "missing": [],
+    "extra": [],
+    "exact": true
+  },
+  "unlistedBoundaryEmits": {},
+  "driftedSourceScopes": [
+    "services/local-runtime/navia_runtime/app.py"
+  ],
+  "perScope": [
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_grants.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 6
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_sink.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 10
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/task_artifacts.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 4
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 7
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/app.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": false,
+      "emittedCodeCount": 5
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 8
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageClient.ts",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 2
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureMessageRouter.ts",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 3
+    },
+    {
+      "path": "apps/chrome-extension/entrypoints/media-capture-offscreen/main.ts",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 5
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/bilibili/acquirer.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 5
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/downloaders/yt_dlp.py",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 4
+    },
+    {
+      "path": "apps/chrome-extension/src/modules/media_companion/capture/relayContracts.ts",
+      "extractorValid": true,
+      "sha256MatchesFrozenEvidence": true,
+      "emittedCodeCount": 21
+    }
+  ]
+}

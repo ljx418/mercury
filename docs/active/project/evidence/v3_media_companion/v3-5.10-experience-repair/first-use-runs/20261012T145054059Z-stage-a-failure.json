@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261012T145054059Z",
+  "bvid": "BV1hMpE6FEXG",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "NJ-07 focus return timeout: {\"hash\":\"#/media/tasks/media_task_8c6abd1c0bdb43d7b2e6a41844310ea0/outline\",\"shellTaskId\":\"media_task_8c6abd1c0bdb43d7b2e6a41844310ea0\",\"routeKind\":\"outline\",\"targetCount\":1,\"activeTag\":\"BODY\",\"activeEvidenceId\":null,\"bindingPresent\":true,\"loading\":false,\"error\":false}"
+  }
+}

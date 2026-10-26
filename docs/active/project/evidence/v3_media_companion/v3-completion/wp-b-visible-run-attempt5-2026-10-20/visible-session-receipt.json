@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B27",
+    "failure": "PRODUCT-SEAM BLOCK: chrome.sidePanel is unavailable in this browser mode.",
+    "ownedResidue": null
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "candidate": "wp-a-media-dependency-readiness-implementation-2026-10-19",
+  "cases": [
+    {
+      "caseId": "A01",
+      "evidence": "42/42; three schemas and the frozen denial boundaries validated",
+      "productionPath": "document verifier",
+      "scenario": "schema meta-validation + 4 positive fixtures",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A02",
+      "evidence": "exact body=202; 9 mutations all 400 REQUEST_INVALID with zero jobs created",
+      "productionPath": "real FastAPI routes",
+      "scenario": "exact POST body; url/path/hash/extra id/extra field mutations",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A03",
+      "evidence": "envelope key sets exact; no path/URL/secret in any response",
+      "productionPath": "real FastAPI routes",
+      "scenario": "status/job success and error envelopes",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A04",
+      "evidence": "client rejects; 5 invalid job ids -> 404; no cross-set leakage",
+      "productionPath": "schema + runtime semantic validator",
+      "scenario": "duplicate/missing dependency, null generation, bad kind/mode/scope, illegal job id",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A05",
+      "evidence": "generation depgen_* stable and byte-stable across repeated reads",
+      "productionPath": "manager + delegated ASR manager",
+      "scenario": "four dependencies all ready",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A06",
+      "evidence": "action_required / NOT_READY; expected digest still reported; no downloader created",
+      "productionPath": "manager",
+      "scenario": "managed root without yt-dlp",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A07",
+      "evidence": "SYSTEM_TOOL_MISSING and HASH_MISMATCH; no apt or network repair attempted",
+      "productionPath": "manager",
+      "scenario": "system tool missing / one-nibble digest mismatch",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A08",
+      "evidence": "sensevoice NOT_READY, route blocked; single-file digest null; manager is read, not copied",
+      "productionPath": "delegated AsrModelManager",
+      "scenario": "ASR requested vs effective mismatch / not ready",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A09",
+      "evidence": "checking->downloading->verifying->self_testing->installing->ready; sequence +1 each",
+      "productionPath": "manager.run_job",
+      "scenario": "repair from no prior version",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A10",
+      "evidence": "second POST 409 JOB_ACTIVE with details.jobId; one worker/staging",
+      "productionPath": "manager + API",
+      "scenario": "concurrent POST while a job is active",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A11",
+      "evidence": "cancelling->cancelled; staging removed; old manifest untouched",
+      "productionPath": "manager",
+      "scenario": "cancel in checking/downloading/verifying/self_testing",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A12",
+      "evidence": "commit wins; exactly two legal outcomes, no third state",
+      "productionPath": "manager.run_job",
+      "scenario": "cancel races the installing commit lock",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A13",
+      "evidence": "network/SOURCE_NOT_ALLOWED classes fail closed with old ready intact; per-host redirect ladder not exhaustively driven",
+      "productionPath": "manager download policy",
+      "scenario": "DNS/connect/read/5xx, HTTP downgrade, third host, deadline",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "A14",
+      "evidence": "exact continues; one-over/under SIZE_MISMATCH refused before publish",
+      "productionPath": "manager",
+      "scenario": "Content-Length and stream exact vs one-over/one-under",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A15",
+      "evidence": "exact continues; mutation HASH_MISMATCH; old ready and manifest unchanged",
+      "productionPath": "manager",
+      "scenario": "exact SHA vs one-nibble mutation",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A16",
+      "evidence": "space checked BEFORE download; self-test failures fail closed; staging zero",
+      "productionPath": "manager",
+      "scenario": "space exact vs one-under; permission denied; self-test timeout/non-zero/wrong version",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A17",
+      "evidence": "interrupted job becomes RUNTIME_RESTARTED with staging zero; the five injection points are not all individually driven",
+      "productionPath": "manager.recover_after_restart",
+      "scenario": "Runtime crash at five stages",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "A18",
+      "evidence": "terminal/sequence guarded; public job reflects the stored terminal",
+      "productionPath": "manager",
+      "scenario": "late worker writes after terminal / stale sequence",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A19",
+      "evidence": "T1 keeps its snapshot; a non-frozen digest is refused as corrupt; T2 re-verifies and is blocked",
+      "productionPath": "manager leases + three consumers",
+      "scenario": "task T1 starts, G2 published, then T2 starts",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A20",
+      "evidence": "no snapshot means the route is blocked; the mid-task tamper itself is not driven end to end",
+      "productionPath": "manager leases",
+      "scenario": "system tool tampered / ASR model removed during T1",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "A21",
+      "evidence": "exact Runtime percentage; cancel only when cancelable; non-retryable failure leads",
+      "productionPath": "MediaDependencySettingsPanel",
+      "scenario": "panel renders ready/action_required/installing/failed/offline",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A22",
+      "evidence": "activeJobId resumes polling and offline renders a companion action; re-entry and old-ready-plus-failure are not driven end to end",
+      "productionPath": "panel + API",
+      "scenario": "leave/re-enter Settings, offline recovery, latest failure with old ready",
+      "status": "PARTIAL"
+    },
+    {
+      "caseId": "A23",
+      "evidence": "3,072,469 bytes and SHA-256 exact; frozen self-test passed; probe root deleted",
+      "productionPath": "real network + production manager",
+      "scenario": "fresh owned managed root install through the production manager",
+      "status": "PASS"
+    },
+    {
+      "caseId": "A24",
+      "evidence": "credential channel issued via HTTP is refused by /v1/media/credential-leases with CHANNEL_EXPIRED while the stored record is still 'issued' with 20s remaining; the same token consumes directly and a store-issued token returns 201",
+      "productionPath": "public API + production path",
+      "scenario": "fixed BV1Bb411w741/CID 61744125/p1 via public API and production factory/acquirer/SenseVoice",
+      "status": "BLOCKED"
+    }
+  ],
+  "denominator": {
+    "blocked": 1,
+    "fail": 0,
+    "notProven": 0,
+    "partial": 4,
+    "pass": 18,
+    "total": 24
+  },
+  "note": "A24 cannot be proven, so the fixed 24/24 denominator is NOT met. PARTIAL means the frozen behaviour is asserted for the reachable half of the case and the remainder is explicitly not driven.",
+  "schemaVersion": "wp-a-case-results/v1",
+  "status": "WP-A NO-GO"
+}

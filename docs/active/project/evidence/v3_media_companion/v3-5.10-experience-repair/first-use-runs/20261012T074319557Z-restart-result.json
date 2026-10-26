@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "v3-stage-a-browser-restart-evidence/v2",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_e2ba8b7657ba438fb0b32c7f627fb8ac",
+  "newTaskId": "media_task_e914bed8ee324532afb092bf458ae3f6",
+  "authority": [
+    {
+      "task_id": "media_task_e914bed8ee324532afb092bf458ae3f6",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_e914bed8ee324532afb092bf458ae3f6",
+      "state": "degraded"
+    }
+  ],
+  "oldOwnedDirectoryToken": "task_33e7f36d325e7ed0bb6dd3bb526c035c",
+  "ownerManifestMatchedBeforeCrash": true,
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_e2ba8b7657ba438fb0b32c7f627fb8ac",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_e914bed8ee324532afb092bf458ae3f6",
+      "failureCode": null
+    }
+  ],
+  "fixture": "pregranted_in_temporary_extension_only;held_execute_then_SIGKILL"
+}

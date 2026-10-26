@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "navia-wp0-r5b-acceptance/v1",
+  "decision": "R5-B PASS / R5 PASS / R6 MAY START",
+  "sourceRunnerPassed": false,
+  "sourceRunnerResidual": "post_denominator_workspace_navigation_not_opened",
+  "taskId": "media_task_afd6feb578c94d9d8e39b4eeaa41b202",
+  "sourceIdentity": "portal:bilibili:BV1Bb411w741:61744125:p1",
+  "terminal": {
+    "state": "degraded",
+    "revision": 6,
+    "sourceAuthority": "published"
+  },
+  "audio": {
+    "isolationMode": "owned_windows_audio_session",
+    "ownedProcessCount": 16,
+    "matchedSessionCount": 1,
+    "mutedSessionCount": 1,
+    "offscreenChunks": 182,
+    "relayChunks": 182,
+    "runtimeChunks": 195,
+    "runtimeCapturedMs": 16636,
+    "runtimeNonZeroSamples": 255758
+  },
+  "denominator": {
+    "R5B-01": true,
+    "R5B-02": true,
+    "R5B-03": true,
+    "R5B-04": true,
+    "R5B-05": true,
+    "R5B-06": true,
+    "R5B-07": true,
+    "R5B-08": true,
+    "R5B-09": true,
+    "R5B-10": true,
+    "R5B-11": true,
+    "R5B-12": true
+  },
+  "summary": {
+    "total": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "evidenceDigests": {
+    "resultJson": "257a8cb044e4606de1cd5b7bf636c3aa21c747806d0edd26e70cc09091f589ae",
+    "secretScanJson": "256724dd2e5afb5226d36b828dd6e6681ee043f8a35e127491f4e112f9530371",
+    "runtimeLog": "78997fd52322fc3c34d7d1ef3861565fcf786e08d585c73052d30094b730a5eb",
+    "runtimeDatabase": "26a62c9655b8bc114ad5ce49db9b99bb04b156f353ddc64c0574c85e7b4b3e42"
+  },
+  "secretScanHits": 0
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "v3-5.10-b6b-review-precommit/v1",
+  "batch": "GC-B6B FRESH SIX-SOURCE CANDIDATE + BLIND SEMANTIC REVIEW",
+  "frozenBeforeAnyExternalAction": true,
+  "frozenAtUtc": "2026-10-25T17:53:54.017Z",
+  "runId": "gc-b6b-20261025T175243Z",
+  "registryOrder": [
+    "6",
+    "5",
+    "2",
+    "4",
+    "3",
+    "1"
+  ],
+  "rubricSha256": "4a46f1ad125fad671550ef0960c1a33560dbf63a531c2ddd49cbfe83fccf21bc",
+  "promptSha256": "318b4fcf93bd0a6a0b599a6c4db9c4f3b46cd35e6e97bd1bc97bc4dedc8ee26f",
+  "rubricLocation": "the private review root (review-protocol/rubric.md); it reproduces the frozen acceptance-plan rubric verbatim in substance",
+  "promptLocation": "the private review root (review-protocol/prompt.md)",
+  "firstPass": {
+    "sessionId": "b6b-pass1-dbae5637a3d6f755",
+    "order": [
+      "6",
+      "5",
+      "2",
+      "4",
+      "3",
+      "1"
+    ],
+    "sentinelPosition": 5
+  },
+  "secondPass": {
+    "sessionId": "b6b-pass2-3799c949a8419032",
+    "order": [
+      "6",
+      "5",
+      "2",
+      "4",
+      "3",
+      "1"
+    ],
+    "sentinelPosition": 3
+  },
+  "sentinel": {
+    "registryOrder": "3",
+    "firstPassPosition": 5,
+    "secondPassPosition": 3
+  },
+  "randomSource": "node:crypto randomInt (Fisher-Yates) and randomBytes; the order was drawn BEFORE the first external action and is never changed afterwards"
+}

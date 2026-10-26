@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [
+    {
+      "case": "B27",
+      "xhrAborted": true,
+      "abortProof": "runtime-partial-terminal",
+      "deleteObserved": true,
+      "statusConverged": true,
+      "identityContained": true,
+      "residue": {
+        "storageImportId": 0,
+        "storageBearer": 0,
+        "storageUploadToken": 0,
+        "fileName": 0,
+        "importId": 0,
+        "token": 0
+      },
+      "sequence": 3,
+      "terminalState": "cancelled",
+      "importId": "media_import_f2dcdcfecdeb44de5e1ef3ba07539660",
+      "eventsDigest": "fnv1a32:026578ac"
+    },
+    {
+      "case": "B29",
+      "byteLength": 104329514,
+      "allocatedRatio": 1,
+      "sha256": "0b283602d3d61683ad940b3621c3dffbbede48d055dea5ba8dcff15156a2b7ba",
+      "ffprobeSha256": "31ce754d798891051ef33794ee9acf59393aaf2f201007e59907704499780c87",
+      "nonEmptySegments": 23,
+      "distinctFrameCount": 3,
+      "importId": "media_import_9d0466e47248bf0f0bbb70381fd19da5",
+      "taskId": "media_task_01de5a80830e430e988f50ae19efe06d",
+      "productId": "outline_54d87133a9fe6ae822de7841d7441937",
+      "progressMonotonic": true,
+      "writerSliceMaxBytes": 256000,
+      "terminalSequence": 9,
+      "cleanupCount": 1,
+      "residue": {
+        "source": 0,
+        "sandbox": 0
+      },
+      "uploads": 1,
+      "eventsDigest": "fnv1a32:93b4af4a"
+    }
+  ],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B30",
+    "failure": "Timed out waiting for the native Side Panel file chooser.",
+    "ownedResidue": null
+  }
+}

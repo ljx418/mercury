@@ -1,0 +1,22 @@
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportClient > sends exactly the frozen four-field create body 4ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportClient > uploads with XHR and reports REAL byte progress 1ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportClient > a generation change aborts the upload and never reports success 1ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportClient > a stale generation never paints progress onto the new page 3ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportClient > rejects a malformed import id without touching the transport 1ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportCard > only renders in an eligible blocked state and is keyboard reachable 19ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportCard > renders nothing when the task is not eligible 6ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportCard > keeps the file name out of any attribute except the label it renders 24ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportCard > shows the phase and a real percentage during upload 20ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B B5 LocalMediaImportCard > announces an error with role=alert 15ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 abort, delete and poll > abortAll really calls xhr.abort() on every live upload 1ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 abort, delete and poll > polls by sequence until a terminal state and refuses a regression 1ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 abort, delete and poll > cancel aborts the transport, DELETEs, then polls to terminal 12ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 abort, delete and poll > an unmount aborts the transport instead of leaving it running 3ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is offered when the Runtime says eligible and nothing else owns the task 0ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent when the Runtime does not consider the task eligible 0ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent while a capture is running 0ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent while an acquisition is running or already finished 0ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent once a terminal projection exists 0ms
+ ✓ src/modules/media_companion/tests/LocalMediaImportClient.test.tsx > WP-B C6 the entry is a last resort > is absent without both the task id and the source identity 0ms
+ Test Files  1 passed (1)
+      Tests  20 passed (20)

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "v3-stage-a-runtime-restart-evidence/v5",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_d58d7553caa94602a62e5246b80d9d32",
+  "newTaskId": "media_task_800541750d984256911170c084c5acf9",
+  "authority": [
+    {
+      "task_id": "media_task_800541750d984256911170c084c5acf9",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_800541750d984256911170c084c5acf9",
+      "state": "degraded"
+    }
+  ],
+  "oldOwnedDirectoryToken": "task_a78ca5af2321c210b23e607e11ec6d6d",
+  "ownerManifestMatchedBeforeCrash": true,
+  "oldPrivateArtifactBeforeCrash": {
+    "name": "artifact_00af4f4387e7cf8ebf9d020d8d994dfb.json",
+    "byteLength": 172751,
+    "segmentCount": 1101,
+    "jsonParsed": true
+  },
+  "oldPrivateAfterCrash": true,
+  "oldPrivateAfterRestartBeforeRetry": false,
+  "oldPrivateBeforeRetry": false,
+  "visibleOutlineForNewTask": true,
+  "visibleOutlineMatchesStored": true,
+  "visibleOutlineTitleLength": 12,
+  "visibleOutlineSummaryLength": 4000,
+  "stablePublishedSnapshot": true,
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_d58d7553caa94602a62e5246b80d9d32",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_800541750d984256911170c084c5acf9",
+      "failureCode": null
+    }
+  ],
+  "fixture": "pregranted_in_temporary_extension_only;real_artifact_then_SIGKILL"
+}

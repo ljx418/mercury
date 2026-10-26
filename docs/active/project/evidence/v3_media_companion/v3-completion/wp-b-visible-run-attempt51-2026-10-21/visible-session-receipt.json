@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [
+    {
+      "case": "B27",
+      "xhrAborted": true,
+      "abortProof": "runtime-partial-terminal",
+      "deleteObserved": true,
+      "statusConverged": true,
+      "identityContained": true,
+      "residue": {
+        "storageImportId": 0,
+        "storageBearer": 0,
+        "storageUploadToken": 0,
+        "fileName": 0,
+        "importId": 0,
+        "token": 0
+      },
+      "sequence": 3,
+      "terminalState": "cancelled",
+      "importId": "media_import_a156761631f8080fd3fba650690ab0e8",
+      "eventsDigest": "fnv1a32:026578ac"
+    },
+    {
+      "case": "B29",
+      "byteLength": 104329514,
+      "allocatedRatio": 1,
+      "sha256": "0b283602d3d61683ad940b3621c3dffbbede48d055dea5ba8dcff15156a2b7ba",
+      "ffprobeSha256": "31ce754d798891051ef33794ee9acf59393aaf2f201007e59907704499780c87",
+      "nonEmptySegments": 23,
+      "distinctFrameCount": 3,
+      "importId": "media_import_af76c12be0e150bbf48f836b04ac9684",
+      "taskId": "media_task_4eb0cd0ad739485d8d1fdb315cd38cf5",
+      "productId": "outline_1d3c59200a30aff048c669bf4176e1c5",
+      "progressMonotonic": true,
+      "writerSliceMaxBytes": 256000,
+      "terminalSequence": 9,
+      "cleanupCount": 1,
+      "residue": {
+        "source": 0,
+        "sandbox": 0
+      },
+      "uploads": 1,
+      "eventsDigest": "fnv1a32:93b4af4a"
+    },
+    {
+      "case": "B30",
+      "byteLength": 1107280614,
+      "allocatedRatio": 1,
+      "sha256": "18188fe9f7e42dc684a4b1582298643ac4854b7ef504087a349a4e8ca0c842d8",
+      "runtimeRssDeltaBytes": 136241152,
+      "extensionHeapDeltaBytes": 3530596,
+      "resourceSamples": 256,
+      "progressMonotonic": true,
+      "importId": "media_import_ac6c8f71f5eb0da2655d3d644e3db091",
+      "taskId": "media_task_938dac0015f34622bf0b198c4d6bf979",
+      "productId": "outline_ab86eb4268879c9001aa1e78123aa2d3",
+      "terminalSequence": 9,
+      "cleanupCount": 1,
+      "residue": {
+        "source": 0,
+        "sandbox": 0
+      },
+      "keyboardOracles": {
+        "passed": true,
+        "focusOrder": [
+          "local-import-pick",
+          "native-action-strip",
+          "local-import-pick"
+        ],
+        "activated": true
+      },
+      "ariaOracles": {
+        "passed": true,
+        "liveRegions": 2,
+        "changed": true
+      },
+      "viewportOracles": {
+        "passed": true,
+        "viewport": {
+          "width": 360,
+          "height": 759
+        },
+        "before": {
+          "scrollHeight": 759,
+          "scrollWidth": 360
+        },
+        "after": {
+          "scrollHeight": 759,
+          "scrollWidth": 360
+        }
+      },
+      "uploads": 1,
+      "eventsDigest": "fnv1a32:678e7492"
+    }
+  ],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": null
+}

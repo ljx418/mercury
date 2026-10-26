@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-isolation/v2",
+  "runtimePid": 4164591,
+  "runtimeDirRef": "e53438f01c0ee6364cf8c4a45bbf063a3870f7966e3801161da031de29d5c621",
+  "runtimePort": 17861,
+  "databaseRef": "548808943196ae99a303c5a87a118546d7741ff4b9fe799279c134f6352c260b",
+  "databaseMode": null,
+  "chromeProfileDirRef": "ef73ae6144df9a71e64658dd8c969d29647e49808bb0da2bc89e3d3ed41fafa5",
+  "chromePidList": [
+    4158110
+  ],
+  "chromeCdpPort": null,
+  "chromeLaunchLineSha256": "927976d9835b59230821fc16016212427c64661827eda770ffab996fc732456d",
+  "taskIdNamespace": "media_task_94a39d0b09814150b819f4fd6bb361d4",
+  "providerLock": "minimax_chat_completions",
+  "selectedProviderId": "minimax-cn-openai-vision",
+  "derivedTextScope": [
+    "transcript",
+    "ocr",
+    "vision-caption"
+  ],
+  "muteAudioVerified": true,
+  "startedAtUtc": "2026-10-24T18:45:25.684Z",
+  "finishedAtUtc": "2026-10-24T18:48:27.543Z",
+  "finalDisposition": "limited",
+  "finishReason": "final=limited; quality=limited; derivativeSha=d6e9f8da6ed641f6"
+}

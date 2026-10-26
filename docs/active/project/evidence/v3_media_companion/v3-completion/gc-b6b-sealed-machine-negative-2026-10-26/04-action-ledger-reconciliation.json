@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "v3-5.10-b6-public-evidence/v2",
+  "kind": "action-ledger-reconciliation",
+  "runId": "gc-b6b-20261026T080359Z-292745bcb719",
+  "integrityOk": true,
+  "malformedLines": 0,
+  "eventCount": 18,
+  "candidateTotals": {
+    "sourceAttempt": 6,
+    "chromeLaunch": 6,
+    "visibleWindow": 6,
+    "runtimeStart": 0,
+    "runtimeSynthesize": 0,
+    "providerCall": 0,
+    "download": 0,
+    "import": 0,
+    "mediaTask": 0,
+    "cookieInjection": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0,
+    "focusEvent": 0,
+    "sourceCompletion": 0
+  },
+  "eventTally": {
+    "sourceAttempt": 6,
+    "chromeLaunch": 6,
+    "visibleWindow": 6,
+    "runtimeStart": 0,
+    "runtimeSynthesize": 0,
+    "providerCall": 0,
+    "download": 0,
+    "import": 0,
+    "mediaTask": 0,
+    "cookieInjection": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0,
+    "focusEvent": 0,
+    "sourceCompletion": 0
+  },
+  "providerCallsInLedger": 0,
+  "providerCallsInReceipts": 0
+}

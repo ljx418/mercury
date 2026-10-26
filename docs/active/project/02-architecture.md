@@ -2,6 +2,11 @@
 
 > **2026-10-07 当前 L0 权威**：V3 架构收敛为“用户显式启动本机伴侣 → Chrome 扩展 Chat/Know → 统一网页/媒体上下文 → 来源证据 → KnowledgeDraft → 用户确认 → 本地知识存储”。扩展不得自动启动 Runtime；Agent 不属于 V3 运行时或一级导航。机器架构源为 `design/v3-chat-know-l0-architecture.json`，可审查图为 `design/v3-chat-know-l0-architecture.html`，设计说明为 `design/v3-chat-know-product-convergence.md`。后续历史架构与该边界冲突时，以此为准。
 
+> **2026-10-14 V3-5.10 子阶段状态纠偏**（仅冻结当前权威状态词，不改写历史证据）：
+> - Stage A 固定负向旅程 NJ-01..NJ-10 LIMITED PASS；Stage B B-0 冻结 PASS；B-1..B-4 实现候选 LIMITED PASS；Route 2 文档 CONDITIONAL GO 但 **B-5 FAIL/REPLAN**（`BV1pohR6rEEh`）；DeepSeek strict adapter DS-1..DS-5 LIMITED PASS；Chat Provider 默认仍为 MiniMax，DeepSeek 已通过凭据库导入、未启用；**B-5..B-7、Stage C/D/E、V3-6/V3-7 全部 NO-GO**。详细诊断与 SHA 见 `evidence/v3_media_companion/v3-5.10-experience-repair/`。
+> - Provider 与 GroundedSynthesis 责任分离：`visual_evidence` 与 `grounded_text_synthesis` 可独立选择，MiniMax 仍为视觉与文本默认候选；单任务锁单一 Provider，**禁止跨 Provider 拼接、最佳 N 选一或静默 fallback**；DeepSeek 仅在 Settings 显式选择后进入生产路径。
+> - 实施门禁仍按 `design/project-stage-workflow.md` 顺序执行：开发文档冻结 → 独立外部审查 → 用户高风险授权 → 真实 fresh 实现。
+
 ## 0. V3 Chat + Know 零层架构
 
 | 层 | 实体 | 责任 | V3 状态 |
@@ -2581,3 +2586,49 @@ V3-2-5 的 `useMediaAcquisitionTask` 只缓存传输状态并按 task revision �
 V3-2-6 的 fault profile 只存在于签名隔离测试配置，固定 F01..F14，每个故障使用独立 task/root。生产 API、Extension message、用户 URL 和普通环境变量不能选择 faultClass。验证器必须二次采样终态后 observation/artifact 计数，并从文件、进程、track、socket、DB/trace 六面证明清理。
 
 V3-2-7 从全新 build/profile/runtime/task root 运行 12 页 `6+3+1+1+1`。collector 只收原始观察，verifier 复算 A01..A20，package 工具只做 public/private 分类和 canonical seal。`v3_media_transcript_exit_v1.schema.json` 强制候选保持 `v3_2Passed=false`、`independentAuditStatus=pending`；不同 session 的独立审查结论不能回写 sealed candidate。
+
+### 22.13 V3-5.2 全片结构化理解主路径
+
+V3-5.1 的本地章节算法保留为离线预览，不再承担“完整视频理解”声明。高质量主路径借鉴 BiliNote 的全文分块与全局合并，但以强类型投影替代 Markdown marker：
+
+```text
+MediaEvidence(transcript/OCR/vision caption)
+-> MiniMaxGroundedSynthesisProvider
+   -> 18k derived-text chunks
+   -> grounded chapter candidates
+   -> global structured merge
+-> validate_synthesis
+   -> known evidence IDs only
+   -> ordered non-overlapping chapter ranges
+   -> 2..12 chapters / 2..5 key points / closed relation enum
+-> private GroundedSynthesisRecord (atomic, 0600)
+-> MediaComprehensionProjection/v2
+   -> SemanticOutlineView
+   -> InteractiveTimelineView
+   -> InteractiveMindmapView
+   -> grounded MediaAsk (full chapters + evidence text)
+```
+
+Provider 入口只接受 `evidenceId/kind/timestampStartMs/timestampEndMs/text`。原始音视频、frame bytes、Cookie、URL 和本地路径在类型边界外；`rawMediaUploadCount` 固定为 0。用户对每个 task 显式授权一次，模型或校验失败时不能写入 v2 record，也不能覆盖 v1 本地预览。视觉证据只允许支持、补充或显式标注冲突，不能静默改写 transcript。
+
+结果风格只允许 `concise/structured/detailed/tutorial`，分别声明覆盖遗漏、平衡默认、过度纳入和步骤化重组风险。Ask 使用独立提示词和零温度；普通/视觉回答最多 4 块，跨章最多 6 块，所有块必须引用已提供 evidence，正文不得出现内部 ID。MiniMax-M3 无可靠 JSON mode，因此响应经多对象扫描后仍必须通过强语义校验，失败最多重试三次并 fail closed。
+
+### 22.14 V3-5.9 持久门户凭据与单份媒体缓存
+
+`MediaPortalSettingsPanel -> /v1/media/portal-settings/bilibili -> MediaPortalSettingsStore -> SecretStore` 是持久登录态控制链。SQLite 只保存 enabled、Cookie 数量、过期时间、验证结果、秘密存储类型和更新时间；Cookie JSON 只保存在 OS keyring / Windows Credential Vault。`PreferredCredentialResolver` 优先读取已启用且验证通过的持久设置，未启用时回退到既有 `PortalCredentialLeaseStore`，使未来门户可通过新的 adapter/policy 接入而不把 B站字段泄漏到通用任务层。
+
+`MediaAcquisitionCoordinator / MediaProductMaterializer -> YtDlpMediaDownloader -> MediaDownloadCache` 按 `portal:adapter:media:playback-unit:part` 形成唯一缓存键。首次请求只下载一份 `<=480p` 完整视频；ASR 从该文件本地导出 16 kHz mono WAV，视觉链从同一文件按 8 个确定时间点抽帧。缓存条目绑定字节数和 SHA-256，读取前复核普通文件、单链接、私有权限、长度与哈希；TTL/LRU/配额/手动清理均通过同一 cache authority。任务沙箱仍复制需要的任务期输入并执行既有 cleanup barrier，缓存不能成为公开证据或绕过来源授权。
+
+### 22.15 P0 Background Capture Relay 增量架构
+
+2026-10-15 真实诊断证明 Background Service Worker 和 Windows 均可连接 Runtime WebSocket，而 Offscreen Document 的请求未抵达 Runtime。可信捕获内部层改为：`MediaCaptureController -> RuntimeCaptureTransport(background) -> loopback WebSocket`，同时 `OffscreenCapture -> trusted chrome.runtime.Port -> RuntimeCaptureTransport` 只传 PCM16 chunk。
+
+`RuntimeCaptureTransport` 是单任务、单 socket、单 ticket owner；等待 Runtime `started` 后才接收 chunk，并执行 sequence、byteLength、bounded queue、backpressure、finalize 和 abort。Offscreen 不再持有 ticket、Runtime URL 或 WebSocket，只保留 getUserMedia、AudioContext、downsample、PCM 编码和 stop。Chrome Port 使用 Base64 JSON chunk（raw <=49,152 bytes，encoded <=65,536 chars），单信用窗口使 Port 未确认消息最多一条；producer 用 local queued + credit consumed 计数，总 outstanding <=32 chunks/1,572,864 raw bytes，Background 不另建队列。正常完成顺序固定为 quiesce source -> drain -> Offscreen stopped -> Runtime finalize。Port 只接受精确扩展 ID/Offscreen URL、无 tab、frame absent/0、必有且绑定 documentId、与 `chrome.extension.inIncognitoContext` 一致，拒绝 content script、Side Panel、网页和外部 extension sender。
+
+任一 disconnect、worker restart、tab close、navigation、permission revoke、Runtime crash 或 cleanup failure 都中止本轮；不持久化 PCM/ticket，不从旧 sequence 续传。用户操作、公共 Runtime endpoint、30 秒 grant、SourceAuthority、Side Panel materialize ownership 和本地隐私边界不变。专项机器源与 HTML 为 `design/v3-p0-background-capture-relay-architecture.{json,html}`。
+
+为区分“从未捕获”和“worker 中途重启”，允许在 `chrome.storage.session`（`TRUSTED_CONTEXTS`）保存 v9 非秘密 tombstone：schemaVersion、192-bit captureSessionId、taskId、startedAt、phase、expiresAt；expiry 首次固定为 startedAt+1,080,000 ms，phase 更新不续期。它不是 active session，不含 ticket、grantId、streamId、PCM、sourceIdentity、路径、Cookie 或 API key，不能恢复连接。
+
+Runtime capture stream 不提交 durable 产品终态。`RuntimeCaptureSink.finalize -> transcript create -> TaskAudioStager.stage(copy+fsync+SHA-256+length+WAV shape) -> owner manifest temp O_EXCL write -> file fsync -> atomic replace -> parent-directory fsync -> transfer receipt -> worker start` 构成同步 handoff 屏障：屏障前 acquisition sandbox 归 handler，屏障后 staged audio 与 acquisition sandbox 归 transcript service，handler 禁止再次 cleanup。recover 只凭 authoritativeTaskId 在 `private_asr_staging_root/<taskId>/owner.json` 发现 owner，八类缺失/损坏均 fail-closed。hard crash 后由 existing recover 内部的 `MediaRecoveryCleanupCoordinator` 依次清 acquisition、ASR stage、未发布产品证据并验证 active sink，四项残留全零后才允许 fresh begin。terminal frame 只是最佳努力 handoff 通知。唯一 durable 产品 authority 是既有 SQLite `MediaTaskStore.commit_terminal(ready|degraded)`；不得新增第二持久存储，也不得用进程内 coordinator succeeded 冒充跨重启成功。错误归一化冻结 11 个精确 source scope 的 semantic AST boundary set 所推导的 40 个现行 source code、20 个 relay target code 及 shared/rename/public-only 三类完备分类；R0 中央 registry、四个递归 discovery root、non-relay allowlist 与源码 universe 必须精确闭合。
+
+恢复按 phase 和 staging ownership 分派 owner：`connecting` 且合法 start 未发生，由新 worker 调既有已认证 DELETE acquisition 后 GET；合法 start 且 Runtime 存活，屏障前由 handler、屏障后由 transcript service 清理；graceful SIGTERM 或 hard crash 后，当前产品上下文重新附着并调用既有 recover。recover 只有在 SQLite 产品终态存在时返回 published，否则返回 abandoned 并清理；fresh begin 证明单 sink。GET 404 停止轮询并保持 recovery pending；marker expiry 只清 marker。Port 身份与 Chrome 116 约束保持。身份规则要求各层 taskId/sourceIdentity 一致；consent、transcript、product revision 是三个不同域，各自单调/受 fence，不强求跨域相等。v1-v8 均为历史拒绝合同，当前机器权威仅为 internal relay v9。

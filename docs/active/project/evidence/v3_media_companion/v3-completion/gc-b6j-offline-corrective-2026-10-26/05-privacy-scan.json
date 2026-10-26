@@ -1,0 +1,269 @@
+{
+  "schemaVersion": "v3-5.10-b6j-scan/v1",
+  "batch": "GC-B6J OFFLINE CORRECTIVE",
+  "scannedAtUtc": "2026-10-26T11:20:36.143Z",
+  "scope": {
+    "evidenceFileCount": 7,
+    "changedFileCount": 13,
+    "note": "The EVIDENCE files are the payload of this package: a hit in them is a defect of this batch. The CHANGED files are the acceptance harness: a path shape there is the frozen vocabulary (the secret detector's own pattern literals, a schema version and a route class) or a SYNTHETIC refusal input, never a private path. This scan output itself is excluded from the evidence scan, and a final pass over every payload file, this output and the manifest is recorded in finalVerification."
+  },
+  "scanner": {
+    "secretPatterns": "scripts/stage_b_b5_3/lib/contracts.mjs :: SECRET_PATTERNS (the literals are not reproduced because reproducing them would make this file a hit of its own)",
+    "pathDetector": "scripts/stage_b_b5_3/lib/privacy.mjs :: detectAbsolutePaths (POSIX one-segment and multi-segment, Windows backslash and forward-slash drive, UNC backslash and forward-slash), with the narrow structured public-route allowlist",
+    "rawMediaPatterns": [
+      "media_file_extension",
+      "base64_payload_512_or_longer",
+      "zip_magic"
+    ]
+  },
+  "perEvidenceFile": [
+    {
+      "file": "00-status-and-scope.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "01-implementation-map.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "02-commands-and-exits.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "03-mutation-receipts.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "04-changed-files-and-contract.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "06-risks-and-next-decision.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "07-zero-action-and-cleanup-audit.md",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    }
+  ],
+  "perChangedFile": [
+    {
+      "file": "scripts/stage_b_b5_3/lib/candidate_dependencies.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/stable_failure_codes.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/candidate_prepare.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 1,
+      "absolutePathShapes": [
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 1,
+      "absolutePathShapes": [
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/retention_ledger.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/public_evidence.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 8,
+      "absolutePathShapes": [
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/sequencer.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/prepare_candidate.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 1,
+      "absolutePathShapes": [
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 5,
+      "absolutePathShapes": [
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>",
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/test/b6j_dependency_parity.node-test.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 2,
+      "absolutePathShapes": [
+        "<redacted-path-shape>",
+        "<redacted-path-shape>"
+      ],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/test/_fixtures/b6j_dependency_fixture.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    },
+    {
+      "file": "scripts/stage_b_b5_3/test/_fixtures/b6hr_public_evidence.mjs",
+      "secretHits": 0,
+      "absolutePathHitCount": 0,
+      "absolutePathShapes": [],
+      "base64PayloadHits": 0,
+      "zipMagic": false,
+      "rawMediaExtension": false
+    }
+  ],
+  "totals": {
+    "evidenceSecretHits": 0,
+    "evidenceAbsolutePathHits": 0,
+    "evidenceRawMediaPayloadHits": 0,
+    "changedSecretHits": 0,
+    "changedAbsolutePathHits": 18,
+    "changedRawMediaPayloadHits": 0
+  },
+  "changedHitReasons": [
+    {
+      "file": "scripts/stage_b_b5_3/lib/candidate_prepare.mjs",
+      "reason": "The relative-path SUFFIX filter of the candidate lock: the harness excludes the test directory of the harness tree. It is not an absolute path."
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/owned_session.mjs",
+      "reason": "The PRODUCT's ONE authorized cookie fallback: a frozen product path that the pre-existing product owner declares. It is not a private artifact of a run."
+    },
+    {
+      "file": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "reason": "The SECRET DETECTOR's own pattern prefixes, the process-directory root and the route class: the frozen vocabulary of the harness, never a private path."
+    },
+    {
+      "file": "scripts/stage_b_b5_3/prepare_candidate.mjs",
+      "reason": "The DEFAULT private root of the candidate preparation: the temporary-directory root the preparation creates, never a private artifact path."
+    },
+    {
+      "file": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "reason": "The FROZEN preflight paths: the memory probe, the default tool binaries and the evidence-root guard. They are the pre-existing product configuration, never a private path."
+    },
+    {
+      "file": "scripts/stage_b_b5_3/test/b6j_dependency_parity.node-test.mjs",
+      "reason": "The SYNTHETIC private paths of the refusal cases: they are the inputs that MUST be refused, and neither the lock, the receipt nor the evidence may ever carry them."
+    }
+  ],
+  "finalVerification": {
+    "status": "zero",
+    "scannedFileCount": 9,
+    "secretHits": 0,
+    "absolutePathHits": 0,
+    "rawMediaHits": 0,
+    "note": "The final pass covers EVERY payload file, the scan output itself and the manifest, after the payloads stabilized. The manifest covers every payload, the scan output included, and it is generated LAST and verified against the written bytes."
+  }
+}

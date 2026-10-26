@@ -1,0 +1,356 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-sequencer/v1",
+  "runId": "gc-b5r-b5-final-r6-20261024T192848Z",
+  "startedAtUtc": "2026-10-24T19:28:48.691Z",
+  "finishedAtUtc": "2026-10-24T19:47:16.343Z",
+  "stopped": true,
+  "stopReason": "aggregate verdict is not positive: AGG_FAILED_SOURCE(source 2/BV1QcYx6VEAj is failed); AGG_FAILED_SOURCE(1 sources are failed)",
+  "bvids": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "disposition": "complete",
+      "grantId": "76bb7048206c2108e4630aa51d440e51",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 249734,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-1",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-1",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 4
+      }
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "disposition": "failed",
+      "grantId": "14f134a7b0910ccce29014889103f345",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 217993,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-2",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-2",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 8
+      }
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "disposition": "complete",
+      "grantId": "11c3f76da31b3abca4ae9aaf460950f6",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 268234,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-3",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-3",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 5
+      }
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "disposition": "complete",
+      "grantId": "19725155be5578b6cf4c992003c7479e",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 122656,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-4",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-4",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 3
+      }
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "disposition": "complete",
+      "grantId": "d3972062deec8181362aacdc71c81b11",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 88505,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-5",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-5",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 3
+      }
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "disposition": "complete",
+      "grantId": "9aa1bcf9b59b772325b614cdb2059c33",
+      "exitCode": 0,
+      "signal": null,
+      "durationMs": 160338,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-6",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-6",
+        "count": 0,
+        "pids": [],
+        "roots": [],
+        "sources": []
+      },
+      "attemptedFacts": {
+        "attemptCount": 1,
+        "requestCount": 4
+      }
+    }
+  ],
+  "processAudit": {
+    "leakedBefore": 0,
+    "leakedAfter": 0,
+    "ok": true,
+    "leakedPids": [],
+    "sightings": [],
+    "stillAliveAtCloseout": 0,
+    "killedOwnedPids": [],
+    "note": "The LATCHED sightings of the owned descendants that survived their source runner. A sighting is never cleared by a later exit."
+  },
+  "authorization": {
+    "consumed": true,
+    "reason": null,
+    "authorizationDigest": "5103f10bababeafa590c83d3165ae6131efc9512b095f85b87b70058c9298bb7",
+    "grantCount": 6
+  },
+  "actionLedger": {
+    "candidateTotals": {
+      "sourceAttempt": 6,
+      "chromeLaunch": 6,
+      "visibleWindow": 6,
+      "runtimeStart": 6,
+      "cookieInjection": 156,
+      "focusEvent": 6,
+      "mediaTask": 6,
+      "runtimeSynthesize": 6,
+      "providerCall": 27,
+      "sourceCompletion": 5,
+      "download": 0,
+      "import": 0,
+      "audioOutput": 0,
+      "tabCaptureAction": 0
+    },
+    "stageTotals": {
+      "sourceAttempt": 6,
+      "chromeLaunch": 6,
+      "visibleWindow": 6,
+      "runtimeStart": 6,
+      "cookieInjection": 156,
+      "focusEvent": 6,
+      "mediaTask": 6,
+      "runtimeSynthesize": 6,
+      "providerCall": 27,
+      "sourceCompletion": 5,
+      "download": 0,
+      "import": 0,
+      "audioOutput": 0,
+      "tabCaptureAction": 0
+    },
+    "ledgerIntegrityOk": true,
+    "malformedLedgerLines": 0,
+    "candidateRunIds": [
+      "gc-b5r-b5-final-r6-20261024T192848Z"
+    ],
+    "historicalLowerBound": {
+      "ownedChromeLaunches": 34,
+      "method": "explicit_chrome_launch_records_in_the_retained_console_logs",
+      "unreadableOrMissing": 0,
+      "perLog": [
+        {
+          "label": "gc-b5r-b5-offline-corrective-2026-10-24/retained-logs/clean-run-console.log",
+          "launches": 6,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/aborted-attempt-1/sequencer-console.log",
+          "launches": 6,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/aborted-attempt-2/sequencer-console.log",
+          "launches": 6,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/aborted-attempt-3/sequencer-console.log",
+          "launches": 2,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/aborted-attempt-4/sequencer-console.log",
+          "launches": 2,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/aborted-attempt-5/sequencer-console.log",
+          "launches": 6,
+          "reason": null
+        },
+        {
+          "label": "gc-b5r-b5-real-run-2026-10-24/diagnostic-attempt-6/sequencer-console.log",
+          "launches": 6,
+          "reason": null
+        }
+      ],
+      "perSourceLaunchRecordsNotAdded": {
+        "count": 3,
+        "perLog": [
+          {
+            "label": "gc-b5r-b5-real-run-2026-10-24/run/bvid-1-BV11t8w6oEtP/chrome_launch.log",
+            "launches": 1,
+            "reason": null
+          },
+          {
+            "label": "gc-b5r-b5-real-run-2026-10-24/run/bvid-2-BV1QcYx6VEAj/chrome_launch.log",
+            "launches": 1,
+            "reason": null
+          },
+          {
+            "label": "gc-b5r-b5-real-run-2026-10-24/run/bvid-6-BV1qM9fB8Eb2/chrome_launch.log",
+            "launches": 1,
+            "reason": null
+          }
+        ],
+        "note": "NOT ADDED to the lower bound: a per-source launch record belongs to an attempt whose console record already counts that launch."
+      },
+      "note": "A LOWER BOUND over the retained logs: only the explicit launch records of the retained CONSOLE logs are counted, and every console log is ONE attempt. The per-source launch records are reported but NOT added: they belong to attempts whose console record already counts that launch."
+    },
+    "combinedLowerBound": {
+      "ownedChromeLaunches": 40,
+      "label": "the stage-root lifetime totals PLUS the retained-log historical lower bound (disjoint sets)",
+      "note": "No counter is guessed and nothing is counted twice: the stage root holds the new runs and the retained logs hold the older attempts."
+    }
+  },
+  "verdict": {
+    "positive": false,
+    "counts": {
+      "complete": 5,
+      "limited": 0,
+      "blocked": 0,
+      "failed": 1,
+      "total": 6
+    },
+    "threshold": {
+      "requiredSources": 6,
+      "completeMinimum": 5,
+      "blockedMaximum": 1,
+      "limitedMaximum": 0,
+      "failedMaximum": 0
+    },
+    "failures": [
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 2/BV1QcYx6VEAj is failed"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "1 sources are failed"
+      }
+    ],
+    "requiredSourceEvidence": [
+      "final_disposition.txt",
+      "b5-source-receipt.json",
+      "isolation.json",
+      "receipt.json",
+      "provider_lock.txt",
+      "chrome_launch.log",
+      "secret_scan.csv",
+      "cleanup.json",
+      "task_namespace.json"
+    ],
+    "uploadCounterKeys": [
+      "rawVideoUploadCount",
+      "rawAudioUploadCount",
+      "frameByteUploadCount",
+      "cookieUploadCount",
+      "apiKeyDisclosureCount",
+      "localPathUploadCount"
+    ],
+    "registrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+    "activeRegistryPath": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+    "reserveSources": [
+      "BV16woRBfEsH",
+      "BV1w7XQB7EsS",
+      "BV1829jBeErD",
+      "BV1aJAjzsE4j"
+    ]
+  }
+}

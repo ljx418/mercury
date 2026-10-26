@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v2",
+  "bvid": "BV11t8w6oEtP",
+  "order": "1",
+  "finalDisposition": "failed",
+  "finishReason": "unknown",
+  "failureCode": "Error",
+  "error": {
+    "name": "Error",
+    "message": "Chrome process argv lacks --mute-audio: ",
+    "stack": "Error: Chrome process argv lacks --mute-audio: \n    at ensure (file:///mnt/c/workspace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:141:54)\n    at file:///mnt/c/workspace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:912:5"
+  },
+  "runtimeFailureStatus": null,
+  "resolveObservations": [],
+  "runtimeCalls": [],
+  "startedAtUtc": "2026-10-24T18:25:59.652Z",
+  "finishedAtUtc": "2026-10-24T18:26:05.389Z"
+}

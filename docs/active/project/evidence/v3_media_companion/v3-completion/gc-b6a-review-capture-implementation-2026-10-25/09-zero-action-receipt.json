@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "v3-5.10-b6a-zero-action-receipt/v1",
+  "measuredAtUtc": "2026-10-25T02:01:29.736Z",
+  "ownedChromeProcesses": 0,
+  "runtimeListeningOn17861": 0,
+  "newestMediaTaskRootEntryAtMs": null,
+  "forbiddenCapabilityScan": {
+    "files": 4,
+    "note": "A static scan is a SUPPLEMENT: it proves that the B6A tool modules declare no Chrome, Runtime media task, Provider HTTP call, download, import, Cookie read, audio output or tab capture capability.",
+    "findings": []
+  },
+  "externalActionCounters": {
+    "chromeLaunches": 0,
+    "visibleWindows": 0,
+    "runtimeMediaTasks": 0,
+    "providerCalls": 0,
+    "downloads": 0,
+    "imports": 0,
+    "cookieReadsOrInjections": 0,
+    "audioOutputs": 0,
+    "tabCaptureActions": 0,
+    "focusEvents": 0,
+    "realBvidExecutions": 0
+  }
+}

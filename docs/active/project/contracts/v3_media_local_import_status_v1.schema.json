@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_local_import_status_v1.schema.json",
+  "title": "Navia V3 explicit local media import status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "importId", "taskId", "state", "sequence", "byteLength", "uploadedBytes", "createdAt", "updatedAt", "failureCode", "recoverable", "media"],
+  "properties": {
+    "schemaVersion": {"const": "v3-media-local-import/v1"},
+    "importId": {"type": "string", "pattern": "^media_import_[a-f0-9]{32}$"},
+    "taskId": {"type": "string", "pattern": "^media_task_[a-f0-9]{32}$"},
+    "state": {"enum": ["awaiting_upload", "uploading", "verifying", "preparing", "ready", "cancelling", "cancelled", "failed"]},
+    "sequence": {"type": "integer", "minimum": 0},
+    "byteLength": {"type": "integer", "minimum": 1, "maximum": 2147483648},
+    "uploadedBytes": {"type": "integer", "minimum": 0, "maximum": 2147483648},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"},
+    "failureCode": {
+      "type": ["string", "null"],
+      "enum": [null, "V3_MEDIA_IMPORT_REQUEST_INVALID", "V3_MEDIA_IMPORT_AUTH_REQUIRED", "V3_MEDIA_IMPORT_ORIGIN_MISMATCH", "V3_MEDIA_IMPORT_NOT_FOUND", "V3_MEDIA_IMPORT_TASK_NOT_ELIGIBLE", "V3_MEDIA_IMPORT_ACTIVE", "V3_MEDIA_IMPORT_TOKEN_INVALID", "V3_MEDIA_IMPORT_SIZE_MISMATCH", "V3_MEDIA_IMPORT_SIZE_LIMIT", "V3_MEDIA_IMPORT_TYPE_UNSUPPORTED", "V3_MEDIA_IMPORT_MEDIA_INVALID", "V3_MEDIA_IMPORT_DURATION_LIMIT", "V3_MEDIA_IMPORT_DISK_SPACE_LOW", "V3_MEDIA_IMPORT_WRITE_FAILED", "V3_MEDIA_IMPORT_PREPARE_FAILED", "V3_MEDIA_IMPORT_RUNTIME_RESTARTED", "V3_MEDIA_IMPORT_CANCELLED", "V3_MEDIA_IMPORT_CLEANUP_INCOMPLETE"]
+    },
+    "recoverable": {"type": "boolean"},
+    "media": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sha256", "durationMs", "widthPx", "heightPx", "container", "route"],
+          "properties": {
+            "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "durationMs": {"type": "integer", "minimum": 1, "maximum": 14400000},
+            "widthPx": {"type": "integer", "minimum": 1, "maximum": 7680},
+            "heightPx": {"type": "integer", "minimum": 1, "maximum": 4320},
+            "container": {"enum": ["mp4", "webm", "matroska"]},
+            "route": {"const": "explicit_local_media_asr"}
+          }
+        }
+      ]
+    }
+  }
+}

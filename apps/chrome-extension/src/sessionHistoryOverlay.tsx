@@ -7,21 +7,29 @@ export function SessionHistoryOverlay({
   currentSessionId,
   switchingSession,
   creatingSession,
+  deletingSessionId,
+  clearingSessions,
   canCreateSession,
   error,
   onClose,
   onSelect,
-  onCreate
+  onCreate,
+  onDelete,
+  onClear
 }: {
   sessions: ChatSession[];
   currentSessionId?: string;
   switchingSession: boolean;
   creatingSession: boolean;
+  deletingSessionId?: string;
+  clearingSessions: boolean;
   canCreateSession: boolean;
   error: string | null;
   onClose: () => void;
   onSelect: (sessionId: string) => void;
   onCreate: () => void;
+  onDelete: (sessionId: string) => void;
+  onClear: () => void;
 }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -51,14 +59,24 @@ export function SessionHistoryOverlay({
       >
         <div className="session-menu-header">
           <span id="session-history-title">聊天历史记录</span>
-          <button className="session-menu-close" type="button" aria-label="关闭会话菜单" onClick={onClose}>
-            ×
-          </button>
+          <div className="session-menu-header-actions">
+            <button className="session-menu-clear" type="button" disabled={sessions.length === 0 || clearingSessions || switchingSession} onClick={onClear}>
+              {clearingSessions ? "清空中…" : "清空"}
+            </button>
+            <button className="session-menu-close" type="button" aria-label="关闭会话菜单" onClick={onClose}>×</button>
+          </div>
         </div>
         {error ? <div className="session-menu-error">{error}</div> : null}
         {switchingSession ? <div className="session-menu-loading">正在加载会话……</div> : null}
         <div className="session-menu-list">
-          <SessionHistoryList sessions={sessions} currentSessionId={currentSessionId} disabled={switchingSession} onSelect={onSelect} />
+          <SessionHistoryList
+            sessions={sessions}
+            currentSessionId={currentSessionId}
+            disabled={switchingSession || clearingSessions || Boolean(deletingSessionId)}
+            onSelect={onSelect}
+            onDelete={onDelete}
+            deletingSessionId={deletingSessionId}
+          />
         </div>
         <div className="session-menu-footer">
           <button
@@ -68,8 +86,8 @@ export function SessionHistoryOverlay({
             disabled={!canCreateSession || creatingSession}
             onClick={onCreate}
           >
-            <span>新会话</span>
-            <kbd>⌘N</kbd>
+            <span aria-hidden="true">＋</span>
+            <span>新聊天</span>
           </button>
         </div>
       </div>

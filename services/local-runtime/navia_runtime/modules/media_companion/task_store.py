@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import secrets
 import sqlite3
 from copy import deepcopy
@@ -14,6 +15,14 @@ from .outline import MediaOutlineError, canonical_bytes, canonical_hash, validat
 
 
 TERMINAL_STATES = {"ready", "degraded", "blocked", "failed", "cancelled"}
+
+
+def process_start_token(pid: int) -> str | None:
+    try:
+        stat_text = Path(f"/proc/{pid}/stat").read_text(encoding="ascii")
+        return stat_text.rsplit(") ", 1)[1].split()[19]
+    except (OSError, IndexError):
+        return None
 ALLOWED_TRANSITIONS = {
     "created": {"acquiring", "cancelled", "blocked", "failed"},
     "acquiring": {"transcribing", "extracting_frames", "cancelled", "blocked", "failed"},
@@ -88,23 +97,279 @@ class MediaTaskStore:
                     PRIMARY KEY(task_id, operation, idempotency_key),
                     FOREIGN KEY(task_id) REFERENCES media_tasks(task_id)
                 );
+                CREATE TABLE IF NOT EXISTS media_source_authority(
+                    source_identity TEXT PRIMARY KEY, task_id TEXT NOT NULL,
+                    adapter_id TEXT NOT NULL, consent_policy_id TEXT NOT NULL,
+                    consent_policy_revision INTEGER NOT NULL, state TEXT NOT NULL,
+                    updated_at TEXT NOT NULL, owner_pid INTEGER, owner_start TEXT
+                );
+                CREATE TABLE IF NOT EXISTS media_source_policy_switches(
+                    new_task_id TEXT PRIMARY KEY, source_identity TEXT NOT NULL,
+                    old_task_id TEXT NOT NULL, old_policy_id TEXT NOT NULL,
+                    old_policy_revision INTEGER NOT NULL, new_policy_id TEXT NOT NULL,
+                    new_policy_revision INTEGER NOT NULL, confirmed_at TEXT NOT NULL,
+                    confirmation TEXT NOT NULL,
+                    FOREIGN KEY(new_task_id) REFERENCES media_tasks(task_id),
+                    FOREIGN KEY(old_task_id) REFERENCES media_tasks(task_id)
+                );
                 """
             )
+            authority_columns = {row["name"] for row in self._conn.execute("PRAGMA table_info(media_source_authority)")}
+            if "owner_pid" not in authority_columns:
+                self._conn.execute("ALTER TABLE media_source_authority ADD COLUMN owner_pid INTEGER")
+            if "owner_start" not in authority_columns:
+                self._conn.execute("ALTER TABLE media_source_authority ADD COLUMN owner_start TEXT")
             self._conn.execute(
                 "INSERT OR IGNORE INTO media_outline_schema_versions(version, applied_at) VALUES (2, ?)",
                 (utc_now(),),
             )
 
+    def source_authority(self, source_identity: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+            ).fetchone()
+            return dict(row) if row is not None else None
+
+    def source_authority_by_task(self, task_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT * FROM media_source_authority WHERE task_id=?", (task_id,)
+            ).fetchone()
+            return dict(row) if row is not None else None
+
+    def policy_switch_receipt(self, new_task_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            row = self._conn.execute(
+                "SELECT * FROM media_source_policy_switches WHERE new_task_id=?", (new_task_id,)
+            ).fetchone()
+            return dict(row) if row is not None else None
+
+    def require_current_authority(self, task_id: str) -> None:
+        with self._lock:
+            task = self._require_row(task_id)
+            authority = self._conn.execute(
+                "SELECT task_id FROM media_source_authority WHERE source_identity=?",
+                (task["source_identity"],),
+            ).fetchone()
+            if authority is not None and authority["task_id"] != task_id:
+                raise MediaTaskStoreError(
+                    "V3_MEDIA_HISTORICAL_READ_ONLY",
+                    "Historical media results cannot start new processing.", status=409,
+                )
+
+    def adopt_published_source(
+        self, source_identity: str, adapter_id: str,
+        consent_policy_id: str, consent_policy_revision: int,
+    ) -> dict[str, Any] | None:
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                authority = self._conn.execute(
+                    "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                ).fetchone()
+                if authority is None:
+                    published = self._conn.execute(
+                        """SELECT task_id FROM media_tasks WHERE source_identity=?
+                           AND state IN ('ready','degraded') AND current_outline_id IS NOT NULL
+                           ORDER BY updated_at DESC,task_id DESC LIMIT 1""",
+                        (source_identity,),
+                    ).fetchone()
+                    if published is not None:
+                        self._conn.execute(
+                            """INSERT INTO media_source_authority
+                               (source_identity,task_id,adapter_id,consent_policy_id,
+                                consent_policy_revision,state,updated_at,owner_pid,owner_start)
+                               VALUES (?,?,?,?,?,'published',?,?,?)""",
+                            (source_identity, published["task_id"], adapter_id,
+                             "legacy-unverified", 0, utc_now(),
+                             os.getpid(), process_start_token(os.getpid())),
+                        )
+                        authority = self._conn.execute(
+                            "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                        ).fetchone()
+                self._conn.execute("COMMIT")
+                return dict(authority) if authority is not None else None
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def reserve_source_authority(
+        self, source_identity: str, task_id: str, adapter_id: str,
+        consent_policy_id: str, consent_policy_revision: int,
+    ) -> dict[str, Any]:
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                row = self._conn.execute(
+                    "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                ).fetchone()
+                if row is not None and row["state"] not in {"failed", "cancelled"}:
+                    self._conn.execute("COMMIT")
+                    return dict(row)
+                now = utc_now()
+                self._conn.execute(
+                    """INSERT INTO media_source_authority
+                       (source_identity,task_id,adapter_id,consent_policy_id,
+                        consent_policy_revision,state,updated_at,owner_pid,owner_start)
+                       VALUES (?,?,?,?,?,'active',?,?,?)
+                       ON CONFLICT(source_identity) DO UPDATE SET
+                       task_id=excluded.task_id,adapter_id=excluded.adapter_id,
+                       consent_policy_id=excluded.consent_policy_id,
+                       consent_policy_revision=excluded.consent_policy_revision,
+                       state='active',updated_at=excluded.updated_at,
+                       owner_pid=excluded.owner_pid,owner_start=excluded.owner_start""",
+                    (source_identity, task_id, adapter_id, consent_policy_id,
+                     consent_policy_revision, now, os.getpid(), process_start_token(os.getpid())),
+                )
+                self._conn.execute("COMMIT")
+                return dict(self._conn.execute(
+                    "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                ).fetchone())
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def mark_source_authority(self, task_id: str, state: str) -> None:
+        if state not in {"published", "failed", "cancelled", "cleanup_incomplete"}:
+            raise ValueError("Invalid source authority state")
+        with self._lock:
+            self._conn.execute(
+                "UPDATE media_source_authority SET state=?,updated_at=? WHERE task_id=?",
+                (state, utc_now(), task_id),
+            )
+
+    def replace_published_source_authority(
+        self, *, source_identity: str, old_task_id: str, old_policy_id: str,
+        old_policy_revision: int, new_task_id: str, adapter_id: str,
+        new_policy_id: str, new_policy_revision: int,
+    ) -> dict[str, Any]:
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                authority = self._conn.execute(
+                    "SELECT * FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                ).fetchone()
+                if authority is None or (
+                    authority["task_id"], authority["consent_policy_id"], authority["consent_policy_revision"], authority["adapter_id"]
+                ) != (old_task_id, old_policy_id, old_policy_revision, adapter_id):
+                    raise MediaTaskStoreError("V3_MEDIA_SOURCE_POLICY_CONFLICT", "Source authority changed before confirmation.", status=409)
+                if authority["state"] != "published" or (old_policy_id, old_policy_revision) == (new_policy_id, new_policy_revision):
+                    raise MediaTaskStoreError("V3_MEDIA_SOURCE_POLICY_CONFLICT", "Only a published result under an older policy can be replaced.", status=409)
+                previous = self._conn.execute(
+                    "SELECT state,current_outline_id FROM media_tasks WHERE task_id=? AND source_identity=?",
+                    (old_task_id, source_identity),
+                ).fetchone()
+                if previous is None or previous["state"] not in {"ready", "degraded"} or previous["current_outline_id"] is None:
+                    raise MediaTaskStoreError("V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN", "Published source result is not verifiable.", status=409)
+                now = utc_now()
+                self._conn.execute(
+                    "INSERT INTO media_tasks VALUES (?,?,'created',1,?,?,'deferred_to_v4',NULL,NULL)",
+                    (new_task_id, source_identity, now, now),
+                )
+                self._append_event(new_task_id, 1, "task.created", {"sourceIdentity": source_identity}, now)
+                self._conn.execute(
+                    """INSERT INTO media_source_policy_switches
+                       (new_task_id,source_identity,old_task_id,old_policy_id,old_policy_revision,
+                        new_policy_id,new_policy_revision,confirmed_at,confirmation)
+                       VALUES (?,?,?,?,?,?,?,?,?)""",
+                    (new_task_id, source_identity, old_task_id, old_policy_id, old_policy_revision,
+                     new_policy_id, new_policy_revision, now, "reanalyze_under_current_policy"),
+                )
+                updated = self._conn.execute(
+                    """UPDATE media_source_authority SET task_id=?,consent_policy_id=?,
+                       consent_policy_revision=?,state='active',updated_at=?,owner_pid=?,owner_start=?
+                       WHERE source_identity=? AND task_id=? AND state='published'
+                       AND consent_policy_id=? AND consent_policy_revision=?""",
+                    (new_task_id, new_policy_id, new_policy_revision, now, os.getpid(),
+                     process_start_token(os.getpid()), source_identity, old_task_id,
+                     old_policy_id, old_policy_revision),
+                )
+                if updated.rowcount != 1:
+                    raise MediaTaskStoreError("V3_MEDIA_SOURCE_POLICY_CONFLICT", "Source authority changed during confirmation.", status=409)
+                self._conn.execute("COMMIT")
+                return {"oldTaskId": old_task_id, "newTaskId": new_task_id, "confirmedAt": now}
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def begin_cancel_source_task(self, task_id: str) -> str:
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                authority = self._conn.execute(
+                    "SELECT state FROM media_source_authority WHERE task_id=?", (task_id,)
+                ).fetchone()
+                if authority is None:
+                    raise MediaTaskStoreError("TASK_NOT_FOUND", "Source task authority was not found.", status=404)
+                if authority["state"] != "active":
+                    self._conn.execute("COMMIT")
+                    return authority["state"]
+                row = self._conn.execute("SELECT * FROM media_tasks WHERE task_id=?", (task_id,)).fetchone()
+                if row is not None and row["state"] in {"ready", "degraded"}:
+                    state = "published"
+                else:
+                    state = "cancelling"
+                    if row is not None and row["state"] not in TERMINAL_STATES:
+                        now = utc_now()
+                        revision = row["revision"] + 1
+                        self._conn.execute(
+                            "UPDATE media_tasks SET state='cancelled',revision=?,updated_at=?,terminal_failure_code='TASK_CANCELLED' WHERE task_id=?",
+                            (revision, now, task_id),
+                        )
+                        self._append_event(task_id, revision, "task.cancelled", {}, now)
+                self._conn.execute(
+                    "UPDATE media_source_authority SET state=?,updated_at=? WHERE task_id=?",
+                    (state, utc_now(), task_id),
+                )
+                self._conn.execute("COMMIT")
+                return state
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
+    def finish_cancel_source_task(self, task_id: str) -> str:
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            try:
+                authority = self._conn.execute(
+                    "SELECT state FROM media_source_authority WHERE task_id=?", (task_id,)
+                ).fetchone()
+                if authority is None:
+                    raise MediaTaskStoreError("TASK_NOT_FOUND", "Source task authority was not found.", status=404)
+                if authority["state"] == "cancelling":
+                    self._conn.execute(
+                        "UPDATE media_source_authority SET state='cancelled',updated_at=? WHERE task_id=?",
+                        (utc_now(), task_id),
+                    )
+                    self._conn.execute("COMMIT")
+                    return "cancelled"
+                if authority["state"] == "cancelled":
+                    self._conn.execute("COMMIT")
+                    return "cancelled"
+                raise MediaTaskStoreError("TASK_TRANSITION_INVALID", "Cancellation cleanup has not completed.", status=409)
+            except Exception:
+                self._conn.execute("ROLLBACK")
+                raise
+
     def create(self, task_id: str, source_identity: str) -> dict[str, Any]:
         now = utc_now()
         with self._lock:
-            row = self._conn.execute("SELECT * FROM media_tasks WHERE task_id=?", (task_id,)).fetchone()
-            if row:
-                if row["source_identity"] != source_identity:
-                    raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Task is bound to another source.", status=409)
-                return self._task(row)
             self._conn.execute("BEGIN IMMEDIATE")
             try:
+                authority = self._conn.execute(
+                    "SELECT task_id,state FROM media_source_authority WHERE source_identity=?", (source_identity,)
+                ).fetchone()
+                if authority is not None and authority["task_id"] != task_id:
+                    raise MediaTaskStoreError("V3_MEDIA_HISTORICAL_READ_ONLY", "Historical media results are read-only.", status=409)
+                if authority is not None and authority["state"] in {"cancelling", "cancelled", "failed", "cleanup_incomplete"}:
+                    raise MediaTaskStoreError("TASK_CANCELLED", "Source task can no longer publish.", status=409)
+                row = self._conn.execute("SELECT * FROM media_tasks WHERE task_id=?", (task_id,)).fetchone()
+                if row:
+                    if row["source_identity"] != source_identity:
+                        raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Task is bound to another source.", status=409)
+                    self._conn.execute("COMMIT")
+                    return self._task(row)
                 self._conn.execute(
                     "INSERT INTO media_tasks VALUES (?,?,'created',1,?,?,'deferred_to_v4',NULL,NULL)",
                     (task_id, source_identity, now, now),
@@ -122,6 +387,13 @@ class MediaTaskStore:
             try:
                 row = self._require_row(task_id)
                 self._require_revision(row, expected_revision)
+                authority = self._conn.execute(
+                    "SELECT task_id,state FROM media_source_authority WHERE source_identity=?", (row["source_identity"],)
+                ).fetchone()
+                if authority is not None and authority["task_id"] != task_id:
+                    raise MediaTaskStoreError("V3_MEDIA_HISTORICAL_READ_ONLY", "Historical media results are read-only.", status=409)
+                if authority is not None and authority["state"] in {"cancelling", "cancelled", "failed", "cleanup_incomplete"}:
+                    raise MediaTaskStoreError("TASK_CANCELLED", "Source task can no longer publish.", status=409)
                 if state not in ALLOWED_TRANSITIONS.get(row["state"], set()):
                     raise MediaTaskStoreError("TASK_TRANSITION_INVALID", "Task transition is not allowed.", status=409)
                 revision = expected_revision + 1
@@ -169,6 +441,13 @@ class MediaTaskStore:
             try:
                 row = self._require_row(task_id)
                 self._require_revision(row, expected_revision)
+                authority = self._conn.execute(
+                    "SELECT task_id,state FROM media_source_authority WHERE source_identity=?", (row["source_identity"],)
+                ).fetchone()
+                if authority is not None and authority["task_id"] != task_id:
+                    raise MediaTaskStoreError("V3_MEDIA_HISTORICAL_READ_ONLY", "Historical media results are read-only.", status=409)
+                if authority is not None and authority["state"] in {"cancelling", "cancelled", "failed", "cleanup_incomplete"}:
+                    raise MediaTaskStoreError("TASK_CANCELLED", "Source task can no longer publish.", status=409)
                 if row["source_identity"] != task["sourceIdentity"]:
                     raise MediaTaskStoreError("TASK_IDENTITY_MISMATCH", "Source identity changed.", status=409)
                 if task["state"] in {"ready", "degraded"} and row["state"] != "synthesizing":
@@ -283,6 +562,7 @@ class MediaTaskStore:
         with self._lock:
             row = self._require_row(task_id)
             result = self._task(row)
+            result["policyContext"] = self._policy_context(row)
             outline = self._conn.execute(
                 "SELECT canonical_json FROM media_outlines WHERE task_id=? AND task_revision=? AND published=1",
                 (task_id, row["revision"]),
@@ -320,9 +600,11 @@ class MediaTaskStore:
 
     def latest_for_source(self, source_identity: str) -> dict[str, Any]:
         with self._lock:
-            row = self._conn.execute(
-                "SELECT task_id FROM media_tasks WHERE source_identity=? ORDER BY updated_at DESC,task_id DESC LIMIT 1",
-                (source_identity,),
+            authority = self._conn.execute(
+                "SELECT task_id FROM media_source_authority WHERE source_identity=?", (source_identity,)
+            ).fetchone()
+            row = authority or self._conn.execute(
+                "SELECT task_id FROM media_tasks WHERE source_identity=? ORDER BY updated_at DESC,task_id DESC LIMIT 1", (source_identity,)
             ).fetchone()
         if not row:
             raise MediaTaskStoreError("TASK_NOT_FOUND", "Media outline task was not found.", status=404)
@@ -336,7 +618,31 @@ class MediaTaskStore:
                 "SELECT * FROM media_tasks ORDER BY updated_at DESC, task_id DESC LIMIT ?",
                 (limit,),
             ).fetchall()
-            return [self._task(row) for row in rows]
+            return [{**self._task(row), "policyContext": self._policy_context(row)} for row in rows]
+
+    def _policy_context(self, row: sqlite3.Row) -> dict[str, Any]:
+        authority = self._conn.execute(
+            "SELECT task_id,consent_policy_id,consent_policy_revision FROM media_source_authority WHERE source_identity=?",
+            (row["source_identity"],),
+        ).fetchone()
+        if authority is None:
+            return {"status": "unverified", "consentPolicyId": None, "consentPolicyRevision": None}
+        if authority["task_id"] == row["task_id"]:
+            return {
+                "status": "unverified" if authority["consent_policy_id"] == "legacy-unverified" else "current",
+                "consentPolicyId": authority["consent_policy_id"],
+                "consentPolicyRevision": authority["consent_policy_revision"],
+            }
+        switch = self._conn.execute(
+            """SELECT old_policy_id,old_policy_revision FROM media_source_policy_switches
+               WHERE old_task_id=? ORDER BY confirmed_at DESC LIMIT 1""",
+            (row["task_id"],),
+        ).fetchone()
+        return {
+            "status": "historical",
+            "consentPolicyId": switch["old_policy_id"] if switch else None,
+            "consentPolicyRevision": switch["old_policy_revision"] if switch else None,
+        }
 
     def transaction_counts(self, task_id: str) -> dict[str, int]:
         with self._lock:

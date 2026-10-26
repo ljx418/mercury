@@ -1,0 +1,150 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1HTbi6LERi",
+  "order": "5",
+  "finalDisposition": "failed",
+  "finishReason": "outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}",
+  "error": {
+    "name": "Error",
+    "message": "outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}",
+    "stack": "Error: outline-task POST failed: outline-task POST failed: HTTP 401 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3_COMPANION_SESSION_REQUIRED\",\"message\":\"Companion Runtime request was rejected.\",\"details\":{}}}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:657:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792776862441,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_3de80e408f2742a692b9a062afab4d04"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792776860837,
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200
+    },
+    {
+      "at": 1792776860839,
+      "method": "GET",
+      "path": "/v1/settings",
+      "status": 200
+    },
+    {
+      "at": 1792776860839,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792776860848,
+      "method": "POST",
+      "path": "/v1/companion/sessions",
+      "status": 201
+    },
+    {
+      "at": 1792776860852,
+      "method": "GET",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792776860856,
+      "method": "GET",
+      "path": "/v1/knowledge/permissions",
+      "status": 200
+    },
+    {
+      "at": 1792776860883,
+      "method": "POST",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792776860884,
+      "method": "GET",
+      "path": "/v1/media/portal-settings/bilibili",
+      "status": 200
+    },
+    {
+      "at": 1792776862270,
+      "method": "GET",
+      "path": "/v1/media/source-authority",
+      "status": 200
+    },
+    {
+      "at": 1792776862272,
+      "method": "GET",
+      "path": "/v1/media/task-projections",
+      "status": 404
+    },
+    {
+      "at": 1792776862283,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792776862293,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    },
+    {
+      "at": 1792776862301,
+      "method": "GET",
+      "path": "/v1/pi/sidecar/health",
+      "status": 200
+    },
+    {
+      "at": 1792776862303,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_3de80e408f2742a692b9a062afab4d04",
+      "status": 404
+    },
+    {
+      "at": 1792776862303,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_3de80e408f2742a692b9a062afab4d04",
+      "status": 404
+    },
+    {
+      "at": 1792776862439,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/resolve",
+      "status": 201
+    },
+    {
+      "at": 1792776862811,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_3de80e408f2742a692b9a062afab4d04",
+      "status": 200
+    },
+    {
+      "at": 1792776863200,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/media_task_3de80e408f2742a692b9a062afab4d04/execute",
+      "status": 200
+    },
+    {
+      "at": 1792776863808,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_3de80e408f2742a692b9a062afab4d04",
+      "status": 200
+    },
+    {
+      "at": 1792776863817,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792776863824,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    }
+  ],
+  "startedAtUtc": "2026-10-23T17:34:03.837Z",
+  "finishedAtUtc": "2026-10-23T17:34:24.930Z"
+}

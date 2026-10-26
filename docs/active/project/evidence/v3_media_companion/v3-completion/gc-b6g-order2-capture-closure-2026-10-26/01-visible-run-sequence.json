@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "gc-b6g-order2-capture-closure/v1",
+  "source": {"registryOrder": "2", "bvid": "BV1QcYx6VEAj"},
+  "runs": [
+    {
+      "ordinal": 1,
+      "verdict": "BLOCKED",
+      "taskState": "ready",
+      "providerRequestCount": 4,
+      "evidenceKindCounts": {"transcript": 49, "frame": 8, "ocr_block": 8, "vision_caption": 8},
+      "pngConfirmedFrameCount": 0,
+      "captureStatus": "failed",
+      "stableCodes": ["CANARY_CAPTURE_NOT_CLOSED", "CANARY_NO_PNG_BACKED_FRAME", "CANARY_PNG_INVALID", "B6_CAPTURE_THUMBNAIL_UNAVAILABLE"],
+      "rootCause": "strict PNG validator rejected fixed BT.709 ancillary chunks emitted by the frozen ffmpeg"
+    },
+    {
+      "ordinal": 2,
+      "verdict": "BLOCKED",
+      "taskState": "ready",
+      "providerRequestCount": 4,
+      "evidenceKindCounts": {"transcript": 49, "frame": 8, "ocr_block": 8, "vision_caption": 8},
+      "pngConfirmedFrameCount": 8,
+      "captureStatus": "failed",
+      "stableCodes": ["CANARY_CAPTURE_NOT_CLOSED", "B6_BUNDLE_MANIFEST_DRIFT", "B6_BUNDLE_RECEIPT_INVALID"],
+      "rootCause": "writer and reader used different thumbnail orders when deriving manifest and receipt bytes"
+    },
+    {
+      "ordinal": 3,
+      "verdict": "ORDER2 DIAGNOSTIC READY FOR CODEX",
+      "taskState": "ready",
+      "providerRequestCount": 4,
+      "evidenceKindCounts": {"transcript": 49, "frame": 8, "ocr_block": 8, "vision_caption": 8},
+      "pngConfirmedFrameCount": 8,
+      "captureStatus": "captured",
+      "captureCounts": {"evidence": 73, "thumbnails": 8, "chapters": 6},
+      "stableCodes": []
+    }
+  ],
+  "commonSafetyFacts": {
+    "ownedMutedChromePerRun": 1,
+    "isolatedRuntimePerRun": 1,
+    "audioOutputCount": 0,
+    "tabCaptureActionCount": 0,
+    "rawVideoUploadCount": 0,
+    "rawAudioUploadCount": 0,
+    "frameByteUploadCount": 0,
+    "cookieUploadCount": 0,
+    "apiKeyDisclosureCount": 0,
+    "localPathUploadCount": 0,
+    "ownedLeakSightings": 0,
+    "cleanupClosed": true
+  },
+  "candidate": false,
+  "semanticReviewPerformed": false,
+  "stagePass": false
+}
+

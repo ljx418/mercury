@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v3-stage-a-browser-restart-evidence/v1",
+  "bvid": "BV1hMpE6FEXG",
+  "passed": true,
+  "interruptedFailure": "诊断：V3_MEDIA_AUTHORITY_RESTART_UNCERTAIN",
+  "oldTaskId": "media_task_9fc06c319d4f440c9a59a139cdb668b9",
+  "newTaskId": "media_task_e7c020e81885434a8d50cac6b16ba0cd",
+  "authority": [
+    {
+      "task_id": "media_task_e7c020e81885434a8d50cac6b16ba0cd",
+      "state": "published"
+    }
+  ],
+  "products": [
+    {
+      "task_id": "media_task_e7c020e81885434a8d50cac6b16ba0cd",
+      "state": "degraded"
+    }
+  ],
+  "oldPrivateResidual": false,
+  "oldEvidenceResidual": false,
+  "resolutions": [
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_9fc06c319d4f440c9a59a139cdb668b9",
+      "failureCode": null
+    },
+    {
+      "status": 201,
+      "disposition": "created",
+      "taskId": "media_task_e7c020e81885434a8d50cac6b16ba0cd",
+      "failureCode": null
+    }
+  ],
+  "fixture": "pregranted_in_temporary_extension_only;held_execute_then_SIGKILL"
+}

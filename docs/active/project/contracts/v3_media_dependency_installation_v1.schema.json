@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_dependency_installation_v1.schema.json",
+  "title": "Navia V3 media dependency repair job",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "jobId", "dependencyIds", "state", "cancelable", "progress", "failureCode", "publishedGeneration", "sequence", "createdAt", "updatedAt", "finishedAt"],
+  "properties": {
+    "schemaVersion": {"const": "v3-media-dependency-installation/v1"},
+    "jobId": {"type": "string", "pattern": "^media_dep_job_[a-f0-9]{32}$"},
+    "dependencyIds": {
+      "type": "array",
+      "prefixItems": [{"const": "yt-dlp"}],
+      "items": false,
+      "minItems": 1,
+      "maxItems": 1
+    },
+    "state": {"enum": ["checking", "downloading", "verifying", "installing", "self_testing", "ready", "cancelling", "cancelled", "failed", "corrupt"]},
+    "cancelable": {"type": "boolean"},
+    "progress": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completedBytes", "totalBytes", "completedItems", "totalItems"],
+      "properties": {
+        "completedBytes": {"type": "integer", "minimum": 0},
+        "totalBytes": {"type": ["integer", "null"], "minimum": 1},
+        "completedItems": {"type": "integer", "minimum": 0, "maximum": 1},
+        "totalItems": {"const": 1}
+      }
+    },
+    "failureCode": {
+      "type": ["string", "null"],
+      "enum": [null, "V3_MEDIA_DEPENDENCY_REQUEST_INVALID", "V3_MEDIA_DEPENDENCY_JOB_NOT_FOUND", "V3_MEDIA_DEPENDENCY_JOB_ACTIVE", "V3_MEDIA_DEPENDENCY_SOURCE_NOT_ALLOWED", "V3_MEDIA_DEPENDENCY_NETWORK_FAILED", "V3_MEDIA_DEPENDENCY_TIMEOUT", "V3_MEDIA_DEPENDENCY_SIZE_MISMATCH", "V3_MEDIA_DEPENDENCY_HASH_MISMATCH", "V3_MEDIA_DEPENDENCY_DISK_SPACE_LOW", "V3_MEDIA_DEPENDENCY_PERMISSION_DENIED", "V3_MEDIA_DEPENDENCY_SELF_TEST_FAILED", "V3_MEDIA_DEPENDENCY_RUNTIME_RESTARTED"]
+    },
+    "publishedGeneration": {"type": ["string", "null"], "pattern": "^depgen_[a-f0-9]{64}$"},
+    "sequence": {"type": "integer", "minimum": 0},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"},
+    "finishedAt": {"type": ["string", "null"], "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"state": {"enum": ["checking", "downloading", "verifying", "self_testing"]}}}, "then": {"properties": {"cancelable": {"const": true}, "finishedAt": {"type": "null"}}}},
+    {"if": {"properties": {"state": {"const": "installing"}}}, "then": {"properties": {"cancelable": {"const": false}, "finishedAt": {"type": "null"}}}},
+    {"if": {"properties": {"state": {"enum": ["ready", "cancelled", "failed", "corrupt"]}}}, "then": {"properties": {"cancelable": {"const": false}, "finishedAt": {"type": "string"}}}},
+    {"if": {"properties": {"state": {"const": "ready"}}}, "then": {"properties": {"failureCode": {"type": "null"}, "publishedGeneration": {"type": "string"}}}},
+    {"if": {"properties": {"state": {"enum": ["failed", "corrupt"]}}}, "then": {"properties": {"failureCode": {"type": "string"}, "publishedGeneration": {"type": "null"}}}},
+    {"if": {"properties": {"state": {"const": "cancelled"}}}, "then": {"properties": {"failureCode": {"type": "null"}, "publishedGeneration": {"type": "null"}}}}
+  ]
+}

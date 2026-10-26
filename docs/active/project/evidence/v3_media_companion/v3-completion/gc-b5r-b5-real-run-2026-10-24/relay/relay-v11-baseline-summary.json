@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "v3-media-capture-internal-relay-v11-verification/v1",
+  "command": "python3 docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-contract.py",
+  "exit": 0,
+  "passed": true,
+  "summary": {
+    "total": 50,
+    "passed": 50,
+    "failed": 0
+  },
+  "failedChecks": [],
+  "sourceInventoryDiff": {
+    "actualCount": 40,
+    "frozenCount": 40,
+    "missing": [],
+    "extra": []
+  },
+  "targetInventoryDiff": {
+    "actualCount": 20,
+    "frozenCount": 20,
+    "missing": [],
+    "extra": []
+  },
+  "unlistedBoundaryEmits": {},
+  "schemaErrors": [],
+  "note": "This batch changed NO relay-v11 source-scope file, so the canonical baseline stays green. Nothing was refrozen."
+}

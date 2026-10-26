@@ -1,0 +1,48 @@
+{
+  "note": "Identifiers, digests and counts only. No path, no file name, no raw speech, no token.",
+  "receipts": [
+    {
+      "audioOwnerReceiptSha256": "79486a9916c9606e0d01572719f9a7e46f7ddf6b32c291baa887d5864c44c2e6",
+      "barrierPhase": "transcript_terminal",
+      "byteLength": 101644359,
+      "case": "B21",
+      "container": "mp4",
+      "durationMs": 105000,
+      "heightPx": 720,
+      "importId": "media_import_eb4f96a65bbe79e222362ccc9efbb088",
+      "publicSchemaVersion": "v3-media-local-import/v1",
+      "sourceIdentity": "portal:bilibili:BV11A6E9C9:cid:1",
+      "taskId": "media_task_13aac627ceb9d038e3498adc798c1285",
+      "transcriptCharacters": 662,
+      "transcriptSegments": 9,
+      "uploadedBytes": 101644359,
+      "videoManifestSha256": "5c007b86fa22ffe1fee7c4da33267535898624e89f642f1e99cf995cadf992c4",
+      "visualReceiptSha256": "e36a9facf25c710472f4431c3c4b5ab96cbcceda252eea5dae45c2842915a5d2",
+      "widthPx": 1280
+    },
+    {
+      "audioOwnerReceiptSha256": "46bb3eab62276a6942083ff747b8fa98fe3fc7a35f6e3e17120d9a04a8c4d776",
+      "barrierPhase": "cleaned",
+      "case": "B22",
+      "cleanupCalls": 1,
+      "credentialDispatch": 0,
+      "downloaderDispatch": 0,
+      "evidenceCount": 27,
+      "importId": "media_import_8f024e385c28a324e234b4ac1bd1a28c",
+      "mindmapNodes": 3,
+      "outlineId": "outline_73bece07ac2855a59f975091063ca03c",
+      "outlineSections": 2,
+      "sandboxResidual": 0,
+      "sourceIdentity": "portal:bilibili:BV75CAC909:cid:1",
+      "sourceResidual": 0,
+      "taskId": "media_task_87842e3d7437fa0a9605a47af822ce9e",
+      "thumbnailCount": 8,
+      "timelineSegments": 2,
+      "transcriptTerminal": true,
+      "videoManifestSha256": "5c007b86fa22ffe1fee7c4da33267535898624e89f642f1e99cf995cadf992c4",
+      "visualReceiptSha256": "f2ce022a4535e5908c41b8e27a46554ae91b058ae331443e080cb6fbdcfa3ab4",
+      "visualTerminal": true
+    }
+  ],
+  "schemaVersion": "v3-wp-b-real-receipts/v1"
+}

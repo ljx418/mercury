@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "v3-5.10-stage-b-route-2-fixtures/v2",
+  "schemaPath": "docs/active/project/contracts/v3_media_grounded_comprehension_v2_1.schema.json",
+  "positiveInstances": [
+    {
+      "fixtureId": "V3510B21-P01-provider",
+      "instance": {
+        "schemaVersion": "v3-media-grounded-comprehension/v2.1",
+        "binding": {
+          "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "taskRevision": 7,
+          "sourceIdentity": "portal:bilibili:BV1fixture:1:video",
+          "evidenceCatalogSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "mediaDurationMs": 300000,
+          "spanStartMs": 0,
+          "spanEndMs": 300000
+        },
+        "brief": {
+          "text": "视频依次界定问题背景、说明分析方法，并在结尾给出带适用边界的核心结论。",
+          "evidenceIds": ["mtr_00000000000000000000000000000001", "mtr_00000000000000000000000000000002", "mtr_00000000000000000000000000000003"],
+          "regions": ["opening", "middle", "ending"],
+          "origin": "provider",
+          "sourceClaimIds": []
+        },
+        "claims": [
+          {"claimId": "claim_1111111111111111", "text": "开篇界定核心问题及讨论范围。", "evidenceIds": ["mtr_00000000000000000000000000000001"], "regions": ["opening"]},
+          {"claimId": "claim_2222222222222222", "text": "中段解释分析路径与关键依据。", "evidenceIds": ["mtr_00000000000000000000000000000002"], "regions": ["middle"]},
+          {"claimId": "claim_3333333333333333", "text": "结尾形成有条件的整体结论。", "evidenceIds": ["mtr_00000000000000000000000000000003"], "regions": ["ending"]}
+        ],
+        "chapters": [
+          {"chapterId": "chapter_1111111111111111", "order": 0, "title": "问题背景与范围", "thesis": "开篇明确问题背景和后续分析范围。", "startMs": 0, "endMs": 100000, "evidenceIds": ["mtr_00000000000000000000000000000001"], "relationToPrevious": "opening"},
+          {"chapterId": "chapter_2222222222222222", "order": 1, "title": "分析路径与依据", "thesis": "中段使用具体依据推进核心分析。", "startMs": 100000, "endMs": 200000, "evidenceIds": ["mtr_00000000000000000000000000000002"], "relationToPrevious": "continuation"},
+          {"chapterId": "chapter_3333333333333333", "order": 2, "title": "结论及适用边界", "thesis": "结尾汇总结论并说明适用条件。", "startMs": 200000, "endMs": 300000, "evidenceIds": ["mtr_00000000000000000000000000000003"], "relationToPrevious": "conclusion"}
+        ],
+        "regions": [
+          {"name": "opening", "startMs": 0, "endMs": 100000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000001"]},
+          {"name": "middle", "startMs": 100000, "endMs": 200000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000002"]},
+          {"name": "ending", "startMs": 200000, "endMs": 300000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000003"]}
+        ],
+        "quality": {"status": "complete", "failureCodes": [], "sourceCoverageRatio": 1.0, "maxChapterStartConcentration": 0.333333, "maxChapterSpanRatio": 0.333333, "humanReviewRequired": true},
+        "receipt": {"providerId": "minimax", "modelId": "MiniMax-M3", "outboundDerivedTextSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "requestCount": 1, "rawVideoUploadCount": 0, "rawAudioUploadCount": 0, "frameByteUploadCount": 0, "cookieUploadCount": 0, "apiKeyDisclosureCount": 0, "localPathUploadCount": 0}
+      }
+    },
+    {
+      "fixtureId": "V3510B21-P02-composer",
+      "copyFrom": "V3510B21-P01-provider",
+      "mutations": [
+        {"path": "/brief/text", "value": "开篇界定核心问题及讨论范围；中段解释分析路径与关键依据；结尾形成有条件的整体结论。"},
+        {"path": "/brief/origin", "value": "deterministic_claim_composer"},
+        {"path": "/brief/sourceClaimIds", "value": ["claim_1111111111111111", "claim_2222222222222222", "claim_3333333333333333"]},
+        {"path": "/receipt/requestCount", "value": 2}
+      ]
+    },
+    {
+      "fixtureId": "V3510B21-P03-provider-b5-1-receipt-extras",
+      "instance": {
+        "schemaVersion": "v3-media-grounded-comprehension/v2.1",
+        "binding": {
+          "taskId": "media_task_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "taskRevision": 7,
+          "sourceIdentity": "portal:bilibili:BV1fixture:1:video",
+          "evidenceCatalogSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "mediaDurationMs": 300000,
+          "spanStartMs": 0,
+          "spanEndMs": 300000
+        },
+        "brief": {
+          "text": "视频依次界定问题背景、说明分析方法，并在结尾给出带适用边界的核心结论。",
+          "evidenceIds": ["mtr_00000000000000000000000000000001", "mtr_00000000000000000000000000000002", "mtr_00000000000000000000000000000003"],
+          "regions": ["opening", "middle", "ending"],
+          "origin": "provider",
+          "sourceClaimIds": []
+        },
+        "claims": [
+          {"claimId": "claim_1111111111111111", "text": "开篇界定核心问题及讨论范围。", "evidenceIds": ["mtr_00000000000000000000000000000001"], "regions": ["opening"]},
+          {"claimId": "claim_2222222222222222", "text": "中段解释分析路径与关键依据。", "evidenceIds": ["mtr_00000000000000000000000000000002"], "regions": ["middle"]},
+          {"claimId": "claim_3333333333333333", "text": "结尾形成有条件的整体结论。", "evidenceIds": ["mtr_00000000000000000000000000000003"], "regions": ["ending"]}
+        ],
+        "chapters": [
+          {"chapterId": "chapter_1111111111111111", "order": 0, "title": "问题背景与范围", "thesis": "开篇明确问题背景和后续分析范围。", "startMs": 0, "endMs": 100000, "evidenceIds": ["mtr_00000000000000000000000000000001"], "relationToPrevious": "opening"},
+          {"chapterId": "chapter_2222222222222222", "order": 1, "title": "分析路径与依据", "thesis": "中段使用具体依据推进核心分析。", "startMs": 100000, "endMs": 200000, "evidenceIds": ["mtr_00000000000000000000000000000002"], "relationToPrevious": "continuation"},
+          {"chapterId": "chapter_3333333333333333", "order": 2, "title": "结论及适用边界", "thesis": "结尾汇总结论并说明适用条件。", "startMs": 200000, "endMs": 300000, "evidenceIds": ["mtr_00000000000000000000000000000003"], "relationToPrevious": "conclusion"}
+        ],
+        "regions": [
+          {"name": "opening", "startMs": 0, "endMs": 100000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000001"]},
+          {"name": "middle", "startMs": 100000, "endMs": 200000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000002"]},
+          {"name": "ending", "startMs": 200000, "endMs": 300000, "availability": "substantive", "evidenceIds": ["mtr_00000000000000000000000000000003"]}
+        ],
+        "quality": {"status": "complete", "failureCodes": [], "sourceCoverageRatio": 1.0, "maxChapterStartConcentration": 0.333333, "maxChapterSpanRatio": 0.333333, "humanReviewRequired": true},
+        "receipt": {"providerId": "minimax", "modelId": "MiniMax-M3", "outboundDerivedTextSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "requestCount": 1, "rawVideoUploadCount": 0, "rawAudioUploadCount": 0, "frameByteUploadCount": 0, "cookieUploadCount": 0, "apiKeyDisclosureCount": 0, "localPathUploadCount": 0, "endpointClass": "minimax_chat_completions", "structureMode": "openai_chat_object", "attemptId": "attempt-deadbeefcafef00d", "latencyMs": 1234, "requestSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "responseSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "finishReason": "stop"}
+      }
+    }
+  ],
+  "negativeCases": [
+    {"caseId": "V3510B21-N01", "layer": "schema_and_semantic", "mutation": "composer_has_one_source_claim", "expected": "reject"},
+    {"caseId": "V3510B21-N02", "layer": "semantic", "mutation": "selected_claims_omit_substantive_ending", "expected": "original_brief_failure"},
+    {"caseId": "V3510B21-N03", "layer": "semantic", "mutation": "selected_claim_text_is_raw_transcript_excerpt", "expected": "original_brief_failure"},
+    {"caseId": "V3510B21-N04", "layer": "semantic", "mutation": "joined_text_exceeds_100_unicode_scalars", "expected": "original_brief_failure_without_truncation"},
+    {"caseId": "V3510B21-N05", "layer": "orchestration", "mutation": "chapter_failure_attempts_composer", "expected": "V3510B_CHAPTER_TIME_INVALID"},
+    {"caseId": "V3510B21-N06", "layer": "persistence", "mutation": "revision_or_catalog_authority_changes_before_commit", "expected": "reject_without_write"},
+    {"caseId": "V3510B21-N07", "layer": "schema_and_semantic", "mutation": "provider_origin_has_source_claim_ids", "expected": "reject"},
+    {"caseId": "V3510B21-N08", "layer": "persistence", "mutation": "failed_v2_1_attempt_with_prior_files", "expected": "prior_bytes_identical"},
+    {"caseId": "V3510B21-N09", "layer": "orchestration", "mutation": "second_provider_repair_or_second_composer_attempt", "expected": "reject_without_retry"},
+    {"caseId": "V3510B21-N10", "layer": "real_run_harness", "mutation": "retry_reuses_runtime_database_chrome_profile_or_task", "expected": "harness_reject_before_collection"},
+    {"caseId": "V3510B21-N11", "layer": "schema_and_semantic", "mutation": "v2_1_receipt_has_undeclared_extras_field", "expected": "reject"}
+  ]
+}

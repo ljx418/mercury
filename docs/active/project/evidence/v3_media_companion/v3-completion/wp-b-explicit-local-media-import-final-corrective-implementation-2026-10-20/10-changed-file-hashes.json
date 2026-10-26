@@ -1,0 +1,149 @@
+{
+  "files": [
+    {
+      "bytes": 170203,
+      "path": "services/local-runtime/navia_runtime/app.py",
+      "present": true,
+      "sha256": "e2bcbda675e87c3e2bbbfd0d561186442190badc694f2ed80a8679b4b1229b2f"
+    },
+    {
+      "bytes": 49638,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py",
+      "present": true,
+      "sha256": "dd7c223245a4869383369979e02fb23a76d4d3408383a216f75dd04a9afcbacd"
+    },
+    {
+      "bytes": 17036,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/transcript_service.py",
+      "present": true,
+      "sha256": "88a2a4653481d6f97e75d6d7a8abbb7b2c70c4968452b74fa25c44d4707a8cf4"
+    },
+    {
+      "bytes": 35663,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/product_materializer.py",
+      "present": true,
+      "sha256": "f9c50842b61c2dd23fef67e524b98a14fc74663b2a5ec500b6d06ab7617c90d4"
+    },
+    {
+      "bytes": 13733,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/consumer_barrier.py",
+      "present": true,
+      "sha256": "42313b813f9de265c3dc8cf291fe9de569d0b9b83791bffd1708c56a4651984e"
+    },
+    {
+      "bytes": 14541,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/contracts.py",
+      "present": true,
+      "sha256": "05a1ec371c290fefaca7fd678c772008ed6174c9ce528b663c6ef502e0cf8d28"
+    },
+    {
+      "bytes": 15593,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/orchestrator.py",
+      "present": true,
+      "sha256": "e05e1b76ccb9b462a9d6f8c3c3f7556ed798d96f93bd4c6e6cb249e3b86f11a4"
+    },
+    {
+      "bytes": 13561,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/preparer.py",
+      "present": true,
+      "sha256": "b2947f5cc3d009c5d6d5d68cdba1ef0c7223046ca729579d54902c8db4772e7b"
+    },
+    {
+      "bytes": 14892,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/runtime.py",
+      "present": true,
+      "sha256": "259c90b0ef374b3fdd759b209616e8ceaec21fb17d6ac1366bdc9b92e7a4426b"
+    },
+    {
+      "bytes": 27636,
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/local_import/store.py",
+      "present": true,
+      "sha256": "e1f6c285597ebe5b0bc626a4ee8063008da1cdc978aa564a86d441ffe79aaac5"
+    },
+    {
+      "bytes": 13375,
+      "path": "services/local-runtime/scripts/v3_media_local_import_wp_b_probe.py",
+      "present": true,
+      "sha256": "0f738ba4ab568d675d658479cfddae6213c42ff20890237ac47ff4913a9e88b4"
+    },
+    {
+      "bytes": 9365,
+      "path": "services/local-runtime/tests/test_wp_b_c5_startup_recovery.py",
+      "present": true,
+      "sha256": "dae9f6446eae63839653af0451ea388a34662c17cdf355c44a58fb9b7ac01aa3"
+    },
+    {
+      "bytes": 25365,
+      "path": "services/local-runtime/tests/test_wp_b_c7_production.py",
+      "present": true,
+      "sha256": "d427f8b51f1166269008400595e5028e780478449229d9c37e60800e3cac5e1d"
+    },
+    {
+      "bytes": 8662,
+      "path": "services/local-runtime/tests/test_wp_b_fc1_client_headers.py",
+      "present": true,
+      "sha256": "8d69c0994a8a2d2bd702b13977ee771718a655e4d3ef4e7e04125de7ad3f5a2b"
+    },
+    {
+      "bytes": 23843,
+      "path": "services/local-runtime/tests/test_wp_b_fc4_fixed_cases.py",
+      "present": true,
+      "sha256": "f536d1d9d2aa91facd1ce302f517fdb2100f0b043c1be5f1d8c128a9a285c750"
+    },
+    {
+      "bytes": 14194,
+      "path": "services/local-runtime/tests/test_wp0_r4_restart_and_security.py",
+      "present": true,
+      "sha256": "5b6126333dfbfeda573a3493863e924b0156061ce33999976094c76676777f23"
+    },
+    {
+      "bytes": 16332,
+      "path": "apps/chrome-extension/src/modules/media_companion/LocalMediaImportClient.ts",
+      "present": true,
+      "sha256": "3209e4d00e104e1173623a289de06a03b8c71a82e59dbe8bae0c638e4265ade4"
+    },
+    {
+      "bytes": 19326,
+      "path": "apps/chrome-extension/src/modules/media_companion/MediaCredentialWorkspacePage.tsx",
+      "present": true,
+      "sha256": "a936d1e52e6a5d35b3f0c7dfc764124758850740caa0acc872cee22f173c82e6"
+    },
+    {
+      "bytes": 1621,
+      "path": "apps/chrome-extension/src/modules/media_companion/createLocalImportRuntimeClient.ts",
+      "present": true,
+      "sha256": "020eb7f4403a714519f4ecde23644916511437b1bf578e0f6f09089837d727b6"
+    },
+    {
+      "bytes": 2277,
+      "path": "apps/chrome-extension/src/modules/media_companion/localImportEntry.ts",
+      "present": true,
+      "sha256": "fe7f383c5c047790ad4df6a0fae34503807d5e7ea1428b524c4cca257fe97997"
+    },
+    {
+      "bytes": 7681,
+      "path": "apps/chrome-extension/src/modules/media_companion/settings/LocalMediaImportCard.tsx",
+      "present": true,
+      "sha256": "caba8758a7e4ae5c2375e8e4be8a43c095469dc44ac690fd476975277e555a3f"
+    },
+    {
+      "bytes": 30909,
+      "path": "apps/chrome-extension/src/modules/media_companion/tests/LocalMediaImportClient.test.tsx",
+      "present": true,
+      "sha256": "82a3d849ff3d80410713840e1162ab9964b5cf45f7b76eeb80495a1a249fe055"
+    },
+    {
+      "bytes": 11579,
+      "path": "apps/chrome-extension/src/modules/media_companion/tests/MediaCredentialWorkspacePageComposition.test.tsx",
+      "present": true,
+      "sha256": "4ce6370823c88adecb0603458a09d0b87c391fa71f913bbfd82df84e8b06e1b2"
+    },
+    {
+      "bytes": 86281,
+      "path": "apps/chrome-extension/src/runtimeClient.ts",
+      "present": true,
+      "sha256": "b724e4c3e857e60f22483e451e2fb43bc7b13191c41d3e4ce5de9cc35b8e1d86"
+    }
+  ],
+  "schemaVersion": "v3-wp-b-changed-file-hashes/v1"
+}

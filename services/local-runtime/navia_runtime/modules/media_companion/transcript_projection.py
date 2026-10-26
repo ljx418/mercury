@@ -20,9 +20,10 @@ def utc_now() -> str:
 class MediaTranscriptProjectionService:
     """Build the closed-set product read model shared by extension surfaces."""
 
-    def __init__(self, acquisition: MediaAcquisitionCoordinator, transcripts: Any) -> None:
+    def __init__(self, acquisition: MediaAcquisitionCoordinator, transcripts: Any, authority_store: Any = None) -> None:
         self._acquisition = acquisition
         self._transcripts = transcripts
+        self._authority_store = authority_store
         self._snapshots: dict[str, tuple[str, int, str]] = {}
         self._lock = RLock()
 
@@ -32,12 +33,27 @@ class MediaTranscriptProjectionService:
         selected_input = self._acquisition.selected_input(task_id)
         transcript = self._transcript_or_none(task_id)
         state = self._state(acquisition, eligibility, transcript)
+        authority = None
+        if self._authority_store is not None:
+            authority = self._authority_store.source_authority(acquisition["sourceIdentity"])
+            if authority is not None and authority["task_id"] == task_id:
+                if authority["state"] == "cancelled":
+                    state = "cancelled"
+                elif authority["state"] == "cancelling":
+                    state = "cleaning"
+                elif authority["state"] == "cleanup_incomplete":
+                    state = "failed"
         route = self._route(acquisition, selected_input)
         segments = self._segments(task_id, transcript)
         failure_code = acquisition.get("failureCode")
         if transcript and transcript.get("result"):
             failure_code = transcript["result"].get("failureCode") or failure_code
+        if state == "cancelled" and failure_code is None:
+            failure_code = "V3_MEDIA_TASK_CANCELLED"
+        if authority is not None and authority["task_id"] == task_id and authority["state"] == "cleanup_incomplete":
+            failure_code = "V3_MEDIA_CLEANUP_INCOMPLETE"
         terminal = state in TERMINAL_STATES
+        source_still_active = authority is not None and authority["task_id"] == task_id and authority["state"] == "active"
         progress = self._progress(state, transcript)
         body = {
             "schemaVersion": "v3-media-transcript-projection/v1",
@@ -49,9 +65,9 @@ class MediaTranscriptProjectionService:
             "progressPercent": progress,
             "failureCode": failure_code,
             "terminal": terminal,
-            "cleanupStatus": "complete" if terminal else ("pending" if state == "cleaning" else "not_applicable"),
-            "canCancel": not terminal,
-            "canRetry": state in {"blocked", "failed", "cancelled"},
+            "cleanupStatus": "pending" if state == "cleaning" or failure_code == "V3_MEDIA_CLEANUP_INCOMPLETE" else ("complete" if terminal else "not_applicable"),
+            "canCancel": not terminal or (state == "succeeded" and source_still_active),
+            "canRetry": state in {"blocked", "failed", "cancelled"} and failure_code != "V3_MEDIA_CLEANUP_INCOMPLETE",
             "failures": eligibility["failures"],
             "segments": segments,
             "resources": dict(transcript["resources"]) if transcript and transcript.get("resources") else None,

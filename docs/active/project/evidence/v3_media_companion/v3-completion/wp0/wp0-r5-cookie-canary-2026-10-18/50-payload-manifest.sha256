@@ -1,0 +1,5 @@
+90c7b336f69a5b85a8a846933f43a45afe11aee769f2ca388f28641d8a4c309a  apps/chrome-extension/entrypoints/sidepanel/main.tsx
+d0136d1657161aef0f661552ab03f150cbcf6f3b77fa674d624f1375e350e0c9  apps/chrome-extension/src/modules/media_companion/MediaCompanionLaunchCard.tsx
+0364d002dc8f36d1b5b35bc87028d453e4bb212c9d4e1f4630612f6bda8f5839  apps/chrome-extension/src/modules/media_companion/tests/MediaCompanionLaunchCard.test.tsx
+f456baaf44ac0d205bbd0e4a06d2dd2670005cf5e3afc2455c42687c5542ea47  apps/chrome-extension/e2e/lib/r5UserReachableLaunch.node-test.mjs
+202fd184b3eb19e80b78f80b6b6abe9d45c955f6e3b775b75d8e0fcc738df69e  docs/active/project/evidence/v3_media_companion/v3-completion/wp0/wp0-r5-cookie-canary-2026-10-18/screenshots/01-ui-terminal.png

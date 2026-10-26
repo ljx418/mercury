@@ -1,0 +1,400 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-sequencer/v1",
+  "runId": "gc-b5r-b5-real-2026-10-24",
+  "startedAtUtc": "2026-10-23T17:32:36.825Z",
+  "finishedAtUtc": "2026-10-23T17:34:52.021Z",
+  "stopped": true,
+  "stopReason": "aggregate verdict is not positive: AGG_FAILED_SOURCE(source 1/BV11t8w6oEtP is failed); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks isolation.json); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks receipt.json); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 1/BV11t8w6oEtP lacks task_namespace.json); AGG_AUDIT_FAILED(source 1/BV11t8w6oEtP has a foreign provider id); AGG_AUDIT_FAILED(source 1/BV11t8w6oEtP has a foreign endpoint class); AGG_FAILED_SOURCE(source 2/BV1QcYx6VEAj is failed); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks isolation.json); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks receipt.json); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 2/BV1QcYx6VEAj lacks task_namespace.json); AGG_AUDIT_FAILED(source 2/BV1QcYx6VEAj has a foreign provider id); AGG_AUDIT_FAILED(source 2/BV1QcYx6VEAj has a foreign endpoint class); AGG_FAILED_SOURCE(source 3/BV1v58B6GEan is failed); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks isolation.json); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks receipt.json); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 3/BV1v58B6GEan lacks task_namespace.json); AGG_AUDIT_FAILED(source 3/BV1v58B6GEan has a foreign provider id); AGG_AUDIT_FAILED(source 3/BV1v58B6GEan has a foreign endpoint class); AGG_FAILED_SOURCE(source 4/BV1M5tJ6kEvw is failed); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks isolation.json); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks receipt.json); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 4/BV1M5tJ6kEvw lacks task_namespace.json); AGG_AUDIT_FAILED(source 4/BV1M5tJ6kEvw has a foreign provider id); AGG_AUDIT_FAILED(source 4/BV1M5tJ6kEvw has a foreign endpoint class); AGG_FAILED_SOURCE(source 5/BV1HTbi6LERi is failed); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks isolation.json); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks receipt.json); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 5/BV1HTbi6LERi lacks task_namespace.json); AGG_AUDIT_FAILED(source 5/BV1HTbi6LERi has a foreign provider id); AGG_AUDIT_FAILED(source 5/BV1HTbi6LERi has a foreign endpoint class); AGG_FAILED_SOURCE(source 6/BV1qM9fB8Eb2 is failed); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks isolation.json); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks receipt.json); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks provider_lock.txt); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks chrome_launch.log); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks secret_scan.csv); AGG_MISSING_EVIDENCE(source 6/BV1qM9fB8Eb2 lacks task_namespace.json); AGG_AUDIT_FAILED(source 6/BV1qM9fB8Eb2 has a foreign provider id); AGG_AUDIT_FAILED(source 6/BV1qM9fB8Eb2 has a foreign endpoint class); AGG_FAILED_SOURCE(6 sources are failed); AGG_FAILED_SOURCE(only 0 sources are complete (at least 5 are required))",
+  "bvids": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 19101,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-1",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-1",
+        "count": 0,
+        "lines": []
+      }
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 21015,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-2",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-2",
+        "count": 0,
+        "lines": []
+      }
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 21657,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-3",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-3",
+        "count": 0,
+        "lines": []
+      }
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 24150,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-4",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-4",
+        "count": 0,
+        "lines": []
+      }
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 26258,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-5",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-5",
+        "count": 0,
+        "lines": []
+      }
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "disposition": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "durationMs": 22584,
+      "error": null,
+      "processAuditBefore": {
+        "label": "before-bvid-6",
+        "count": 0,
+        "lines": []
+      },
+      "processAuditAfter": {
+        "label": "after-bvid-6",
+        "count": 0,
+        "lines": []
+      }
+    }
+  ],
+  "processAudit": {
+    "leakedBefore": 0,
+    "leakedAfter": 0,
+    "ok": true,
+    "leakedPids": []
+  },
+  "verdict": {
+    "positive": false,
+    "counts": {
+      "complete": 0,
+      "limited": 0,
+      "blocked": 0,
+      "failed": 6,
+      "total": 6
+    },
+    "threshold": {
+      "requiredSources": 6,
+      "completeMinimum": 5,
+      "blockedMaximum": 1,
+      "limitedMaximum": 0,
+      "failedMaximum": 0
+    },
+    "failures": [
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 1/BV11t8w6oEtP is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 1/BV11t8w6oEtP lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 1/BV11t8w6oEtP has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 1/BV11t8w6oEtP has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 2/BV1QcYx6VEAj is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 2/BV1QcYx6VEAj lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 2/BV1QcYx6VEAj has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 2/BV1QcYx6VEAj has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 3/BV1v58B6GEan is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 3/BV1v58B6GEan lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 3/BV1v58B6GEan has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 3/BV1v58B6GEan has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 4/BV1M5tJ6kEvw is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 4/BV1M5tJ6kEvw lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 4/BV1M5tJ6kEvw has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 4/BV1M5tJ6kEvw has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 5/BV1HTbi6LERi is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 5/BV1HTbi6LERi lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 5/BV1HTbi6LERi has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 5/BV1HTbi6LERi has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "source 6/BV1qM9fB8Eb2 is failed"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks isolation.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks receipt.json"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks provider_lock.txt"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks chrome_launch.log"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks secret_scan.csv"
+      },
+      {
+        "code": "AGG_MISSING_EVIDENCE",
+        "detail": "source 6/BV1qM9fB8Eb2 lacks task_namespace.json"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 6/BV1qM9fB8Eb2 has a foreign provider id"
+      },
+      {
+        "code": "AGG_AUDIT_FAILED",
+        "detail": "source 6/BV1qM9fB8Eb2 has a foreign endpoint class"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "6 sources are failed"
+      },
+      {
+        "code": "AGG_FAILED_SOURCE",
+        "detail": "only 0 sources are complete (at least 5 are required)"
+      }
+    ],
+    "requiredSourceEvidence": [
+      "final_disposition.txt",
+      "b5-source-receipt.json",
+      "isolation.json",
+      "receipt.json",
+      "provider_lock.txt",
+      "chrome_launch.log",
+      "secret_scan.csv",
+      "cleanup.json",
+      "task_namespace.json"
+    ],
+    "uploadCounterKeys": [
+      "rawVideoUploadCount",
+      "rawAudioUploadCount",
+      "frameByteUploadCount",
+      "cookieUploadCount",
+      "apiKeyDisclosureCount",
+      "localPathUploadCount"
+    ],
+    "registrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+    "activeRegistryPath": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+    "reserveSources": [
+      "BV16woRBfEsH",
+      "BV1w7XQB7EsS",
+      "BV1829jBeErD",
+      "BV1aJAjzsE4j"
+    ]
+  }
+}

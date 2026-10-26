@@ -1,0 +1,1050 @@
+{
+  "schemaVersion": "navia-wp0-r6-case-matrix/v1",
+  "status": "document_pass_r6_may_start",
+  "authority": {
+    "fixturePath": "docs/active/project/fixtures/v3-media-capture-internal-relay-v11-fixtures.json",
+    "fixtureSha256": "0c5978217c6b64607b11423fe586867b5a1edd0e615f8cb0592510ea715969af",
+    "schemaPath": "docs/active/project/contracts/v3_media_capture_internal_relay_v11.schema.json",
+    "schemaSha256": "d2599301b04231d54a7ddc7f98c6a5abea4b253b041f371f51cb72d1d389fe98"
+  },
+  "executionGroups": {
+    "R6-G1": {
+      "name": "extension_protocol_negatives",
+      "visibleChrome": false
+    },
+    "R6-G2": {
+      "name": "browser_lifecycle_faults",
+      "visibleChrome": true
+    },
+    "R6-G3": {
+      "name": "real_runtime_transport_faults",
+      "visibleChrome": false
+    },
+    "R6-G4": {
+      "name": "durable_handoff_and_recovery",
+      "visibleChrome": false
+    },
+    "R6-G5": {
+      "name": "horizontal_closeout",
+      "visibleChrome": false
+    }
+  },
+  "fixtureCases": [
+    {
+      "caseId": "RLY11-N01",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort sender validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N01",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "sender_id_mismatch"
+    },
+    {
+      "caseId": "RLY11-N02",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort sender validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N02",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "sender_url_mismatch"
+    },
+    {
+      "caseId": "RLY11-N03",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort sender validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N03",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "sender_has_tab"
+    },
+    {
+      "caseId": "RLY11-N04",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort sender validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N04",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "sender_frame_nonzero"
+    },
+    {
+      "caseId": "RLY11-N05",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort authoritative runtime.getContexts binding",
+      "driverType": "production_class_getContexts_fake_browser_primitive",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N05",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "authoritative_context_missing_ambiguous_mismatched_or_replaced"
+    },
+    {
+      "caseId": "RLY11-N06",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort context binding",
+      "driverType": "production_class_getContexts_fake_browser_primitive",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N06",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "sender_incognito_mismatch"
+    },
+    {
+      "caseId": "RLY11-N07",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport started gate",
+      "driverType": "two_end_production_harness",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N07",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "chunk_before_runtime_started"
+    },
+    {
+      "caseId": "RLY11-N08",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport sequence validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N08",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "first_sequence_is_one"
+    },
+    {
+      "caseId": "RLY11-N09",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport sequence validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N09",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "duplicate_sequence"
+    },
+    {
+      "caseId": "RLY11-N10",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport sequence validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_SEQUENCE_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N10",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "sequence_gap"
+    },
+    {
+      "caseId": "RLY11-N11",
+      "group": "R6-G1",
+      "productionOwner": "audioChunk canonical decoder",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N11",
+      "ownerKey": "audio_chunk",
+      "fixtureMutation": "base64_noncanonical_or_invalid"
+    },
+    {
+      "caseId": "RLY11-N12",
+      "group": "R6-G1",
+      "productionOwner": "audioChunk length validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N12",
+      "ownerKey": "audio_chunk",
+      "fixtureMutation": "decoded_length_mismatch"
+    },
+    {
+      "caseId": "RLY11-N13",
+      "group": "R6-G1",
+      "productionOwner": "audioChunk PCM shape validator",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N13",
+      "ownerKey": "audio_chunk",
+      "fixtureMutation": "raw_chunk_odd_or_exceeds_49152"
+    },
+    {
+      "caseId": "RLY11-N14",
+      "group": "R6-G1",
+      "productionOwner": "audioChunk encoded bound",
+      "driverType": "production_class",
+      "expected": "V3_MEDIA_CAPTURE_CHUNK_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N14",
+      "ownerKey": "audio_chunk",
+      "fixtureMutation": "encoded_chunk_exceeds_65536"
+    },
+    {
+      "caseId": "RLY11-N15",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport credit gate",
+      "driverType": "two_end_production_harness",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N15",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "chunk_without_credit"
+    },
+    {
+      "caseId": "RLY11-N16",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort bounded queue",
+      "driverType": "production_composition_fake_audio_primitive",
+      "expected": "V3_MEDIA_CAPTURE_BACKPRESSURE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N16",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "enqueue_would_exceed_32_chunks"
+    },
+    {
+      "caseId": "RLY11-N17",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort byte bound",
+      "driverType": "production_composition_fake_audio_primitive",
+      "expected": "V3_MEDIA_CAPTURE_BACKPRESSURE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N17",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "enqueue_would_exceed_1572864_raw_bytes"
+    },
+    {
+      "caseId": "RLY11-N18",
+      "group": "R6-G3",
+      "productionOwner": "RuntimeCaptureTransport ACK deadline",
+      "driverType": "production_transport_fake_clock_real_closeout",
+      "expected": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N18",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "runtime_ack_timeout"
+    },
+    {
+      "caseId": "RLY11-N19",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort disconnect owner",
+      "driverType": "two_end_production_harness",
+      "expected": "V3_MEDIA_CAPTURE_PORT_DISCONNECTED",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N19",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "port_disconnect"
+    },
+    {
+      "caseId": "RLY11-N20",
+      "group": "R6-G1",
+      "productionOwner": "RelayRestartReconciler",
+      "driverType": "new_worker_production_store_harness",
+      "expected": "V3_MEDIA_CAPTURE_WORKER_RESTARTED",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N20",
+      "ownerKey": "restart_reconciler",
+      "fixtureMutation": "service_worker_restart_with_marker"
+    },
+    {
+      "caseId": "RLY11-N21",
+      "group": "R6-G1",
+      "productionOwner": "RuntimeCaptureTransport stop boundary",
+      "driverType": "two_end_production_harness",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N21",
+      "ownerKey": "runtime_transport",
+      "fixtureMutation": "chunk_after_runtime_stop_sent"
+    },
+    {
+      "caseId": "RLY11-N22",
+      "group": "R6-G1",
+      "productionOwner": "MediaCaptureController cleanup deadline",
+      "driverType": "production_composition_fake_clock",
+      "expected": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N22",
+      "ownerKey": "controller",
+      "fixtureMutation": "cleanup_timeout"
+    },
+    {
+      "caseId": "RLY11-N23",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenProducerBootstrap start-once gate",
+      "driverType": "production_entrypoint_composition",
+      "expected": "V3_MEDIA_CAPTURE_STREAM_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N23",
+      "ownerKey": "producer_bootstrap",
+      "fixtureMutation": "second_start_message"
+    },
+    {
+      "caseId": "RLY11-N24",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenProducerBootstrap stream lifetime",
+      "driverType": "production_entrypoint_composition",
+      "expected": "V3_MEDIA_CAPTURE_STREAM_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N24",
+      "ownerKey": "producer_bootstrap",
+      "fixtureMutation": "streamId_reused_after_getUserMedia_settle"
+    },
+    {
+      "caseId": "RLY11-N25",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenProducerBootstrap abort lifetime",
+      "driverType": "production_entrypoint_composition",
+      "expected": "V3_MEDIA_CAPTURE_STREAM_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N25",
+      "ownerKey": "producer_bootstrap",
+      "fixtureMutation": "streamId_reused_after_abort"
+    },
+    {
+      "caseId": "RLY11-N26",
+      "group": "R6-G1",
+      "productionOwner": "relayContracts message schema",
+      "driverType": "production_message_serialization",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N26",
+      "ownerKey": "relay_contracts",
+      "fixtureMutation": "streamId_in_chunk_or_credit"
+    },
+    {
+      "caseId": "RLY11-N27",
+      "group": "R6-G1",
+      "productionOwner": "Background relay diagnostic boundary",
+      "driverType": "production_composition_log_scan",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N27",
+      "ownerKey": "background_bootstrap",
+      "fixtureMutation": "streamId_in_log"
+    },
+    {
+      "caseId": "RLY11-N28",
+      "group": "R6-G1",
+      "productionOwner": "RelayRestartReconciler marker validator",
+      "driverType": "production_store_harness",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N28",
+      "ownerKey": "restart_reconciler",
+      "fixtureMutation": "streamId_in_marker_or_storage"
+    },
+    {
+      "caseId": "RLY11-N29",
+      "group": "R6-G1",
+      "productionOwner": "OffscreenAudioPort abort receipt owner",
+      "driverType": "two_end_production_harness",
+      "expected": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N29",
+      "ownerKey": "offscreen_port",
+      "fixtureMutation": "abort_receipt_missing_after_disconnect"
+    },
+    {
+      "caseId": "RLY11-N30",
+      "group": "R6-G1",
+      "productionOwner": "RelayRestartReconciler marker validator",
+      "driverType": "new_worker_production_store_harness",
+      "expected": "V3_MEDIA_CAPTURE_PROTOCOL_INVALID",
+      "evidence": "fresh",
+      "semanticKey": "fixture:RLY11-N30",
+      "ownerKey": "restart_reconciler",
+      "fixtureMutation": "marker_phase_or_expiry_invalid"
+    },
+    {
+      "caseId": "OM11-N01",
+      "group": "R6-G4",
+      "productionOwner": "MediaAcquisitionCoordinator.recover_interrupted -> TaskAudioStager.recover_cleanup",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N01",
+      "ownerKey": "recovery_path",
+      "fixtureMutation": "manifest_missing_after_transfer_receipt"
+    },
+    {
+      "caseId": "OM11-N02",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager manifest parser",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N02",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_torn_or_invalid_json"
+    },
+    {
+      "caseId": "OM11-N03",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager identity validator",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N03",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_task_or_process_identity_mismatch"
+    },
+    {
+      "caseId": "OM11-N04",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager digest validator",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N04",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_source_or_staged_hash_mismatch"
+    },
+    {
+      "caseId": "OM11-N05",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager WAV validator",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N05",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_byte_length_or_wave_shape_mismatch"
+    },
+    {
+      "caseId": "OM11-N06",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager state validator",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N06",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_state_invalid"
+    },
+    {
+      "caseId": "OM11-N07",
+      "group": "R6-G4",
+      "productionOwner": "TaskAudioStager safe-path validator",
+      "driverType": "owned_runtime_process_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N07",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "manifest_path_escape_or_symlink"
+    },
+    {
+      "caseId": "OM11-N08",
+      "group": "R6-G4",
+      "productionOwner": "ownership receipt validator",
+      "driverType": "owned_runtime_process_sqlite_corruption",
+      "expected": "V3_MEDIA_CLEANUP_INCOMPLETE",
+      "evidence": "fresh",
+      "semanticKey": "fixture:OM11-N08",
+      "ownerKey": "task_audio_stager",
+      "fixtureMutation": "SQLite_owner_receipt_missing_uncommitted_or_manifestSha256_mismatch_after_manifest_publish"
+    }
+  ],
+  "phaseRecoveryCases": [
+    {
+      "caseId": "R6P-N01",
+      "fixturePhase": "connecting",
+      "runtimeState": "alive_before_valid_start",
+      "group": "R6-G3",
+      "productionOwner": "RelayRestartReconciler + RuntimeRelayRecoveryAdapter",
+      "driverType": "new_worker_real_runtime",
+      "expected": "DELETE_then_GET_cancelled_cleanup_zero",
+      "evidence": "fresh",
+      "semanticKey": "phase:connecting:alive_before_valid_start",
+      "fixtureAuthority": {
+        "phase": "connecting",
+        "runtimeState": "alive_before_valid_start",
+        "owner": "background_new_worker",
+        "action": "existing_authenticated_DELETE_acquisition",
+        "requiredReceipt": "cancelled_task_and_cleanup_zero"
+      },
+      "ownerKey": "restart_reconciler"
+    },
+    {
+      "caseId": "R6P-N02",
+      "fixturePhase": "runtime_started",
+      "runtimeState": "alive_after_valid_start",
+      "group": "R6-G4",
+      "productionOwner": "Runtime handler/transcript owner transfer",
+      "driverType": "owned_runtime_process",
+      "expected": "single_owner_published_or_abandoned",
+      "evidence": "fresh",
+      "semanticKey": "phase:runtime_started:alive_after_valid_start",
+      "fixtureAuthority": {
+        "phase": "runtime_started",
+        "runtimeState": "alive_after_valid_start",
+        "owner": "runtime_websocket_handler_finally",
+        "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+        "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6P-N03",
+      "fixturePhase": "capturing",
+      "runtimeState": "alive_after_valid_start",
+      "group": "R6-G4",
+      "productionOwner": "Runtime handler/transcript owner transfer",
+      "driverType": "owned_runtime_process",
+      "expected": "single_owner_published_or_abandoned",
+      "evidence": "fresh",
+      "semanticKey": "phase:capturing:alive_after_valid_start",
+      "fixtureAuthority": {
+        "phase": "capturing",
+        "runtimeState": "alive_after_valid_start",
+        "owner": "runtime_websocket_handler_finally",
+        "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+        "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6P-N04",
+      "fixturePhase": "draining",
+      "runtimeState": "alive_after_valid_start",
+      "group": "R6-G4",
+      "productionOwner": "Runtime handler/transcript owner transfer",
+      "driverType": "owned_runtime_process",
+      "expected": "single_owner_published_or_abandoned",
+      "evidence": "fresh",
+      "semanticKey": "phase:draining:alive_after_valid_start",
+      "fixtureAuthority": {
+        "phase": "draining",
+        "runtimeState": "alive_after_valid_start",
+        "owner": "runtime_websocket_handler_finally",
+        "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+        "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6P-N05",
+      "fixturePhase": "cleanup_pending",
+      "runtimeState": "alive_after_valid_start",
+      "group": "R6-G4",
+      "productionOwner": "Runtime handler/transcript owner transfer",
+      "driverType": "owned_runtime_process",
+      "expected": "single_owner_published_or_abandoned",
+      "evidence": "fresh",
+      "semanticKey": "phase:cleanup_pending:alive_after_valid_start",
+      "fixtureAuthority": {
+        "phase": "cleanup_pending",
+        "runtimeState": "alive_after_valid_start",
+        "owner": "runtime_websocket_handler_finally",
+        "action": "dispatch_by_stage_transfer_owner_runtime_finally_or_transcript_service_then_existing_recover",
+        "requiredReceipt": "single_cleanup_owner_then_published_or_abandoned_no_in_memory_success_claim"
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6P-N06",
+      "fixturePhase": "any",
+      "runtimeState": "hard_crash_or_restarted",
+      "group": "R6-G4",
+      "productionOwner": "product reattach -> MediaAcquisitionCoordinator.recover_interrupted + TaskAudioStager.recover_cleanup",
+      "driverType": "owned_hard_kill_restart",
+      "expected": "matching_task_published_or_abandoned_cleanup_zero",
+      "evidence": "fresh",
+      "semanticKey": "phase:any:hard_crash_or_restarted",
+      "fixtureAuthority": {
+        "phase": "any",
+        "runtimeState": "hard_crash_or_restarted",
+        "owner": "product_reattach_recovery",
+        "action": "existing_recover_by_current_sourceIdentity_match_authoritativeTaskId",
+        "requiredReceipt": "recover_success_disposition_and_matching_taskId_imply_internal_cleanup_pass_else_cleanup_error_then_fresh_begin"
+      },
+      "ownerKey": "recovery_path"
+    },
+    {
+      "caseId": "R6P-N07",
+      "fixturePhase": "any",
+      "runtimeState": "GET_404",
+      "group": "R6-G3",
+      "productionOwner": "RelayRestartReconciler",
+      "driverType": "new_worker_real_runtime_404",
+      "expected": "recovery_pending_no_success_claim",
+      "evidence": "fresh",
+      "semanticKey": "phase:any:GET_404",
+      "fixtureAuthority": {
+        "phase": "any",
+        "runtimeState": "GET_404",
+        "owner": "background_new_worker",
+        "action": "stop_polling_emit_recovery_pending",
+        "requiredReceipt": "product_reattach_recover_result_or_marker_expiry_without_success_claim"
+      },
+      "ownerKey": "restart_reconciler"
+    }
+  ],
+  "handoffCases": [
+    {
+      "caseId": "R6H-N01",
+      "injectionPoint": "after_sink_finalize",
+      "group": "R6-G4",
+      "productionOwner": "runtime_capture_handler",
+      "driverType": "owned_runtime_process",
+      "expected": "V3_MEDIA_CAPTURE_FINALIZE_FAILED_cleanup_zero",
+      "evidence": "fresh",
+      "semanticKey": "handoff:after_sink_finalize",
+      "fixtureAuthority": {
+        "injectionPoint": "after_sink_finalize",
+        "owner": "runtime_capture_handler",
+        "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "requiresCleanupZero": true
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6H-N02",
+      "injectionPoint": "transcript_create",
+      "group": "R6-G4",
+      "productionOwner": "runtime_capture_handler",
+      "driverType": "owned_runtime_process",
+      "expected": "V3_MEDIA_CAPTURE_FINALIZE_FAILED_cleanup_zero",
+      "evidence": "fresh",
+      "semanticKey": "handoff:transcript_create",
+      "fixtureAuthority": {
+        "injectionPoint": "transcript_create",
+        "owner": "runtime_capture_handler",
+        "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "requiresCleanupZero": true
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6H-N03",
+      "injectionPoint": "before_stage",
+      "group": "R6-G4",
+      "productionOwner": "runtime_capture_handler",
+      "driverType": "owned_runtime_process",
+      "expected": "V3_MEDIA_CAPTURE_FINALIZE_FAILED_cleanup_zero",
+      "evidence": "fresh",
+      "semanticKey": "handoff:before_stage",
+      "fixtureAuthority": {
+        "injectionPoint": "before_stage",
+        "owner": "runtime_capture_handler",
+        "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "requiresCleanupZero": true
+      },
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6H-N04",
+      "injectionPoint": "after_stage_before_worker",
+      "group": "R6-G4",
+      "productionOwner": "transcript_service + recovery coordinator",
+      "driverType": "owned_hard_kill_restart",
+      "expected": "V3_MEDIA_CAPTURE_FINALIZE_FAILED_four_residuals_zero",
+      "evidence": "fresh",
+      "semanticKey": "handoff:after_stage_before_worker",
+      "fixtureAuthority": {
+        "injectionPoint": "after_stage_before_worker",
+        "owner": "transcript_service",
+        "expectedFailureCode": "V3_MEDIA_CAPTURE_FINALIZE_FAILED",
+        "requiresCleanupZero": true,
+        "faultMode": "hard_process_crash",
+        "restartAction": "existing_recover_composite_cleanup",
+        "requiredResiduals": {
+          "activeSinkCount": 0,
+          "acquisitionResidualCount": 0,
+          "asrResidualCount": 0,
+          "productResidualCount": 0
+        },
+        "requiresFreshBegin": true
+      },
+      "ownerKey": "transcript_service"
+    },
+    {
+      "caseId": "R6H-N05",
+      "injectionPoint": "handoff_completed_frame_send",
+      "group": "R6-G4",
+      "productionOwner": "transcript_service",
+      "driverType": "owned_runtime_process_send_failure",
+      "expected": "handoff_preserved_product_terminal_false",
+      "evidence": "fresh",
+      "semanticKey": "handoff:handoff_completed_frame_send",
+      "fixtureAuthority": {
+        "injectionPoint": "handoff_completed_frame_send",
+        "owner": "transcript_service",
+        "expectedFailureCode": null,
+        "expectedHandoffAccepted": true,
+        "productTerminal": false,
+        "recoveryObservation": "same_process_transcript_continues_or_restart_recover_published_or_abandoned"
+      },
+      "ownerKey": "transcript_service"
+    },
+    {
+      "caseId": "R6H-N06",
+      "injectionPoint": "commit_then_runtime_restart_before_background_observe",
+      "group": "R6-G4",
+      "productionOwner": "product reattach recovery",
+      "driverType": "owned_runtime_restart",
+      "expected": "published_only_with_durable_commit_else_abandoned",
+      "evidence": "fresh",
+      "semanticKey": "handoff:commit_then_runtime_restart_before_background_observe",
+      "fixtureAuthority": {
+        "injectionPoint": "commit_then_runtime_restart_before_background_observe",
+        "owner": "product_reattach_recovery",
+        "expectedFailureCode": null,
+        "expectedDisposition": "published_only_if_MediaTaskStore_terminal_commit_exists_else_abandoned",
+        "requiresFreshBegin": true
+      },
+      "ownerKey": "recovery_path"
+    }
+  ],
+  "realBoundarySupplements": [
+    {
+      "caseId": "R6B-N01",
+      "group": "R6-G2",
+      "scenario": "permission_missing",
+      "productionOwner": "Side Panel grant bootstrap -> MediaCaptureController permission gate",
+      "driverType": "owned_visible_chrome",
+      "expected": "V3_MEDIA_CAPTURE_PERMISSION_REQUIRED_grant_and_ticket_issued_no_runtime_socket_or_sink_prepared_cleanup_zero",
+      "semanticKey": "boundary:permission_missing",
+      "evidence": "fresh",
+      "ownerKey": "permission_path"
+    },
+    {
+      "caseId": "R6B-N02",
+      "group": "R6-G2",
+      "scenario": "offscreen_context_missing_or_replaced",
+      "productionOwner": "Background Port admission",
+      "driverType": "owned_visible_chrome_context_fault",
+      "expected": "V3_MEDIA_CAPTURE_PORT_FORBIDDEN",
+      "semanticKey": "boundary:offscreen_context_missing_or_replaced",
+      "evidence": "fresh",
+      "ownerKey": "background_bootstrap"
+    },
+    {
+      "caseId": "R6B-N03",
+      "group": "R6-G2",
+      "scenario": "offscreen_port_disconnect",
+      "productionOwner": "OffscreenAudioPort + Controller",
+      "driverType": "owned_visible_chrome_context_close",
+      "expected": "V3_MEDIA_CAPTURE_PORT_DISCONNECTED_cleanup_zero",
+      "semanticKey": "boundary:offscreen_port_disconnect",
+      "evidence": "fresh",
+      "ownerKey": "offscreen_port"
+    },
+    {
+      "caseId": "R6B-N04",
+      "group": "R6-G3",
+      "scenario": "runtime_ws_loss",
+      "productionOwner": "RuntimeCaptureTransport + Runtime handler",
+      "driverType": "real_uvicorn_real_websocket",
+      "expected": "V3_MEDIA_CAPTURE_RUNTIME_DISCONNECTED_cleanup_zero",
+      "semanticKey": "boundary:runtime_ws_loss",
+      "evidence": "fresh",
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6B-N05",
+      "group": "R6-G2",
+      "scenario": "tab_close",
+      "productionOwner": "MediaCaptureController",
+      "driverType": "owned_visible_chrome",
+      "expected": "cancelled_no_materialize_cleanup_zero",
+      "semanticKey": "boundary:tab_close",
+      "evidence": "fresh",
+      "ownerKey": "controller"
+    },
+    {
+      "caseId": "R6B-N06",
+      "group": "R6-G2",
+      "scenario": "navigation",
+      "productionOwner": "MediaCaptureController",
+      "driverType": "owned_visible_chrome",
+      "expected": "cancelled_no_materialize_cleanup_zero",
+      "semanticKey": "boundary:navigation",
+      "evidence": "fresh",
+      "ownerKey": "controller"
+    },
+    {
+      "caseId": "R6B-N07",
+      "group": "R6-G2",
+      "scenario": "user_cancel",
+      "productionOwner": "TrustedTabCaptureCard + Controller",
+      "driverType": "owned_visible_chrome_native_control",
+      "expected": "cancelled_busy_false_cleanup_zero",
+      "semanticKey": "boundary:user_cancel",
+      "evidence": "fresh",
+      "ownerKey": "trusted_ui"
+    },
+    {
+      "caseId": "R6B-N08",
+      "group": "R6-G3",
+      "scenario": "runtime_graceful_sigterm",
+      "productionOwner": "Runtime process + reattach recovery",
+      "driverType": "owned_uvicorn_sigterm",
+      "expected": "interrupted_then_published_or_abandoned",
+      "semanticKey": "boundary:runtime_graceful_sigterm",
+      "evidence": "fresh",
+      "ownerKey": "runtime_handler"
+    },
+    {
+      "caseId": "R6B-N09",
+      "group": "R6-G4",
+      "scenario": "runtime_hard_crash_restart",
+      "productionOwner": "MediaAcquisitionCoordinator.recover_interrupted + TaskAudioStager.recover_cleanup",
+      "driverType": "owned_uvicorn_hard_kill_restart",
+      "expected": "published_or_abandoned_four_residuals_zero",
+      "semanticKey": "boundary:runtime_hard_crash_restart",
+      "evidence": "fresh",
+      "ownerKey": "recovery_path"
+    },
+    {
+      "caseId": "R6B-N10",
+      "group": "R6-G2",
+      "scenario": "service_worker_restart_with_live_marker",
+      "productionOwner": "Background restart bootstrap -> RelayRestartReconciler",
+      "driverType": "owned_visible_chrome_live_capture_terminate_service_worker_restart",
+      "expected": "valid_marker_phase_dispatch_observe_no_WORKER_RESTARTED_no_old_pcm_ticket_or_sequence_resume_terminal_grace_cleanup",
+      "semanticKey": "boundary:service_worker_restart_with_live_marker",
+      "evidence": "fresh",
+      "ownerKey": "background_bootstrap"
+    },
+    {
+      "caseId": "R6B-N11",
+      "group": "R6-G4",
+      "scenario": "cleanup_failure",
+      "productionOwner": "runtime_handler_or_recovery_coordinator",
+      "driverType": "owned_process_cleanup_fault",
+      "expected": "V3_MEDIA_CAPTURE_CLEANUP_INCOMPLETE_no_success",
+      "semanticKey": "boundary:cleanup_failure",
+      "evidence": "fresh",
+      "ownerKey": "recovery_path"
+    },
+    {
+      "caseId": "R6B-N12",
+      "group": "R6-G3",
+      "scenario": "ticket_expired",
+      "productionOwner": "Runtime capture grant validator",
+      "driverType": "real_uvicorn_real_websocket",
+      "expected": "V3_MEDIA_CAPTURE_TICKET_EXPIRED_no_sink",
+      "semanticKey": "boundary:ticket_expired",
+      "evidence": "fresh",
+      "ownerKey": "runtime_grant"
+    },
+    {
+      "caseId": "R6B-N13",
+      "group": "R6-G3",
+      "scenario": "ticket_replayed",
+      "productionOwner": "Runtime capture grant validator",
+      "driverType": "real_uvicorn_real_websocket",
+      "expected": "V3_MEDIA_CAPTURE_TICKET_REPLAYED_no_sink",
+      "semanticKey": "boundary:ticket_replayed",
+      "evidence": "fresh",
+      "ownerKey": "runtime_grant"
+    },
+    {
+      "caseId": "R6B-N14",
+      "group": "R6-G3",
+      "scenario": "binding_mismatch",
+      "productionOwner": "Runtime capture grant validator",
+      "driverType": "real_uvicorn_real_websocket",
+      "expected": "V3_MEDIA_CAPTURE_BINDING_MISMATCH_no_sink",
+      "semanticKey": "boundary:binding_mismatch",
+      "evidence": "fresh",
+      "ownerKey": "runtime_grant"
+    }
+  ],
+  "horizontalGates": [
+    "secret_scan_zero",
+    "owned_resource_cleanup_zero",
+    "typecheck",
+    "media_subtree_regression",
+    "full_unit_regression_once",
+    "production_build",
+    "runtime_focused",
+    "relay_static",
+    "v11_baseline_50_of_50",
+    "v11_mutations_16_of_16",
+    "prd_review_no_drift"
+  ],
+  "evidencePolicy": {
+    "r4BehaviorReuseEligibleCaseIds": [],
+    "rule": "R4 reports remain historical design evidence only because the R4 run did not freeze a complete per-case production-source closure; every R6 behavioral case executes fresh."
+  },
+  "r5EntryGate": {
+    "requiredDecision": "R5 PASS / R6 MAY START",
+    "requiredFields": [
+      "checkpointPath",
+      "payloadManifestSha256",
+      "buildTreeSha256",
+      "productionSourceClosureSha256"
+    ],
+    "payloadManifestAlgorithm": "sha256_bytes_of_checkpoint_payload_manifest_file",
+    "buildTreeRoot": "apps/chrome-extension/chrome-mv3-unpacked",
+    "buildTreeAlgorithm": "sha256_of_utf8_lines_sorted_by_posix_relative_path_each_line_path_NUL_file_sha256_LF",
+    "productionSourceClosureAlgorithm": "sha256_of_utf8_lines_in_declared_order_each_line_path_NUL_file_sha256_LF",
+    "productionSourceClosurePaths": [
+      "apps/chrome-extension/entrypoints/background/index.ts",
+      "apps/chrome-extension/entrypoints/media-capture-offscreen/main.ts",
+      "apps/chrome-extension/entrypoints/sidepanel/main.tsx",
+      "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/OffscreenAudioPort.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/OffscreenProducerBootstrap.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/RelayRestartReconciler.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/RuntimeCaptureTransport.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/RuntimeRelayRecoveryAdapter.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/TrustedTabCaptureCard.tsx",
+      "apps/chrome-extension/src/modules/media_companion/capture/audioChunk.ts",
+      "apps/chrome-extension/src/modules/media_companion/capture/relayContracts.ts",
+      "services/local-runtime/navia_runtime/app.py",
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/audio_ref.py",
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_grants.py",
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_sink.py",
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py",
+      "services/local-runtime/navia_runtime/modules/media_companion/acquisition/transcript_service.py",
+      "apps/chrome-extension/e2e/v3-acquisition-orchestration-e2e.mjs",
+      "apps/chrome-extension/e2e/lib/windowsExtensionInvocation.mjs",
+      "apps/chrome-extension/public/capture-audio-worklet.js",
+      "apps/chrome-extension/e2e/lib/windowsOwnedAudioIsolation.mjs",
+      "apps/chrome-extension/e2e/lib/windows-owned-audio-session-mute.ps1"
+    ],
+    "equalityRule": "R6-0 recomputes all three digests with the declared algorithms and exact inventory; every value must equal the accepted R5-B checkpoint or execution returns to R5-B acceptance.",
+    "currentState": "accepted_same_candidate",
+    "acceptedCheckpointPath": "docs/active/project/evidence/v3_media_companion/v3-completion/wp0/wp0-r5-accepted-2026-10-19",
+    "acceptedPayloadManifestPath": "docs/active/project/evidence/v3_media_companion/v3-completion/wp0/wp0-r5-accepted-2026-10-19/60-payload-manifest.sha256",
+    "acceptedPayloadManifestSha256": "7ff78a7c15ca2b9eced7978f784f5d5e3517f293b6bc3e1b6351251f2b235a2f",
+    "acceptedBuildTreeSha256": "2ed5f6fd789826c63fbbcea94a581c10b666e147003ad85c016221e94d6694da",
+    "acceptedProductionSourceClosureSha256": "cd587f88e794f63452fbca98f1f6ffe6b5b47f657a9dea059e3e0a456c3bf4c2"
+  },
+  "requiredPackageFiles": [
+    "00-package-status.md",
+    "01-r6-target-architecture.md",
+    "02-r6-development-plan.md",
+    "03-r6-acceptance-plan.md",
+    "04-r6-case-matrix.json",
+    "05-verify-r6-document-package.py",
+    "06-r6-risk-register.md",
+    "07-claudecode-r6-goal.md",
+    "08-internal-document-audit.md",
+    "09-verify-r6-document-mutations.py",
+    "10-compute-r5-candidate-digests.py",
+    "11-independent-document-audit.md",
+    "AUDIT_MANIFEST.md"
+  ],
+  "productionOwnerRegistry": {
+    "offscreen_port": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/OffscreenAudioPort.ts",
+        "symbol": "OffscreenAudioPort"
+      }
+    ],
+    "runtime_transport": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/RuntimeCaptureTransport.ts",
+        "symbol": "RuntimeCaptureTransport"
+      }
+    ],
+    "audio_chunk": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/audioChunk.ts",
+        "symbol": "decodeChunkBase64"
+      }
+    ],
+    "controller": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts",
+        "symbol": "MediaCaptureController"
+      }
+    ],
+    "producer_bootstrap": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/OffscreenProducerBootstrap.ts",
+        "symbol": "bootstrapOffscreenProducerPort"
+      }
+    ],
+    "restart_reconciler": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/RelayRestartReconciler.ts",
+        "symbol": "RelayRestartReconciler"
+      },
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/RuntimeRelayRecoveryAdapter.ts",
+        "symbol": "RuntimeRelayRecoveryAdapter"
+      }
+    ],
+    "relay_contracts": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/relayContracts.ts",
+        "symbol": "MEDIA_CAPTURE_AUDIO_PORT_NAME"
+      }
+    ],
+    "background_bootstrap": [
+      {
+        "path": "apps/chrome-extension/entrypoints/background/index.ts",
+        "symbol": "chrome.runtime.onConnect"
+      }
+    ],
+    "trusted_ui": [
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/TrustedTabCaptureCard.tsx",
+        "symbol": "TrustedTabCaptureCard"
+      }
+    ],
+    "permission_path": [
+      {
+        "path": "apps/chrome-extension/entrypoints/sidepanel/main.tsx",
+        "symbol": "bootstrapMediaCaptureGrant"
+      },
+      {
+        "path": "apps/chrome-extension/src/modules/media_companion/capture/MediaCaptureController.ts",
+        "symbol": "V3_MEDIA_CAPTURE_PERMISSION_REQUIRED"
+      }
+    ],
+    "runtime_grant": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_grants.py",
+        "symbol": "MediaCaptureGrantService"
+      }
+    ],
+    "runtime_handler": [
+      {
+        "path": "services/local-runtime/navia_runtime/app.py",
+        "symbol": "media_capture_stream"
+      }
+    ],
+    "runtime_sink": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/capture_sink.py",
+        "symbol": "RuntimeCaptureSink"
+      }
+    ],
+    "task_audio_stager": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/audio_ref.py",
+        "symbol": "TaskAudioStager"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/audio_ref.py",
+        "symbol": "recover_cleanup"
+      }
+    ],
+    "transcript_service": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/transcript_service.py",
+        "symbol": "SenseVoiceTranscriptService"
+      }
+    ],
+    "recovery_path": [
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/coordinator.py",
+        "symbol": "recover_interrupted"
+      },
+      {
+        "path": "services/local-runtime/navia_runtime/modules/media_companion/acquisition/audio_ref.py",
+        "symbol": "recover_cleanup"
+      }
+    ]
+  }
+}

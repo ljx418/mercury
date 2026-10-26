@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "v3-5.10-b6b-action-ledger-reconciliation/v1",
+  "batch": "GC-B6B FRESH SIX-SOURCE CANDIDATE + BLIND SEMANTIC REVIEW",
+  "runId": "gc-b6b-20261025T175243Z",
+  "stageRootIsOwned": true,
+  "appendOnly": true,
+  "ledgerIntegrityOk": true,
+  "malformedLedgerLines": 0,
+  "candidateRunIds": [
+    "gc-b6b-20261025T175243Z"
+  ],
+  "eventCount": 56,
+  "candidateTotals": {
+    "sourceAttempt": 6,
+    "chromeLaunch": 6,
+    "visibleWindow": 6,
+    "runtimeStart": 6,
+    "cookieInjection": 168,
+    "focusEvent": 6,
+    "mediaTask": 5,
+    "runtimeSynthesize": 5,
+    "providerCall": 20,
+    "sourceCompletion": 5,
+    "download": 0,
+    "import": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0
+  },
+  "stageTotals": {
+    "sourceAttempt": 6,
+    "chromeLaunch": 6,
+    "visibleWindow": 6,
+    "runtimeStart": 6,
+    "cookieInjection": 168,
+    "focusEvent": 6,
+    "mediaTask": 5,
+    "runtimeSynthesize": 5,
+    "providerCall": 20,
+    "sourceCompletion": 5,
+    "download": 0,
+    "import": 0,
+    "audioOutput": 0,
+    "tabCaptureAction": 0
+  },
+  "eventTally": {
+    "sourceAttempt": 6,
+    "sourceCompletion": 5,
+    "providerCall": 20,
+    "chromeLaunch": 6,
+    "cookieInjection": 168
+  },
+  "perSource": [
+    {
+      "order": "1",
+      "bvid": "BV11t8w6oEtP",
+      "present": true,
+      "disposition": "limited",
+      "failureCode": null,
+      "providerRequestCount": 6,
+      "publishedRequestCount": 6,
+      "derivativeSha256": "a9f5470248a47789608d21223a06a910cce4ba929edfc95f92f138f8881eab18",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    },
+    {
+      "order": "2",
+      "bvid": "BV1QcYx6VEAj",
+      "present": true,
+      "disposition": "blocked",
+      "failureCode": "Error",
+      "providerRequestCount": null,
+      "publishedRequestCount": null,
+      "derivativeSha256": null,
+      "reviewCaptureStatus": null,
+      "reviewCaptureFailureCodes": null,
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    },
+    {
+      "order": "3",
+      "bvid": "BV1v58B6GEan",
+      "present": true,
+      "disposition": "limited",
+      "failureCode": null,
+      "providerRequestCount": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "f334bb89e039442e83f2347c1211c1f905e96433132739026e43348a277a3b5f",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    },
+    {
+      "order": "4",
+      "bvid": "BV1M5tJ6kEvw",
+      "present": true,
+      "disposition": "limited",
+      "failureCode": null,
+      "providerRequestCount": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "c87b885ce7901b15687eb50287179c92cfbc4833a1ec14d7b127fb567ddea726",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    },
+    {
+      "order": "5",
+      "bvid": "BV1HTbi6LERi",
+      "present": true,
+      "disposition": "complete",
+      "failureCode": null,
+      "providerRequestCount": 2,
+      "publishedRequestCount": 2,
+      "derivativeSha256": "c1569027a8aa60dbb0856625d115cc0fc0c1df9ea4e4edbb41556dcc7eebb204",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    },
+    {
+      "order": "6",
+      "bvid": "BV1qM9fB8Eb2",
+      "present": true,
+      "disposition": "complete",
+      "failureCode": null,
+      "providerRequestCount": 4,
+      "publishedRequestCount": 4,
+      "derivativeSha256": "b6a82ad326ff1077e8be0ea7e018d68b5a4069319802f83d8fb581848145c9a1",
+      "reviewCaptureStatus": "captured",
+      "reviewCaptureFailureCodes": [],
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      },
+      "cleanup": {
+        "runtimeScratchDeleted": true,
+        "profileRootDeleted": true,
+        "cleanupFailure": null
+      },
+      "muteAudioVerified": true
+    }
+  ],
+  "reconciliation": {
+    "providerCallsInLedger": 20,
+    "providerCallsInReceipts": 20,
+    "note": "The ledger's outbound Provider attempt total and the sum of the per-source receipts' attempt counts are the same number: the request accounting is exact and no attempt is counted twice."
+  }
+}

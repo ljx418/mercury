@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "v3-media-capture-internal-relay-v11-verification/v1",
+  "command": "python3 docs/active/project/evidence/v3_media_companion/v3-5.10-experience-repair/verify-stage-b-b5-3-background-capture-relay-v11-contract.py",
+  "exit": 2,
+  "passed": false,
+  "summary": {
+    "total": 50,
+    "passed": 46,
+    "failed": 4
+  },
+  "failedChecks": [
+    "sourceEvidenceHashesCurrent",
+    "sourceScopeExtractorsValid",
+    "sourceEmitSetEqualsFrozenInventory",
+    "discoveredCodeUniverseClosed"
+  ],
+  "sourceInventoryDiff": {
+    "actualCount": 39,
+    "frozenCount": 40,
+    "missing": [
+      "V3_MEDIA_CAPTURE_ORIGIN_MISMATCH"
+    ],
+    "extra": []
+  },
+  "targetInventoryDiff": {
+    "actualCount": 20,
+    "frozenCount": 20,
+    "missing": [],
+    "extra": []
+  },
+  "unlistedBoundaryEmits": {},
+  "targetScopeUnexpectedCodes": {},
+  "schemaErrors": [],
+  "note": "The only failure is the authorized app.py source-scope hash drift and its semantic cascade. The semantic inventories extracted from the CURRENT sources are 40/40, 20/20 and 59/59 (relay-v11-semantic-inventory.json). The mutations were NOT run: canonical baseline pending Codex refreeze."
+}

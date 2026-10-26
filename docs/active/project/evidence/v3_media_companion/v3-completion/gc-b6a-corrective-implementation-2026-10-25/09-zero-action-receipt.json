@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "v3-5.10-b6a-corrective-zero-action-receipt/v1",
+  "batch": "GC-B6A CORRECTIVE IMPLEMENTATION",
+  "measuredAtUtc": "2026-10-25T03:22:00.000Z",
+  "note": "This batch is OFFLINE. It started no Chrome, read no real Cookie, called no Provider, downloaded no media and ran no real BVID.",
+  "externalActionCounters": {
+    "chromeLaunches": 0,
+    "visibleWindows": 0,
+    "runtimeMediaTasks": 0,
+    "providerCalls": 0,
+    "downloads": 0,
+    "imports": 0,
+    "cookieReadsOrInjections": 0,
+    "audioOutputs": 0,
+    "tabCaptureActions": 0,
+    "focusEvents": 0,
+    "realBvidExecutions": 0,
+    "mediaTaskRootEntriesCreated": 0,
+    "privateBundleRootsCreatedInTheRepository": 0
+  },
+  "ownedProcessAudit": {
+    "ownedChromeProcesses": 0,
+    "runtimeProcesses": 0,
+    "command": "ps -eo pid,etime,cmd | grep -E 'uvicorn|navia_runtime|chrome' | grep -v grep",
+    "result": "no matching process"
+  },
+  "listeningSocketAudit": {
+    "naviaRuntimeListeners": 0,
+    "note": "The listening sockets of the machine belong to OTHER concurrent sessions (vitest, codex, node development servers). This batch started no server that outlived it."
+  },
+  "forbiddenCapabilityScan": {
+    "files": 7,
+    "note": "A static SUPPLEMENT over the files this batch wrote. It is lexical, so it reports the DENIAL vocabulary of the B-6 modules (the forbidden field names and the forbidden raw media extensions) and the PRE-EXISTING capabilities of the B-5 real-run driver. It is NOT a capability proof: the proof of zero external actions is the process and socket audit above.",
+    "filesScanned": [
+      "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+      "scripts/stage_b_b5_3/lib/b6_authority.mjs",
+      "scripts/stage_b_b5_3/lib/b6_capture_gate.mjs",
+      "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "scripts/stage_b_b5_3/lib/review_capture.mjs",
+      "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+      "scripts/stage_b_b5_3/run_one_bvid.mjs"
+    ],
+    "newAcceptanceModulesWithZeroForbiddenCapabilityHits": [
+      "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+      "scripts/stage_b_b5_3/lib/b6_authority.mjs",
+      "scripts/stage_b_b5_3/lib/b6_capture_gate.mjs",
+      "scripts/stage_b_b5_3/lib/review_capture.mjs"
+    ],
+    "findings": [
+      {
+        "file": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+        "capability": "cookie, audio, playback, raw media extensions",
+        "matches": ["cookie", "audio", "playback", ".mp4", ".webm", ".mkv", ".m4a"],
+        "reason": "The DENIAL vocabulary: the forbidden PUBLIC RECEIPT fields (a Cookie may never enter the receipt) and the forbidden raw media extensions (a raw media file may never enter the bundle). The identity grammar names the playback unit of a source identity. No capability is declared."
+      },
+      {
+        "file": "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+        "capability": "cookie",
+        "matches": ["cookie"],
+        "reason": "The DENIAL vocabulary: a Cookie may never enter the blind projection."
+      },
+      {
+        "file": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+        "capability": "chrome, provider identity, download, cookie, audio, tab capture",
+        "matches": ["chrome", "chromium", "deepseek", "minimax", "download", "cookie", "audio", "tabcapture", "tab_capture"],
+        "reason": "The PRE-EXISTING capabilities of the B-5 real-run driver. This batch ADDED no capability to it: the only change is the ORDER of the review capture, the completion accounting and the finalization, plus the capture gate. The driver was NOT executed in this batch: the offline suite excludes the external canary, and the lifecycle test drives it against a local Runtime DOUBLE with no browser."
+      }
+    ]
+  },
+  "visibleRunAuthorizationConsumed": false,
+  "b6bEntered": false,
+  "b7Entered": false,
+  "stageCEntered": false,
+  "realProviderCalled": false,
+  "realCookieRead": false,
+  "mediaDownloaded": false,
+  "realBvidExecuted": false,
+  "chromeStarted": false
+}

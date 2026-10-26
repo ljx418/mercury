@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "v3-5.10-b6b-candidate-lock/v1",
+  "batch": "GC-B6B FRESH SIX-SOURCE CANDIDATE + BLIND SEMANTIC REVIEW",
+  "lockedBeforeAnyExternalAction": true,
+  "lockedAtUtc": "2026-10-25T17:54:17.429Z",
+  "runId": "gc-b6b-20261025T175243Z",
+  "registry": {
+    "activeRegistryPath": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+    "activeRegistrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+    "expectedRegistrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+    "digestMatches": true,
+    "order": [
+      {
+        "order": "1",
+        "bvid": "BV11t8w6oEtP"
+      },
+      {
+        "order": "2",
+        "bvid": "BV1QcYx6VEAj"
+      },
+      {
+        "order": "3",
+        "bvid": "BV1v58B6GEan"
+      },
+      {
+        "order": "4",
+        "bvid": "BV1M5tJ6kEvw"
+      },
+      {
+        "order": "5",
+        "bvid": "BV1HTbi6LERi"
+      },
+      {
+        "order": "6",
+        "bvid": "BV1qM9fB8Eb2"
+      }
+    ],
+    "reserves": [
+      "BV16woRBfEsH",
+      "BV1w7XQB7EsS",
+      "BV1829jBeErD",
+      "BV1aJAjzsE4j"
+    ],
+    "substitutionAllowed": false
+  },
+  "harness": [
+    {
+      "file": "scripts/stage_b_b5_3/lib/b6_aggregate.mjs",
+      "sha256": "edb8d8ae9dbc85ef85e9f4ffab737bcbf876813bc4d2a749b37e101d6e81850a"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/b6_authority.mjs",
+      "sha256": "21b455a837ceb34d8c3fc5376c62d9108c9ba536e7e04bd8ed095ad82937b3c6"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/review_bundle.mjs",
+      "sha256": "122b5ed7be56c7b9bd80ede0addf03324266efa4de2e6f6053358550c3820dc1"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/review_capture.mjs",
+      "sha256": "8d72db61c86122e5fdf822100b71e28c2da1097b4715fc4a4f44562c45829869"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/order2_canary.mjs",
+      "sha256": "7cbd742e2593769f9bbc3b3b9e7af90ccb5dc4a21c9aed919f3890010429e593"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/blind_projection.mjs",
+      "sha256": "f2d2a838c9ff7d892e7e6349ec609a88fb533e6350b5a479f63527ef445d3b29"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/audit_finalizer.mjs",
+      "sha256": "ba7a42033f9b2b34895508adc83c1ba0ff4975c997dbf6dd0eb68d3f91d090d1"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/lib/b6_capture_gate.mjs",
+      "sha256": "c434a66476fc4e7fb5980ddb0405fff859ae509939c7ea0e030524f2bbaa7045"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "sha256": "e446112d39e3469702cc2b4a1c99c6396afc01301560b13ada3eecad50aadd33"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/sequencer.mjs",
+      "sha256": "4b7ac112a7e7b5f31015e4902e20a5db5133663bdd4c4709d4f59340b37663cd"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/production_preflight.mjs",
+      "sha256": "034d9e60ea7f3df9ea39bbca754d64c9a657eb60e48d9d6506169360acd52386"
+    },
+    {
+      "file": "scripts/stage_b_b5_3/order2_diagnostic_canary.mjs",
+      "sha256": "c5d1f8f8aefa2b0e407cf0f38dcaf2a65a9e3a8f6f6845d83974d0e2f8ac0fb4"
+    },
+    {
+      "file": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "sha256": "e4fac94856a329e15171a106c86b16307d50afc5da5a8eb429020bc8f86fba44"
+    },
+    {
+      "file": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+      "sha256": "e01f86da98dab35567d3462b0e4c9a032251306096b65f45a8370efd3e8c91bf"
+    },
+    {
+      "file": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/quality.py",
+      "sha256": "e4055fe33192367a0f5d20be92eef977ea5dd858562b27b55aaf5e7303a96463"
+    },
+    {
+      "file": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/service.py",
+      "sha256": "f8c13c13cf391410f27a3564057032086f91b04c3f73d1e64163321a3e4c4d17"
+    }
+  ],
+  "reviewPrecommit": "00-review-precommit.json",
+  "rubricSha256": "4a46f1ad125fad671550ef0960c1a33560dbf63a531c2ddd49cbfe83fccf21bc",
+  "promptSha256": "318b4fcf93bd0a6a0b599a6c4db9c4f3b46cd35e6e97bd1bc97bc4dedc8ee26f"
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "gc-b6f-codex-corrective-files/v1",
+  "files": [
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "sha256": "e4fac94856a329e15171a106c86b16307d50afc5da5a8eb429020bc8f86fba44"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "sha256": "e446112d39e3469702cc2b4a1c99c6396afc01301560b13ada3eecad50aadd33"
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b6f_candidate_invariants.py",
+      "sha256": "c80e219ccd1cbd3f7ad6309b60eae01be18af91528ee23764fada748ce3c8cce"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/b6f_candidate_diagnostic.node-test.mjs",
+      "sha256": "e1c73abda9ec3f216796f2457c2541c66e99e2544e9e10cecdc465244b6d2df4"
+    }
+  ],
+  "contractChanges": "none"
+}

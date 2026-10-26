@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "data": {
+    "import": {
+      "schemaVersion": "v3-media-local-import/v1",
+      "importId": "media_import_22222222222222222222222222222222",
+      "taskId": "media_task_11111111111111111111111111111111",
+      "state": "awaiting_upload",
+      "sequence": 0,
+      "byteLength": 104857600,
+      "uploadedBytes": 0,
+      "createdAt": "2026-10-19T10:00:00Z",
+      "updatedAt": "2026-10-19T10:00:00Z",
+      "failureCode": null,
+      "recoverable": false,
+      "media": null
+    },
+    "uploadToken": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  "error": null,
+  "request_id": "req_wp_b_positive_01"
+}

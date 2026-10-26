@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "v3-5.10-b6a-corrective-obligation-map/v1",
+  "batch": "GC-B6A CORRECTIVE IMPLEMENTATION",
+  "fixedObligationTotal": 54,
+  "note": "The 54 FIXED obligations of the acceptance plan. They are neither merged nor reduced by this corrective batch; the extra cases are additional. The 7 original extra cases of the submitted package are preserved as well.",
+  "fixedObligationTotalVerified": true,
+  "groups": [
+    {
+      "group": "bundle identity/hash closure",
+      "obligations": 12,
+      "file": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "cases": "B6 identity 1/12 .. 12/12",
+      "status": "green",
+      "note": "Case 11/12 now removes a REFERENCED evidence record, so the refusal carries B6_BUNDLE_EVIDENCE_MISSING (and the catalog mismatch). The obligation itself is unchanged: a missing evidence record is still refused."
+    },
+    {
+      "group": "evidence/text closure mutations",
+      "obligations": 10,
+      "file": "scripts/stage_b_b5_3/test/b6_review_bundle.node-test.mjs",
+      "cases": "B6 evidence 1/10 .. 10/10",
+      "status": "green"
+    },
+    {
+      "group": "thumbnail/seek mutations",
+      "obligations": 8,
+      "file": "scripts/stage_b_b5_3/test/b6_thumbnail_seek.node-test.mjs",
+      "cases": "B6 thumbnail 1/8 .. 8/8",
+      "status": "green"
+    },
+    {
+      "group": "blind projection/privacy",
+      "obligations": 8,
+      "file": "scripts/stage_b_b5_3/test/b6_blind_projection.node-test.mjs",
+      "cases": "B6 blind 1/8 .. 8/8",
+      "status": "green",
+      "note": "The review binding has exactly one definition now: lib/review_bundle.mjs :: reviewBindingSha256, which the projection imports."
+    },
+    {
+      "group": "lifecycle/cleanup",
+      "obligations": 6,
+      "file": "scripts/stage_b_b5_3/test/b6_lifecycle.node-test.mjs",
+      "cases": "B6 lifecycle 1/6 .. 6/6",
+      "status": "green",
+      "note": "Case 2/6 now asserts the SPECIFIC capture refusal code instead of the generic B6_CAPTURE_FAILED. The obligation is unchanged: the candidate fails closed."
+    },
+    {
+      "group": "B6 aggregate/sentinel",
+      "obligations": 10,
+      "file": "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+      "cases": "B6 aggregate 1/10 .. 10/10",
+      "status": "green",
+      "note": "The aggregate now REQUIRES the candidate authority. The positive control carries an exact authority with a positive machine gate, a captured status and the six ordered sources."
+    }
+  ],
+  "originalExtraCasesPreserved": 7,
+  "newAdversarialMatrix": {
+    "cases": 56,
+    "files": [
+      {
+        "file": "scripts/stage_b_b5_3/test/b6_mutation_process.node-test.mjs",
+        "cases": 13,
+        "group": "the process-level bundle mutation matrix (M2 / C1)"
+      },
+      {
+        "file": "scripts/stage_b_b5_3/test/b6_capture_filesystem.node-test.mjs",
+        "cases": 14,
+        "group": "the real filesystem transaction (M3 / C2)"
+      },
+      {
+        "file": "scripts/stage_b_b5_3/test/b6_seek_closure.node-test.mjs",
+        "cases": 13,
+        "group": "the reviewable seek closure (M4 / C3)"
+      },
+      {
+        "file": "scripts/stage_b_b5_3/test/b6_runner_capture_gate.node-test.mjs",
+        "cases": 5,
+        "group": "the runner integration (C5)"
+      },
+      {
+        "file": "scripts/stage_b_b5_3/test/b6_aggregate.node-test.mjs",
+        "cases": 12,
+        "group": "the candidate-authority defect classes and the four Codex reproductions (M1 / C4): 4 Codex reproductions + 8 authority defect classes"
+      }
+    ]
+  },
+  "totals": {
+    "fixed": 54,
+    "originalExtras": 7,
+    "new": 56,
+    "all": 117,
+    "green": 117
+  }
+}

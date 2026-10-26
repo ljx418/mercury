@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261012T135626259Z",
+  "bvid": "BV1hMpE6FEXG",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "NJ-05 chapter recovery did not meet its gate: {\"taskId\":\"media_task_e636a897b0d9456dbd7f0619d946e6a6\",\"absentChapterId\":\"chapter_deadbeefdeadbeef\",\"alertText\":\"该章节不属于当前视频任务。返回本任务大纲\",\"returnHref\":\"#/media/tasks/media_task_e636a897b0d9456dbd7f0619d946e6a6/outline\",\"after\":{\"hash\":\"#/media/tasks/media_task_e636a897b0d9456dbd7f0619d946e6a6/outline\",\"taskId\":\"media_task_e636a897b0d9456dbd7f0619d946e6a6\",\"invalidRoute\":false,\"focusTag\":\"BODY\",\"focusText\":\"NNavia Media视频任务概览大纲时间线导图问答导出知识导入将在 V4 提供返回任务概览MEDIA COMPANION图文大纲本机伴侣已连接连接与运行状态本机 Runtime 安全会话本机伴侣已\",\"meaningfulFocus\":false}}"
+  }
+}

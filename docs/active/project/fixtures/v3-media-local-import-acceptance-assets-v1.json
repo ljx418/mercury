@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "v3-media-local-import-acceptance-assets/v1",
+  "privateSeed": {
+    "environmentVariable": "NAVIA_WP_B_SEED_MEDIA",
+    "mustRemainOutsideGitAndPublicEvidence": true,
+    "requirements": {
+      "container": ["mp4", "webm", "matroska"],
+      "minimumDurationMs": 30000,
+      "maximumDurationMs": 300000,
+      "hasVideoStream": true,
+      "hasAudioStream": true,
+      "senseVoiceMinimumNonEmptySegments": 3,
+      "distinctFrameHashesAtLeast": 3
+    }
+  },
+  "generator": {
+    "binarySource": "WP-A verified ffmpeg/ffprobe dependency snapshot",
+    "networkAllowed": false,
+    "shellAllowed": false,
+    "videoCodec": "libx264",
+    "videoPixelFormat": "yuv420p",
+    "videoWidth": 1280,
+    "videoHeight": 720,
+    "videoFrameRate": 30,
+    "videoBitrate": "8M",
+    "audioCodec": "aac",
+    "audioSampleRate": 48000,
+    "audioChannels": 2,
+    "audioBitrate": "160k",
+    "method": "Repeat the validated private seed with ffmpeg -stream_loop -1, transcode both streams with the frozen settings, stop only after the selected duration yields the target byte range, and record seed probe digest, argv digest, output SHA-256, byte length, st_blocks and final ffprobe digest in a private run receipt.",
+    "forbidden": ["sparse allocation", "truncate enlargement", "trailing zero padding", "metadata-only fixture", "mock transcript", "mock frame"]
+  },
+  "assets": [
+    {
+      "id": "wp-b-real-100mb",
+      "minimumBytes": 100663296,
+      "maximumBytes": 117440512,
+      "targetDurationSeconds": 105,
+      "minimumAllocatedRatio": 0.95,
+      "minimumDistinctFrameHashes": 3,
+      "minimumNonEmptyTranscriptSegments": 3
+    },
+    {
+      "id": "wp-b-real-1gb",
+      "minimumBytes": 1020054732,
+      "maximumBytes": 1127428915,
+      "targetDurationSeconds": 1080,
+      "minimumAllocatedRatio": 0.95,
+      "minimumDistinctFrameHashes": 3,
+      "minimumNonEmptyTranscriptSegments": 3
+    }
+  ],
+  "resourceGates": {
+    "runtimePeakRssDeltaBytesMaximum": 268435456,
+    "extensionJsHeapDeltaBytesMaximum": 134217728,
+    "uploadWriterSliceBytesMaximum": 1048576,
+    "minimumFreeDiskBeforeGenerationBytes": 4294967296,
+    "ownedArtifactsMustBeZeroAfterRun": true
+  }
+}

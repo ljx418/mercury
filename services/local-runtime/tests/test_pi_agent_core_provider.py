@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import asyncio
 
+import httpx
+
 from navia_runtime.modules.agent_loop.runtime.core_types import CoreEventType, CoreTurnInput
 from navia_runtime.modules.agent_loop.runtime.chat_profile_prompt import CHAT_PROFILE_SYSTEM_PROMPT, build_page_context_prompt, build_prompt_envelope
 from navia_runtime.modules.agent_loop.runtime.pi_agent_core_provider import PiAgentCoreProvider
@@ -206,6 +208,55 @@ def test_llm_direct_uses_same_page_context_helper() -> None:
     assert shared_context in direct_context
     assert "PAGE_TITLE:\nMercury 页面" in direct_context
     assert "PAGE_CONTEXT_DIGEST:" in direct_context
+
+
+def test_llm_direct_disables_minimax_thinking_without_changing_other_providers() -> None:
+    direct = LLMDirectProvider()
+
+    minimax = direct._request_payload(core_input(), model="MiniMax-M3", base_url="https://api.minimaxi.com/v1")
+    deepseek = direct._request_payload(core_input(), model="deepseek-chat", base_url="https://api.deepseek.com")
+
+    assert minimax["thinking"] == {"type": "disabled"}
+    assert "thinking" not in deepseek
+
+
+def test_llm_direct_classifies_minimax_sensitive_rejection_and_builds_local_summary() -> None:
+    direct = LLMDirectProvider()
+    response = httpx.Response(
+        422,
+        json={"error": {"type": "unprocessable_entity_error", "message": "input new_sensitive (1026)", "http_code": "422"}},
+    )
+    provider_error = direct._provider_error(response)
+
+    assert direct._is_content_policy_rejection(response, provider_error) is True
+    summary = direct._local_summary(core_input("总结当前页面", page=active_page()))
+    assert summary is not None
+    assert "Navia 本地页面摘要" in summary
+    assert "Mercury 页面" in summary
+
+
+def test_llm_direct_reads_streaming_error_response_before_classification() -> None:
+    request = httpx.Request("POST", "https://api.minimaxi.com/v1/chat/completions")
+    response = httpx.Response(
+        422,
+        request=request,
+        stream=httpx.ByteStream(
+            b'{"error":{"type":"unprocessable_entity_error","message":"input new_sensitive (1026)","http_code":"422"}}'
+        ),
+    )
+    response.read()
+    try:
+        response.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        error = LLMDirectProvider()._provider_error(exc.response)
+
+    assert error["message"] == "input new_sensitive (1026)"
+
+
+def test_llm_direct_does_not_use_local_summary_for_general_chat() -> None:
+    direct = LLMDirectProvider()
+
+    assert direct._local_summary(core_input("你好", page=active_page())) is None
 
 
 def test_pi_agent_core_provider_done_without_text_yields_empty_response_error() -> None:

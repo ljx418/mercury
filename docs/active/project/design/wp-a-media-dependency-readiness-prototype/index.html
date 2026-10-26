@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Navia WP-A 媒体依赖就绪原型</title>
+  <style>
+    :root{--ink:#15221f;--muted:#61706c;--line:#d7dfdc;--paper:#f7f9f8;--panel:#fff;--brand:#08766b;--brand-soft:#e4f2ef;--warn:#a85b11;--warn-soft:#fff0dc;--bad:#a53b3b;--bad-soft:#fdeaea;--ok:#207547;--ok-soft:#e7f4eb;--blue:#245a94;--blue-soft:#e8f0fa}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 Inter,"Segoe UI","Microsoft YaHei",sans-serif;letter-spacing:0} button{font:inherit} .shell{min-height:100vh;display:grid;grid-template-columns:220px 1fr}.rail{background:#102b27;color:#dbe9e6;padding:24px 16px;position:sticky;top:0;height:100vh}.brand{font-size:24px;font-weight:750;color:#fff;margin-bottom:28px}.brand small{display:block;font-size:11px;color:#9ec0b9;font-weight:600;margin-top:4px}.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#bbd0cc;text-align:left;padding:10px 12px;border-radius:6px;cursor:pointer}.nav button[aria-selected="true"]{background:#fff;color:#12342e;font-weight:700}.main{min-width:0;padding:28px 34px 60px}.top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:24px}.top h1{font-size:28px;line-height:1.2;margin:0 0 8px}.top p{margin:0;color:var(--muted);max-width:800px}.status{display:flex;align-items:center;gap:8px;border:1px solid #acd0c8;background:var(--brand-soft);color:#095f56;padding:8px 12px;border-radius:6px;white-space:nowrap}.dot{width:9px;height:9px;border-radius:50%;background:currentColor}.view{display:none}.view.active{display:block}.band{background:var(--panel);border:1px solid var(--line);padding:20px;margin-bottom:18px}.band h2{font-size:18px;margin:0 0 12px}.band h3{font-size:14px;margin:0 0 8px}.grid2{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:18px}.baseline{width:100%;max-width:420px;display:block;border:1px solid var(--line);margin:auto}.caption{font-size:12px;color:var(--muted);margin-top:10px}.panel{width:min(420px,100%);margin:auto;border:1px solid #cbd8d4;background:#fff;padding:16px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line)}.panel-head strong{display:block;font-size:16px}.pill{font-size:12px;color:var(--ok);background:var(--ok-soft);padding:4px 8px;border-radius:999px}.summary{margin:14px 0;padding:12px;border-left:3px solid var(--brand);background:#f2f7f6}.summary b{display:block}.summary span{color:var(--muted);font-size:12px}.deps{display:grid;gap:8px}.dep{display:grid;grid-template-columns:1fr auto;gap:6px 12px;padding:11px 0;border-bottom:1px solid #e8edeb}.dep:last-child{border-bottom:0}.dep strong{font-size:13px}.dep small{display:block;color:var(--muted);margin-top:2px}.state{font-size:12px;font-weight:700;color:var(--ok)}.state.warn{color:var(--warn)}.state.bad{color:var(--bad)}.actions{display:flex;gap:8px;margin-top:14px}.primary,.secondary{border:1px solid var(--brand);border-radius:6px;padding:9px 12px;cursor:pointer}.primary{background:var(--brand);color:#fff}.secondary{background:#fff;color:var(--brand)}.primary:disabled{opacity:.55;cursor:not-allowed}.meter{height:6px;background:#e7ecea;margin:12px 0 6px;overflow:hidden}.meter span{display:block;height:100%;width:0;background:var(--brand);transition:width .25s}.meta{font-size:12px;color:var(--muted)}.segments{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.segments button{border:1px solid var(--line);background:#fff;padding:7px 10px;border-radius:6px;cursor:pointer}.segments button.active{border-color:var(--brand);background:var(--brand-soft);color:#075e56;font-weight:700}.callout{padding:12px;border:1px solid #edc18c;background:var(--warn-soft);color:#70400d;margin-top:12px}.route{display:grid;grid-template-columns:repeat(5,minmax(130px,1fr));gap:10px;align-items:stretch}.step{position:relative;border:1px solid var(--line);background:#fff;padding:14px;min-height:118px}.step b{display:block;margin-bottom:6px}.step span{color:var(--muted);font-size:12px}.step:not(:last-child):after{content:"";position:absolute;right:-11px;top:54px;width:10px;border-top:2px solid #85a59e;z-index:2}.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}.swatch{display:inline-block;width:9px;height:9px;margin-right:5px}.implemented{border-top:4px solid var(--ok)}.new{border-top:4px solid var(--blue)}.changed{border-top:4px solid var(--warn)}.deferred{border-top:4px solid #777}.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}.table th{font-size:12px;color:var(--muted);font-weight:700}.arch{width:100%;height:690px;border:1px solid var(--line);background:#fff}.review{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.review article{border:1px solid var(--line);padding:14px;background:#fff}.review p{color:var(--muted);margin:6px 0 0}.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;color:#34433f}.hidden{display:none!important}@media(max-width:920px){.shell{grid-template-columns:1fr}.rail{position:static;height:auto}.nav{grid-template-columns:repeat(4,1fr)}.main{padding:20px}.grid2{grid-template-columns:1fr}.route{grid-template-columns:1fr}.step:not(:last-child):after{display:none}.review{grid-template-columns:1fr}.arch{height:620px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <div class="brand">Navia<small>WP-A dependency readiness review</small></div>
+      <nav class="nav" aria-label="原型章节">
+        <button data-view="experience" aria-selected="true">目标体验</button>
+        <button data-view="flow">用户路线</button>
+        <button data-view="architecture">目标架构</button>
+        <button data-view="acceptance">验收边界</button>
+      </nav>
+    </aside>
+    <main class="main">
+      <header class="top">
+        <div><h1>媒体依赖一次就绪，日常分析不再临时排障</h1><p>把 yt-dlp、ffmpeg/ffprobe 与 SenseVoice 的真实状态前置到 Settings。Runtime 只从冻结来源安装 yt-dlp，并只向媒体任务发布已验证依赖快照。</p></div>
+        <div class="status"><span class="dot"></span>文档候选 · 尚未实现</div>
+      </header>
+
+      <section class="view active" data-panel="experience">
+        <div class="grid2">
+          <article class="band"><h2>当前基线</h2><img class="baseline" src="../../evidence/v3_media_companion/v3-2-media-acquisition/v3-2-0c-sensevoice-spike/v3-2-0c-1-production-baseline/runs/v3-2-0c-1-baseline-20260922T135843Z/screenshots/sensevoice-settings-420x900.png" alt="现有 SenseVoice 设置页面截图"><p class="caption">现有页面已能管理 ASR 模型，但媒体下载工具缺失时只在任务阶段表现为 Runtime offline，用户无法提前判断。</p></article>
+          <article class="band"><h2>目标组件</h2>
+            <div class="segments" role="tablist" aria-label="组件状态">
+              <button class="active" data-state="ready">已就绪</button><button data-state="missing">缺少工具</button><button data-state="installing">安装中</button><button data-state="failed">校验失败</button><button data-state="repairFailed">旧版可用</button><button data-state="offline">Runtime 离线</button>
+            </div>
+            <div class="panel" aria-live="polite">
+              <div class="panel-head"><div><strong>媒体分析依赖</strong><span class="meta">Settings / 媒体与语音</span></div><span class="pill" id="overall">全部就绪</span></div>
+              <div class="summary"><b id="summaryTitle">可以分析无字幕视频</b><span id="summaryText">下载、本地转码和 SenseVoice 转写均已通过本机校验。</span></div>
+              <div class="deps">
+                <div class="dep"><div><strong>媒体获取</strong><small>yt-dlp 2026.08.19 · Windows 持久目录</small></div><span class="state" id="ytState">已验证</span></div>
+                <div class="dep"><div><strong>音视频处理</strong><small>ffmpeg + ffprobe · 系统依赖</small></div><span class="state" id="ffState">已验证</span></div>
+                <div class="dep"><div><strong>本地转写</strong><small>SenseVoiceSmall Q8 · 实际生效模型</small></div><span class="state" id="asrState">已启用</span></div>
+              </div>
+              <div class="meter hidden" id="meter"><span id="meterBar"></span></div><div class="meta hidden" id="progress">正在下载并校验冻结资产...</div>
+              <div class="callout hidden" id="failure"></div>
+              <div class="actions"><button class="primary hidden" id="repair">修复本机依赖</button><button class="secondary" id="refresh">重新检查</button></div>
+            </div>
+          </article>
+        </div>
+        <article class="band"><h2>交互约束</h2><div class="review"><article><b>一次明确操作</b><p>用户只在依赖缺失时点击一次“修复本机依赖”。下载、校验、自检与启用连续完成。</p></article><article><b>日常零打扰</b><p>依赖 ready 后，分析按钮直接进入字幕或受控下载路径，不再要求处理工具安装。</p></article><article><b>失败可恢复</b><p>网络、空间、摘要、权限、自检和系统工具缺失分别给出下一步，不显示笼统 Runtime offline。</p></article></div></article>
+      </section>
+
+      <section class="view" data-panel="flow">
+        <article class="band"><h2>首次配置路线</h2><div class="route"><div class="step implemented"><b>1. Runtime 在线</b><span>复用现有本机伴侣安全会话。</span></div><div class="step new"><b>2. 读取依赖状态</b><span>Settings 一次读取工具与 ASR 聚合状态。</span></div><div class="step changed"><b>3. 显式修复</b><span>仅缺失时显示操作，固定来源下载 yt-dlp。</span></div><div class="step new"><b>4. 校验与自检</b><span>字节、SHA-256、可执行性和最小命令自检。</span></div><div class="step implemented"><b>5. 发布 ready</b><span>媒体任务获得不可变 verified generation。</span></div></div></article>
+        <article class="band"><h2>日常分析路线</h2><div class="route"><div class="step implemented"><b>打开 B站视频</b><span>页面身份与授权保持不变。</span></div><div class="step implemented"><b>优先字幕</b><span>公开或凭据字幕成功即不下载媒体。</span></div><div class="step changed"><b>依赖快照</b><span>下载路线只读取 ready generation。</span></div><div class="step implemented"><b>下载 + SenseVoice</b><span>任务期媒体进入私有沙箱，完成后清理。</span></div><div class="step deferred"><b>仍失败则 blocked</b><span>不静默启动 tabCapture；本地文件导入属于 WP-B。</span></div></div><div class="legend"><span><i class="swatch" style="background:#207547"></i>已实现复用</span><span><i class="swatch" style="background:#245a94"></i>WP-A 新增</span><span><i class="swatch" style="background:#a85b11"></i>WP-A 修改</span><span><i class="swatch" style="background:#777"></i>后续阶段</span></div></article>
+      </section>
+
+      <section class="view" data-panel="architecture"><article class="band"><h2>0 层目标架构</h2><iframe class="arch" src="architecture.html" title="WP-A 媒体依赖就绪架构"></iframe></article></section>
+
+      <section class="view" data-panel="acceptance">
+        <article class="band"><h2>开发与验收边界</h2><table class="table"><thead><tr><th>范围</th><th>必须交付</th><th>禁止声明</th></tr></thead><tbody>
+          <tr><td>Runtime</td><td>聚合状态、单一 repair job、原子发布、重启恢复、verified snapshot</td><td>任意 URL、自动 apt、未验证路径可用</td></tr>
+          <tr><td>Settings</td><td>ready/missing/installing/failed/offline、进度、取消、分类恢复建议</td><td>只显示“Runtime offline”或假进度</td></tr>
+          <tr><td>任务接线</td><td>新任务读取当前 generation；旧任务不被中途换工具</td><td>安装完成后热替换运行中任务</td></tr>
+          <tr><td>真实验收</td><td>干净目录安装、摘要损坏、磁盘不足、取消、重启、一次真实 B站受控下载</td><td>fixture 存在等于真实下载成功</td></tr>
+          <tr><td>非目标</td><td>保留 blocked 与 experimental capture 限制</td><td>本地文件导入、tabCapture 升格、整个 V3 PASS</td></tr>
+        </tbody></table></article>
+      </section>
+    </main>
+  </div>
+  <script>
+    const views=[...document.querySelectorAll('.nav button')];
+    views.forEach(btn=>btn.addEventListener('click',()=>{views.forEach(x=>x.setAttribute('aria-selected',String(x===btn)));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.panel===btn.dataset.view));}));
+    const states={
+      ready:{overall:'全部就绪',title:'可以分析无字幕视频',text:'下载、本地转码和 SenseVoice 转写均已通过本机校验。',yt:'已验证',ff:'已验证',asr:'已启用'},
+      missing:{overall:'需要修复',title:'缺少媒体获取工具',text:'字幕仍可使用；无字幕视频需要先完成一次本机依赖修复。',yt:'未安装',ff:'已验证',asr:'已启用',action:true,notice:'仅下载 catalog 中冻结的 yt-dlp 资产，不会安装任意 URL。'},
+      installing:{overall:'正在修复',title:'正在准备媒体分析依赖',text:'可以离开设置页；Runtime 会持续保存安装进度。',yt:'正在校验',ff:'已验证',asr:'已启用',progress:true},
+      failed:{overall:'修复失败',title:'当前没有可用的媒体获取工具',text:'未验证文件已清理；字幕仍可用，无字幕下载路径暂时关闭。',yt:'摘要不匹配',ff:'已验证',asr:'已启用',action:true,notice:'重试固定来源安装。持续失败时检查网络代理或本机空间。'},
+      repairFailed:{overall:'可继续使用',title:'旧版本仍可分析无字幕视频',text:'最近一次修复失败，但已验证的旧版本未被覆盖。',yt:'旧版已验证',ff:'已验证',asr:'已启用',action:true,notice:'当前分析不受影响。可稍后重试修复；详情仅显示固定失败类别。'},
+      offline:{overall:'Runtime 离线',title:'请先启动 Navia 本机伴侣',text:'Runtime 离线时无法读取、安装或校验本机依赖。',yt:'未知',ff:'未知',asr:'未知',notice:'启动桌面的 Navia 图标后，本页会自动重新检查。'}
+    };
+    const $=id=>document.getElementById(id); let timer;
+    function render(name){clearInterval(timer);const s=states[name];$('overall').textContent=s.overall;$('summaryTitle').textContent=s.title;$('summaryText').textContent=s.text;$('ytState').textContent=s.yt;$('ffState').textContent=s.ff;$('asrState').textContent=s.asr;[$('ytState'),$('ffState'),$('asrState')].forEach(el=>el.className='state'+((name==='failed'||name==='offline')?' bad':name==='missing'?' warn':''));$('repair').classList.toggle('hidden',!s.action);$('meter').classList.toggle('hidden',!s.progress);$('progress').classList.toggle('hidden',!s.progress);$('failure').classList.toggle('hidden',!s.notice);$('failure').textContent=s.notice||'';$('meterBar').style.width=s.progress?'42%':'0';document.querySelectorAll('[data-state]').forEach(b=>b.classList.toggle('active',b.dataset.state===name));}
+    document.querySelectorAll('[data-state]').forEach(btn=>btn.addEventListener('click',()=>render(btn.dataset.state)));
+    $('refresh').addEventListener('click',()=>render('ready'));
+    $('repair').addEventListener('click',()=>{render('installing');let n=12;$('meterBar').style.width=n+'%';timer=setInterval(()=>{n+=14;$('meterBar').style.width=Math.min(n,100)+'%';if(n>=100){clearInterval(timer);setTimeout(()=>render('ready'),300)}},260)});
+  </script>
+</body>
+</html>

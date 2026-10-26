@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "v3-stage-a-browser-failure/v1",
+  "runId": "20261013T141846725Z",
+  "bvid": "BV1pohR6rEEh",
+  "mode": "fresh",
+  "workspaceChecked": true,
+  "passed": false,
+  "failure": {
+    "name": "Error",
+    "message": "Workspace viewport failed: {\"width\":360,\"overflowPx\":0,\"violations\":[],\"screenshotBytes\":2691,\"distinctSampleColors\":1,\"nonWhiteSampleFraction\":1}"
+  }
+}

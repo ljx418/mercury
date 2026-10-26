@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "v3-wp-b-visible-session-receipt/v1",
+  "cases": [
+    {
+      "case": "B27",
+      "xhrAborted": true,
+      "abortProof": "runtime-partial-terminal",
+      "deleteObserved": true,
+      "statusConverged": true,
+      "identityContained": true,
+      "residue": {
+        "storageImportId": 0,
+        "storageBearer": 0,
+        "storageUploadToken": 0,
+        "fileName": 0,
+        "importId": 0,
+        "token": 0
+      },
+      "sequence": 3,
+      "terminalState": "cancelled",
+      "importId": "media_import_431c3b230fd5063e43d1fe066d0de15e",
+      "eventsDigest": "fnv1a32:026578ac"
+    }
+  ],
+  "residue": {
+    "chrome": true,
+    "runtime": true,
+    "assets": true,
+    "temporary": true
+  },
+  "failure": {
+    "schemaVersion": "v3-wp-b-visible-session-diagnostic/v1",
+    "case": "B29",
+    "failure": "The local-import card did not become eligible. state={\"launchStatus\":\"当前输入不可用\",\"launchDetail\":\"字幕和本机媒体获取均失败。浏览器音频采集仍为实验能力，本版本不会自动启动。\",\"diagnostic\":null,\"controls\":[\"media-companion-launch\",\"<redacted>\",\"media-consent-revoke\",\"<redacted>\",\"media-transcript-open\",\"media-transcript-cancel\"]}",
+    "ownedResidue": null
+  }
+}

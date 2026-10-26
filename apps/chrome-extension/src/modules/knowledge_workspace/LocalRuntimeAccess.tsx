@@ -77,10 +77,16 @@ export function LocalRuntimeAccess({ workspaceId = "ws_default", title = "本地
   }
 
   async function disconnect() {
-    await revokeLocalRuntimeSession();
-    setRuntimeInstanceId(null);
-    setStatus("authentication_required");
-    setError(null);
+    try {
+      await revokeLocalRuntimeSession();
+      setError(null);
+    } catch {
+      setError("本地会话已断开，但无法确认本机伴侣已撤销该会话。请检查本机伴侣状态。");
+    } finally {
+      setRuntimeInstanceId(null);
+      setStatus("authentication_required");
+      onChangeRef.current({ status: "authentication_required", generation: getLocalRuntimeSessionSnapshot().generation });
+    }
   }
 
   async function stop() {

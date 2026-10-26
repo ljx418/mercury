@@ -1,0 +1,284 @@
+{
+  "schemaVersion": "v3-5.10-b5-production-preflight/v1",
+  "mode": "production-preflight",
+  "generatedAtUtc": "2026-10-25T17:55:49.527Z",
+  "activeRegistryPath": "docs/active/project/evidence/v3_media_companion/v3-completion/gc-b5r-source-set-rebaseline-2026-10-24/02-stage-b-six-video-registry-v2.json",
+  "activeRegistrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+  "frozenSix": [
+    "BV11t8w6oEtP",
+    "BV1QcYx6VEAj",
+    "BV1v58B6GEan",
+    "BV1M5tJ6kEvw",
+    "BV1HTbi6LERi",
+    "BV1qM9fB8Eb2"
+  ],
+  "reserveSources": [
+    "BV16woRBfEsH",
+    "BV1w7XQB7EsS",
+    "BV1829jBeErD",
+    "BV1aJAjzsE4j"
+  ],
+  "metadata": [
+    {
+      "bvid": "BV11t8w6oEtP",
+      "order": "1",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    },
+    {
+      "bvid": "BV1QcYx6VEAj",
+      "order": "2",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    },
+    {
+      "bvid": "BV1v58B6GEan",
+      "order": "3",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    },
+    {
+      "bvid": "BV1M5tJ6kEvw",
+      "order": "4",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    },
+    {
+      "bvid": "BV1HTbi6LERi",
+      "order": "5",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    },
+    {
+      "bvid": "BV1qM9fB8Eb2",
+      "order": "6",
+      "reachable": true,
+      "bound": true,
+      "pay": null,
+      "ugcPay": null,
+      "download": null,
+      "code": 0
+    }
+  ],
+  "cookie": {
+    "source": "explicit-environment",
+    "readable": true,
+    "requiredNamesPresent": true,
+    "missingRequiredNames": [],
+    "usableCookieCount": 28,
+    "allowedNameSetSha256": "2510d57f4c4605fa56c565ebec5e6f617ef1c238395fc6d8fb9fff6cfd573124"
+  },
+  "visionProvider": {
+    "providerId": "minimax-cn-openai-vision"
+  },
+  "actions": {
+    "chromeLaunchCount": 0,
+    "visibleWindowCount": 0,
+    "runtimeMediaWorkCount": 0,
+    "providerCallCount": 0,
+    "downloadCount": 0,
+    "importCount": 0,
+    "mediaTaskCount": 0,
+    "cookieInjectionCount": 0,
+    "audioOutputCount": 0,
+    "tabCaptureCount": 0,
+    "focusEventCount": 0,
+    "realSourceCompletionCount": 0
+  },
+  "checks": [
+    {
+      "id": "registry.digest",
+      "ok": true,
+      "detail": "active registry digest 9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454"
+    },
+    {
+      "id": "registry.order",
+      "ok": true,
+      "detail": "order BV11t8w6oEtP,BV1QcYx6VEAj,BV1v58B6GEan,BV1M5tJ6kEvw,BV1HTbi6LERi,BV1qM9fB8Eb2"
+    },
+    {
+      "id": "registry.reserveProhibition",
+      "ok": true,
+      "detail": "every reserve source is refused by the identity guard"
+    },
+    {
+      "id": "metadata.binding",
+      "ok": true,
+      "detail": "6/6 public metadata responses bind to their BVID"
+    },
+    {
+      "id": "metadata.notPaywalled",
+      "ok": true,
+      "detail": "no source reports a pay/charge-exclusive flag"
+    },
+    {
+      "id": "cookie.fileReadable",
+      "ok": true,
+      "detail": "cookie source explicit-environment; required names present: true"
+    },
+    {
+      "id": "cookie.requiredNames",
+      "ok": true,
+      "detail": "missing required names: none"
+    },
+    {
+      "id": "chrome.executable",
+      "ok": true,
+      "detail": "the owned Playwright Chromium is present"
+    },
+    {
+      "id": "chrome.extensionBundle",
+      "ok": true,
+      "detail": "the build:e2e extension bundle carries a manifest"
+    },
+    {
+      "id": "chrome.pregrantedFixture",
+      "ok": true,
+      "detail": "the pre-granted fixture carries the cookies permission as required"
+    },
+    {
+      "id": "chrome.noNativeHostPrompt",
+      "ok": true,
+      "detail": "the pre-granted fixture asks for no native host permission"
+    },
+    {
+      "id": "chrome.freeCdpPort",
+      "ok": true,
+      "detail": "a free CDP port was selected"
+    },
+    {
+      "id": "chrome.freshProfile",
+      "ok": true,
+      "detail": "the owned Chrome profile is fresh"
+    },
+    {
+      "id": "runtime.freePort",
+      "ok": true,
+      "detail": "the product's frozen Runtime port 17861 is free"
+    },
+    {
+      "id": "runtime.freshRoots",
+      "ok": true,
+      "detail": "the owned Runtime roots are fresh"
+    },
+    {
+      "id": "runtime.freshDatabase",
+      "ok": true,
+      "detail": "the owned SQLite database is fresh"
+    },
+    {
+      "id": "runtime.freshTaskRoot",
+      "ok": true,
+      "detail": "the owned media task root is fresh"
+    },
+    {
+      "id": "runtime.namespace",
+      "ok": true,
+      "detail": "the owned task namespace is well formed"
+    },
+    {
+      "id": "dependencies.toolPaths",
+      "ok": true,
+      "detail": "the product's ffmpeg/ffprobe configuration resolves"
+    },
+    {
+      "id": "dependencies.senseVoice",
+      "ok": true,
+      "detail": "the SenseVoice binary, model and VAD resolve from the product ASR root"
+    },
+    {
+      "id": "provider.bootstrap",
+      "ok": true,
+      "detail": "the owned Provider metadata is prepared (minimax-cn-openai-vision)"
+    },
+    {
+      "id": "runtime.healthy",
+      "ok": true,
+      "detail": "the isolated Runtime became healthy"
+    },
+    {
+      "id": "runtime.session",
+      "ok": true,
+      "detail": "the isolated Runtime issued a companion session"
+    },
+    {
+      "id": "dependencies.verified",
+      "ok": true,
+      "detail": "the isolated Runtime reports 4/4 dependencies ready"
+    },
+    {
+      "id": "dependencies.digests",
+      "ok": true,
+      "detail": "every verified dependency matches its frozen digest"
+    },
+    {
+      "id": "dependencies.toolsVerified",
+      "ok": true,
+      "detail": "the product's ffmpeg/ffprobe match the Runtime's verified digests"
+    },
+    {
+      "id": "provider.single",
+      "ok": true,
+      "detail": "the isolated Runtime holds 1 configured Provider(s)"
+    },
+    {
+      "id": "provider.selectedId",
+      "ok": true,
+      "detail": "the selected Provider id is minimax-cn-openai-vision"
+    },
+    {
+      "id": "provider.endpointClass",
+      "ok": true,
+      "detail": "the selected Provider's endpoint class is minimax_chat_completions"
+    },
+    {
+      "id": "budget.disk",
+      "ok": true,
+      "detail": "the free disk is 194914107392 bytes (at least 4294967296 are required)"
+    },
+    {
+      "id": "budget.memory",
+      "ok": true,
+      "detail": "the free memory is 12336480256 bytes"
+    },
+    {
+      "id": "budget.execution",
+      "ok": true,
+      "detail": "six fresh sequential runs fit in 7200000 ms of the declared budget"
+    },
+    {
+      "id": "cleanup.ownedRoots",
+      "ok": true,
+      "detail": "every owned root is outside the historical evidence tree"
+    },
+    {
+      "id": "cleanup.handlers",
+      "ok": true,
+      "detail": "the cleanup handlers are available"
+    }
+  ],
+  "failedChecks": [],
+  "blocked": null,
+  "passed": true,
+  "note": "A preflight starts no Chrome, opens no window, calls no Provider, downloads nothing, imports nothing, creates no media task, injects no cookie, produces no audio, enables no tabCapture and completes no real source."
+}

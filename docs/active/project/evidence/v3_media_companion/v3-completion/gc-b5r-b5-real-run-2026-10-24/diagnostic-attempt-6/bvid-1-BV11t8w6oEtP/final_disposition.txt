@@ -1,0 +1,4 @@
+failed
+reason: Stage B synthesize returned no receipt
+bvid: BV11t8w6oEtP
+order: 1

@@ -53,12 +53,28 @@ class SenseVoiceTranscriptService:
         stager: TaskAudioStager,
         provider_factory: Callable[[], AsrProviderAdapter],
         acquisition_cleanup: Callable[[str], dict[str, Any]],
+        acquisition_failure_cleanup: Callable[[str], dict[str, Any]] | None = None,
+        deferred_routes: frozenset[str] = frozenset(),
+        barrier_terminal: Callable[[str], None] | None = None,
     ) -> None:
         self._stager = stager
         self._provider_factory = provider_factory
         self._acquisition_cleanup = acquisition_cleanup
+        self._acquisition_failure_cleanup = acquisition_failure_cleanup or acquisition_cleanup
+        # WP-B: on a deferred (local import) route the ASR stage is ONE OF TWO
+        # consumers of the shared input, so it must NOT clean that input up. It
+        # only submits a terminal receipt; `LocalMediaConsumerBarrier` is the
+        # single cleanup owner. Every other route keeps the existing behaviour.
+        self._deferred_routes = deferred_routes
+        self._barrier_terminal = barrier_terminal
+        # Tasks whose shared input the barrier owns. The orchestrator registers
+        # them explicitly: the service can only see its own input, never the
+        # coordinator's route table, and guessing would release someone else's
+        # bytes.
+        self._deferred_tasks: set[str] = set()
         self._tasks: dict[str, dict[str, Any]] = {}
         self._requests: dict[str, TranscriptTask] = {}
+        self._staged_audio: dict[str, tuple[Any, Any]] = {}
         self._cancel: dict[str, Event] = {}
         self._private_results: dict[str, ValidatedTranscript] = {}
         self._private_diagnostics: dict[str, dict[str, object]] = {}
@@ -79,6 +95,17 @@ class SenseVoiceTranscriptService:
                     raise AsrProviderError("V3_MEDIA_TRANSCRIPT_TASK_INVALID", "Task ID is bound to another input.")
                 return self._public(task_id)
             self._requests[task_id] = request
+            try:
+                audio, staging_receipt = self._stager.stage(request.audio)
+            except Exception:
+                self._requests.pop(task_id, None)
+                self._cancel.pop(task_id, None)
+                try:
+                    self._acquisition_failure_cleanup(task_id)
+                except Exception:
+                    pass
+                raise
+            self._staged_audio[task_id] = (audio, staging_receipt)
             self._cancel[task_id] = Event()
             self._tasks[task_id] = {
                 "schemaVersion": "v3-media-transcript-execution/v2",
@@ -90,6 +117,13 @@ class SenseVoiceTranscriptService:
                 "coverage": None,
                 "resources": None,
                 "result": None,
+            }
+            self._tasks[task_id]["resources"] = {
+                "acquisitionArtifactBytes": staging_receipt.byte_length,
+                "temporaryDiskPeakBytes": staging_receipt.byte_length * 2,
+                "cpuCoreLimit": 8,
+                "memoryLimitBytes": 8 * 1024**3,
+                "gpuUsed": False,
             }
             self._observe(task_id, "queued", 0)
             return self._public(task_id)
@@ -127,15 +161,7 @@ class SenseVoiceTranscriptService:
             try:
                 if cancelled.is_set():
                     raise AsrProviderError("V3_ASR_PROCESS_CANCELLED", "Transcript task was cancelled.")
-                audio, staging_receipt = self._stager.stage(request.audio)
-                with self._lock:
-                    self._tasks[task_id]["resources"] = {
-                        "acquisitionArtifactBytes": staging_receipt.byte_length,
-                        "temporaryDiskPeakBytes": staging_receipt.byte_length * 2,
-                        "cpuCoreLimit": 8,
-                        "memoryLimitBytes": 8 * 1024**3,
-                        "gpuUsed": False,
-                    }
+                audio, _staging_receipt = self._staged_audio[task_id]
                 provider = self._provider_factory()
                 provider.load()
                 self._transition(task_id, "transcribing", 5)
@@ -170,7 +196,17 @@ class SenseVoiceTranscriptService:
                         failure_code = "V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE"
                 try:
                     stage_receipt = self._stager.cleanup(task_id)
-                    acquisition_receipt = self._acquisition_cleanup(task_id)
+                    if self._is_deferred_route(task_id):
+                        # The shared input still belongs to BOTH consumers.
+                        acquisition_receipt = {"residualCount": 0}
+                        if self._barrier_terminal is not None:
+                            self._barrier_terminal(task_id)
+                    else:
+                        acquisition_receipt = (
+                            self._acquisition_failure_cleanup(task_id)
+                            if cancelled.is_set() or failure_code is not None or validated is None
+                            else self._acquisition_cleanup(task_id)
+                        )
                     if stage_receipt.get("residualCount") or acquisition_receipt.get("residualCount"):
                         failure_code = "V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE"
                 except Exception:
@@ -206,7 +242,7 @@ class SenseVoiceTranscriptService:
             if task["state"] == "queued":
                 try:
                     self._stager.cleanup(task_id)
-                    self._acquisition_cleanup(task_id)
+                    self._acquisition_failure_cleanup(task_id)
                 except Exception as exc:
                     self._terminal(task_id, "failed", "V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE", None)
                     raise AsrProviderError("V3_MEDIA_TRANSCRIPT_CLEANUP_INCOMPLETE", "Queued transcript cleanup failed.") from exc
@@ -290,6 +326,28 @@ class SenseVoiceTranscriptService:
             "resources": dict(task["resources"]) if task["resources"] else None,
             "result": dict(task["result"]) if task["result"] else None,
         }
+
+    def defer_to_barrier(self, task_id: str) -> None:
+        """Declare that THIS task's shared input belongs to the barrier.
+
+        Called by the local-import orchestrator right after `create()`. While the
+        task is deferred the ASR stage submits a terminal receipt instead of
+        cleaning the shared input, and the barrier remains the only owner.
+        """
+        with self._lock:
+            self._deferred_tasks.add(task_id)
+
+    def _is_deferred_route(self, task_id: str) -> bool:
+        """True when the shared input is owned by the two-consumer barrier."""
+        with self._lock:
+            if task_id in self._deferred_tasks:
+                return True
+        if not self._deferred_routes:
+            return False
+        with self._lock:
+            record = self._tasks.get(task_id) or {}
+        route = record.get("route")
+        return isinstance(route, str) and route in self._deferred_routes
 
     def _require(self, task_id: str) -> dict[str, Any]:
         task = self._tasks.get(task_id)

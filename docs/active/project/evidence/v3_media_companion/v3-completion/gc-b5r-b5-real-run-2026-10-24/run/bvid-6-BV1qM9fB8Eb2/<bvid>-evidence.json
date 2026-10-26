@@ -1,0 +1,472 @@
+{
+  "binding": {
+    "evidenceCatalogSha256": "b343fa7e4e649ac6127a4cdaf0cf20b3d98d3247cbf721fca030741ba658082c",
+    "mediaDurationMs": 1336170,
+    "sourceIdentity": "portal:bilibili:BV1qM9fB8Eb2:38063116031:p1",
+    "spanEndMs": 1336170,
+    "spanStartMs": 300,
+    "taskId": "media_task_f678231396144e13b06f9f1410006b9c",
+    "taskRevision": 7
+  },
+  "brief": {
+    "evidenceIds": [
+      "mtr_a7a28cc7c24fe2aa4743cb9baf1150fc",
+      "mtr_691ebac4c84da9f32b71b4c5df478b14",
+      "mtr_50504d0af4ac47199a21295066050266",
+      "mtr_502c69b697559b6b1ec0b85fb616e2ff",
+      "mtr_0249edc3168095e251255cc888d3e0e5",
+      "mtr_650e6a67d5819eca26e38604df68af59",
+      "mtr_f4eb44b5575e02071fe4a4181c5182b7",
+      "mtr_882db6f583c20ef0603d607eb0951b6a",
+      "mtr_c9202661f433a2c084d6bd186d321726",
+      "mtr_441afe1c53be20af51a417b9ca89d425",
+      "mtr_9510461680e1dd2d236bda37b12411c7"
+    ],
+    "origin": "deterministic_claim_composer",
+    "regions": [
+      "opening",
+      "middle",
+      "ending"
+    ],
+    "sourceClaimIds": [
+      "claim_a4c7331581ddb559",
+      "claim_9db522df68702f0e"
+    ],
+    "text": "无限画布可将文本、图片等素材组织为节点，并用连线构成多模态工作流。；updream仍存在资产拖入联动、积分显示、偏好设置、节点缓存及面板交互等体验短板。"
+  },
+  "chapters": [
+    {
+      "chapterId": "chapter_e3459a1cc5029221",
+      "endMs": 266870,
+      "evidenceIds": [
+        "mtr_0f89d5221c616d29cc88246acf1e98f3",
+        "mtr_450fbc90f65a0b554543a096d532f3c5",
+        "mtr_4d4c8e82c4db4bfc8c2e7381dd2da711",
+        "mtr_307ae54af4799e6ec9d9cc5ad7052933",
+        "mtr_1f66f19487d466b2f07f43ecd93929bf",
+        "mtr_a34af9eac3b04738a2fd53336d06800b",
+        "mev_59a0710760a49087b899fdfcb7e5a6d2",
+        "mev_7d45355c64067fc39ef141b42143f9aa",
+        "mev_96f60a56bcd7c76cc8a9af0111bad311"
+      ],
+      "order": 0,
+      "relationToPrevious": "opening",
+      "startMs": 300,
+      "thesis": "updream以节点式工作流整合模型、Agent、技能与AI影视创作，并通过案例展示其效果。",
+      "title": "平台定位、核心能力与案例预览"
+    },
+    {
+      "chapterId": "chapter_c04f96fd9f9f2f55",
+      "endMs": 346130,
+      "evidenceIds": [
+        "mtr_227b688dba892d77946e85ec39634a9d",
+        "mtr_ecf9d2629e5acd6483f3721bb61e22b5",
+        "mev_2194a781409febd9203ffe2d94989e88",
+        "mev_6982bb01ef2c8f95057de9ac5b6a724b",
+        "mev_ad3da35cff3c95f7ee1134382c9295ff",
+        "mtr_d677c9cadd26cf6fbf250683b09ec8d5",
+        "mtr_c82a7da83cde22864af69f9ac9876363"
+      ],
+      "order": 1,
+      "relationToPrevious": "continuation",
+      "startMs": 266870,
+      "thesis": "Agent可通过自然语言规划创作，但关键生成步骤仍需用户核对并确认。",
+      "title": "注册登录与Agent任务规划"
+    },
+    {
+      "chapterId": "chapter_f34a834b0a5213b6",
+      "endMs": 484100,
+      "evidenceIds": [
+        "mtr_a7a28cc7c24fe2aa4743cb9baf1150fc",
+        "mtr_691ebac4c84da9f32b71b4c5df478b14",
+        "mtr_50504d0af4ac47199a21295066050266",
+        "mtr_502c69b697559b6b1ec0b85fb616e2ff",
+        "mtr_0249edc3168095e251255cc888d3e0e5",
+        "mtr_650e6a67d5819eca26e38604df68af59",
+        "mev_7b44f17adfa836c9f44cdeb7457ed32d",
+        "mev_8b456aece0e165efa8527e2eb19b8c5f",
+        "mev_925200285fa6c22a7b639f8b8ce980cc",
+        "mtr_f4eb44b5575e02071fe4a4181c5182b7"
+      ],
+      "order": 2,
+      "relationToPrevious": "continuation",
+      "startMs": 346130,
+      "thesis": "无限画布通过节点、素材和连线组织多模态创作流程，使任务结构更直观且可复用。",
+      "title": "无限画布与节点连接基础"
+    },
+    {
+      "chapterId": "chapter_b1655507a7f4dfa4",
+      "endMs": 627570,
+      "evidenceIds": [
+        "mtr_f53178b18b5046f98e9311dc3e038184",
+        "mtr_662eecb61929bcf828338b43fba6d439",
+        "mtr_4e52cdd486b0bed31f06aad01eed99aa",
+        "mtr_c3808de9fcb9345a8ed415e9ad8422e5",
+        "mtr_7e3bc01746fbbad0ebd27174a3525103",
+        "mtr_e215482e7e798492b648f14f1b965fc8",
+        "mev_3539d2d073280d4d9d760b302ad0d0b2",
+        "mev_df12cc2123d78f1eaee71bb4e8a08ace",
+        "mev_f8289d0a398dc0e46219b707a1c745cf",
+        "mtr_fc4c7fbe3e0f9acc448d16606b3e691d"
+      ],
+      "order": 3,
+      "relationToPrevious": "continuation",
+      "startMs": 484100,
+      "thesis": "图片节点将模型选择、参考图生成和二次编辑组合起来，可更精确地控制人物、产品、场景与动作。",
+      "title": "图片生成、参考图与二次编辑"
+    },
+    {
+      "chapterId": "chapter_e055e0773b944427",
+      "endMs": 757900,
+      "evidenceIds": [
+        "mtr_c1f3b22db2d3bd7c7e7126dceb241f54",
+        "mtr_b4e3dd6588aaf4270bdeb8ffb71a8039",
+        "mtr_bc4c874808f39576ab82e4b424241248",
+        "mtr_d24b2ab2b5ded027bbb6483707f1192f",
+        "mtr_1eebefd347b48d881252d4799715b8ba",
+        "mev_64639b78b4efcd6f39ba7b78720bc776",
+        "mev_d273f7b06684e0b28efa57b235ec2de6",
+        "mev_f03f63f083d8767e9f4119b215124f9f"
+      ],
+      "order": 4,
+      "relationToPrevious": "continuation",
+      "startMs": 627570,
+      "thesis": "视频节点结合分镜规划与抽帧衔接，可用于控制连续镜头并减少高成本生成的试错。",
+      "title": "视频生成、分镜控制与抽帧衔接"
+    },
+    {
+      "chapterId": "chapter_1a21aa675becff23",
+      "endMs": 946170,
+      "evidenceIds": [
+        "mtr_58c22c54a11c7558f7ada543d6bc914d",
+        "mtr_69c40aa5d83bd23efcc0c737fceab71d",
+        "mtr_a8fc9175663540861061c872b0a4bb34",
+        "mtr_374253a7b3bf98f8dbf4b054829d487d",
+        "mtr_a06e2f0f6669cf9591802e4b888ea00e",
+        "mtr_741ca4af7d91fa76fedf28065f28fb8a",
+        "mtr_7bb9fd5d53221b829b10bf8902b4ebe7",
+        "mev_31a9164ee4bc97c6b7b5c54958376bd5",
+        "mev_45cb76bf2802a0cba60c31c9ebd98c05",
+        "mev_c92204afe70d1ee8d105b67d78e610b3",
+        "mtr_882db6f583c20ef0603d607eb0951b6a",
+        "mtr_c9202661f433a2c084d6bd186d321726"
+      ],
+      "order": 5,
+      "relationToPrevious": "continuation",
+      "startMs": 757900,
+      "thesis": "历史、分镜和分级资产库支持素材复用与进度管理，但素材拖入联动仍有优化空间。",
+      "title": "项目历史、分镜管理与资产库"
+    },
+    {
+      "chapterId": "chapter_e109daea1101c9c3",
+      "endMs": 1052030,
+      "evidenceIds": [
+        "mtr_bfb8745fed880b7ff446a6cfbb7b5b54",
+        "mtr_b285c368f3286d49fafc50732e028b69",
+        "mtr_8ab22194e709a318b387d2f280e67f34",
+        "mtr_ee31ba81ec510f9bb9ab7e0cc792ebbc",
+        "mtr_96407f5018897f29b8350507562fba09",
+        "mev_1de12c24fd1c24b44a5cde74a8adbc99",
+        "mev_2cef5861c2f405f30625de87c7eb38e2",
+        "mev_bf37fcb5515470363d4630cab8c90ff6"
+      ],
+      "order": 6,
+      "relationToPrevious": "continuation",
+      "startMs": 946170,
+      "thesis": "专用Skill可辅助整体创作流程，而Agent执行前预设模型与参数能避免确认阶段无法调整。",
+      "title": "技能辅助与Agent参数预设"
+    },
+    {
+      "chapterId": "chapter_f52842f32a28ffcf",
+      "endMs": 1197400,
+      "evidenceIds": [
+        "mtr_f03c54c4f0ed36e74f24be83592034ec",
+        "mtr_c15b357847fcec632c9be979c4783916",
+        "mtr_815228a3094ac310a5a1dab71d56cbf0",
+        "mtr_d5e9b6ea15f7c00ffc9dce2e4648019c",
+        "mtr_9799d1749f04740bc6e11e971e70c879",
+        "mtr_f259809cb5f543bb078bf8d0b40b0703",
+        "mev_87f14412810fcf1f6cef5d9ba6e836f9",
+        "mev_c27ffca3211fd8face1d3d884c37941e",
+        "mev_e4072503b1f63c789e7b1ebbc89c9dc3"
+      ],
+      "order": 7,
+      "relationToPrevious": "cause_effect",
+      "startMs": 1052030,
+      "thesis": "查看计费表并按任务选择模型与质量有助于控制积分消耗，不同会员档位也对应不同额度与并发能力。",
+      "title": "计费、会员档位与积分成本"
+    },
+    {
+      "chapterId": "chapter_a46a0ece6959ee6f",
+      "endMs": 1336170,
+      "evidenceIds": [
+        "mtr_441afe1c53be20af51a417b9ca89d425",
+        "mtr_9510461680e1dd2d236bda37b12411c7",
+        "mtr_51961a18293a63e6ee9a2807828357c9",
+        "mtr_7b0364c19baf4351471a3500b04a241a",
+        "mtr_845aa52350c9226961510cc9f54beda5",
+        "mtr_cc25daa449c67ed0bb223c988c3fb7f8",
+        "mtr_773c680732c5ab1c7734239175657714"
+      ],
+      "order": 8,
+      "relationToPrevious": "conclusion",
+      "startMs": 1197400,
+      "thesis": "平台虽有若干交互小问题，但官方真人客服与用户手册补足了使用支持，教程最后预告后续进阶案例。",
+      "title": "体验短板、官方客服与后续资料"
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "claim_ada444c09223c709",
+      "evidenceIds": [
+        "mtr_0f89d5221c616d29cc88246acf1e98f3",
+        "mtr_450fbc90f65a0b554543a096d532f3c5",
+        "mtr_4d4c8e82c4db4bfc8c2e7381dd2da711",
+        "mtr_307ae54af4799e6ec9d9cc5ad7052933",
+        "mtr_1f66f19487d466b2f07f43ecd93929bf"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "updream被介绍为整合多种AI模型、智能体、技能与节点式工作流的AI影视创作平台。"
+    },
+    {
+      "claimId": "claim_de9326f2458c882f",
+      "evidenceIds": [
+        "mtr_227b688dba892d77946e85ec39634a9d",
+        "mtr_ecf9d2629e5acd6483f3721bb61e22b5",
+        "mtr_d677c9cadd26cf6fbf250683b09ec8d5",
+        "mtr_c82a7da83cde22864af69f9ac9876363"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "Agent能通过自然语言追问需求并规划创作任务，但关键生成节点仍要求用户确认。"
+    },
+    {
+      "claimId": "claim_a4c7331581ddb559",
+      "evidenceIds": [
+        "mtr_a7a28cc7c24fe2aa4743cb9baf1150fc",
+        "mtr_691ebac4c84da9f32b71b4c5df478b14",
+        "mtr_50504d0af4ac47199a21295066050266",
+        "mtr_502c69b697559b6b1ec0b85fb616e2ff",
+        "mtr_0249edc3168095e251255cc888d3e0e5",
+        "mtr_650e6a67d5819eca26e38604df68af59",
+        "mtr_f4eb44b5575e02071fe4a4181c5182b7"
+      ],
+      "regions": [
+        "opening",
+        "middle"
+      ],
+      "text": "无限画布可将文本、图片等素材组织为节点，并用连线构成多模态工作流。"
+    },
+    {
+      "claimId": "claim_f0df713270b4887d",
+      "evidenceIds": [
+        "mtr_f53178b18b5046f98e9311dc3e038184",
+        "mtr_662eecb61929bcf828338b43fba6d439",
+        "mtr_4e52cdd486b0bed31f06aad01eed99aa",
+        "mtr_c3808de9fcb9345a8ed415e9ad8422e5",
+        "mtr_7e3bc01746fbbad0ebd27174a3525103",
+        "mtr_e215482e7e798492b648f14f1b965fc8",
+        "mtr_fc4c7fbe3e0f9acc448d16606b3e691d"
+      ],
+      "regions": [
+        "middle"
+      ],
+      "text": "图片节点支持模型选择、二次编辑和多参考图组合，可用于控制人物、产品、场景与动作。"
+    },
+    {
+      "claimId": "claim_8cf3b93a6c74f9bc",
+      "evidenceIds": [
+        "mtr_c1f3b22db2d3bd7c7e7126dceb241f54",
+        "mtr_b4e3dd6588aaf4270bdeb8ffb71a8039",
+        "mtr_bc4c874808f39576ab82e4b424241248",
+        "mtr_d24b2ab2b5ded027bbb6483707f1192f",
+        "mtr_1eebefd347b48d881252d4799715b8ba",
+        "mtr_58c22c54a11c7558f7ada543d6bc914d",
+        "mtr_69c40aa5d83bd23efcc0c737fceab71d",
+        "mtr_a8fc9175663540861061c872b0a4bb34"
+      ],
+      "regions": [
+        "middle"
+      ],
+      "text": "视频节点支持分镜规划和抽帧衔接，历史记录、分镜与分级资产库则用于素材复用、版本回退和进度管理。"
+    },
+    {
+      "claimId": "claim_9db522df68702f0e",
+      "evidenceIds": [
+        "mtr_882db6f583c20ef0603d607eb0951b6a",
+        "mtr_c9202661f433a2c084d6bd186d321726",
+        "mtr_441afe1c53be20af51a417b9ca89d425",
+        "mtr_9510461680e1dd2d236bda37b12411c7"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "updream仍存在资产拖入联动、积分显示、偏好设置、节点缓存及面板交互等体验短板。"
+    },
+    {
+      "claimId": "claim_7a3e84cb7631a848",
+      "evidenceIds": [
+        "mtr_bfb8745fed880b7ff446a6cfbb7b5b54",
+        "mtr_b285c368f3286d49fafc50732e028b69",
+        "mtr_8ab22194e709a318b387d2f280e67f34",
+        "mtr_ee31ba81ec510f9bb9ab7e0cc792ebbc",
+        "mtr_96407f5018897f29b8350507562fba09",
+        "mtr_f03c54c4f0ed36e74f24be83592034ec",
+        "mtr_c15b357847fcec632c9be979c4783916",
+        "mtr_815228a3094ac310a5a1dab71d56cbf0"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "专用Skill可辅助创作；Agent确认执行时不能换模型，因此应预先写明模型、分辨率和质量，并结合计费表控制积分消耗。"
+    },
+    {
+      "claimId": "claim_cd26ee0f7169e8d3",
+      "evidenceIds": [
+        "mtr_d5e9b6ea15f7c00ffc9dce2e4648019c",
+        "mtr_9799d1749f04740bc6e11e971e70c879",
+        "mtr_f259809cb5f543bb078bf8d0b40b0703",
+        "mtr_51961a18293a63e6ee9a2807828357c9",
+        "mtr_7b0364c19baf4351471a3500b04a241a",
+        "mtr_845aa52350c9226961510cc9f54beda5",
+        "mtr_cc25daa449c67ed0bb223c988c3fb7f8",
+        "mtr_773c680732c5ab1c7734239175657714"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "会员、邀请和活动可提供积分，不同档位的额度与并发能力存在差异；作者还认可B站官方真人客服，并补充官方用户手册。"
+    }
+  ],
+  "quality": {
+    "failureCodes": [],
+    "humanReviewRequired": true,
+    "maxChapterSpanRatio": 0.199548,
+    "maxChapterStartConcentration": 0.333333,
+    "sourceCoverageRatio": 1,
+    "status": "complete"
+  },
+  "receipt": {
+    "apiKeyDisclosureCount": 0,
+    "attemptId": "",
+    "cookieUploadCount": 0,
+    "endpointClass": "minimax_chat_completions",
+    "finishReason": "stop",
+    "frameByteUploadCount": 0,
+    "latencyMs": 0,
+    "localPathUploadCount": 0,
+    "modelId": "MiniMax-M3",
+    "outboundDerivedTextSha256": "93dd0a58816f50f5c8354009c0bb8b87da4e0101380739c291368883cc8cb122",
+    "providerId": "minimax-cn-openai-vision",
+    "rawAudioUploadCount": 0,
+    "rawVideoUploadCount": 0,
+    "requestCount": 5,
+    "requestSha256": "",
+    "responseSha256": "",
+    "structureMode": "openai_chat_object"
+  },
+  "regions": [
+    {
+      "availability": "substantive",
+      "endMs": 445590,
+      "evidenceIds": [
+        "mtr_0f89d5221c616d29cc88246acf1e98f3",
+        "mtr_450fbc90f65a0b554543a096d532f3c5",
+        "mtr_4d4c8e82c4db4bfc8c2e7381dd2da711",
+        "mtr_307ae54af4799e6ec9d9cc5ad7052933",
+        "mtr_1f66f19487d466b2f07f43ecd93929bf",
+        "mtr_a34af9eac3b04738a2fd53336d06800b",
+        "mev_7d45355c64067fc39ef141b42143f9aa",
+        "mev_96f60a56bcd7c76cc8a9af0111bad311",
+        "mtr_227b688dba892d77946e85ec39634a9d",
+        "mtr_ecf9d2629e5acd6483f3721bb61e22b5",
+        "mev_6982bb01ef2c8f95057de9ac5b6a724b",
+        "mev_ad3da35cff3c95f7ee1134382c9295ff",
+        "mtr_d677c9cadd26cf6fbf250683b09ec8d5",
+        "mtr_c82a7da83cde22864af69f9ac9876363",
+        "mtr_a7a28cc7c24fe2aa4743cb9baf1150fc",
+        "mtr_691ebac4c84da9f32b71b4c5df478b14",
+        "mtr_50504d0af4ac47199a21295066050266",
+        "mtr_502c69b697559b6b1ec0b85fb616e2ff",
+        "mtr_0249edc3168095e251255cc888d3e0e5",
+        "mtr_650e6a67d5819eca26e38604df68af59",
+        "mev_7b44f17adfa836c9f44cdeb7457ed32d",
+        "mev_8b456aece0e165efa8527e2eb19b8c5f"
+      ],
+      "name": "opening",
+      "startMs": 300
+    },
+    {
+      "availability": "substantive",
+      "endMs": 890880,
+      "evidenceIds": [
+        "mtr_650e6a67d5819eca26e38604df68af59",
+        "mtr_f4eb44b5575e02071fe4a4181c5182b7",
+        "mtr_f53178b18b5046f98e9311dc3e038184",
+        "mtr_662eecb61929bcf828338b43fba6d439",
+        "mtr_4e52cdd486b0bed31f06aad01eed99aa",
+        "mtr_c3808de9fcb9345a8ed415e9ad8422e5",
+        "mtr_7e3bc01746fbbad0ebd27174a3525103",
+        "mtr_e215482e7e798492b648f14f1b965fc8",
+        "mev_3539d2d073280d4d9d760b302ad0d0b2",
+        "mev_df12cc2123d78f1eaee71bb4e8a08ace",
+        "mtr_fc4c7fbe3e0f9acc448d16606b3e691d",
+        "mtr_c1f3b22db2d3bd7c7e7126dceb241f54",
+        "mtr_b4e3dd6588aaf4270bdeb8ffb71a8039",
+        "mtr_bc4c874808f39576ab82e4b424241248",
+        "mtr_d24b2ab2b5ded027bbb6483707f1192f",
+        "mtr_1eebefd347b48d881252d4799715b8ba",
+        "mev_64639b78b4efcd6f39ba7b78720bc776",
+        "mev_f03f63f083d8767e9f4119b215124f9f",
+        "mtr_58c22c54a11c7558f7ada543d6bc914d",
+        "mtr_69c40aa5d83bd23efcc0c737fceab71d",
+        "mtr_a8fc9175663540861061c872b0a4bb34",
+        "mtr_374253a7b3bf98f8dbf4b054829d487d",
+        "mtr_a06e2f0f6669cf9591802e4b888ea00e",
+        "mtr_741ca4af7d91fa76fedf28065f28fb8a",
+        "mtr_7bb9fd5d53221b829b10bf8902b4ebe7",
+        "mev_45cb76bf2802a0cba60c31c9ebd98c05",
+        "mev_c92204afe70d1ee8d105b67d78e610b3"
+      ],
+      "name": "middle",
+      "startMs": 445590
+    },
+    {
+      "availability": "substantive",
+      "endMs": 1336170,
+      "evidenceIds": [
+        "mtr_7bb9fd5d53221b829b10bf8902b4ebe7",
+        "mtr_882db6f583c20ef0603d607eb0951b6a",
+        "mtr_c9202661f433a2c084d6bd186d321726",
+        "mtr_bfb8745fed880b7ff446a6cfbb7b5b54",
+        "mtr_b285c368f3286d49fafc50732e028b69",
+        "mtr_8ab22194e709a318b387d2f280e67f34",
+        "mtr_ee31ba81ec510f9bb9ab7e0cc792ebbc",
+        "mtr_96407f5018897f29b8350507562fba09",
+        "mev_2cef5861c2f405f30625de87c7eb38e2",
+        "mev_bf37fcb5515470363d4630cab8c90ff6",
+        "mtr_f03c54c4f0ed36e74f24be83592034ec",
+        "mtr_c15b357847fcec632c9be979c4783916",
+        "mtr_815228a3094ac310a5a1dab71d56cbf0",
+        "mtr_d5e9b6ea15f7c00ffc9dce2e4648019c",
+        "mtr_9799d1749f04740bc6e11e971e70c879",
+        "mtr_f259809cb5f543bb078bf8d0b40b0703",
+        "mev_c27ffca3211fd8face1d3d884c37941e",
+        "mev_e4072503b1f63c789e7b1ebbc89c9dc3",
+        "mtr_441afe1c53be20af51a417b9ca89d425",
+        "mtr_9510461680e1dd2d236bda37b12411c7",
+        "mtr_51961a18293a63e6ee9a2807828357c9",
+        "mtr_7b0364c19baf4351471a3500b04a241a",
+        "mtr_845aa52350c9226961510cc9f54beda5",
+        "mtr_cc25daa449c67ed0bb223c988c3fb7f8",
+        "mtr_773c680732c5ab1c7734239175657714"
+      ],
+      "name": "ending",
+      "startMs": 890880
+    }
+  ],
+  "schemaVersion": "v3-media-grounded-comprehension/v2.1"
+}

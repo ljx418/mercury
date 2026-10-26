@@ -47,6 +47,9 @@ function parse(value: unknown): MediaCaptureMessage | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
   if (record.type !== MEDIA_CAPTURE_MESSAGE_TYPE) return null;
+  if (record.command === "prepare") {
+    return Object.keys(record).sort().join("|") === ["command", "type"].sort().join("|") ? record as MediaCaptureMessage : null;
+  }
   if (record.command === "arm") {
     const expected = ["acquisitionRecordId", "command", "grant", "sourceIdentity", "ticket", "trustedClick", "type", "userActivation"];
     if (Object.keys(record).sort().join("|") !== expected.sort().join("|") || !isGrant(record.grant)) return null;
@@ -69,7 +72,7 @@ export class MediaCaptureMessageRouter {
   constructor(
     private readonly runtimeId: string,
     private readonly extensionBaseUrl: string,
-    private readonly controller: Pick<MediaCaptureController, "arm" | "stop" | "status">,
+    private readonly controller: Pick<MediaCaptureController, "prepare" | "arm" | "stop" | "status">,
     private readonly isTrustedEmbeddedTabUrl?: (url: string) => boolean
   ) {}
 
@@ -81,6 +84,7 @@ export class MediaCaptureMessageRouter {
     if (message.command === "arm" && message.grant.surface !== surface) {
       return { ok: false, failureCode: "V3_MEDIA_CAPTURE_BINDING_MISMATCH" };
     }
+    if (message.command === "prepare") return this.controller.prepare();
     if (message.command === "arm") return this.controller.arm(message);
     if (message.command === "status") return this.controller.status();
     return this.controller.stop(message);

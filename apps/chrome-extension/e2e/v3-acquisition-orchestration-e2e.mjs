@@ -5,6 +5,19 @@ import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import AxeBuilder from "@axe-core/playwright";
 import { extractCredentialNeedles, scanRootsForCredentialNeedles } from "./lib/v3CredentialSecretScan.mjs";
+import {
+  calibrateOwnedChromeScreenPoint,
+  clickOwnedChromeAutomationControlByPid,
+  clickOwnedChromePointByPid,
+  inspectOwnedWindowsChromeProfile,
+  invokeExtensionOnActiveTab,
+  invokeExtensionShortcut,
+  invokeOwnedPidExtensionShortcut,
+  projectOwnedChromeScreenPoint,
+} from "./lib/windowsExtensionInvocation.mjs";
+import { captureActionInputMode } from "./lib/r5CaptureActionInputPolicy.mjs";
+import { RawCdp } from "./lib/rawCdp.mjs";
+import { startOwnedChromeAudioIsolation } from "./lib/windowsOwnedAudioIsolation.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../../..");
@@ -187,81 +200,19 @@ function confirmPermission(profilePath) {
     "while([DateTime]::UtcNow -lt $deadline -and -not $done){",
     " $pi=Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -and $_.CommandLine.Contains($profile) -and -not $_.CommandLine.Contains('--type=') } | Select-Object -First 1",
     " if($pi){$p=Get-Process -Id $pi.ProcessId -ErrorAction SilentlyContinue; if($p -and $p.MainWindowHandle -ne 0){",
-    "  $root=[System.Windows.Automation.AutomationElement]::FromHandle($p.MainWindowHandle)",
-    "  $all=$root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition)",
-    "  foreach($e in $all){if($e.Current.ControlType.ProgrammaticName -eq 'ControlType.Button' -and ($e.Current.Name -eq '允许' -or $e.Current.Name -eq 'Allow')){",
+    "  $root=[System.Windows.Automation.AutomationElement]::RootElement",
+    "  $all=$root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ProcessIdProperty,[int]$pi.ProcessId))",
+    "  foreach($e in $all){if($e.Current.ControlType.ProgrammaticName -eq 'ControlType.Button' -and ($e.Current.Name -match '^(允许|允许访问|Allow|Allow access)$')){",
     "   $null=[NaviaClick]::SetForegroundWindow($p.MainWindowHandle); Start-Sleep -Milliseconds 200; $pattern=$null; if($e.TryGetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern,[ref]$pattern)){([System.Windows.Automation.InvokePattern]$pattern).Invoke()}else{$r=$e.Current.BoundingRectangle; $null=[NaviaClick]::SetCursorPos([int]($r.Left+$r.Width/2),[int]($r.Top+$r.Height/2)); [NaviaClick]::mouse_event(2,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 80; [NaviaClick]::mouse_event(4,0,0,0,[UIntPtr]::Zero)}; $done=$true; break",
     "  }}}}",
     " if(-not $done){Start-Sleep -Milliseconds 200}",
     "}",
-    "if(-not $done){exit 2}",
+    "if(-not $done){$names=@(); if($all){foreach($e in $all){if($e.Current.ControlType.ProgrammaticName -eq 'ControlType.Button' -and $e.Current.Name){$names += $e.Current.Name}}}; Write-Output ('buttonNames=' + (($names | Select-Object -Unique) -join '|')); exit 2}",
     "Write-Output 'permission_confirmed=true'"
   ].join("; ");
   const result = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8", timeout: 25_000 });
-  ensure(result.status === 0, "native Cookie permission was not confirmed");
-}
-
-function invokeExtensionOnActiveTab(profilePath) {
-  const profileName = path.basename(profilePath);
-  const script = [
-    "$OutputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new()",
-    "Add-Type -AssemblyName UIAutomationClient",
-    "Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class NaviaActionClick { [DllImport(\"user32.dll\")] public static extern bool ShowWindowAsync(IntPtr h,int n); [DllImport(\"user32.dll\")] public static extern bool SetCursorPos(int x,int y); [DllImport(\"user32.dll\")] public static extern void mouse_event(uint f,uint x,uint y,uint d,UIntPtr e); [DllImport(\"user32.dll\")] public static extern void keybd_event(byte v,byte s,uint f,UIntPtr e); }'",
-    `$profile='${profileName}'`,
-    "$pi=Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -and $_.CommandLine.Contains($profile) -and -not $_.CommandLine.Contains('--type=') } | Select-Object -First 1",
-    "if(-not $pi){exit 2}",
-    "$shell=New-Object -ComObject WScript.Shell",
-    "$p=Get-Process -Id $pi.ProcessId; $null=[NaviaActionClick]::ShowWindowAsync($p.MainWindowHandle,9); if(-not $shell.AppActivate($p.MainWindowTitle) -and -not $shell.AppActivate([int]$pi.ProcessId)){exit 3}",
-    "Start-Sleep -Milliseconds 400",
-    "$root=[System.Windows.Automation.AutomationElement]::FromHandle($p.MainWindowHandle)",
-    "$buttons=$root.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::ControlTypeProperty,[System.Windows.Automation.ControlType]::Button))",
-    "$extensions=$null; foreach($button in $buttons){$name=$button.Current.Name; if(-not $extensions -and ($name -match '扩展程序.*菜单' -or $name -match '已允许在此网站上使用扩展程序' -or $name -match '选择即可打开菜单' -or $name -match '^Extensions')){$extensions=$button}}",
-    "if(-not $extensions){exit 4}",
-    "$r=$extensions.Current.BoundingRectangle; $null=[NaviaActionClick]::SetCursorPos([int]($r.Left+$r.Width/2),[int]($r.Top+$r.Height/2)); [NaviaActionClick]::mouse_event(2,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 80; [NaviaActionClick]::mouse_event(4,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 400",
-    "$desktop=[System.Windows.Automation.AutomationElement]::RootElement; $items=$desktop.FindAll([System.Windows.Automation.TreeScope]::Descendants,[System.Windows.Automation.Condition]::TrueCondition); $target=$null; foreach($item in $items){$name=$item.Current.Name; $type=$item.Current.ControlType.ProgrammaticName; if(-not $target -and ($type -eq 'ControlType.MenuItem' -or $type -eq 'ControlType.Button') -and ($name -eq 'Navia' -or $name -eq 'Open Navia')){$target=$item}}",
-    "if(-not $target){exit 5}",
-    "$targetRect=$target.Current.BoundingRectangle; if($targetRect.Width -le 0 -or $targetRect.Height -le 0){exit 6}; $null=[NaviaActionClick]::SetCursorPos([int]($targetRect.Left+$targetRect.Width/2),[int]($targetRect.Top+$targetRect.Height/2)); [NaviaActionClick]::mouse_event(2,0,0,0,[UIntPtr]::Zero); Start-Sleep -Milliseconds 100; [NaviaActionClick]::mouse_event(4,0,0,0,[UIntPtr]::Zero); $method='targeted-extension-menu-native-pointer'",
-    "Write-Output ('method=' + $method)",
-    "Write-Output ('targetName=' + $target.Current.Name)",
-    "Write-Output ('targetType=' + $target.Current.ControlType.ProgrammaticName)",
-    "Write-Output ('targetAutomationId=' + $target.Current.AutomationId)",
-    "Start-Sleep -Milliseconds 300"
-  ].join("; ");
-  const result = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8", timeout: 10_000 });
-  ensure(
-    result.status === 0,
-    `native extension invocation failed (status=${result.status}): ${String(result.stdout || "").trim()} ${String(result.stderr || "").trim()}`
-  );
-  return result.stdout;
-}
-
-function invokeExtensionShortcut(profilePath, shortcutKind = "project-command") {
-  const profileName = path.basename(profilePath);
-  const virtualKey = shortcutKind === "project-command" ? "0x59" : "0x4E";
-  const modifierKey = shortcutKind === "project-command" ? "0x11" : "0x12";
-  const script = [
-    "$OutputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new()",
-    "Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class NaviaShortcut { [DllImport(\"user32.dll\")] public static extern bool ShowWindowAsync(IntPtr h,int n); [DllImport(\"user32.dll\")] public static extern bool SetForegroundWindow(IntPtr h); [DllImport(\"user32.dll\")] public static extern void keybd_event(byte v,byte s,uint f,UIntPtr e); }'",
-    `$profile='${profileName}'`,
-    "$pi=Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'chrome.exe' -and $_.CommandLine -and $_.CommandLine.Contains($profile) -and -not $_.CommandLine.Contains('--type=') } | Select-Object -First 1",
-    "if(-not $pi){exit 2}",
-    "$p=Get-Process -Id $pi.ProcessId -ErrorAction Stop",
-    "$shell=New-Object -ComObject WScript.Shell; $null=[NaviaShortcut]::ShowWindowAsync($p.MainWindowHandle,9)",
-    "$activated=$false; if($p.MainWindowTitle){$activated=$shell.AppActivate($p.MainWindowTitle)}; if(-not $activated){$activated=$shell.AppActivate([int]$pi.ProcessId)}; if(-not $activated){$activated=[NaviaShortcut]::SetForegroundWindow($p.MainWindowHandle)}; if(-not $activated){exit 3}",
-    "Start-Sleep -Milliseconds 350",
-    `[NaviaShortcut]::keybd_event(${modifierKey},0,0,[UIntPtr]::Zero)`,
-    "[NaviaShortcut]::keybd_event(0x10,0,0,[UIntPtr]::Zero)",
-    `[NaviaShortcut]::keybd_event(${virtualKey},0,0,[UIntPtr]::Zero)`,
-    "Start-Sleep -Milliseconds 100",
-    `[NaviaShortcut]::keybd_event(${virtualKey},0,2,[UIntPtr]::Zero)`,
-    "[NaviaShortcut]::keybd_event(0x10,0,2,[UIntPtr]::Zero)",
-    `[NaviaShortcut]::keybd_event(${modifierKey},0,2,[UIntPtr]::Zero)`,
-    `Write-Output 'method=${shortcutKind === "project-command" ? "manifest-open-sidepanel-command-shortcut" : "manifest-execute-action-shortcut"}'`,
-    "Start-Sleep -Milliseconds 300"
-  ].join("; ");
-  const result = spawnSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", script], { encoding: "utf8", timeout: 10_000 });
-  ensure(result.status === 0, "native extension shortcut invocation failed");
-  return result.stdout;
+  ensure(result.status === 0, `native Cookie permission was not confirmed: ${String(result.stdout || "").trim()}`);
+  return String(result.stdout || "").trim();
 }
 
 function startRuntime(extensionId, token, secureTaskRoot) {
@@ -331,17 +282,26 @@ async function main() {
   process.env.NAVIA_T01_RUN_ID = runId;
   process.env.NAVIA_T01_EXTENSION_ROOT = extensionRoot;
   process.env.NAVIA_T01_HEADLESS = "0";
-  process.env.NAVIA_CHROME_MUTE_AUDIO = "0";
+  const processAudioIsolation = process.env.NAVIA_R5_PROCESS_AUDIO_ISOLATION === "1";
+  // The standard path keeps --mute-audio. The explicitly authorized R5 positive
+  // uses a PID-scoped Windows audio-session guard because that Chrome flag also
+  // zeros tabCapture input on this host.
+  process.env.NAVIA_CHROME_MUTE_AUDIO = processAudioIsolation ? "0" : "1";
   process.env.NAVIA_T01_FORCE_DEVICE_SCALE_FACTOR = "1";
   const helpers = await import(`./chrome-v2-t01-r1-frontend.mjs?v3-4a=${Date.now()}`);
   let browser;
   let runtime;
   let nativePanelTarget;
+  let audioIsolation;
   let credentialNeedles = [];
   const token = crypto.randomBytes(32).toString("base64url");
   const result = { schemaVersion: oneStepSmoke ? "v3-5-7-one-step-smoke/v1" : accessibilityProductStage ? "v3-5-5-real-chrome/v1" : interactionProductStage ? "v3-5-4-real-chrome/v1" : visualProductStage ? "v3-5-3-real-chrome/v1" : productWorkspaceStage ? "v3-5-2-real-chrome/v1" : productSidePanelStage ? "v3-5-1-real-chrome/v1" : productStage ? "v3-2-5-real-chrome/v1" : "v3-2-4a-real-chrome/v1", runId, sampleUrl, checks: {}, passed: false };
   if (productStage || productSidePanelStage) result.states = [];
   try {
+    if (processAudioIsolation) {
+      audioIsolation = await startOwnedChromeAudioIsolation(profilePath, privateRoot);
+      result.audioIsolation = { mode: "owned_windows_audio_session", watcherReady: true };
+    }
     browser = await helpers.launchExtension(profilePath);
     const authorizedCookies = readCookies();
     credentialNeedles = authorizedCookies.needles;
@@ -375,22 +335,9 @@ async function main() {
     ensure(Number.isInteger(hostTabId), "real Bilibili host tab was not found");
     runtime = startRuntime(extensionId, token, secureTaskRoot);
     await waitRuntime();
-    if (useInPageSurface) {
-      const permissionPage = await browser.context.newPage();
-      await permissionPage.setViewportSize({ width: 768, height: 900 });
-      await permissionPage.goto(`${origin}/sidepanel.html?naviaE2ETabId=${hostTabId}`, { waitUntil: "domcontentloaded" });
-      await permissionPage.locator("[data-testid='media-companion-enable']").click({ timeout: 20_000 });
-      confirmPermission(profilePath);
-      await permissionPage.waitForFunction(async () => (
-        await chrome.permissions.contains({ permissions: ["cookies"] })
-        && await chrome.permissions.contains({ origins: ["https://*.bilibili.com/*"] })
-      ), null, { timeout: 20_000 });
-      await permissionPage.close();
-      await video.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
-      await video.waitForTimeout(2_000);
-    }
     let workspace = null;
     let nativePanelDriver = null;
+    let inPageScreenCalibration = null;
     if (productSidePanelStage) {
       let nativePanel;
       if (useInPageSurface) {
@@ -401,15 +348,132 @@ async function main() {
         ensure(frame, "in-page Navia sidepanel frame was not found");
         nativePanel = { page: frame, method: "trusted_inpage_extension_surface" };
       } else {
-        nativePanel = await helpers.openNativeSidePanel(browser.context, worker, video);
+        await video.bringToFront();
+        const browserCdp = await RawCdp.connect(`http://127.0.0.1:${browser.cdpPort}`);
+        const ownedChrome = inspectOwnedWindowsChromeProfile(profilePath);
+        ensure(ownedChrome.length === 1, "owned Chrome main process was not unique");
+        const invocationDiagnostic = invokeOwnedPidExtensionShortcut(profilePath, ownedChrome[0].processId, "execute-action");
+        fs.writeFileSync(path.join(privateRoot, "native-side-panel-open.txt"), invocationDiagnostic, { mode: 0o600 });
+        const panelDeadline = Date.now() + 15_000;
+        let panelTarget = null;
+        let observedTargets = [];
+        while (Date.now() < panelDeadline) {
+          observedTargets = await browserCdp.targets();
+          const candidates = observedTargets.filter((target) => (
+            target.url === `${origin}/sidepanel.html`
+          ));
+          panelTarget = candidates[0] ?? null;
+          if (panelTarget) break;
+          await wait(200);
+        }
+        writeJson(path.join(privateRoot, "native-panel-target-inventory.json"), observedTargets.map((target) => ({
+          type: target.type,
+          urlKind: target.url.includes("/sidepanel.html")
+            ? "sidepanel"
+            : target.url.startsWith(origin)
+              ? "extension"
+              : target.url.startsWith("https://www.bilibili.com/")
+                ? "bilibili"
+                : "other",
+        })));
+        ensure(panelTarget, "native Side Panel WebContents was not created");
+        writeJson(path.join(privateRoot, "native-panel-target.json"), {
+          type: panelTarget.type,
+          urlKind: panelTarget.url.includes("/sidepanel.html") ? "sidepanel" : "other",
+        });
+        await video.bringToFront();
+        const panelSession = await browserCdp.attach(panelTarget.targetId);
+        await panelSession.send("Runtime.enable", {});
+        nativePanel = { page: null, method: "owned_pid_shortcut+native_cdp", browserCdp, panelSession };
       }
-      nativePanelDriver = helpers.createSidePanelDriver(nativePanel.page, worker);
-      await nativePanelDriver.waitForCount("media-companion-launch", 1, 20_000);
       nativePanelTarget = useInPageSurface ? {
         evaluate: (expression) => nativePanel.page.evaluate((source) => globalThis.eval(source), expression),
-        clickTestId: (testId) => nativePanel.page.locator(`[data-testid='${testId}']`).click(),
+        async clickTestId(testId) {
+          const control = nativePanel.page.locator(`[data-testid='${testId}']`);
+          await control.scrollIntoViewIfNeeded().catch(() => undefined);
+          const trustedControlName = {
+            "media-companion-enable": "启用并分析当前视频",
+            "media-capture-start": "捕获当前标签页",
+            "media-capture-finish": "完成并转写",
+            "media-capture-cancel": "取消",
+          }[testId];
+          if (trustedControlName) {
+            const inputClient = await RawCdp.connect(`http://127.0.0.1:${browser.cdpPort}`);
+            const target = (await inputClient.targets()).find((item) => item.url.includes("/sidepanel.html?naviaInPage=1"));
+            ensure(target, "in-page Side Panel CDP target was not found");
+            const inputSession = await inputClient.attach(target.targetId);
+            await inputSession.send("Runtime.enable", {});
+            const point = await inputSession.evaluate(`(() => {
+              const element = document.querySelector(${JSON.stringify(`[data-testid='${testId}']`)});
+              if (!element) return null;
+              element.scrollIntoView({ block: "center", inline: "nearest" });
+              const rect = element.getBoundingClientRect();
+              const x = rect.left + rect.width / 2;
+              const y = rect.top + rect.height / 2;
+              const hit = document.elementFromPoint(x, y)?.closest?.("[data-testid]");
+              return { x, y, width: rect.width, height: rect.height, hitTestId: hit?.getAttribute("data-testid") ?? null };
+            })()`);
+            ensure(point && point.width > 0 && point.height > 0, "capture start control has no iframe coordinates");
+            ensure(point.hitTestId === testId, `trusted control center is occluded: expected ${testId}, received ${point.hitTestId ?? "none"}`);
+            await wait(500);
+            const ownedChrome = inspectOwnedWindowsChromeProfile(profilePath);
+            ensure(ownedChrome.length === 1, "owned Chrome main process was not unique before capture click");
+            let nativeClick;
+            const nativeMethod = captureActionInputMode(testId);
+            if (nativeMethod === "owned_pid_uia_calibration_pointer") {
+              nativeClick = clickOwnedChromeAutomationControlByPid(
+                profilePath,
+                ownedChrome[0].processId,
+                trustedControlName,
+              );
+              inPageScreenCalibration = calibrateOwnedChromeScreenPoint(point, nativeClick);
+            } else if (nativeMethod === "owned_pid_calibrated_native_pointer") {
+              ensure(inPageScreenCalibration, "trusted in-page pointer lacks owned-window calibration");
+              const screenPoint = projectOwnedChromeScreenPoint(inPageScreenCalibration, point);
+              clickOwnedChromePointByPid(profilePath, ownedChrome[0].processId, screenPoint.x, screenPoint.y);
+              nativeClick = `screenPoint=${Math.round(screenPoint.x)},${Math.round(screenPoint.y)}`;
+            } else {
+              // Start requires Chrome's user-activation path. Finish/cancel do not;
+              // use Playwright's trusted locator input in the exact extension
+              // frame so OOPIF coordinate translation cannot turn the action
+              // into a no-op.
+              await control.click();
+              nativeClick = "exactFrameTarget=true";
+            }
+            writeJson(path.join(privateRoot, `inpage-native-click-${testId}.json`), {
+              point,
+              method: nativeMethod,
+              controlName: trustedControlName,
+              nativeClick,
+              sidebarMode: await video.locator("[data-testid='navia-inpage-sidebar']").getAttribute("data-navia-mode"),
+              viewport: video.viewportSize(),
+            });
+            inputClient.socket.close();
+            return;
+          }
+          await control.click({ force: true });
+        },
         close: () => undefined
-      } : await RawCdpTarget.connect(browser.cdpPort, "/sidepanel.html");
+      } : {
+        evaluate: (expression) => nativePanel.panelSession.evaluate(expression),
+        clickTestId: (testId) => nativePanel.panelSession.trustedClick(`[data-testid='${testId}']`),
+        close: () => nativePanel.browserCdp.socket.close(),
+      };
+      nativePanelDriver = useInPageSurface
+        ? helpers.createSidePanelDriver(nativePanel.page, worker)
+        : {
+            count: (testId) => nativePanelTarget.evaluate(`document.querySelectorAll(${JSON.stringify(`[data-testid='${testId}']`)}).length`),
+            async waitForCount(testId, expected, timeoutMs = 20_000) {
+              const deadline = Date.now() + timeoutMs;
+              while (Date.now() < deadline) {
+                const count = await nativePanelTarget.evaluate(`document.querySelectorAll(${JSON.stringify(`[data-testid='${testId}']`)}).length`);
+                if (count === expected) return;
+                await wait(200);
+              }
+              throw new Error(`native Side Panel count timeout: ${testId}=${expected}`);
+            },
+          };
+      await nativePanelDriver.waitForCount("media-companion-launch", 1, 20_000);
       result.nativeSidePanelMethod = nativePanel.method;
     } else {
       workspace = await browser.context.newPage();
@@ -483,15 +547,22 @@ async function main() {
         forbiddenV3ClaimVisible: /V3\s*(?:已经|已)?完成|RAG\s*ready|完整外脑/i.test(bodyText)
       });
     };
-    if (!useInPageSurface) {
-      await uiClick(productSidePanelStage ? "media-companion-enable" : "media-consent-authorize");
-      confirmPermission(profilePath);
-    }
-    const permissionGranted = await worker.evaluate(async () => ({
+    const readPermission = () => worker.evaluate(async () => ({
       named: await chrome.permissions.contains({ permissions: ["cookies"] }),
       host: await chrome.permissions.contains({ origins: ["https://*.bilibili.com/*"] })
     }));
+    await uiClick(productSidePanelStage ? "media-companion-enable" : "media-consent-authorize");
+    await wait(500);
+    let permissionGranted = await readPermission();
+    if (!permissionGranted.named || !permissionGranted.host) {
+      const permissionDiagnostic = confirmPermission(profilePath);
+      fs.writeFileSync(path.join(privateRoot, "native-permission-confirmation.txt"), permissionDiagnostic, { mode: 0o600 });
+      await wait(500);
+      permissionGranted = await readPermission();
+    }
     ensure(permissionGranted.named && permissionGranted.host, "native Cookie permission confirmation did not grant both registered permissions");
+    await wait(500);
+    if (await uiCount("media-companion-retry")) await uiClick("media-companion-retry");
     try {
       if (productSidePanelStage) {
         await uiWaitAnyText(["正在分析", "需要一次音频确认", "视频已就绪"], "[data-testid='media-companion-launch']", 30_000);
@@ -558,26 +629,26 @@ async function main() {
     await video.bringToFront();
     const play = video.locator("video").first();
     await play.waitFor({ timeout: 20_000 });
-    await video.evaluate(async (startAt) => {
+    await video.evaluate(async ({ startAt, muted }) => {
       const element = document.querySelector("video");
       if (!(element instanceof HTMLVideoElement)) return;
       element.currentTime = startAt;
-      element.muted = false;
+      element.muted = muted;
       element.volume = 1;
       await element.play();
-    }, visualProductStage ? 0 : 60);
+    }, { startAt: visualProductStage ? 0 : 60, muted: processAudioIsolation });
     await video.waitForFunction(() => {
       const element = document.querySelector("video");
-      return element instanceof HTMLVideoElement && !element.paused && !element.muted && element.volume > 0 && element.currentTime > 0;
+      return element instanceof HTMLVideoElement && !element.paused && element.volume > 0 && element.currentTime > 0;
     }, undefined, { timeout: 20_000 });
     await video.waitForTimeout(1_000);
-    await video.evaluate(async () => {
+    await video.evaluate(async (muted) => {
       const element = document.querySelector("video");
       if (!(element instanceof HTMLVideoElement)) return;
-      element.muted = false;
+      element.muted = muted;
       element.volume = 1;
       await element.play();
-    });
+    }, processAudioIsolation);
     const playbackDiagnostic = await video.evaluate(() => Array.from(document.querySelectorAll("video")).map((candidate, index) => {
       const rect = candidate.getBoundingClientRect();
       let audioTrackCount = null;
@@ -612,20 +683,29 @@ async function main() {
       result.externalActionWaitMs = externalActionWaitMs;
       await wait(externalActionWaitMs);
     }
-    await uiClick("media-capture-start");
+    if (useInPageSurface) {
+      const sidebar = video.locator("[data-testid='navia-inpage-sidebar']");
+      if (await sidebar.getAttribute("data-navia-mode") !== "expanded") {
+        await video.locator("[data-testid='navia-floating-launcher']").click();
+        await video.locator("[data-testid='navia-inpage-sidebar'][data-navia-mode='expanded']").waitFor({ timeout: 10_000 });
+      }
+    }
+    if (process.env.NAVIA_V3_EXTERNAL_ACTION_ONLY !== "1") {
+      await uiClick("media-capture-start");
+    }
     {
       await uiWaitAnyText(["Chrome 要求当前页先获得一次扩展调用授权", "捕获请求已准备"], "[data-testid='media-capture-card']", 10_000);
       await video.bringToFront();
-      await video.evaluate(async () => {
+      await video.evaluate(async (muted) => {
         const element = document.querySelector("video");
         if (!(element instanceof HTMLVideoElement)) return;
-        element.muted = false;
+        element.muted = muted;
         element.volume = 1;
         await element.play();
-      });
+      }, processAudioIsolation);
       await video.waitForFunction(() => {
         const element = document.querySelector("video");
-        return element instanceof HTMLVideoElement && !element.paused && !element.muted && element.volume > 0;
+        return element instanceof HTMLVideoElement && !element.paused && element.volume > 0;
       }, undefined, { timeout: 10_000 });
       const activeTarget = await worker.evaluate(async () => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -674,12 +754,59 @@ async function main() {
     // reset when MV3 restarts the service worker between click and readback.
     result.checks.extensionInvokedOnTarget = true;
     result.checks.trustedCaptureStarted = true;
+    if (processAudioIsolation) {
+      const isolationStatus = await audioIsolation.waitUntilMuted();
+      result.audioIsolation = {
+        mode: "owned_windows_audio_session",
+        watcherReady: true,
+        ownedProcessCount: isolationStatus.ownedProcessCount,
+        matchedSessionCount: isolationStatus.matchedSessionCount,
+        mutedSessionCount: isolationStatus.mutedSessionCount,
+        allMatchedSessionsMuted: isolationStatus.allMatchedSessionsMuted,
+      };
+      result.checks.ownedChromeAudioSessionMuted = true;
+      await video.evaluate(async () => {
+        const element = document.querySelector("video");
+        if (!(element instanceof HTMLVideoElement)) return;
+        element.muted = false;
+        element.volume = 1;
+        await element.play();
+      });
+      await video.waitForFunction(() => {
+        const element = document.querySelector("video");
+        return element instanceof HTMLVideoElement && !element.paused && !element.muted && element.volume > 0;
+      }, undefined, { timeout: 10_000 });
+    }
     const captureStartTime = await video.locator("video").evaluate((element) => element.currentTime);
     await wait(15_000);
+    try {
+      const diagnosticClient = await RawCdp.connect(`http://127.0.0.1:${browser.cdpPort}`);
+      const { session } = await diagnosticClient.attachToFirstMatching(
+        (target) => target.url.includes("/media-capture-offscreen.html"),
+      );
+      result.offscreenCaptureDiagnostic = await session.evaluate(
+        "globalThis.__naviaCaptureDiagnostic ?? null",
+      );
+      diagnosticClient.socket.close();
+    } catch (error) {
+      result.offscreenCaptureDiagnostic = {
+        unavailable: true,
+        reason: error instanceof Error ? error.message : String(error),
+      };
+    }
+    result.relayCaptureDiagnostic = await worker.evaluate(
+      () => globalThis.__naviaRelayCaptureDiagnostic?.() ?? null,
+    );
     const captureEnd = await video.locator("video").evaluate((element) => ({ currentTime: element.currentTime, paused: element.paused }));
     result.checks.playbackContinuedDuringCapture = !captureEnd.paused && captureEnd.currentTime >= captureStartTime + 8;
     ensure(result.checks.playbackContinuedDuringCapture, "target video did not continue playback during capture");
     await uiClick("media-capture-finish");
+    await uiWaitAnyText(
+      ["正在停止并清理", "SenseVoice 正在本机转写"],
+      "[data-testid='media-capture-card']",
+      5_000,
+    );
+    result.checks.finishActionAccepted = true;
     if (productStage || productSidePanelStage) await observeProductState("transcribing", "trusted_tab_capture_asr");
     const transcriptOutcome = await Promise.race(productStage || productSidePanelStage ? [
       uiWaitText("转写已完成", ".media-transcript-quick-card", 180_000).then(() => ({ ok: true })),
@@ -1195,6 +1322,7 @@ async function main() {
     if (nativePanelTarget) nativePanelTarget.close();
     if (runtime) await runtime.stop();
     if (browser) await browser.close().catch(() => undefined);
+    if (audioIsolation) await audioIsolation.stop();
     fs.rmSync(profilePath, { recursive: true, force: true, maxRetries: 20, retryDelay: 250 });
     result.checks.profileDeleted = !fs.existsSync(profilePath);
     if (credentialNeedles.length > 0) {

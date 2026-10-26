@@ -13,6 +13,9 @@ export function MediaTranscriptQuickCard(props: {
   outlineError?: string | null;
   onRetryOutline?(): void;
 }) {
+  const segments = props.projection.segments;
+  const previewIndexes = [...new Set([0, Math.floor((segments.length - 1) / 2), segments.length - 1])]
+    .filter((index) => index >= 0 && index < segments.length);
   return <section
     className="media-transcript-quick-card"
     aria-labelledby="media-transcript-quick-title"
@@ -27,7 +30,10 @@ export function MediaTranscriptQuickCard(props: {
     </div>
     <MediaAcquisitionProgress projection={props.projection} />
     {props.projection.failureCode ? <p role="alert">{props.projection.failureCode}</p> : null}
-    {props.projection.segments.length ? <p>{props.projection.segments[0].text}</p> : null}
+    {previewIndexes.length ? <details className="media-transcript-preview" open={props.outlineState !== "ready"}>
+      <summary>转写预览 · 不是全片概览</summary>
+      <ol>{previewIndexes.map((index) => <li key={segments[index].segmentId}><time>{Math.floor(segments[index].startMs / 60_000)}:{String(Math.floor(segments[index].startMs / 1_000) % 60).padStart(2, "0")}</time><span>{segments[index].text}</span></li>)}</ol>
+    </details> : null}
     {props.outlineState === "materializing" ? <p role="status" data-testid="media-outline-materializing">正在生成可恢复的图文大纲…</p> : null}
     {props.outlineTask?.projections?.outline ? <div className="media-quick-outline" data-testid="media-quick-outline">
       <strong>{props.outlineTask.projections.outline.title}</strong>

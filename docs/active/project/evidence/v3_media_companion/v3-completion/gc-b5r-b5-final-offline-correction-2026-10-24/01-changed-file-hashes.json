@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "v3-5.10-b5-final-offline-correction-changes/v1",
+  "batch": "GC-B5R B-5 FINAL OFFLINE CORRECTION",
+  "recordedAtUtc": "2026-10-24T07:30:00Z",
+  "fileCount": 27,
+  "newFileCount": 10,
+  "modifiedFileCount": 14,
+  "removedFileCount": 3,
+  "files": [
+    {
+      "path": "scripts/stage_b_b5_3/lib/authorization.mjs",
+      "change": "new",
+      "sha256": "731d112f8784f8c628589e5b783a790b3e803de1f89d0139485fe351c0563716",
+      "bytes": 7393
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/aggregate.mjs",
+      "change": "new",
+      "sha256": "9fe1383eb2eab7adf8bc04a6623fc3e956b039e8b67a9842143d783cb26d7b5c",
+      "bytes": 12510
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/privacy.mjs",
+      "change": "new",
+      "sha256": "54a87fc22e6e17f5ebc74ccd8cb8f27ec2ca9c6bc4a487283a6ead66f5b47244",
+      "bytes": 4285
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/retained_logs.mjs",
+      "change": "new",
+      "sha256": "70409bee2e92a4e3b51227b01442f7fc928e3882eb08152d52de5673f4796f57",
+      "bytes": 2340
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/temp_roots.mjs",
+      "change": "new",
+      "sha256": "a15b6a4ff8d1e499970b2a20ec33c8b26ce0a581f22acaebede8a9dacc01aaee",
+      "bytes": 1529
+    },
+    {
+      "path": "scripts/stage_b_b5_3/lib/action_ledger.mjs",
+      "change": "modified",
+      "sha256": "af1536f8fe19d851c63f31d143597b8df10b20cccd7a5427b6e8b6d28b6a6cea",
+      "bytes": 12845
+    },
+    {
+      "path": "scripts/stage_b_b5_3/sequencer.mjs",
+      "change": "modified",
+      "sha256": "b9d3656b528e493843686e246e445fbceeb0d9c785ff6c4ae70d7a56080d9663",
+      "bytes": 22485
+    },
+    {
+      "path": "scripts/stage_b_b5_3/run_one_bvid.mjs",
+      "change": "modified",
+      "sha256": "ef656ec1690c72cdffe9c3ce90a463f3cb49f2d259975f4c594bc73494ff39dc",
+      "bytes": 65542
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/authorization_composition.node-test.mjs",
+      "change": "new",
+      "sha256": "434c5f28d73229b8907fdbf1a4563b864994baabef6f2d9bfcb599d9eb36c806",
+      "bytes": 12690
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/privacy_scan.node-test.mjs",
+      "change": "new",
+      "sha256": "9df7d1af2d3b2f71819b5feaa6ff861c93fe172f719008fa06a70fa32320ec31",
+      "bytes": 3340
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/structured_failure_evidence.node-test.mjs",
+      "change": "new",
+      "sha256": "2b28c8797204d9c8dac7e69a60af8db16f59212368b42d18d8ce786138c53975",
+      "bytes": 14280
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/action_ledger.node-test.mjs",
+      "change": "modified",
+      "sha256": "937bb05f5aa04efdfe8e8042abcd83901aa1dc18bb79cb913a92d3432d625169",
+      "bytes": 9767
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/sequencer.node-test.mjs",
+      "change": "modified",
+      "sha256": "f52610f203c63288e85766335f00ae292875341c41500b5ce8eee949932c3726",
+      "bytes": 20353
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/real_branches.node-test.mjs",
+      "change": "modified",
+      "sha256": "8e12cf1d5a4472100fe7fa66dd9de9b02323b99fd378baf2f3297e34c3fc548e",
+      "bytes": 17247
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/runner_failure_evidence.node-test.mjs",
+      "change": "modified",
+      "sha256": "06482e22fb73d399b762b9b862f1a7ba9b3bbd1a82a8d91f89eac308ff249823",
+      "bytes": 10722
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/canary_cookie_contract.node-test.mjs",
+      "change": "modified",
+      "sha256": "e2e466141cd36170a9ff6c7af492da311a623a484df7eea1a02cc046c8f592e0",
+      "bytes": 18571
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/contracts.node-test.mjs",
+      "change": "modified",
+      "sha256": "9d577ad0f80df87a1f1a1bf991c07449705c0c7c3dca78141babfd2a3d8c480f",
+      "bytes": 19768
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/cookie_prereq.node-test.mjs",
+      "change": "modified",
+      "sha256": "a2adca300061f92dd16b91732190e8bb0d4500fa70ebfe105dfb55f2285f4fee",
+      "bytes": 15127
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/gc_b5r_preflight.node-test.mjs",
+      "change": "modified",
+      "sha256": "b51590c3a85cc1c7f4afce866a6e41a4e0e431324fae991d65026a8da26adaf6",
+      "bytes": 22677
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/integration_runtime_api.node-test.mjs",
+      "change": "modified",
+      "sha256": "b1def362d18c3d4ad1ec571dfc738c3c485d77c913419adfd85214a879059db9",
+      "bytes": 10259
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/production_preflight.node-test.mjs",
+      "change": "modified",
+      "sha256": "d1502ea6471bd11b0b21e0fd84a66efb54ee8a717c31f62826244fb6a3774e7d",
+      "bytes": 4873
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/dbg_sequencer.mjs",
+      "change": "removed",
+      "sha256": null,
+      "bytes": 0,
+      "note": "an unused debug artifact of this workpack; it was never referenced by a test and it was removed by this batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/dbg_stub.mjs",
+      "change": "removed",
+      "sha256": null,
+      "bytes": 0,
+      "note": "an unused debug artifact of this workpack; it was never referenced by a test and it was removed by this batch"
+    },
+    {
+      "path": "scripts/stage_b_b5_3/test/_fixtures/sequencer_dbg.mjs",
+      "change": "removed",
+      "sha256": null,
+      "bytes": 0,
+      "note": "an unused debug artifact of this workpack; it was never referenced by a test and it was removed by this batch"
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/diagnostics.py",
+      "change": "new",
+      "sha256": "4f34e58582eb6d64c7cbf49af0e8a586bded288c282353d790c4df1b84f96d55",
+      "bytes": 12884
+    },
+    {
+      "path": "services/local-runtime/navia_runtime/modules/media_companion/comprehension/synthesis.py",
+      "change": "modified",
+      "sha256": "a45185c5602eee9af0f2e722ff85fa8700d607c043f8a23d262df1e2213951b5",
+      "bytes": 64175
+    },
+    {
+      "path": "services/local-runtime/tests/test_v3_gc_b5r_final_offline_correction.py",
+      "change": "new",
+      "sha256": "f3e9aae813edd5079ba9753b9220a635b1daa97490dc9424160107b2fd20d13d",
+      "bytes": 18746
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3-media-grounded-comprehension/v2.1",
+  "title": "Navia V3-5.10 grounded comprehension derivative with brief provenance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "binding", "brief", "claims", "chapters", "regions", "quality", "receipt"],
+  "properties": {
+    "schemaVersion": {"const": "v3-media-grounded-comprehension/v2.1"},
+    "binding": {"$ref": "#/$defs/Binding"},
+    "brief": {"$ref": "#/$defs/Brief"},
+    "claims": {"type": "array", "minItems": 2, "maxItems": 8, "items": {"$ref": "#/$defs/Claim"}},
+    "chapters": {"type": "array", "minItems": 2, "maxItems": 12, "items": {"$ref": "#/$defs/Chapter"}},
+    "regions": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/Region"}},
+    "quality": {"$ref": "#/$defs/Quality"},
+    "receipt": {"$ref": "#/$defs/Receipt"}
+  },
+  "$defs": {
+    "Sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "TaskId": {"type": "string", "pattern": "^media_task_[a-f0-9]{32}$"},
+    "EvidenceId": {"type": "string", "pattern": "^(?:mev|mtr)_[a-f0-9]{32}$"},
+    "EvidenceIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/EvidenceId"}},
+    "RegionName": {"enum": ["opening", "middle", "ending"]},
+    "ClaimId": {"type": "string", "pattern": "^claim_[a-f0-9]{16}$"},
+    "Binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["taskId", "taskRevision", "sourceIdentity", "evidenceCatalogSha256", "mediaDurationMs", "spanStartMs", "spanEndMs"],
+      "properties": {
+        "taskId": {"$ref": "#/$defs/TaskId"},
+        "taskRevision": {"type": "integer", "minimum": 1},
+        "sourceIdentity": {"type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]+:[^:]+:[^:]+$"},
+        "evidenceCatalogSha256": {"$ref": "#/$defs/Sha256"},
+        "mediaDurationMs": {"type": "integer", "minimum": 1000, "maximum": 86400000},
+        "spanStartMs": {"type": "integer", "minimum": 0, "maximum": 86400000},
+        "spanEndMs": {"type": "integer", "minimum": 1, "maximum": 86400000}
+      }
+    },
+    "Brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "evidenceIds", "regions", "origin", "sourceClaimIds"],
+      "properties": {
+        "text": {"type": "string", "minLength": 20, "maxLength": 100},
+        "evidenceIds": {"$ref": "#/$defs/EvidenceIds"},
+        "regions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/RegionName"}},
+        "origin": {"enum": ["provider", "deterministic_claim_composer"]},
+        "sourceClaimIds": {"type": "array", "uniqueItems": true, "maxItems": 3, "items": {"$ref": "#/$defs/ClaimId"}}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"origin": {"const": "provider"}}, "required": ["origin"]},
+          "then": {"properties": {"sourceClaimIds": {"maxItems": 0}}}
+        },
+        {
+          "if": {"properties": {"origin": {"const": "deterministic_claim_composer"}}, "required": ["origin"]},
+          "then": {"properties": {"sourceClaimIds": {"minItems": 2, "maxItems": 3}}}
+        }
+      ]
+    },
+    "Claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claimId", "text", "evidenceIds", "regions"],
+      "properties": {
+        "claimId": {"$ref": "#/$defs/ClaimId"},
+        "text": {"type": "string", "minLength": 8, "maxLength": 240},
+        "evidenceIds": {"$ref": "#/$defs/EvidenceIds"},
+        "regions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/RegionName"}}
+      }
+    },
+    "Chapter": {
+      "type": "object", "additionalProperties": false,
+      "required": ["chapterId", "order", "title", "thesis", "startMs", "endMs", "evidenceIds", "relationToPrevious"],
+      "properties": {
+        "chapterId": {"type": "string", "pattern": "^chapter_[a-f0-9]{16}$"},
+        "order": {"type": "integer", "minimum": 0, "maximum": 11},
+        "title": {"type": "string", "minLength": 4, "maxLength": 80},
+        "thesis": {"type": "string", "minLength": 8, "maxLength": 500},
+        "startMs": {"type": "integer", "minimum": 0, "maximum": 86400000},
+        "endMs": {"type": "integer", "minimum": 1, "maximum": 86400000},
+        "evidenceIds": {"$ref": "#/$defs/EvidenceIds"},
+        "relationToPrevious": {"enum": ["opening", "continuation", "contrast", "cause_effect", "example", "conclusion"]}
+      }
+    },
+    "Region": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "startMs", "endMs", "availability", "evidenceIds"],
+      "properties": {
+        "name": {"$ref": "#/$defs/RegionName"},
+        "startMs": {"type": "integer", "minimum": 0, "maximum": 86400000},
+        "endMs": {"type": "integer", "minimum": 1, "maximum": 86400000},
+        "availability": {"enum": ["substantive", "empty_or_unavailable"]},
+        "evidenceIds": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/EvidenceId"}}
+      }
+    },
+    "Quality": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "failureCodes", "sourceCoverageRatio", "maxChapterStartConcentration", "maxChapterSpanRatio", "humanReviewRequired"],
+      "properties": {
+        "status": {"enum": ["complete", "limited", "rejected"]},
+        "failureCodes": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/FailureCode"}},
+        "sourceCoverageRatio": {"type": "number", "minimum": 0, "maximum": 1},
+        "maxChapterStartConcentration": {"type": "number", "minimum": 0, "maximum": 1},
+        "maxChapterSpanRatio": {"type": "number", "minimum": 0, "maximum": 1},
+        "humanReviewRequired": {"const": true}
+      }
+    },
+    "FailureCode": {
+      "enum": [
+        "V3510B_CONSENT_REQUIRED", "V3510B_TASK_REVISION_CONFLICT", "V3510B_EVIDENCE_CATALOG_CHANGED",
+        "V3510B_EVIDENCE_UNCLOSED", "V3510B_BRIEF_LENGTH_INVALID", "V3510B_BRIEF_RAW_PREFIX",
+        "V3510B_BRIEF_COVERAGE_INSUFFICIENT", "V3510B_CLAIM_EVIDENCE_UNCLOSED", "V3510B_CLAIM_DUPLICATE",
+        "V3510B_CHAPTER_TIME_INVALID", "V3510B_CHAPTER_COVERAGE_INSUFFICIENT", "V3510B_CHAPTER_IMBALANCE",
+        "V3510B_ENDING_EVIDENCE_MISSING", "V3510B_EVIDENCE_CONFLICT_UNRESOLVED",
+        "V3510B_PROVIDER_TIMEOUT", "V3510B_PROVIDER_RESPONSE_INVALID", "V3510B_SOURCE_BLOCKED"
+      ]
+    },
+    "Receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["providerId", "modelId", "outboundDerivedTextSha256", "requestCount", "rawVideoUploadCount", "rawAudioUploadCount", "frameByteUploadCount", "cookieUploadCount", "apiKeyDisclosureCount", "localPathUploadCount"],
+      "properties": {
+        "providerId": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{1,63}$"},
+        "modelId": {"type": "string", "minLength": 1, "maxLength": 128},
+        "outboundDerivedTextSha256": {"$ref": "#/$defs/Sha256"},
+        "requestCount": {"type": "integer", "minimum": 1, "maximum": 64},
+        "rawVideoUploadCount": {"const": 0},
+        "rawAudioUploadCount": {"const": 0},
+        "frameByteUploadCount": {"const": 0},
+        "cookieUploadCount": {"const": 0},
+        "apiKeyDisclosureCount": {"const": 0},
+        "localPathUploadCount": {"const": 0},
+        "endpointClass": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z][a-z0-9_-]{0,63}$"},
+        "structureMode": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z][a-z0-9_-]{0,63}$"},
+        "attemptId": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^attempt-[a-f0-9]{1,32}$"},
+        "latencyMs": {"type": "integer", "minimum": 0, "maximum": 600000},
+        "requestSha256": {"$ref": "#/$defs/Sha256"},
+        "responseSha256": {"$ref": "#/$defs/Sha256"},
+        "finishReason": {"$ref": "#/$defs/ProviderFinishReason"}
+      }
+    },
+    "ProviderFinishReason": {
+      "enum": [
+        "stop",
+        "tool_calls",
+        "length",
+        "content_filter",
+        "refusal",
+        "authorization_denied",
+        "empty",
+        "malformed",
+        "schema_invalid"
+      ]
+    }
+  }
+}

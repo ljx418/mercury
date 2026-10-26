@@ -1,0 +1,407 @@
+{
+  "binding": {
+    "evidenceCatalogSha256": "eadcf22e6080a7772755673f851eb8e989de5ee9a88c4cde02c80ab4f3cd7fd7",
+    "mediaDurationMs": 1181080,
+    "sourceIdentity": "portal:bilibili:BV1QcYx6VEAj:41727364600:p1",
+    "spanEndMs": 1181080,
+    "spanStartMs": 860,
+    "taskId": "media_task_30fcf70fff764b3aa4a3eaad5ec21f5f",
+    "taskRevision": 7
+  },
+  "brief": {
+    "evidenceIds": [
+      "mtr_b342a7cac7dd518cd6d0cdf0ffcb8e4d",
+      "mtr_e838be73d4c545a24f65963c4b73b117",
+      "mtr_7772b44a1a817a08f6c8c0031074b2a6",
+      "mtr_cb59daeb4d190efec824fce264ea6b77",
+      "mtr_efed775601226f7fd56f359a9d015f17",
+      "mtr_94d77ebd9032df4c03af12bfa61a8baa",
+      "mtr_e8f8c55b20c194f3047f2551a3aef90d",
+      "mtr_8b166aa2ef776442b699a056a585db47",
+      "mtr_2b18ce61b69b835fc0aebc152b4a50e2",
+      "mtr_8ce7bce1a8da94f279baa938dde49e9c",
+      "mtr_74e6bf203d6ce8201a604a0cac8e3ee4",
+      "mtr_065e2ead68d2292e736706306a44dd9c",
+      "mtr_69b98ad6595066ecb19c432804efb6d4"
+    ],
+    "origin": "provider",
+    "regions": [
+      "opening",
+      "middle",
+      "ending"
+    ],
+    "sourceClaimIds": [],
+    "text": "视频从中国的超大规模、汇率和产业结构出发，说明其发展道路不能简单复制日本、欧洲或小国经验；再以普通人的实际生活指标、基础设施和汽车普及讨论民生改善，最后介绍作者整理的各国发展历程资料库及其局限。"
+  },
+  "chapters": [
+    {
+      "chapterId": "chapter_9a092e68f8f51e4d",
+      "endMs": 120730,
+      "evidenceIds": [
+        "mtr_b342a7cac7dd518cd6d0cdf0ffcb8e4d",
+        "mtr_e607545b6255f72a8a086d37db6b0d1d",
+        "mtr_e838be73d4c545a24f65963c4b73b117",
+        "mtr_a7e2d4768a04073d2b25bfe33e7c2478",
+        "mtr_4398aaf26fcf14064d327ff1d4a78b80"
+      ],
+      "order": 0,
+      "relationToPrevious": "opening",
+      "startMs": 860,
+      "thesis": "中国人口与经济规模巨大、地区条件差异显著，因此不能脱离自身约束照搬其他国家的发展路径。",
+      "title": "超大规模限定中国的发展道路"
+    },
+    {
+      "chapterId": "chapter_d253abb07331593c",
+      "endMs": 271400,
+      "evidenceIds": [
+        "mtr_cd7bd651492092175579bc93ed5cb2f0",
+        "mtr_7772b44a1a817a08f6c8c0031074b2a6",
+        "mtr_a7c9da4a70a8549752c6450791157cc3",
+        "mtr_07356f21b633074d29c14a6aa9030902",
+        "mtr_f9b74b873b12b61cc46d07829ab4fe79",
+        "mtr_8ca48b1a129050efaa79da4a08549424",
+        "mtr_ce14dd472c535a78dd2386ea43d51c46"
+      ],
+      "order": 1,
+      "relationToPrevious": "cause_effect",
+      "startMs": 120730,
+      "thesis": "庞大的就业人口使中国需要同时容纳高技术产业与劳动密集型产能，并因此重视相对稳定的汇率环境。",
+      "title": "就业压力塑造汇率与产业选择"
+    },
+    {
+      "chapterId": "chapter_7bfa24343521c6e8",
+      "endMs": 430450,
+      "evidenceIds": [
+        "mtr_77b2a9bfb9e829a1f8a2a7f2d6ad22fa",
+        "mtr_8db8c7318afb534f5caa85f3c0ed4653",
+        "mtr_3d9c0af51e6c5d4a3a994bdf6269eb6f",
+        "mtr_2e5096f61f98e217a02671ad0923db02",
+        "mtr_cb59daeb4d190efec824fce264ea6b77",
+        "mtr_a28f26c9025a561216a8c4c6be7fb14a"
+      ],
+      "order": 2,
+      "relationToPrevious": "contrast",
+      "startMs": 271400,
+      "thesis": "日本和欧洲的发展经验各有其人口、产业与制度条件，不能被抽离背景后直接套用于中国。",
+      "title": "日本与欧洲经验不能平移"
+    },
+    {
+      "chapterId": "chapter_ad6e614a77872536",
+      "endMs": 637520,
+      "evidenceIds": [
+        "mtr_3f21baaa04259a7cfc4c5239b35c9c92",
+        "mtr_92cf4ffaa77519e34a62fdbe4f164ab5",
+        "mtr_965236132266e83436dffbbcead863c4",
+        "mtr_71e9c6a684aa69a744a8546149050f72",
+        "mtr_360aea33fbb347f95a2345e831676223",
+        "mtr_e6c5a58cd5925b66c1d81cc84588d9a4",
+        "mtr_e3c7531aa31c1d57b7a2ca172106ffc2",
+        "mtr_594b9984c93f4b3884282732dc9bc747"
+      ],
+      "order": 3,
+      "relationToPrevious": "example",
+      "startMs": 430450,
+      "thesis": "普通人的收入、就业和可支配资源更直接反映发展成果，因此评价发展不能只依赖总量经济指标。",
+      "title": "从普通人处境评估发展"
+    },
+    {
+      "chapterId": "chapter_75749d22187576d8",
+      "endMs": 817840,
+      "evidenceIds": [
+        "mtr_2c6ee588d43815ad366fc875c5643122",
+        "mtr_8273d883e59a2709b0dbf3c6f12fb875",
+        "mtr_efed775601226f7fd56f359a9d015f17",
+        "mtr_7dac2b32f784783453d16a11542b67fb",
+        "mtr_ca7ebb9ceb730cc92ccf3849b1efb0d3",
+        "mtr_2939e109dcce0e0fd9e902053c3428c6",
+        "mtr_0189dcb4b04b5059a8d9a93568d45562"
+      ],
+      "order": 4,
+      "relationToPrevious": "contrast",
+      "startMs": 637520,
+      "thesis": "欧洲内部发展条件并不一致，小型发达国家的经验同样受人口和产业条件限制，因而不能直接代表中国。",
+      "title": "欧洲分化与小国样本的边界"
+    },
+    {
+      "chapterId": "chapter_9516fe8814d8b2cd",
+      "endMs": 944860,
+      "evidenceIds": [
+        "mtr_03480a556a74b7757bdbe93f1bc1906e",
+        "mtr_64d835bab1e72313fb18ce1d6055fb44",
+        "mtr_1ec388586af27cfb498f8972471abcee",
+        "mtr_30ffd1e6c11d238431dc441390743641",
+        "mtr_5116757ae306699ac937f381fbc18df7"
+      ],
+      "order": 5,
+      "relationToPrevious": "cause_effect",
+      "startMs": 817840,
+      "thesis": "在超大规模人口与就业约束下，中国需要兼顾高新产业和低附加值产能，并维持相对稳健的汇率环境。",
+      "title": "人口就业约束下的产业与汇率"
+    },
+    {
+      "chapterId": "chapter_91b712894eddebb0",
+      "endMs": 1055310,
+      "evidenceIds": [
+        "mtr_94d77ebd9032df4c03af12bfa61a8baa",
+        "mtr_31bd30428ee8c7e9b60d563653fef527",
+        "mtr_e8f8c55b20c194f3047f2551a3aef90d",
+        "mtr_af5bde8f9ebe1423386682f1c46881f5",
+        "mtr_af460aa13035fcdce3385b26a195d8a7"
+      ],
+      "order": 6,
+      "relationToPrevious": "contrast",
+      "startMs": 944860,
+      "thesis": "生活水平应以普通人实际获得的物质产品及健康、教育、居住和交通等具体指标衡量，而非只看美元计价GDP。",
+      "title": "以实际生活指标替代单一GDP"
+    },
+    {
+      "chapterId": "chapter_2ae0620085c37247",
+      "endMs": 1133159,
+      "evidenceIds": [
+        "mtr_8b166aa2ef776442b699a056a585db47",
+        "mtr_2b18ce61b69b835fc0aebc152b4a50e2",
+        "mtr_8ce7bce1a8da94f279baa938dde49e9c"
+      ],
+      "order": 7,
+      "relationToPrevious": "example",
+      "startMs": 1055310,
+      "thesis": "基础设施和流通体系即使未必抬高美元GDP，也能通过降低成本和增加供给改善普通人的物质生活。",
+      "title": "基础工程与流通降本改善民生"
+    },
+    {
+      "chapterId": "chapter_f8e0b2a9d59ba2be",
+      "endMs": 1181080,
+      "evidenceIds": [
+        "mtr_74e6bf203d6ce8201a604a0cac8e3ee4",
+        "mtr_065e2ead68d2292e736706306a44dd9c",
+        "mtr_69b98ad6595066ecb19c432804efb6d4"
+      ],
+      "order": 8,
+      "relationToPrevious": "conclusion",
+      "startMs": 1133159,
+      "thesis": "汽车普及可能继续拓展农村生活空间并带动发展，而作者整理的各国历程资料库可用于辅助理解发展过程，但覆盖并不全面。",
+      "title": "汽车普及预期与资料库说明"
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "claim_41cf10d34c0be289",
+      "evidenceIds": [
+        "mtr_b342a7cac7dd518cd6d0cdf0ffcb8e4d",
+        "mtr_e838be73d4c545a24f65963c4b73b117",
+        "mtr_cd7bd651492092175579bc93ed5cb2f0"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "视频认为中国人口与经济规模巨大，且地区发展条件存在差异，这些现实约束使其不能简单复制其他国家的既有道路。"
+    },
+    {
+      "claimId": "claim_34c3f80065e3aa09",
+      "evidenceIds": [
+        "mtr_03480a556a74b7757bdbe93f1bc1906e",
+        "mtr_64d835bab1e72313fb18ce1d6055fb44",
+        "mtr_1ec388586af27cfb498f8972471abcee",
+        "mtr_30ffd1e6c11d238431dc441390743641",
+        "mtr_5116757ae306699ac937f381fbc18df7"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "视频称中国人口约为韩国的28倍，并主张保留一定规模的低附加值、劳动密集型产能，以兼顾大量人口的就业和基本收入。"
+    },
+    {
+      "claimId": "claim_e404e4dde012d061",
+      "evidenceIds": [
+        "mtr_77b2a9bfb9e829a1f8a2a7f2d6ad22fa",
+        "mtr_8db8c7318afb534f5caa85f3c0ed4653",
+        "mtr_3d9c0af51e6c5d4a3a994bdf6269eb6f",
+        "mtr_2e5096f61f98e217a02671ad0923db02"
+      ],
+      "regions": [
+        "opening"
+      ],
+      "text": "日本的发展经验建立在特定人口、产业和出口条件上，视频据此反对把其经验不加区分地移植到中国。"
+    },
+    {
+      "claimId": "claim_d5374529c74b8993",
+      "evidenceIds": [
+        "mtr_94d77ebd9032df4c03af12bfa61a8baa",
+        "mtr_31bd30428ee8c7e9b60d563653fef527",
+        "mtr_efed775601226f7fd56f359a9d015f17",
+        "mtr_7dac2b32f784783453d16a11542b67fb"
+      ],
+      "regions": [
+        "middle",
+        "ending"
+      ],
+      "text": "视频指出欧洲内部差距明显，小型发达国家的样本条件也具有特殊性，因此这些案例不能直接作为中国整体发展的模板。"
+    },
+    {
+      "claimId": "claim_a9bb98b56189b634",
+      "evidenceIds": [
+        "mtr_e8f8c55b20c194f3047f2551a3aef90d",
+        "mtr_af5bde8f9ebe1423386682f1c46881f5",
+        "mtr_af460aa13035fcdce3385b26a195d8a7"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "视频主张用寿命、教育、饮食、设备、居住、交通、犯罪率和工作时间等实际指标衡量生活水平，而不应只看美元计价GDP。"
+    },
+    {
+      "claimId": "claim_04f7ff57022e3a52",
+      "evidenceIds": [
+        "mtr_8b166aa2ef776442b699a056a585db47",
+        "mtr_2b18ce61b69b835fc0aebc152b4a50e2",
+        "mtr_8ce7bce1a8da94f279baa938dde49e9c"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "村村通、路网、水电及流通降本等措施能够改善实际物质供给，即使这些成果未必直接抬高美元GDP数字。"
+    },
+    {
+      "claimId": "claim_6739d2dd0a6c546c",
+      "evidenceIds": [
+        "mtr_74e6bf203d6ce8201a604a0cac8e3ee4",
+        "mtr_065e2ead68d2292e736706306a44dd9c"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "视频预期家用汽车普及可以配合村村通进一步拓展农村生活空间，并可能带来一轮经济增长。"
+    },
+    {
+      "claimId": "claim_3e76b7b0533a5b33",
+      "evidenceIds": [
+        "mtr_69b98ad6595066ecb19c432804efb6d4"
+      ],
+      "regions": [
+        "ending"
+      ],
+      "text": "作者主页的各国发展历程资料库包含有文献支撑的历史事件、数据和真实历史影像，但作者同时承认其覆盖并不全面。"
+    }
+  ],
+  "quality": {
+    "failureCodes": [],
+    "humanReviewRequired": true,
+    "maxChapterSpanRatio": 0.17545,
+    "maxChapterStartConcentration": 0.333333,
+    "sourceCoverageRatio": 1,
+    "status": "complete"
+  },
+  "receipt": {
+    "apiKeyDisclosureCount": 0,
+    "attemptId": "",
+    "cookieUploadCount": 0,
+    "endpointClass": "minimax_chat_completions",
+    "finishReason": "stop",
+    "frameByteUploadCount": 0,
+    "latencyMs": 0,
+    "localPathUploadCount": 0,
+    "modelId": "MiniMax-M3",
+    "outboundDerivedTextSha256": "0824e2570b633f85fbd39ed211a5569bad21039e39c201ed5177e875c0ebf9f1",
+    "providerId": "minimax-cn-openai-vision",
+    "rawAudioUploadCount": 0,
+    "rawVideoUploadCount": 0,
+    "requestCount": 4,
+    "requestSha256": "",
+    "responseSha256": "",
+    "structureMode": "openai_chat_object"
+  },
+  "regions": [
+    {
+      "availability": "substantive",
+      "endMs": 394266,
+      "evidenceIds": [
+        "mtr_b342a7cac7dd518cd6d0cdf0ffcb8e4d",
+        "mtr_e607545b6255f72a8a086d37db6b0d1d",
+        "mtr_e838be73d4c545a24f65963c4b73b117",
+        "mtr_a7e2d4768a04073d2b25bfe33e7c2478",
+        "mtr_4398aaf26fcf14064d327ff1d4a78b80",
+        "mtr_cd7bd651492092175579bc93ed5cb2f0",
+        "mev_6c3134721388888307d3d88ad693dd43",
+        "mev_7de0b988981938fc95430d6f775402b5",
+        "mtr_7772b44a1a817a08f6c8c0031074b2a6",
+        "mtr_a7c9da4a70a8549752c6450791157cc3",
+        "mtr_07356f21b633074d29c14a6aa9030902",
+        "mtr_f9b74b873b12b61cc46d07829ab4fe79",
+        "mtr_8ca48b1a129050efaa79da4a08549424",
+        "mtr_ce14dd472c535a78dd2386ea43d51c46",
+        "mev_6f51f34a2989a9fd6212f02016daa8a4",
+        "mev_84690fa96f5c961cdd799db155bfb9fc",
+        "mtr_77b2a9bfb9e829a1f8a2a7f2d6ad22fa",
+        "mtr_8db8c7318afb534f5caa85f3c0ed4653",
+        "mtr_3d9c0af51e6c5d4a3a994bdf6269eb6f",
+        "mtr_2e5096f61f98e217a02671ad0923db02",
+        "mtr_cb59daeb4d190efec824fce264ea6b77",
+        "mev_1935c3d155c06c708d0168203c0dc6d0",
+        "mev_3b51edfc93ec38656c9a6e0a687b1bac"
+      ],
+      "name": "opening",
+      "startMs": 860
+    },
+    {
+      "availability": "substantive",
+      "endMs": 787673,
+      "evidenceIds": [
+        "mtr_cb59daeb4d190efec824fce264ea6b77",
+        "mtr_a28f26c9025a561216a8c4c6be7fb14a",
+        "mtr_3f21baaa04259a7cfc4c5239b35c9c92",
+        "mtr_92cf4ffaa77519e34a62fdbe4f164ab5",
+        "mtr_965236132266e83436dffbbcead863c4",
+        "mtr_71e9c6a684aa69a744a8546149050f72",
+        "mev_27f15a2d4c06664ae91bb48d79a71b38",
+        "mev_491c95380712544f07c5719ad7e58073",
+        "mtr_360aea33fbb347f95a2345e831676223",
+        "mtr_e6c5a58cd5925b66c1d81cc84588d9a4",
+        "mtr_e3c7531aa31c1d57b7a2ca172106ffc2",
+        "mtr_594b9984c93f4b3884282732dc9bc747",
+        "mtr_2c6ee588d43815ad366fc875c5643122",
+        "mev_d74a02b8e722b357d5cad40d825d68fb",
+        "mev_fec1be4fb5d245ba072fd59943e91dd8",
+        "mtr_8273d883e59a2709b0dbf3c6f12fb875",
+        "mtr_efed775601226f7fd56f359a9d015f17",
+        "mtr_7dac2b32f784783453d16a11542b67fb",
+        "mtr_ca7ebb9ceb730cc92ccf3849b1efb0d3",
+        "mtr_2939e109dcce0e0fd9e902053c3428c6",
+        "mev_38f09ff229d90045d01a752051bf2be2",
+        "mev_aa24bc6888da622d292b395ded735729"
+      ],
+      "name": "middle",
+      "startMs": 394266
+    },
+    {
+      "availability": "substantive",
+      "endMs": 1181080,
+      "evidenceIds": [
+        "mtr_2939e109dcce0e0fd9e902053c3428c6",
+        "mtr_0189dcb4b04b5059a8d9a93568d45562",
+        "mtr_03480a556a74b7757bdbe93f1bc1906e",
+        "mtr_64d835bab1e72313fb18ce1d6055fb44",
+        "mtr_1ec388586af27cfb498f8972471abcee",
+        "mtr_30ffd1e6c11d238431dc441390743641",
+        "mtr_5116757ae306699ac937f381fbc18df7",
+        "mev_997c07334edc370e91ae61f4b2eedbbf",
+        "mev_ced886c64b995f6b5d010fa8523bd625",
+        "mtr_94d77ebd9032df4c03af12bfa61a8baa",
+        "mtr_31bd30428ee8c7e9b60d563653fef527",
+        "mtr_e8f8c55b20c194f3047f2551a3aef90d",
+        "mtr_af5bde8f9ebe1423386682f1c46881f5",
+        "mtr_af460aa13035fcdce3385b26a195d8a7",
+        "mev_1801c733ccdd27076977fbbf45380fc3",
+        "mev_525925dc13561e07b9dfd556d103942e",
+        "mtr_8b166aa2ef776442b699a056a585db47",
+        "mtr_2b18ce61b69b835fc0aebc152b4a50e2",
+        "mtr_8ce7bce1a8da94f279baa938dde49e9c",
+        "mtr_74e6bf203d6ce8201a604a0cac8e3ee4",
+        "mtr_065e2ead68d2292e736706306a44dd9c",
+        "mtr_69b98ad6595066ecb19c432804efb6d4"
+      ],
+      "name": "ending",
+      "startMs": 787673
+    }
+  ],
+  "schemaVersion": "v3-media-grounded-comprehension/v2.1"
+}

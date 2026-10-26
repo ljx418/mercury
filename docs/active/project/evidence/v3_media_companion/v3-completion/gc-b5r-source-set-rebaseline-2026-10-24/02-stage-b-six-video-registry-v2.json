@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "v3-5.10-stage-b-source-registry/v2",
+  "sources": [
+    {"order":1,"portalId":"bilibili","bvid":"BV11t8w6oEtP","requiredDisposition":"attempt_fresh"},
+    {"order":2,"portalId":"bilibili","bvid":"BV1QcYx6VEAj","requiredDisposition":"attempt_fresh"},
+    {"order":3,"portalId":"bilibili","bvid":"BV1v58B6GEan","requiredDisposition":"attempt_fresh"},
+    {"order":4,"portalId":"bilibili","bvid":"BV1M5tJ6kEvw","requiredDisposition":"attempt_fresh"},
+    {"order":5,"portalId":"bilibili","bvid":"BV1HTbi6LERi","requiredDisposition":"attempt_fresh"},
+    {"order":6,"portalId":"bilibili","bvid":"BV1qM9fB8Eb2","requiredDisposition":"attempt_fresh"}
+  ],
+  "reserveSources": [
+    {"reserveOrder":1,"portalId":"bilibili","bvid":"BV16woRBfEsH"},
+    {"reserveOrder":2,"portalId":"bilibili","bvid":"BV1w7XQB7EsS"},
+    {"reserveOrder":3,"portalId":"bilibili","bvid":"BV1829jBeErD"},
+    {"reserveOrder":4,"portalId":"bilibili","bvid":"BV1aJAjzsE4j"}
+  ],
+  "selectionPolicy": {
+    "basis":"user_supplied_order_first_six",
+    "publicMetadataPreflight":"code_0_single_part_pay_0_ugc_pay_0_download_1",
+    "reserveUse":"future_codex_refreeze_only",
+    "runtimeReserveSubstitutionAllowed":false
+  },
+  "allowedFinalDispositions": ["complete", "limited", "blocked", "failed"],
+  "positiveDisposition": "complete",
+  "maximumBlockedForStageExit": 1,
+  "substitutionAllowed": false,
+  "crossRunArtifactReuseAllowed": false,
+  "freshIsolationRequired": ["runtime", "database", "chromeProfile", "task"],
+  "chromeRequiredFlags": ["--mute-audio"]
+}

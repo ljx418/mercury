@@ -620,8 +620,16 @@ def _parse_probe_observation(raw: str) -> dict[str, Any]:
 class MiniMaxChatVisionAdapter:
     """Pinned MiniMax OpenAI-compatible multimodal adapter."""
 
-    def __init__(self, client_factory: Callable[[], httpx.Client] | None = None) -> None:
+    def __init__(
+        self,
+        client_factory: Callable[[], httpx.Client] | None = None,
+        *,
+        retry_delays: tuple[float, ...] = (0.75, 1.5, 3.0),
+        sleeper: Callable[[float], None] = time.sleep,
+    ) -> None:
         self.client_factory = client_factory or (lambda: httpx.Client(timeout=120.0, follow_redirects=False))
+        self.retry_delays = retry_delays
+        self.sleeper = sleeper
 
     def test(self, provider: dict[str, Any]) -> dict[str, Any]:
         image = neutral_probe_png()
@@ -721,41 +729,50 @@ class MiniMaxChatVisionAdapter:
             "stream": False,
         }
         started = time.monotonic()
-        try:
-            with self.client_factory() as client:
-                response = client.post(
-                    provider["baseUrl"].rstrip("/") + "/chat/completions",
-                    headers={"Authorization": f"Bearer {provider['apiKey']}", "Content-Type": "application/json"},
-                    json=payload,
-                )
-            response.raise_for_status()
-            result = response.json()
-            base_response = result.get("base_resp")
-            if isinstance(base_response, dict) and base_response.get("status_code", 0) != 0:
-                raise ValueError("provider_status")
-            choices = result.get("choices")
-            message = choices[0].get("message") if isinstance(choices, list) and choices and isinstance(choices[0], dict) else None
-            candidate = message.get("content") if isinstance(message, dict) else None
-            if not isinstance(candidate, str):
-                raise ValueError("vision_content")
-            candidate = candidate.strip()
-            if candidate.startswith("```"):
-                candidate = re.sub(r"^```(?:json)?\s*|\s*```$", "", candidate, flags=re.IGNORECASE)
-            parsed = json.loads(candidate)
-            raw_usage = result.get("usage")
-            if result.get("model") != provider["model"] or not isinstance(parsed, dict) or set(parsed) != {"caption"} or not isinstance(parsed["caption"], str) or not parsed["caption"].strip() or not isinstance(raw_usage, dict):
-                raise ValueError("vision_response")
-            caption = parsed["caption"].strip()[:1000].rstrip()
-            usage = {"inputTokens": raw_usage.get("prompt_tokens"), "outputTokens": raw_usage.get("completion_tokens"), "estimatedCostUsd": None}
-            if any(value is not None and type(value) is not int for value in (usage["inputTokens"], usage["outputTokens"])):
-                raise ValueError("vision_usage")
-        except httpx.TimeoutException as exc:
-            raise VisionProviderError("VISION_TIMEOUT", "视觉 Provider 请求超时。", 504) from exc
-        except httpx.HTTPStatusError as exc:
-            code = "VISION_RATE_LIMITED" if exc.response.status_code == 429 else "VISION_PROVIDER_UNAVAILABLE"
-            raise VisionProviderError(code, "视觉 Provider 请求失败。", 503) from exc
-        except (httpx.HTTPError, ValueError, json.JSONDecodeError) as exc:
-            raise VisionProviderError("VISION_RESPONSE_INVALID", "视觉 Provider 返回无效响应。", 502) from exc
+        attempts = len(self.retry_delays) + 1
+        for attempt in range(attempts):
+            try:
+                with self.client_factory() as client:
+                    response = client.post(
+                        provider["baseUrl"].rstrip("/") + "/chat/completions",
+                        headers={"Authorization": f"Bearer {provider['apiKey']}", "Content-Type": "application/json"},
+                        json=payload,
+                    )
+                response.raise_for_status()
+                result = response.json()
+                base_response = result.get("base_resp")
+                if isinstance(base_response, dict) and base_response.get("status_code", 0) != 0:
+                    raise ValueError("provider_status")
+                choices = result.get("choices")
+                message = choices[0].get("message") if isinstance(choices, list) and choices and isinstance(choices[0], dict) else None
+                candidate = message.get("content") if isinstance(message, dict) else None
+                if not isinstance(candidate, str):
+                    raise ValueError("vision_content")
+                candidate = candidate.strip()
+                if candidate.startswith("```"):
+                    candidate = re.sub(r"^```(?:json)?\s*|\s*```$", "", candidate, flags=re.IGNORECASE)
+                parsed = json.loads(candidate)
+                raw_usage = result.get("usage")
+                if result.get("model") != provider["model"] or not isinstance(parsed, dict) or set(parsed) != {"caption"} or not isinstance(parsed["caption"], str) or not parsed["caption"].strip() or not isinstance(raw_usage, dict):
+                    raise ValueError("vision_response")
+                caption = parsed["caption"].strip()[:1000].rstrip()
+                usage = {"inputTokens": raw_usage.get("prompt_tokens"), "outputTokens": raw_usage.get("completion_tokens"), "estimatedCostUsd": None}
+                if any(value is not None and type(value) is not int for value in (usage["inputTokens"], usage["outputTokens"])):
+                    raise ValueError("vision_usage")
+                break
+            except httpx.TimeoutException as exc:
+                error = VisionProviderError("VISION_TIMEOUT", "视觉 Provider 请求超时。", 504)
+                cause = exc
+            except httpx.HTTPStatusError as exc:
+                code = "VISION_RATE_LIMITED" if exc.response.status_code == 429 else "VISION_PROVIDER_UNAVAILABLE"
+                error = VisionProviderError(code, "视觉 Provider 请求失败。", 503)
+                cause = exc
+            except (httpx.HTTPError, ValueError, json.JSONDecodeError) as exc:
+                error = VisionProviderError("VISION_RESPONSE_INVALID", "视觉 Provider 返回无效响应。", 502)
+                cause = exc
+            if attempt >= len(self.retry_delays):
+                raise error from cause
+            self.sleeper(self.retry_delays[attempt])
         return {"caption": caption, "model": result["model"], "usage": usage, "latencyMs": round((time.monotonic() - started) * 1000)}
 
 

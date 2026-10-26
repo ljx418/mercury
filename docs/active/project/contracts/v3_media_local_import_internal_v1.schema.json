@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://navia.local/contracts/v3_media_local_import_internal_v1.schema.json",
+  "title": "Navia V3 local media import durable internals",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["storeRecord", "visualReceipt", "consumerBarrier"],
+  "properties": {
+    "storeRecord": {"$ref": "#/$defs/storeRecord"},
+    "visualReceipt": {"$ref": "#/$defs/visualReceipt"},
+    "consumerBarrier": {"$ref": "#/$defs/consumerBarrier"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "kind", "byteLength", "sha256"],
+      "properties": {
+        "artifactId": {"type": "string", "pattern": "^artifact_[a-f0-9]{32}$"},
+        "kind": {"enum": ["video", "audio", "frame"]},
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 2147483648},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "storeRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "importId", "taskId", "sourceIdentity", "state", "sequence", "byteLength", "uploadedBytes", "declaredMediaType", "dependencyGeneration", "videoManifestSha256", "visualReceiptSha256", "barrierPhase", "failureCode", "createdAt", "updatedAt"],
+      "properties": {
+        "schemaVersion": {"const": "v3-media-local-import-store/v1"},
+        "importId": {"type": "string", "pattern": "^media_import_[a-f0-9]{32}$"},
+        "taskId": {"type": "string", "pattern": "^media_task_[a-f0-9]{32}$"},
+        "sourceIdentity": {"type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]{1,128}:[^:]{1,128}:[^:]{1,128}$"},
+        "state": {"enum": ["awaiting_upload", "uploading", "verifying", "preparing", "ready", "cancelling", "cancelled", "failed"]},
+        "sequence": {"type": "integer", "minimum": 0},
+        "byteLength": {"type": "integer", "minimum": 1, "maximum": 2147483648},
+        "uploadedBytes": {"type": "integer", "minimum": 0, "maximum": 2147483648},
+        "declaredMediaType": {"enum": ["video/mp4", "video/webm", "video/x-matroska", "application/octet-stream"]},
+        "dependencyGeneration": {"type": "string", "pattern": "^depgen_[a-f0-9]{64}$"},
+        "videoManifestSha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "visualReceiptSha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "barrierPhase": {"$ref": "#/$defs/barrierPhase"},
+        "failureCode": {"$ref": "#/$defs/importFailureCode"},
+        "createdAt": {"type": "string", "format": "date-time"},
+        "updatedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestampMs", "artifact"],
+      "properties": {
+        "timestampMs": {"type": "integer", "minimum": 0, "maximum": 14400000},
+        "artifact": {"allOf": [{"$ref": "#/$defs/artifact"}, {"properties": {"kind": {"const": "frame"}}}]}
+      }
+    },
+    "visualReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "taskId", "sourceIdentity", "mediaSha256", "durationMs", "frames"],
+      "properties": {
+        "schemaVersion": {"const": "v3-media-import-visual-receipt/v1"},
+        "taskId": {"type": "string", "pattern": "^media_task_[a-f0-9]{32}$"},
+        "sourceIdentity": {"type": "string", "pattern": "^portal:[a-z][a-z0-9_-]{1,31}:[^:]{1,128}:[^:]{1,128}:[^:]{1,128}$"},
+        "mediaSha256": {"$ref": "#/$defs/sha256"},
+        "durationMs": {"type": "integer", "minimum": 1, "maximum": 14400000},
+        "frames": {"type": "array", "minItems": 1, "maxItems": 8, "items": {"$ref": "#/$defs/frame"}}
+      }
+    },
+    "importFailureCode": {
+      "type": ["string", "null"],
+      "enum": [null, "V3_MEDIA_IMPORT_REQUEST_INVALID", "V3_MEDIA_IMPORT_AUTH_REQUIRED", "V3_MEDIA_IMPORT_ORIGIN_MISMATCH", "V3_MEDIA_IMPORT_NOT_FOUND", "V3_MEDIA_IMPORT_TASK_NOT_ELIGIBLE", "V3_MEDIA_IMPORT_ACTIVE", "V3_MEDIA_IMPORT_TOKEN_INVALID", "V3_MEDIA_IMPORT_SIZE_MISMATCH", "V3_MEDIA_IMPORT_SIZE_LIMIT", "V3_MEDIA_IMPORT_TYPE_UNSUPPORTED", "V3_MEDIA_IMPORT_MEDIA_INVALID", "V3_MEDIA_IMPORT_DURATION_LIMIT", "V3_MEDIA_IMPORT_DISK_SPACE_LOW", "V3_MEDIA_IMPORT_WRITE_FAILED", "V3_MEDIA_IMPORT_PREPARE_FAILED", "V3_MEDIA_IMPORT_RUNTIME_RESTARTED", "V3_MEDIA_IMPORT_CANCELLED", "V3_MEDIA_IMPORT_CLEANUP_INCOMPLETE"]
+    },
+    "barrierPhase": {
+      "enum": ["video_durable", "inputs_prepared", "input_bound", "audio_staged", "video_deleted", "transcript_terminal", "visual_terminal", "cleaning", "cleaned", "failed"]
+    },
+    "consumerBarrier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "importId", "taskId", "phase", "audioOwnerReceiptSha256", "visualReceiptSha256", "transcriptTerminal", "visualTerminal", "updatedAt"],
+      "properties": {
+        "schemaVersion": {"const": "v3-media-import-consumer-barrier/v1"},
+        "importId": {"type": "string", "pattern": "^media_import_[a-f0-9]{32}$"},
+        "taskId": {"type": "string", "pattern": "^media_task_[a-f0-9]{32}$"},
+        "phase": {"$ref": "#/$defs/barrierPhase"},
+        "audioOwnerReceiptSha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "visualReceiptSha256": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/sha256"}]},
+        "transcriptTerminal": {"type": "boolean"},
+        "visualTerminal": {"type": "boolean"},
+        "updatedAt": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

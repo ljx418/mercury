@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-failure/v1",
+  "bvid": "BV1HTbi6LERi",
+  "order": "5",
+  "finalDisposition": "failed",
+  "finishReason": "Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}",
+  "error": {
+    "name": "Error",
+    "message": "Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}",
+    "stack": "Error: Stage B synthesize rejected: HTTP 503 body={\"ok\":false,\"data\":null,\"error\":{\"code\":\"V3510B_PROVIDER_UNAVAILABLE\",\"message\":\"高质量理解服务请求失败，原本地结果保持不变。\",\"recoverable\":false},\"request_id\":null}\n    at file:///mnt/c/workSpace/navia/scripts/stage_b_b5_3/run_one_bvid.mjs:719:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+  },
+  "resolveObservations": [
+    {
+      "at": 1792777938723,
+      "status": 201,
+      "disposition": "created",
+      "authoritativeTaskId": "media_task_b36a8cd7312a47e29c9ad507fba1af43"
+    }
+  ],
+  "runtimeCalls": [
+    {
+      "at": 1792777936754,
+      "method": "GET",
+      "path": "/v1/settings",
+      "status": 200
+    },
+    {
+      "at": 1792777936772,
+      "method": "POST",
+      "path": "/v1/companion/sessions",
+      "status": 201
+    },
+    {
+      "at": 1792777936784,
+      "method": "GET",
+      "path": "/v1/knowledge/permissions",
+      "status": 200
+    },
+    {
+      "at": 1792777936786,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777936787,
+      "method": "GET",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792777936791,
+      "method": "GET",
+      "path": "/v1/media/portal-settings/bilibili",
+      "status": 200
+    },
+    {
+      "at": 1792777937778,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777937904,
+      "method": "POST",
+      "path": "/v1/chat/sessions",
+      "status": 200
+    },
+    {
+      "at": 1792777938086,
+      "method": "GET",
+      "path": "/v1/pi/sidecar/health",
+      "status": 200
+    },
+    {
+      "at": 1792777938651,
+      "method": "GET",
+      "path": "/v1/media/source-authority",
+      "status": 200
+    },
+    {
+      "at": 1792777938653,
+      "method": "GET",
+      "path": "/v1/media/task-projections",
+      "status": 404
+    },
+    {
+      "at": 1792777938666,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792777938676,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    },
+    {
+      "at": 1792777938690,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 404
+    },
+    {
+      "at": 1792777938690,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 404
+    },
+    {
+      "at": 1792777938722,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/resolve",
+      "status": 201
+    },
+    {
+      "at": 1792777939195,
+      "method": "GET",
+      "path": "/v1/media/acquisitions/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777939294,
+      "method": "POST",
+      "path": "/v1/media/acquisitions/media_task_b36a8cd7312a47e29c9ad507fba1af43/execute",
+      "status": 200
+    },
+    {
+      "at": 1792777940195,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777940202,
+      "method": "POST",
+      "path": "/v1/media/credential-channels",
+      "status": 201
+    },
+    {
+      "at": 1792777940208,
+      "method": "POST",
+      "path": "/v1/media/credential-leases",
+      "status": 201
+    },
+    {
+      "at": 1792777941700,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777942784,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777943205,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777944710,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777946229,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777947735,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777947789,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777949239,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777951943,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777953452,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777953994,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777954956,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777956460,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777957966,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    },
+    {
+      "at": 1792777959000,
+      "method": "GET",
+      "path": "/v1/knowledge/status",
+      "status": 200
+    },
+    {
+      "at": 1792777959009,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_b36a8cd7312a47e29c9ad507fba1af43/materialize-visual",
+      "status": 502
+    },
+    {
+      "at": 1792777959123,
+      "method": "POST",
+      "path": "/v1/media/outline-tasks/media_task_b36a8cd7312a47e29c9ad507fba1af43/materialize",
+      "status": 200
+    },
+    {
+      "at": 1792777959129,
+      "method": "DELETE",
+      "path": "/v1/media/credential-leases/pcl_d7d778101d8f7f87151d572fc4c4c7ea",
+      "status": 200
+    },
+    {
+      "at": 1792777959470,
+      "method": "GET",
+      "path": "/v1/media/task-projections/media_task_b36a8cd7312a47e29c9ad507fba1af43",
+      "status": 200
+    }
+  ],
+  "startedAtUtc": "2026-10-23T17:52:06.765Z",
+  "finishedAtUtc": "2026-10-23T17:52:41.623Z"
+}

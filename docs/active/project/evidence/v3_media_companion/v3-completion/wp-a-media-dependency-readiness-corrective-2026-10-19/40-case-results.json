@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "wp-a-case-results/v1",
+  "candidate": "wp-a-media-dependency-readiness-corrective-2026-10-19",
+  "status": "AWAITING_CODEX_CHECKPOINT",
+  "denominator": {"total": 24, "pass": 24, "partial": 0, "blocked": 0, "fail": 0, "notProven": 0},
+  "cases": [
+    {"caseId":"A01","status":"PASS","evidence":"schema meta-validation and positive fixtures"},
+    {"caseId":"A02","status":"PASS","evidence":"exact POST and nine request mutations"},
+    {"caseId":"A03","status":"PASS","evidence":"strict envelopes without paths or secrets"},
+    {"caseId":"A04","status":"PASS","evidence":"semantic mutations rejected"},
+    {"caseId":"A05","status":"PASS","evidence":"stable four-dependency generation"},
+    {"caseId":"A06","status":"PASS","evidence":"missing managed tool action_required"},
+    {"caseId":"A07","status":"PASS","evidence":"system tool missing/hash mismatch fail closed"},
+    {"caseId":"A08","status":"PASS","evidence":"delegated ASR readiness"},
+    {"caseId":"A09","status":"PASS","evidence":"six frozen repair phases"},
+    {"caseId":"A10","status":"PASS","evidence":"one active job"},
+    {"caseId":"A11","status":"PASS","evidence":"four cancelable stages cleanly cancel"},
+    {"caseId":"A12","status":"PASS","evidence":"atomic commit wins without third state"},
+    {"caseId":"A13","status":"PASS","evidence":"HTTPS/host/two redirects/two retries/deadline driven"},
+    {"caseId":"A14","status":"PASS","evidence":"exact size and one-over/under"},
+    {"caseId":"A15","status":"PASS","evidence":"digest mutation refused"},
+    {"caseId":"A16","status":"PASS","evidence":"space and self-test failures fail closed"},
+    {"caseId":"A17","status":"PASS","evidence":"five persisted phases plus post-manifest crash recovered by fresh manager"},
+    {"caseId":"A18","status":"PASS","evidence":"late update cannot rewrite terminal state or sequence"},
+    {"caseId":"A19","status":"PASS","evidence":"per-task immutable snapshot"},
+    {"caseId":"A20","status":"PASS","evidence":"removed leased tool raises RUNTIME_OFFLINE without capture fallback"},
+    {"caseId":"A21","status":"PASS","evidence":"five Settings states and exact progress"},
+    {"caseId":"A22","status":"PASS","evidence":"re-entry polling, automatic online recovery, old-ready latest-failure"},
+    {"caseId":"A23","status":"PASS","evidence":"fresh frozen network download and self-test"},
+    {"caseId":"A24","status":"PASS","evidence":"public API credentialed_media_asr, 64 non-empty monotonic segments, capture 0"}
+  ]
+}
+

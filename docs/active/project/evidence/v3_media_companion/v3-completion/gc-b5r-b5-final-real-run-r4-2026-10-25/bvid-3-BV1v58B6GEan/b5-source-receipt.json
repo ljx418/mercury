@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "v3-5.10-b5-3-source-receipt/v2",
+  "runId": "gc-b5r-b5-final-r4-20261024T182842Z",
+  "order": 3,
+  "bvid": "BV1v58B6GEan",
+  "registrySha256": "9c2da2f4c4c16fc94e1e0d7dfc9362ab1177d2db53f63d4af5a81a44795c9454",
+  "taskId": "media_task_3094f9f65e1149649fcb17614d2f5ef6",
+  "taskNamespace": "media_task_2c53ba41aa85452cb129abdae6b9f6b1",
+  "taskRevision": 7,
+  "sourceIdentity": "portal:bilibili:BV1v58B6GEan:41136295066:p1",
+  "dependencyGeneration": "depgen_edc19bc76c47d43a5630256d1069d5672663cffc1ba331a8c55d56b93f1a872c",
+  "route": null,
+  "disposition": "complete",
+  "failureCode": null,
+  "startedAtUtc": "2026-10-24T18:37:47.719Z",
+  "finishedAtUtc": "2026-10-24T18:41:11.775Z",
+  "provider": {
+    "selectedProviderId": "minimax-cn-openai-vision",
+    "selectedEndpointClass": "minimax_chat_completions",
+    "attempted": {
+      "attemptCount": 1,
+      "providerId": "minimax-cn-openai-vision",
+      "endpointClass": "minimax_chat_completions",
+      "requestCount": 5
+    },
+    "published": {
+      "providerId": "minimax-cn-openai-vision",
+      "modelId": "MiniMax-M3",
+      "endpointClass": "minimax_chat_completions",
+      "structureMode": "openai_chat_object",
+      "attemptId": "attempt-c695663f35fba11d",
+      "requestCount": 5,
+      "latencyMs": 15120,
+      "requestSha256": "89c47c0389235c06634d78286a74d5bdfb9fdea40030bd9a0e1fe06095a4af60",
+      "responseSha256": "5754a7de3ea8048a50cd20b5bf0bcdc52bbeff3c913eb23d88e080e041b2c335",
+      "outboundDerivedTextSha256": "89c47c0389235c06634d78286a74d5bdfb9fdea40030bd9a0e1fe06095a4af60",
+      "finishReason": "stop",
+      "uploadCounters": {
+        "rawVideoUploadCount": 0,
+        "rawAudioUploadCount": 0,
+        "frameByteUploadCount": 0,
+        "cookieUploadCount": 0,
+        "apiKeyDisclosureCount": 0,
+        "localPathUploadCount": 0
+      }
+    }
+  },
+  "uploadCounters": {
+    "rawVideoUploadCount": 0,
+    "rawAudioUploadCount": 0,
+    "frameByteUploadCount": 0,
+    "cookieUploadCount": 0,
+    "apiKeyDisclosureCount": 0,
+    "localPathUploadCount": 0
+  },
+  "audioOutputCount": 0,
+  "tabCaptureCount": 0,
+  "focusEventCount": 1,
+  "focusTargetOwned": true,
+  "cookieInjectionCount": 26,
+  "extensionPermissionMode": "pregranted_test_fixture",
+  "muteAudioVerified": true,
+  "runtimeDatabaseRef": "51dd70899bec5e21bd091907fe15cdbe39fbf689915d3cb287d1629b0926d834",
+  "chromeProfileRef": "d5b9da575d67b7d8244a158e87a77f89b28a28d4e3ac83159b13c80943e54885",
+  "derivativeSha256": "6ed24b1312818665ab3ee0eda24c60293ee7c818fa7506073e2398d8d56f0f05",
+  "receiptSha256": "de5d7805386ce313a04d4548b37a6ce5d943b2971364054862e3ff1e84b15e0b",
+  "evidenceSha256": "6ed24b1312818665ab3ee0eda24c60293ee7c818fa7506073e2398d8d56f0f05",
+  "cleanup": {
+    "runtimeScratchDeleted": true,
+    "profileRootDeleted": true,
+    "cleanupFailure": null
+  },
+  "chapterDiagnostic": null
+}
